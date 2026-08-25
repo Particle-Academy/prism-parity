@@ -1,0 +1,28 @@
+# The corpus is hashed BYTE-EXACTLY by Corpus::digest(), and the digest
+# deliberately does not normalise line endings — a mangled checkout really is
+# different content and should say so.
+#
+# That only works if the bytes are the same everywhere to begin with. With mixed
+# endings in the tree, a consumer whose git has core.autocrlf=true computes a
+# different digest from a Linux CI runner FOR IDENTICAL CONTENT, and the
+# cross-check reads that as a stale artifact when nothing is stale.
+#
+# A drift detector that fires on non-drift trains people to ignore it, and then
+# it is worth nothing when it fires correctly. So: LF, pinned, everywhere.
+
+* text=auto eol=lf
+
+*.json   text eol=lf
+*.md     text eol=lf
+*.php    text eol=lf
+*.py     text eol=lf
+*.js     text eol=lf
+*.mjs    text eol=lf
+*.ts     text eol=lf
+*.yml    text eol=lf
+*.toml   text eol=lf
+VERSION  text eol=lf
+py.typed text eol=lf
+
+*.png binary
+*.jpg binary

@@ -1,0 +1,33 @@
+{
+  "name": "@particle-academy/prism-conformance",
+  "version": "0.1.0",
+  "description": "The prism-parity conformance corpus and its JavaScript/TypeScript loader. Ships the fixtures inside the package.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    }
+  },
+  "files": [
+    "src",
+    "suites",
+    "probes",
+    "VERSION"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "keywords": [
+    "prism",
+    "conformance",
+    "parity",
+    "fixtures"
+  ]
+}

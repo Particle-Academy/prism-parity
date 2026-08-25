@@ -1,0 +1,70 @@
+name: Corpus
+
+on:
+  push:
+    branches:
+      - main
+      - "*.x"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  guards:
+    name: Guards and parity check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Corpus invariants. Includes the unquoted-large-integer scan, which reads
+      # the case files AS TEXT — parsing them here would round the offending
+      # value and report it safe, destroying the evidence with the very defect
+      # being looked for.
+      - name: Corpus guards
+        run: node tools/guard-corpus.mjs
+
+      # The EXISTENCE half of parity. A conformance corpus can never fail on
+      # absence, because a missing mirror has nothing to run the rows against.
+      - name: Parity check and drift report
+        run: node tools/parity-check.mjs --report
+
+      # Each loader ships the fixtures in its own artifact. The copies are
+      # generated and committed, and this is what stops them drifting.
+      - name: Corpus copies are current
+        run: node tools/sync-corpus.mjs --check
+
+  goldens:
+    name: Goldens match the reference
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          coverage: none
+
+      # Installs the PUBLISHED particle-academy/prism. The reference a corpus is
+      # generated from has to be a released artefact, or the goldens describe
+      # someone's uncommitted branch.
+      - name: Install the reference
+        working-directory: runners/php
+        run: composer install --no-interaction --no-progress
+
+      # Regenerates in --check mode: fails, rather than rewriting, when a golden
+      # no longer matches what the reference produces. That failure is the
+      # signal — either the reference changed behaviour or a golden was edited by
+      # hand, and both need a human.
+      - name: Goldens are current
+        run: php tools/generate-goldens.php --check
+
+      - name: Reference runner
+        run: php runners/php/runner.php

@@ -1,0 +1,29 @@
+{
+    "suite": "json-container-identity",
+    "cases": [
+        {
+            "id": "jci-0001",
+            "title": "an empty object is not an empty array",
+            "since": "0.1.0",
+            "notes": "This row is both the hardest case in the corpus and its own discrimination probe. The two sides decode to the IDENTICAL value in PHP — verified, not assumed: json_decode('{}', true) === json_decode('[]', true) returns true — so the reference cannot answer it and is skipped. What makes it a probe is that it has no decoded input at all: a runner can only answer by parsing left_raw and right_raw itself. Presence of a raw-string field is trivially satisfied by the capture code and proves nothing; a row that can ONLY pass if the field was read is what proves the channel is wired to something. Without this row the entire raw-string mechanism could be inert and every test here would still be green. JSON APIs distinguish these constantly — empty tool lists, empty content arrays, empty metadata objects — so the distinction is not academic.",
+            "left_raw": "{\"meta\":{}}",
+            "right_raw": "{\"meta\":[]}",
+            "expect": { "equal_after_parse": false },
+            "skip": {
+                "php": "PHP decodes an empty JSON object and an empty JSON array to the same value, so it reports these two sides equal and cannot express the distinction the row asserts. Verified empirically rather than assumed. This is an expressiveness limit of the reference language, not a defect, and it is the reason no PHP-authored golden in this corpus is authoritative about container type. See docs/decisions/0007-reference-language-limits.md and finding F-3."
+            }
+        },
+        {
+            "id": "jci-0002",
+            "title": "two integers either side of the 2^53 boundary are different numbers",
+            "since": "0.1.0",
+            "notes": "The mirror of jci-0001: the axis where the reference is STRONG and a port is weak. PHP and Python both parse 9007199254740993 exactly; JavaScript rounds it to 9007199254740992 and then reports the rounded value equal to the original literal, because the literal rounds identically — the language cannot see its own error even when asked directly. Nothing in the corpus carries an integer this large today (provider ids are strings and timestamps are in seconds), and tools/guard-corpus.mjs keeps it that way by reading the case files AS TEXT. This row exists so the boundary is pinned before a provider with snowflake ids or nanosecond timestamps arrives, rather than after.",
+            "left_raw": "{\"id\":9007199254740993}",
+            "right_raw": "{\"id\":9007199254740992}",
+            "expect": { "equal_after_parse": false },
+            "skip": {
+                "ts": "JavaScript's number type cannot represent 9007199254740993, so both sides parse to 9007199254740992 and the runner correctly reports them equal — the opposite of what the row asserts. Verified empirically: JSON.parse('{\"id\":9007199254740993}').id === 9007199254740993 evaluates TRUE in Node, so the defect is invisible from inside the language. Recorded rather than worked around, because the fix belongs in prism-ts's raw passthrough (carry such values as strings or BigInt) and is out of scope for this slice. See finding F-5."
+            }
+        }
+    ]
+}

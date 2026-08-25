@@ -1,0 +1,20 @@
+{
+    "name": "particle-academy/prism-conformance",
+    "description": "The prism-parity conformance corpus and its PHP loader. Ships the fixtures inside the package.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["prism", "conformance", "parity", "fixtures"],
+    "require": {
+        "php": "^8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Prism\\Conformance\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Prism\\Conformance\\Tests\\": "tests/"
+        }
+    }
+}

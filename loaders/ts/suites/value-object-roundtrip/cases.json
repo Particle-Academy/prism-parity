@@ -1,0 +1,176 @@
+{
+    "suite": "value-object-roundtrip",
+    "cases": [
+        {
+            "id": "rtp-0001",
+            "title": "user message",
+            "since": "0.1.0",
+            "notes": "The trap that a real consumer hit. The reference's UserMessage constructor APPENDS a Text part built from its own content argument, so the stored additional_content already contains that part. A rebuild that hands the stored additional_content straight back to the constructor appends a SECOND copy, and the message text doubles on every save-and-load cycle. Nothing errors; the conversation just grows. The rehydrate assertion is what catches it, and it is the reason this suite exists.",
+            "subject": {
+                "$": "UserMessage",
+                "content": "Who are you?",
+                "additionalAttributes": {
+                    "turn": "1"
+                }
+            },
+            "expect": {
+                "serialized_json": "{\"type\":\"user\",\"content\":\"Who are you?\",\"additional_content\":[{\"text\":\"Who are you?\"}],\"additional_attributes\":{\"turn\":\"1\"}}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "rtp-0002",
+            "title": "assistant message carrying tool calls",
+            "since": "0.1.0",
+            "notes": "Pins the nested serialisation: an assistant message's tool calls are stored as their own objects, in order, with their own null-bearing fields. A rebuild that flattens them to plain maps loses the ability to re-send the turn to the provider at all. Additional content is non-empty on purpose so this row pins nesting rather than the empty-map artefact; rtp-0009 isolates that.",
+            "subject": {
+                "$": "AssistantMessage",
+                "content": "Checking the weather.",
+                "toolCalls": [
+                    {
+                        "$": "ToolCall",
+                        "id": "fc_1",
+                        "name": "weather",
+                        "arguments": {
+                            "city": "Paris"
+                        },
+                        "resultId": "call_1"
+                    }
+                ],
+                "additionalContent": {
+                    "reasoningSummaries": [
+                        "Consider the two cases."
+                    ]
+                }
+            },
+            "expect": {
+                "serialized_json": "{\"type\":\"assistant\",\"content\":\"Checking the weather.\",\"tool_calls\":[{\"id\":\"fc_1\",\"name\":\"weather\",\"arguments\":{\"city\":\"Paris\"},\"result_id\":\"call_1\",\"reasoning_id\":null,\"reasoning_summary\":null}],\"additional_content\":{\"reasoningSummaries\":[\"Consider the two cases.\"]},\"tool_approval_requests\":[]}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "rtp-0003",
+            "title": "tool call whose arguments are a raw JSON string",
+            "since": "0.1.0",
+            "notes": "The arguments field is a union: providers stream it as a string and callers build it as a map, and the stored form keeps whichever it was given rather than normalising. Pins that the union survives storage, because normalising on the way in loses the provider's exact bytes and normalising on the way out changes what gets re-sent.",
+            "subject": {
+                "$": "ToolCall",
+                "id": "fc_2",
+                "name": "weather",
+                "arguments": "{\"city\":\"Paris\"}",
+                "resultId": "call_2"
+            },
+            "expect": {
+                "serialized_json": "{\"id\":\"fc_2\",\"name\":\"weather\",\"arguments\":\"{\\\"city\\\":\\\"Paris\\\"}\",\"result_id\":\"call_2\",\"reasoning_id\":null,\"reasoning_summary\":null}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "rtp-0004",
+            "title": "usage with every optional field unset",
+            "since": "0.1.0",
+            "notes": "Four nullable counters and a nullable cost, all unset. Every one is stored as an explicit null rather than omitted. This is the absent-versus-null axis on the value object that carries the numbers an application bills against — a port that omits unset counters produces a stored row that rebuilds with different arithmetic.",
+            "subject": {
+                "$": "Usage",
+                "promptTokens": 11,
+                "completionTokens": 56
+            },
+            "expect": {
+                "serialized_json": "{\"prompt_tokens\":11,\"completion_tokens\":56,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "rtp-0005",
+            "title": "usage with every optional field set",
+            "since": "0.1.0",
+            "notes": "The populated counterpart to rtp-0004, including a non-integral cost. Together the two rows pin that the KEYS are unconditional and only the values vary. Cost is exact here on purpose: it is a decimal the provider reported, not a number anyone recomputed, so there is nothing for a tolerance to absorb.",
+            "subject": {
+                "$": "Usage",
+                "promptTokens": 128,
+                "completionTokens": 12,
+                "cacheWriteInputTokens": 64,
+                "cacheReadInputTokens": 896,
+                "thoughtTokens": 4,
+                "cost": 0.00125
+            },
+            "expect": {
+                "serialized_json": "{\"prompt_tokens\":128,\"completion_tokens\":12,\"cache_write_input_tokens\":64,\"cache_read_input_tokens\":896,\"thought_tokens\":4,\"cost\":0.00125}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "rtp-0006",
+            "title": "system message",
+            "since": "0.1.0",
+            "notes": "The smallest message, kept because it is the one whose stored shape a port is most likely to collapse into a bare string. Pins that it keeps its type discriminator.",
+            "subject": {
+                "$": "SystemMessage",
+                "content": "You are terse."
+            },
+            "expect": {
+                "serialized_json": "{\"type\":\"system\",\"content\":\"You are terse.\"}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "rtp-0007",
+            "title": "tool result message",
+            "since": "0.1.0",
+            "notes": "Pins that the result payload keeps its own type — a string result stays a string rather than being wrapped — and that the two id fields (the call id and the separate result id) both survive. Losing the result id breaks the NEXT provider call, not this one.",
+            "subject": {
+                "$": "ToolResultMessage",
+                "toolResults": [
+                    {
+                        "$": "ToolResult",
+                        "toolCallId": "fc_1",
+                        "toolName": "weather",
+                        "args": {
+                            "city": "Paris"
+                        },
+                        "result": "sunny",
+                        "toolCallResultId": "call_1"
+                    }
+                ]
+            },
+            "expect": {
+                "serialized_json": "{\"type\":\"tool_result\",\"tool_results\":[{\"tool_call_id\":\"fc_1\",\"tool_name\":\"weather\",\"args\":{\"city\":\"Paris\"},\"result\":\"sunny\",\"tool_call_result_id\":\"call_1\",\"artifacts\":[]}],\"tool_approval_responses\":[]}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "rtp-0008",
+            "title": "meta with no service tier",
+            "since": "0.1.0",
+            "notes": "An optional string that the provider did not send. Stored as null, not omitted. Pins the same axis as rtp-0004 on a non-numeric field, because a port can get the numbers right by accident and still drop absent strings.",
+            "subject": {
+                "$": "Meta",
+                "id": "resp_1",
+                "model": "gpt-4o"
+            },
+            "expect": {
+                "serialized_json": "{\"id\":\"resp_1\",\"model\":\"gpt-4o\",\"rate_limits\":[],\"service_tier\":null}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "rtp-0009",
+            "title": "assistant message with empty additional content",
+            "since": "0.1.0",
+            "notes": "The isolated empty-map row for the message side, matching trs-0006 on the response side. PHP has one array type, so an assistant message's additional content — a map — serialises as an empty JSON ARRAY when empty and as an object when populated: the same field changes JSON type with its contents. Verified empirically rather than assumed. Kept here alone so every other row in this suite stays enforceable in all three languages. Finding F-3.",
+            "subject": {
+                "$": "AssistantMessage",
+                "content": "Done.",
+                "additionalContent": []
+            },
+            "expect": {
+                "serialized_json": "{\"type\":\"assistant\",\"content\":\"Done.\",\"tool_calls\":[],\"additional_content\":[],\"tool_approval_requests\":[]}",
+                "rehydrates": true
+            },
+            "skip": {
+                "ts": "The golden contains an empty JSON ARRAY for additional_content, a map-typed field, because PHP renders an empty array and an empty map identically. TypeScript renders an empty Record as {}. Reproducing [] would mean modelling maps as arrays throughout the port. Recorded rather than fixed on either side — F-3 recommends the reference cast these fields to objects.",
+                "py": "Same as ts: PHP has one array type, so an empty map-typed field serialises as []. Python renders an empty dict as {}. See finding F-3."
+            }
+        }
+    ]
+}

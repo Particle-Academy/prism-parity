@@ -1,0 +1,993 @@
+{
+    "suite": "openai-text-request",
+    "cases": [
+        {
+            "id": "trq-0001",
+            "title": "prompt only",
+            "since": "0.1.0",
+            "notes": "The baseline, and the single most important row in the corpus: max_output_tokens is emitted as an explicit null even though it was never set, because the reference merges it OUTSIDE the not-null filter. A port that models 'unset' as undefined drops the key and the bytes differ. This is the absent-vs-null hazard in its smallest form.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Who are you?"
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Who are you?\"}]}],\"max_output_tokens\":null}"
+            }
+        },
+        {
+            "id": "trq-0002",
+            "title": "system prompt precedes the prompt",
+            "since": "0.1.0",
+            "notes": "System prompts are prepended to the message list rather than carried in a separate field. Pins the ordering, and pins that a system message maps to a bare string content while a user message maps to a parts array — the two roles are shaped differently in the same payload.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withSystemPrompt",
+                    "args": [
+                        "You are terse."
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Who are you?"
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"system\",\"content\":\"You are terse.\"},{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Who are you?\"}]}],\"max_output_tokens\":null}"
+            }
+        },
+        {
+            "id": "trq-0003",
+            "title": "two system prompts accumulate in call order",
+            "since": "0.1.0",
+            "notes": "withSystemPrompt appends rather than replaces. A port that models it as a setter passes trq-0002 and fails here, which is why one system-prompt case is not enough.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withSystemPrompt",
+                    "args": [
+                        "A"
+                    ]
+                },
+                {
+                    "call": "withSystemPrompt",
+                    "args": [
+                        "B"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"system\",\"content\":\"A\"},{\"role\":\"system\",\"content\":\"B\"},{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null}"
+            }
+        },
+        {
+            "id": "trq-0004",
+            "title": "max tokens set",
+            "since": "0.1.0",
+            "notes": "The value half of trq-0001: when max_output_tokens IS set it carries the integer. Together the two rows pin that the key is unconditional and only its value varies.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "withMaxTokens",
+                    "args": [
+                        256
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":256}"
+            }
+        },
+        {
+            "id": "trq-0005",
+            "title": "temperature 0.7",
+            "since": "0.1.0",
+            "notes": "A non-integral float, which every language renders identically. Paired deliberately with trq-0025, which uses an integral float and does not.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "usingTemperature",
+                    "args": [
+                        0.7
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"temperature\":0.7}"
+            }
+        },
+        {
+            "id": "trq-0006",
+            "title": "temperature 0 survives the not-null filter",
+            "since": "0.1.0",
+            "notes": "Zero is falsy in PHP and in JavaScript. The reference filters this key on null, not on falsiness, so temperature 0 is sent. A port that reaches for a truthiness check drops a deliberate deterministic-sampling setting and the model silently samples at its default.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "usingTemperature",
+                    "args": [
+                        0
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"temperature\":0}"
+            }
+        },
+        {
+            "id": "trq-0007",
+            "title": "top_p",
+            "since": "0.1.0",
+            "notes": "Pins the snake_case wire name against the camelCase builder name — the rename happens in the mapper, not in the value object.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "usingTopP",
+                    "args": [
+                        0.9
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"top_p\":0.9}"
+            }
+        },
+        {
+            "id": "trq-0008",
+            "title": "withTools with an empty list omits the tools key entirely",
+            "since": "0.1.0",
+            "notes": "The reference collapses an empty tool list to null and the not-null filter then drops the key. An empty array is falsy in PHP and TRUTHY in JavaScript and Python, so a direct port sends an empty tools array — which OpenAI rejects on some models and which silently changes tool_choice defaults on others. This row is the one that DECLARES an empty tool list, which is why it exists — it documents the intent. It is not the only row that catches the hazard: every request that never calls withTools has an empty tool list too, so 20 of the 28 rows here go red under the keep-empty-tools probe. Said plainly because the earlier wording called this the highest-value falsiness trap in the suite, and measurement showed 19 other rows catch the same thing. The correction came from BOTH ports reaching the 20-row conclusion independently, one of them before the ruling arrived — two implementations separately disagreeing with a declaration is the strongest available signal that the corpus was wrong rather than either port being confused.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "withTools",
+                    "args": [
+                        []
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null}"
+            }
+        },
+        {
+            "id": "trq-0009",
+            "title": "one tool with a required string parameter",
+            "since": "0.1.0",
+            "notes": "Pins the JSON Schema fragment the reference builds, including the property key order (description before type) which is decided by the schema value object rather than by the tool mapper.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "withTools",
+                    "args": [
+                        [
+                            {
+                                "$": "Tool",
+                                "as": "weather",
+                                "for": "Get the weather",
+                                "parameters": [
+                                    {
+                                        "type": "string",
+                                        "name": "city",
+                                        "description": "The city",
+                                        "required": true
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"tools\":[{\"type\":\"function\",\"name\":\"weather\",\"description\":\"Get the weather\",\"parameters\":{\"type\":\"object\",\"properties\":{\"city\":{\"description\":\"The city\",\"type\":\"string\"}},\"required\":[\"city\"]}}]}"
+            }
+        },
+        {
+            "id": "trq-0010",
+            "title": "tool with no parameters omits both parameters and strict",
+            "since": "0.1.0",
+            "notes": "Two omissions at once. The parameters block is conditional on the tool having any, and strict is dropped because the reference builds the tool with a falsiness filter rather than a null filter — so a false strict never reaches the wire while a false store (trq-0016) does. That inconsistency is the reference's, and a port has to reproduce it rather than tidy it.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "withTools",
+                    "args": [
+                        [
+                            {
+                                "$": "Tool",
+                                "as": "ping",
+                                "for": "Ping"
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"tools\":[{\"type\":\"function\",\"name\":\"ping\",\"description\":\"Ping\"}]}"
+            }
+        },
+        {
+            "id": "trq-0011",
+            "title": "tool choice auto",
+            "since": "0.1.0",
+            "notes": "Enum member to wire string. Pins that the enum has no backing value in the reference and the mapping lives in the provider, so a port cannot get this right by serializing the enum.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "withTools",
+                    "args": [
+                        [
+                            {
+                                "$": "Tool",
+                                "as": "ping",
+                                "for": "Ping"
+                            }
+                        ]
+                    ]
+                },
+                {
+                    "call": "withToolChoice",
+                    "args": [
+                        {
+                            "$": "ToolChoice",
+                            "case": "Auto"
+                        }
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"tools\":[{\"type\":\"function\",\"name\":\"ping\",\"description\":\"Ping\"}],\"tool_choice\":\"auto\"}"
+            }
+        },
+        {
+            "id": "trq-0012",
+            "title": "tool choice any maps to required",
+            "since": "0.1.0",
+            "notes": "The one enum member whose wire name differs from its own name. A port that lowercases the enum member sends 'any', which OpenAI rejects.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "withTools",
+                    "args": [
+                        [
+                            {
+                                "$": "Tool",
+                                "as": "ping",
+                                "for": "Ping"
+                            }
+                        ]
+                    ]
+                },
+                {
+                    "call": "withToolChoice",
+                    "args": [
+                        {
+                            "$": "ToolChoice",
+                            "case": "Any"
+                        }
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"tools\":[{\"type\":\"function\",\"name\":\"ping\",\"description\":\"Ping\"}],\"tool_choice\":\"required\"}"
+            }
+        },
+        {
+            "id": "trq-0013",
+            "title": "tool choice by name becomes an object",
+            "since": "0.1.0",
+            "notes": "The same builder argument is either a string or an enum, and the two take different branches producing different JSON types. Pins that a named choice is an object, not a bare string.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "withTools",
+                    "args": [
+                        [
+                            {
+                                "$": "Tool",
+                                "as": "ping",
+                                "for": "Ping"
+                            }
+                        ]
+                    ]
+                },
+                {
+                    "call": "withToolChoice",
+                    "args": [
+                        "ping"
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"tools\":[{\"type\":\"function\",\"name\":\"ping\",\"description\":\"Ping\"}],\"tool_choice\":{\"type\":\"function\",\"name\":\"ping\"}}"
+            }
+        },
+        {
+            "id": "trq-0014",
+            "title": "reasoning disabled asks for minimal effort",
+            "since": "0.1.0",
+            "notes": "The provider-agnostic reasoning toggle resolves to a provider-specific payload. Pins that false is expressed rather than omitted.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "withReasoning",
+                    "args": [
+                        false
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"reasoning\":{\"effort\":\"minimal\"}}"
+            }
+        },
+        {
+            "id": "trq-0015",
+            "title": "reasoning enabled emits nothing",
+            "since": "0.1.0",
+            "notes": "Asymmetric on purpose in the reference: true is reserved for symmetry and does not override per-provider settings. A port that treats the toggle as a symmetric boolean sends a reasoning block and changes the request.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "withReasoning",
+                    "args": [
+                        true
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null}"
+            }
+        },
+        {
+            "id": "trq-0016",
+            "title": "provider option false is sent",
+            "since": "0.1.0",
+            "notes": "The counterpart to trq-0010. A false store reaches the wire because provider options go through the not-null filter. Turning response storage off is the entire point of setting it, so dropping it inverts the caller's intent.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "withProviderOptions",
+                    "args": [
+                        {
+                            "store": false,
+                            "service_tier": "flex"
+                        }
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"service_tier\":\"flex\",\"store\":false}"
+            }
+        },
+        {
+            "id": "trq-0017",
+            "title": "explicit message list",
+            "since": "0.1.0",
+            "notes": "Explicit messages replace the prompt path entirely. Pins the per-role shapes in one payload and pins that an assistant message with no tool calls maps to an output_text part.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "What is 2+2?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "4"
+                            },
+                            {
+                                "$": "UserMessage",
+                                "content": "And 3+3?"
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"What is 2+2?\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"4\"}]},{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"And 3+3?\"}]}],\"max_output_tokens\":null}"
+            }
+        },
+        {
+            "id": "trq-0018",
+            "title": "assistant message carrying tool calls",
+            "since": "0.1.0",
+            "notes": "A tool call expands to its own top-level item, not a field on the assistant message, and its arguments are re-encoded as a JSON STRING rather than an object. Pins the double encoding, which is easy to miss and produces a request OpenAI accepts but misreads.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather in Paris?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": {
+                                            "city": "Paris"
+                                        },
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Weather in Paris?\"}]},{\"id\":\"fc_1\",\"call_id\":\"call_1\",\"type\":\"function_call\",\"name\":\"weather\",\"arguments\":\"{\\\"city\\\":\\\"Paris\\\"}\"}],\"max_output_tokens\":null}"
+            }
+        },
+        {
+            "id": "trq-0019",
+            "title": "tool result message",
+            "since": "0.1.0",
+            "notes": "Pins that a tool result is keyed by the RESULT id rather than by the tool call id, and that a string result is passed through untouched rather than re-encoded as a JSON string.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather in Paris?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": {
+                                            "city": "Paris"
+                                        },
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            },
+                            {
+                                "$": "ToolResultMessage",
+                                "toolResults": [
+                                    {
+                                        "$": "ToolResult",
+                                        "toolCallId": "fc_1",
+                                        "toolName": "weather",
+                                        "args": {
+                                            "city": "Paris"
+                                        },
+                                        "result": "sunny",
+                                        "toolCallResultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Weather in Paris?\"}]},{\"id\":\"fc_1\",\"call_id\":\"call_1\",\"type\":\"function_call\",\"name\":\"weather\",\"arguments\":\"{\\\"city\\\":\\\"Paris\\\"}\"},{\"type\":\"function_call_output\",\"call_id\":\"call_1\",\"output\":\"sunny\"}],\"max_output_tokens\":null}"
+            }
+        },
+        {
+            "id": "trq-0020",
+            "title": "user message additional attributes are spread at item level",
+            "since": "0.1.0",
+            "notes": "They land as siblings of role and content, not nested under a key. Pins the spread, which a port modelling additional attributes as a sub-object would get wrong while still producing valid JSON.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "hi",
+                                "additionalAttributes": {
+                                    "id": "msg_local_1"
+                                }
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}],\"id\":\"msg_local_1\"}],\"max_output_tokens\":null}"
+            }
+        },
+        {
+            "id": "trq-0021",
+            "title": "empty prompt string",
+            "since": "0.1.0",
+            "notes": "An empty string is not absent. Same reference defect as trq-0022 seen from the other side: the prompt path is gated on truthiness, so an empty prompt is dropped rather than sent as an empty turn. Kept as its own row because the two arguments fail for the same reason but a port could plausibly fix one and not the other.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        ""
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"\"}]}],\"max_output_tokens\":null}"
+            },
+            "skip": {
+                "php": "The reference gates the prompt path on PHP truthiness, so an empty prompt produces a request with NO user message — a behaviour the ports deliberately do not reproduce. Recorded rather than deleted, because the divergence is the finding: see docs/decisions/0002-idiom-vs-identity.md and finding F-2 in README.md. trq-0022 pins the same rule in a form every implementation agrees on."
+            }
+        },
+        {
+            "id": "trq-0022",
+            "title": "prompt that is exactly the string zero",
+            "since": "0.1.0",
+            "notes": "The string zero is falsy in PHP and in JavaScript but is ordinary model input. This row found a live defect in the reference on the corpus's first run: PendingRequest::toRequest() gates the prompt path on PHP truthiness, so a prompt of \"0\" produces a request with an EMPTY input array and the user's turn never reaches the model. The reference's own falsy-zero fix (commit 0f4e8ae) reached the provider message maps and missed the entry point. The golden here is the CORRECT behaviour, hand-authored, and the reference is skipped until it agrees — see finding F-2.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "0"
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"0\"}]}],\"max_output_tokens\":null}"
+            },
+            "skip": {
+                "php": "Known reference defect, not a language divergence: Text\\PendingRequest::toRequest() appends the prompt behind `if ($this->prompt)`, so a prompt that is exactly \"0\" is dropped and the request carries no user message at all. The golden records what the reference SHOULD produce; the port contract is the golden, not the defect. Remove this skip when the reference is fixed."
+            }
+        },
+        {
+            "id": "trq-0023",
+            "title": "non-ASCII and forward slashes in the prompt",
+            "since": "0.1.0",
+            "notes": "Pins the canonical JSON encoding itself: no escaping of non-ASCII, no escaping of forward slashes. PHP escapes both by default and Python escapes non-ASCII by default, so all three implementations must configure their encoder rather than accept its defaults.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Explain https://example.com/über — 日本語 too"
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Explain https://example.com/über — 日本語 too\"}]}],\"max_output_tokens\":null}"
+            }
+        },
+        {
+            "id": "trq-0024",
+            "title": "tool with strict enabled",
+            "since": "0.1.0",
+            "notes": "The true half of trq-0010: strict appears only when truthy. Together they pin that the key is filtered on falsiness rather than on nullity.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "withTools",
+                    "args": [
+                        [
+                            {
+                                "$": "Tool",
+                                "as": "ping",
+                                "for": "Ping",
+                                "providerOptions": {
+                                    "strict": true
+                                }
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"tools\":[{\"type\":\"function\",\"name\":\"ping\",\"description\":\"Ping\",\"strict\":true}]}"
+            }
+        },
+        {
+            "id": "trq-0025",
+            "title": "integral float temperature",
+            "since": "0.1.0",
+            "notes": "A genuine language divergence, kept rather than avoided. PHP and JavaScript render the float 1.0 as 1; Python's json module renders it as 1.0. Both are the same JSON number and neither is wrong, but the bytes differ. trq-0005 pins the same rule in the form every language agrees on.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "usingTemperature",
+                    "args": [
+                        1
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"temperature\":1}"
+            },
+            "skip": {
+                "py": "Python's json module renders the float 1.0 as 1.0 where PHP and JavaScript render 1. Same JSON number, different bytes, and no side is wrong. prism-py normalises integral floats in its canonical encoder so the wire bytes do match — the row is skipped anyway so the divergence stays visible in the corpus instead of being hidden inside one port's encoder. See docs/decisions/0005-canonical-json.md."
+            }
+        },
+        {
+            "id": "trq-0026",
+            "title": "two tools keep declaration order",
+            "since": "0.1.0",
+            "notes": "Tool order reaches the model and influences selection. Pins that the mapper preserves it rather than sorting or keying by name.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "withTools",
+                    "args": [
+                        [
+                            {
+                                "$": "Tool",
+                                "as": "zebra",
+                                "for": "Z"
+                            },
+                            {
+                                "$": "Tool",
+                                "as": "alpha",
+                                "for": "A"
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"tools\":[{\"type\":\"function\",\"name\":\"zebra\",\"description\":\"Z\"},{\"type\":\"function\",\"name\":\"alpha\",\"description\":\"A\"}]}"
+            }
+        },
+        {
+            "id": "trq-0027",
+            "title": "provider tools precede user tools",
+            "since": "0.1.0",
+            "notes": "Provider-native tools are merged in FRONT of the caller's tools. Pins the ordering, which is not the order the two lists were configured in.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "hi"
+                    ]
+                },
+                {
+                    "call": "withTools",
+                    "args": [
+                        [
+                            {
+                                "$": "Tool",
+                                "as": "ping",
+                                "for": "Ping"
+                            }
+                        ]
+                    ]
+                },
+                {
+                    "call": "withProviderTools",
+                    "args": [
+                        [
+                            {
+                                "$": "ProviderTool",
+                                "type": "web_search_preview"
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"tools\":[{\"type\":\"web_search_preview\"},{\"type\":\"function\",\"name\":\"ping\",\"description\":\"Ping\"}]}"
+            }
+        },
+        {
+            "id": "trq-0028",
+            "title": "assistant message with empty content emits no assistant item",
+            "since": "0.1.0",
+            "notes": "An assistant message that carries only tool calls contributes no output_text item at all. Pins the omission, which keeps the reconstructed conversation valid for OpenAI — an empty output_text part is rejected.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "hi"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": ""
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null}"
+            }
+        }
+    ]
+}

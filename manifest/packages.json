@@ -1,0 +1,158 @@
+{
+  "$comment": "The registry of what exists, in which language, at what version. Read by tools/parity-check.mjs, which DISCOVERS languages from the repository rather than trusting this list — a hand-maintained list is exactly how a fifth copy of a version number goes three releases stale while the test written to catch that drift covers only four.",
+  "kit_version": "2026.08.1",
+  "kit_note": "The kit version names a SET tested together. It is not a version any package carries. Packages version independently — see docs/decisions/0001-versioning.md — and the kit does the compatibility-matrix job with one number instead of N squared.",
+  "kit": {
+    "prism": "0.114.0",
+    "prism-ts": "0.1.0",
+    "prism-py": "0.1.0",
+    "prism-conformance": "0.1.0"
+  },
+  "packages": {
+    "prism": {
+      "language": "php",
+      "role": "reference",
+      "registry": "packagist",
+      "name": "particle-academy/prism",
+      "repository": "https://github.com/Particle-Academy/prism",
+      "version": "0.114.0",
+      "surface": {
+        "capabilities": [
+          "text",
+          "structured",
+          "stream",
+          "embeddings",
+          "images",
+          "audio",
+          "moderation",
+          "textToSpeech",
+          "speechToText",
+          "fim",
+          "batch",
+          "files"
+        ],
+        "providers": [
+          "anthropic",
+          "azure",
+          "deepseek",
+          "elevenlabs",
+          "gemini",
+          "groq",
+          "mistral",
+          "ollama",
+          "openai",
+          "openrouter",
+          "perplexity",
+          "qwen",
+          "replicate",
+          "requesty",
+          "vertex",
+          "voyageai",
+          "xai",
+          "z"
+        ],
+        "features": [
+          "tool-execution-loop",
+          "tool-approval",
+          "provider-tools",
+          "telemetry",
+          "threads",
+          "value-object-serialization"
+        ]
+      }
+    },
+    "prism-ts": {
+      "language": "ts",
+      "role": "port",
+      "registry": "npm",
+      "name": "@particle-academy/prism",
+      "repository": "https://github.com/Particle-Academy/prism-ts",
+      "version": "0.1.0",
+      "published": false,
+      "surface": {
+        "capabilities": [
+          "text"
+        ],
+        "providers": [
+          "openai"
+        ],
+        "features": [
+          "provider-tools",
+          "value-object-serialization",
+          "value-object-rehydration"
+        ]
+      }
+    },
+    "prism-py": {
+      "language": "py",
+      "role": "port",
+      "registry": "pypi",
+      "name": "prism-ai",
+      "repository": "https://github.com/Particle-Academy/prism-py",
+      "version": "0.1.0",
+      "published": false,
+      "surface": {
+        "capabilities": [
+          "text"
+        ],
+        "providers": [
+          "openai"
+        ],
+        "features": [
+          "provider-tools",
+          "value-object-serialization",
+          "value-object-rehydration"
+        ]
+      }
+    }
+  },
+  "$mirrors_comment": "Units we have COMMITTED to keeping in step. The existence check FAILS when one is missing from a language that is required to have it. This is the half a conformance corpus cannot do: a fixture table compares two implementations and reports that they disagree, but it can never fail on ABSENCE, because a missing mirror has nothing to run the rows against. Drift and existence are different mechanisms and this repository ships both.",
+  "mirrors": [
+    {
+      "unit": "capability:text",
+      "kind": "capabilities",
+      "required_in": [
+        "php",
+        "ts",
+        "py"
+      ]
+    },
+    {
+      "unit": "provider:openai",
+      "kind": "providers",
+      "required_in": [
+        "php",
+        "ts",
+        "py"
+      ]
+    },
+    {
+      "unit": "feature:value-object-serialization",
+      "kind": "features",
+      "required_in": [
+        "php",
+        "ts",
+        "py"
+      ]
+    }
+  ],
+  "$deferred_comment": "Units present in the reference that the ports deliberately do NOT have yet. Listed so the drift report can tell a decision apart from an oversight — an unlisted absence is drift and gets reported; a listed one is the plan.",
+  "deferred": [
+    {
+      "unit": "feature:tool-execution-loop",
+      "reason": "Out of the vertical slice. Tools can be declared and tool calls parsed, but the multi-step execution loop, approvals and concurrency are a much larger surface and porting them before the mapping patterns settled would have replicated whatever is wrong with them."
+    },
+    {
+      "unit": "feature:value-object-rehydration",
+      "reason": "Present in the PORTS and absent from the reference, which is the unusual direction. particle-academy/prism can serialise its value objects and cannot read them back; see finding F-4."
+    },
+    {
+      "unit": "feature:telemetry",
+      "reason": "Deliberately deferred. Telemetry is Laravel-event-shaped in the reference and a port should not inherit that shape without a decision about what the equivalent is."
+    },
+    {
+      "unit": "feature:threads",
+      "reason": "Deferred with telemetry: the Thread contract is one method, but its value is in the Eloquent/storage integrations around it."
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "$comment": "The release-parity ledger. It records which runners are actually compared against each other, and — just as importantly — which are NOT, so three green ticks in CI are never mistaken for a three-way comparison. scripts/cross-check.mjs reads cross_checked and FAILS when a runner declared here is missing on disk: a runner it quietly skipped would let the remaining ones agree with each other and call that parity.",
+
+  "kit_version": "2026.08.1",
+  "corpus_version": "0.1.0",
+
+  "cross_checked": [
+    {
+      "language": "php",
+      "role": "reference",
+      "runner": "runners/php/runner.php",
+      "setup": "composer install in runners/php. Installs the published particle-academy/prism, not a working copy — the reference the corpus is generated from has to be a released artefact, or the goldens describe someone's uncommitted branch."
+    },
+    {
+      "language": "ts",
+      "role": "port",
+      "runner": "../prism-ts/conformance/runner.mjs",
+      "setup": "Checkout Particle-Academy/prism-ts beside this repository, npm ci, npm run build, and npm install this repo's loaders/ts."
+    },
+    {
+      "language": "py",
+      "role": "port",
+      "runner": "../prism-py/conformance/runner.py",
+      "setup": "Checkout Particle-Academy/prism-py beside this repository, pip install -e ., and pip install this repo's loaders/py."
+    }
+  ],
+
+  "$not_cross_checked_comment": "Recorded rather than omitted. An implementation asserted only by its own suite is a weaker claim than one compared against a sibling, and the difference should be visible.",
+  "not_cross_checked": [],
+
+  "$gaps_comment": "Places where a green tick means less than it looks. Each is also recorded on the suite manifest it affects; this is the index.",
+  "gaps": [
+    {
+      "id": "F-1",
+      "summary": "The reference has no error codes, so the PHP runner reaches its verdict on the text-errors suite by MATCHING ON PROSE — in a suite whose argument is that prose is not the contract.",
+      "affects": ["text-errors"],
+      "shim": "runners/php/src/Driver.php::errorCode"
+    },
+    {
+      "id": "F-3",
+      "summary": "PHP cannot distinguish an empty JSON object from an empty JSON array, so no PHP-authored golden is authoritative about container type.",
+      "affects": ["openai-text-response", "value-object-roundtrip", "json-container-identity"]
+    },
+    {
+      "id": "F-4",
+      "summary": "The reference can serialise its value objects and cannot read them back, so the rehydration half of every roundtrip row is unverified in PHP.",
+      "affects": ["value-object-roundtrip"]
+    },
+    {
+      "id": "F-5",
+      "summary": "JavaScript rounds integers above 2^53 and cannot detect that it has, so the TypeScript port cannot answer the large-integer identity row.",
+      "affects": ["json-container-identity"]
+    }
+  ],
+
+  "$procedure": "Releasing a kit",
+  "procedure": [
+    "1. Regenerate goldens against the RELEASED reference: composer update in runners/php, then php tools/generate-goldens.php. A golden generated against a working copy describes someone's uncommitted branch.",
+    "2. node tools/sync-corpus.mjs — the loader packages each ship their own copy of the fixtures.",
+    "3. node tools/guard-corpus.mjs — corpus invariants, including the unquoted-large-integer scan.",
+    "4. node tools/parity-check.mjs --report — the existence check and the drift report. A missing mirror fails here; a conformance suite could never have caught it.",
+    "5. Run every loader's own tests. All of them are required CI jobs; a loader whose tests run nowhere is a claim about coverage rather than coverage.",
+    "6. node scripts/cross-check.mjs — every runner, identical verdicts.",
+    "7. Bump VERSION when the corpus content changed at all, not only when a case was added. Ports pin the corpus EXACTLY and assert the version is current; a caret on a 0.x locks the minor and silently strands a port on a stale contract.",
+    "8. Update kit_version and the kit block in manifest/packages.json, and corpus_version here."
+  ]
+}

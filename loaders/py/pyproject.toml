@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prism-conformance"
+version = "0.1.0"
+description = "The prism-parity conformance corpus and its Python loader. Ships the fixtures inside the package."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+keywords = ["prism", "conformance", "parity", "fixtures"]
+
+[project.urls]
+Homepage = "https://github.com/Particle-Academy/prism-parity"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# The fixtures ship INSIDE the package. That is what makes "load from the
+# published package" possible: the loader walks up from its own file to find
+# suites/, so it works identically from a checkout and from site-packages, and
+# never reaches for a sibling directory that only exists on one machine.
+[tool.setuptools.package-data]
+prism_conformance = ["py.typed", "VERSION", "suites/**/*.json", "probes/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+strict = true
+files = ["src"]

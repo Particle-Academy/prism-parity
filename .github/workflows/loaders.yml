@@ -1,0 +1,86 @@
+name: Loaders
+
+# All three loader jobs are required, and each is a separate job on purpose.
+#
+# A loader whose tests run nowhere is a claim about coverage rather than
+# coverage. Elsewhere, an AGENTS.md said "all four are required CI jobs" while
+# ci.yml had three — the Python loader and its 27 tests ran nowhere at all, in
+# the repository whose entire argument is that such a claim must be a test
+# result rather than a sentence.
+#
+# If a fourth loader is added, it gets a job here. tools/parity-check.mjs
+# DISCOVERS the languages in play and fails when one is not declared, so a
+# forgotten loader cannot sit here quietly untested.
+
+on:
+  push:
+    branches:
+      - main
+      - "*.x"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  php:
+    name: loader / php
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          coverage: none
+
+      # Dependency-free on purpose: a test suite that needs a toolchain nobody
+      # installed is a test suite that runs nowhere.
+      - name: Loader tests
+        working-directory: loaders/php
+        run: php tests/run.php
+
+  ts:
+    name: loader / ts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Loader tests
+        working-directory: loaders/ts
+        run: node --test test/
+
+  py:
+    name: loader / py
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install tooling
+        run: python -m pip install --quiet pytest mypy ruff
+
+      - name: Loader tests
+        working-directory: loaders/py
+        env:
+          PYTHONPATH: src
+        run: python -m pytest tests -q
+
+      - name: Types
+        working-directory: loaders/py
+        run: python -m mypy --strict src
+
+      - name: Lint
+        working-directory: loaders/py
+        run: python -m ruff check .

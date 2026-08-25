@@ -1,0 +1,465 @@
+{
+    "suite": "openai-text-response",
+    "cases": [
+        {
+            "id": "trs-0001",
+            "title": "a completed message",
+            "since": "0.1.0",
+            "notes": "The baseline parse. Pins the whole result shape in one row: text lifted from the LAST output item's first content part, the finish reason, the usage arithmetic, the meta block, and the message list with the assistant turn appended. Every user message in this suite carries a non-empty additionalAttributes on purpose — see trs-0006 for why.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Who are you?",
+                                "additionalAttributes": {
+                                    "turn": "1"
+                                }
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "response": {
+                "id": "resp_conformance_0001",
+                "object": "response",
+                "status": "completed",
+                "model": "gpt-4o-2024-08-06",
+                "output": [
+                    {
+                        "id": "msg_0001",
+                        "type": "message",
+                        "status": "completed",
+                        "role": "assistant",
+                        "content": [
+                            {
+                                "type": "output_text",
+                                "annotations": [],
+                                "text": "I am a language model.",
+                                "refusal": null
+                            }
+                        ]
+                    }
+                ],
+                "usage": {
+                    "input_tokens": 11,
+                    "input_tokens_details": {
+                        "cached_tokens": 0
+                    },
+                    "output_tokens": 56,
+                    "output_tokens_details": {
+                        "reasoning_tokens": 0
+                    },
+                    "total_tokens": 67
+                },
+                "service_tier": "default"
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"I am a language model.\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":56,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"resp_conformance_0001\",\"model\":\"gpt-4o-2024-08-06\",\"rate_limits\":[],\"service_tier\":\"default\"},\"messages\":[{\"type\":\"user\",\"content\":\"Who are you?\",\"additional_content\":[{\"text\":\"Who are you?\"}],\"additional_attributes\":{\"turn\":\"1\"}}],\"system_prompts\":[],\"additional_content\":{\"reasoningSummaries\":[]},\"raw\":{\"id\":\"resp_conformance_0001\",\"object\":\"response\",\"status\":\"completed\",\"model\":\"gpt-4o-2024-08-06\",\"output\":[{\"id\":\"msg_0001\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"text\":\"I am a language model.\",\"refusal\":null}]}],\"usage\":{\"input_tokens\":11,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":56,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":67},\"service_tier\":\"default\"},\"tool_approval_requests\":[]}],\"text\":\"I am a language model.\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":56,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"resp_conformance_0001\",\"model\":\"gpt-4o-2024-08-06\",\"rate_limits\":[],\"service_tier\":\"default\"},\"messages\":[{\"type\":\"user\",\"content\":\"Who are you?\",\"additional_content\":[{\"text\":\"Who are you?\"}],\"additional_attributes\":{\"turn\":\"1\"}},{\"type\":\"assistant\",\"content\":\"I am a language model.\",\"tool_calls\":[],\"additional_content\":{\"reasoningSummaries\":[]},\"tool_approval_requests\":[]}],\"additional_content\":{\"reasoningSummaries\":[]},\"raw\":{\"id\":\"resp_conformance_0001\",\"object\":\"response\",\"status\":\"completed\",\"model\":\"gpt-4o-2024-08-06\",\"output\":[{\"id\":\"msg_0001\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"text\":\"I am a language model.\",\"refusal\":null}]}],\"usage\":{\"input_tokens\":11,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":56,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":67},\"service_tier\":\"default\"}}"
+            }
+        },
+        {
+            "id": "trs-0002",
+            "title": "cached input tokens are subtracted from the prompt count",
+            "since": "0.1.0",
+            "notes": "prompt_tokens is input_tokens MINUS the cached count, and the cached count is also reported separately. A port that passes input_tokens straight through double-counts the cache on every prompt-cached request and silently inflates the caller's cost reporting. Exact integers, no tolerance.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Who are you?",
+                                "additionalAttributes": {
+                                    "turn": "1"
+                                }
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "response": {
+                "id": "resp_conformance_0002",
+                "object": "response",
+                "status": "completed",
+                "model": "gpt-4o-2024-08-06",
+                "output": [
+                    {
+                        "id": "msg_0002",
+                        "type": "message",
+                        "status": "completed",
+                        "role": "assistant",
+                        "content": [
+                            {
+                                "type": "output_text",
+                                "annotations": [],
+                                "text": "Cached.",
+                                "refusal": null
+                            }
+                        ]
+                    }
+                ],
+                "usage": {
+                    "input_tokens": 1024,
+                    "input_tokens_details": {
+                        "cached_tokens": 896
+                    },
+                    "output_tokens": 12,
+                    "output_tokens_details": {
+                        "reasoning_tokens": 4
+                    },
+                    "total_tokens": 1036
+                },
+                "service_tier": "default"
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"Cached.\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":128,\"completion_tokens\":12,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":896,\"thought_tokens\":4,\"cost\":null},\"meta\":{\"id\":\"resp_conformance_0002\",\"model\":\"gpt-4o-2024-08-06\",\"rate_limits\":[],\"service_tier\":\"default\"},\"messages\":[{\"type\":\"user\",\"content\":\"Who are you?\",\"additional_content\":[{\"text\":\"Who are you?\"}],\"additional_attributes\":{\"turn\":\"1\"}}],\"system_prompts\":[],\"additional_content\":{\"reasoningSummaries\":[]},\"raw\":{\"id\":\"resp_conformance_0002\",\"object\":\"response\",\"status\":\"completed\",\"model\":\"gpt-4o-2024-08-06\",\"output\":[{\"id\":\"msg_0002\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"text\":\"Cached.\",\"refusal\":null}]}],\"usage\":{\"input_tokens\":1024,\"input_tokens_details\":{\"cached_tokens\":896},\"output_tokens\":12,\"output_tokens_details\":{\"reasoning_tokens\":4},\"total_tokens\":1036},\"service_tier\":\"default\"},\"tool_approval_requests\":[]}],\"text\":\"Cached.\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":128,\"completion_tokens\":12,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":896,\"thought_tokens\":4,\"cost\":null},\"meta\":{\"id\":\"resp_conformance_0002\",\"model\":\"gpt-4o-2024-08-06\",\"rate_limits\":[],\"service_tier\":\"default\"},\"messages\":[{\"type\":\"user\",\"content\":\"Who are you?\",\"additional_content\":[{\"text\":\"Who are you?\"}],\"additional_attributes\":{\"turn\":\"1\"}},{\"type\":\"assistant\",\"content\":\"Cached.\",\"tool_calls\":[],\"additional_content\":{\"reasoningSummaries\":[]},\"tool_approval_requests\":[]}],\"additional_content\":{\"reasoningSummaries\":[]},\"raw\":{\"id\":\"resp_conformance_0002\",\"object\":\"response\",\"status\":\"completed\",\"model\":\"gpt-4o-2024-08-06\",\"output\":[{\"id\":\"msg_0002\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"text\":\"Cached.\",\"refusal\":null}]}],\"usage\":{\"input_tokens\":1024,\"input_tokens_details\":{\"cached_tokens\":896},\"output_tokens\":12,\"output_tokens_details\":{\"reasoning_tokens\":4},\"total_tokens\":1036},\"service_tier\":\"default\"}}"
+            }
+        },
+        {
+            "id": "trs-0003",
+            "title": "content filter",
+            "since": "0.1.0",
+            "notes": "An incomplete response whose reason is a content filter maps to its own finish reason rather than to length — and length is the branch that THROWS, so getting this wrong turns a filtered answer into an exception. Pins that the top-level status is inspected before the per-item status.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Say something forbidden",
+                                "additionalAttributes": {
+                                    "turn": "1"
+                                }
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "response": {
+                "id": "resp_conformance_0003",
+                "object": "response",
+                "status": "incomplete",
+                "incomplete_details": {
+                    "reason": "content_filter"
+                },
+                "model": "gpt-4o-2024-08-06",
+                "output": [
+                    {
+                        "id": "msg_0003",
+                        "type": "message",
+                        "status": "incomplete",
+                        "role": "assistant",
+                        "content": [
+                            {
+                                "type": "output_text",
+                                "annotations": [],
+                                "text": "I cannot help with that.",
+                                "refusal": null
+                            }
+                        ]
+                    }
+                ],
+                "usage": {
+                    "input_tokens": 8,
+                    "input_tokens_details": {
+                        "cached_tokens": 0
+                    },
+                    "output_tokens": 6,
+                    "output_tokens_details": {
+                        "reasoning_tokens": 0
+                    },
+                    "total_tokens": 14
+                },
+                "service_tier": "default"
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"I cannot help with that.\",\"finish_reason\":\"content-filter\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":8,\"completion_tokens\":6,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"resp_conformance_0003\",\"model\":\"gpt-4o-2024-08-06\",\"rate_limits\":[],\"service_tier\":\"default\"},\"messages\":[{\"type\":\"user\",\"content\":\"Say something forbidden\",\"additional_content\":[{\"text\":\"Say something forbidden\"}],\"additional_attributes\":{\"turn\":\"1\"}}],\"system_prompts\":[],\"additional_content\":{\"reasoningSummaries\":[]},\"raw\":{\"id\":\"resp_conformance_0003\",\"object\":\"response\",\"status\":\"incomplete\",\"incomplete_details\":{\"reason\":\"content_filter\"},\"model\":\"gpt-4o-2024-08-06\",\"output\":[{\"id\":\"msg_0003\",\"type\":\"message\",\"status\":\"incomplete\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"text\":\"I cannot help with that.\",\"refusal\":null}]}],\"usage\":{\"input_tokens\":8,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":6,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":14},\"service_tier\":\"default\"},\"tool_approval_requests\":[]}],\"text\":\"I cannot help with that.\",\"finish_reason\":\"content-filter\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":8,\"completion_tokens\":6,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"resp_conformance_0003\",\"model\":\"gpt-4o-2024-08-06\",\"rate_limits\":[],\"service_tier\":\"default\"},\"messages\":[{\"type\":\"user\",\"content\":\"Say something forbidden\",\"additional_content\":[{\"text\":\"Say something forbidden\"}],\"additional_attributes\":{\"turn\":\"1\"}},{\"type\":\"assistant\",\"content\":\"I cannot help with that.\",\"tool_calls\":[],\"additional_content\":{\"reasoningSummaries\":[]},\"tool_approval_requests\":[]}],\"additional_content\":{\"reasoningSummaries\":[]},\"raw\":{\"id\":\"resp_conformance_0003\",\"object\":\"response\",\"status\":\"incomplete\",\"incomplete_details\":{\"reason\":\"content_filter\"},\"model\":\"gpt-4o-2024-08-06\",\"output\":[{\"id\":\"msg_0003\",\"type\":\"message\",\"status\":\"incomplete\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"text\":\"I cannot help with that.\",\"refusal\":null}]}],\"usage\":{\"input_tokens\":8,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":6,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":14},\"service_tier\":\"default\"}}"
+            }
+        },
+        {
+            "id": "trs-0004",
+            "title": "empty output array",
+            "since": "0.1.0",
+            "notes": "The last-element lookup on an empty list yields nothing, so the text is the empty string and the finish reason falls through to unknown rather than throwing. A port that indexes the last element without guarding crashes on a response the provider is entitled to send.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "hi",
+                                "additionalAttributes": {
+                                    "turn": "1"
+                                }
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "response": {
+                "id": "resp_conformance_0004",
+                "object": "response",
+                "status": "completed",
+                "model": "gpt-4o-2024-08-06",
+                "output": [],
+                "usage": {
+                    "input_tokens": 3,
+                    "input_tokens_details": {
+                        "cached_tokens": 0
+                    },
+                    "output_tokens": 0,
+                    "output_tokens_details": {
+                        "reasoning_tokens": 0
+                    },
+                    "total_tokens": 3
+                },
+                "service_tier": "default"
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"\",\"finish_reason\":\"unknown\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":3,\"completion_tokens\":0,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"resp_conformance_0004\",\"model\":\"gpt-4o-2024-08-06\",\"rate_limits\":[],\"service_tier\":\"default\"},\"messages\":[{\"type\":\"user\",\"content\":\"hi\",\"additional_content\":[{\"text\":\"hi\"}],\"additional_attributes\":{\"turn\":\"1\"}}],\"system_prompts\":[],\"additional_content\":{\"reasoningSummaries\":[]},\"raw\":{\"id\":\"resp_conformance_0004\",\"object\":\"response\",\"status\":\"completed\",\"model\":\"gpt-4o-2024-08-06\",\"output\":[],\"usage\":{\"input_tokens\":3,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":0,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":3},\"service_tier\":\"default\"},\"tool_approval_requests\":[]}],\"text\":\"\",\"finish_reason\":\"unknown\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":3,\"completion_tokens\":0,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"resp_conformance_0004\",\"model\":\"gpt-4o-2024-08-06\",\"rate_limits\":[],\"service_tier\":\"default\"},\"messages\":[{\"type\":\"user\",\"content\":\"hi\",\"additional_content\":[{\"text\":\"hi\"}],\"additional_attributes\":{\"turn\":\"1\"}},{\"type\":\"assistant\",\"content\":\"\",\"tool_calls\":[],\"additional_content\":{\"reasoningSummaries\":[]},\"tool_approval_requests\":[]}],\"additional_content\":{\"reasoningSummaries\":[]},\"raw\":{\"id\":\"resp_conformance_0004\",\"object\":\"response\",\"status\":\"completed\",\"model\":\"gpt-4o-2024-08-06\",\"output\":[],\"usage\":{\"input_tokens\":3,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":0,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":3},\"service_tier\":\"default\"}}"
+            }
+        },
+        {
+            "id": "trs-0005",
+            "title": "reasoning summaries are collected across output items",
+            "since": "0.1.0",
+            "notes": "Reasoning items are flattened into a list of summary texts on the result's additional content, and the message text still comes from the LAST item — which is the message, not the reasoning. Pins both the collection and the fact that a reasoning item does not become the answer.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Think then answer",
+                                "additionalAttributes": {
+                                    "turn": "1"
+                                }
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "response": {
+                "id": "resp_conformance_0005",
+                "object": "response",
+                "status": "completed",
+                "model": "o4-mini",
+                "output": [
+                    {
+                        "id": "rs_0005",
+                        "type": "reasoning",
+                        "summary": [
+                            {
+                                "type": "summary_text",
+                                "text": "Consider the two cases."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "msg_0005",
+                        "type": "message",
+                        "status": "completed",
+                        "role": "assistant",
+                        "content": [
+                            {
+                                "type": "output_text",
+                                "annotations": [],
+                                "text": "The answer is four.",
+                                "refusal": null
+                            }
+                        ]
+                    }
+                ],
+                "usage": {
+                    "input_tokens": 20,
+                    "input_tokens_details": {
+                        "cached_tokens": 0
+                    },
+                    "output_tokens": 40,
+                    "output_tokens_details": {
+                        "reasoning_tokens": 30
+                    },
+                    "total_tokens": 60
+                },
+                "service_tier": "default"
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"The answer is four.\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":20,\"completion_tokens\":40,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":30,\"cost\":null},\"meta\":{\"id\":\"resp_conformance_0005\",\"model\":\"o4-mini\",\"rate_limits\":[],\"service_tier\":\"default\"},\"messages\":[{\"type\":\"user\",\"content\":\"Think then answer\",\"additional_content\":[{\"text\":\"Think then answer\"}],\"additional_attributes\":{\"turn\":\"1\"}}],\"system_prompts\":[],\"additional_content\":{\"reasoningSummaries\":[\"Consider the two cases.\"]},\"raw\":{\"id\":\"resp_conformance_0005\",\"object\":\"response\",\"status\":\"completed\",\"model\":\"o4-mini\",\"output\":[{\"id\":\"rs_0005\",\"type\":\"reasoning\",\"summary\":[{\"type\":\"summary_text\",\"text\":\"Consider the two cases.\"}]},{\"id\":\"msg_0005\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"text\":\"The answer is four.\",\"refusal\":null}]}],\"usage\":{\"input_tokens\":20,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":40,\"output_tokens_details\":{\"reasoning_tokens\":30},\"total_tokens\":60},\"service_tier\":\"default\"},\"tool_approval_requests\":[]}],\"text\":\"The answer is four.\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":20,\"completion_tokens\":40,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":30,\"cost\":null},\"meta\":{\"id\":\"resp_conformance_0005\",\"model\":\"o4-mini\",\"rate_limits\":[],\"service_tier\":\"default\"},\"messages\":[{\"type\":\"user\",\"content\":\"Think then answer\",\"additional_content\":[{\"text\":\"Think then answer\"}],\"additional_attributes\":{\"turn\":\"1\"}},{\"type\":\"assistant\",\"content\":\"The answer is four.\",\"tool_calls\":[],\"additional_content\":{\"reasoningSummaries\":[\"Consider the two cases.\"]},\"tool_approval_requests\":[]}],\"additional_content\":{\"reasoningSummaries\":[\"Consider the two cases.\"]},\"raw\":{\"id\":\"resp_conformance_0005\",\"object\":\"response\",\"status\":\"completed\",\"model\":\"o4-mini\",\"output\":[{\"id\":\"rs_0005\",\"type\":\"reasoning\",\"summary\":[{\"type\":\"summary_text\",\"text\":\"Consider the two cases.\"}]},{\"id\":\"msg_0005\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"text\":\"The answer is four.\",\"refusal\":null}]}],\"usage\":{\"input_tokens\":20,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":40,\"output_tokens_details\":{\"reasoning_tokens\":30},\"total_tokens\":60},\"service_tier\":\"default\"}}"
+            }
+        },
+        {
+            "id": "trs-0006",
+            "title": "a user message with no additional attributes",
+            "since": "0.1.0",
+            "notes": "The one row in this suite that leaves additionalAttributes empty, isolated here so the divergence it exposes does not contaminate every other golden. PHP has a single array type, so an empty map serialises as an EMPTY JSON ARRAY while a populated one serialises as an object — the same field changes JSON type with its contents. TypeScript and Python both render an empty map as an empty object and cannot express the reference's rendering without modelling maps as arrays. Verified empirically, not assumed: PHP json_encode([]) is [] and json_encode(['a'=>1]) is {'a':1}. Finding F-3.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "hi"
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "response": {
+                "id": "resp_conformance_0006",
+                "object": "response",
+                "status": "completed",
+                "model": "gpt-4o-2024-08-06",
+                "output": [
+                    {
+                        "id": "msg_0006",
+                        "type": "message",
+                        "status": "completed",
+                        "role": "assistant",
+                        "content": [
+                            {
+                                "type": "output_text",
+                                "annotations": [],
+                                "text": "Hello.",
+                                "refusal": null
+                            }
+                        ]
+                    }
+                ],
+                "usage": {
+                    "input_tokens": 2,
+                    "input_tokens_details": {
+                        "cached_tokens": 0
+                    },
+                    "output_tokens": 2,
+                    "output_tokens_details": {
+                        "reasoning_tokens": 0
+                    },
+                    "total_tokens": 4
+                },
+                "service_tier": "default"
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"Hello.\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":2,\"completion_tokens\":2,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"resp_conformance_0006\",\"model\":\"gpt-4o-2024-08-06\",\"rate_limits\":[],\"service_tier\":\"default\"},\"messages\":[{\"type\":\"user\",\"content\":\"hi\",\"additional_content\":[{\"text\":\"hi\"}],\"additional_attributes\":[]}],\"system_prompts\":[],\"additional_content\":{\"reasoningSummaries\":[]},\"raw\":{\"id\":\"resp_conformance_0006\",\"object\":\"response\",\"status\":\"completed\",\"model\":\"gpt-4o-2024-08-06\",\"output\":[{\"id\":\"msg_0006\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"text\":\"Hello.\",\"refusal\":null}]}],\"usage\":{\"input_tokens\":2,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":2,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":4},\"service_tier\":\"default\"},\"tool_approval_requests\":[]}],\"text\":\"Hello.\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":2,\"completion_tokens\":2,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"resp_conformance_0006\",\"model\":\"gpt-4o-2024-08-06\",\"rate_limits\":[],\"service_tier\":\"default\"},\"messages\":[{\"type\":\"user\",\"content\":\"hi\",\"additional_content\":[{\"text\":\"hi\"}],\"additional_attributes\":[]},{\"type\":\"assistant\",\"content\":\"Hello.\",\"tool_calls\":[],\"additional_content\":{\"reasoningSummaries\":[]},\"tool_approval_requests\":[]}],\"additional_content\":{\"reasoningSummaries\":[]},\"raw\":{\"id\":\"resp_conformance_0006\",\"object\":\"response\",\"status\":\"completed\",\"model\":\"gpt-4o-2024-08-06\",\"output\":[{\"id\":\"msg_0006\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"text\":\"Hello.\",\"refusal\":null}]}],\"usage\":{\"input_tokens\":2,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":2,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":4},\"service_tier\":\"default\"}}"
+            },
+            "skip": {
+                "ts": "The golden contains an empty JSON ARRAY for additional_attributes, a map-typed field. That is an artefact of PHP having one array type; TypeScript renders an empty Record as {} and reproducing [] would mean modelling maps as arrays throughout. The divergence is recorded rather than fixed on either side — see finding F-3, which recommends the reference cast these fields to objects. Every other row in this suite carries a non-empty map so the rest of the contract stays enforced.",
+                "py": "Same as ts: the golden contains an empty JSON ARRAY for a map-typed field because PHP has one array type. Python renders an empty dict as {}. See finding F-3."
+            }
+        },
+        {
+            "id": "trs-0007",
+            "title": "service tier absent from the response",
+            "since": "0.1.0",
+            "notes": "A field the provider may omit becomes an explicit null on the parsed result rather than vanishing from it. Pins the absent-to-null direction, which is the mirror of trq-0001 and the half a port is most likely to get wrong in the language where absent and null are different values.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "hi",
+                                "additionalAttributes": {
+                                    "turn": "1"
+                                }
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "response": {
+                "id": "resp_conformance_0007",
+                "object": "response",
+                "status": "completed",
+                "model": "gpt-4o-2024-08-06",
+                "output": [
+                    {
+                        "id": "msg_0007",
+                        "type": "message",
+                        "status": "completed",
+                        "role": "assistant",
+                        "content": [
+                            {
+                                "type": "output_text",
+                                "annotations": [],
+                                "text": "No tier.",
+                                "refusal": null
+                            }
+                        ]
+                    }
+                ],
+                "usage": {
+                    "input_tokens": 3,
+                    "input_tokens_details": {
+                        "cached_tokens": 0
+                    },
+                    "output_tokens": 2,
+                    "output_tokens_details": {
+                        "reasoning_tokens": 0
+                    },
+                    "total_tokens": 5
+                }
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"No tier.\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":3,\"completion_tokens\":2,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"resp_conformance_0007\",\"model\":\"gpt-4o-2024-08-06\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"hi\",\"additional_content\":[{\"text\":\"hi\"}],\"additional_attributes\":{\"turn\":\"1\"}}],\"system_prompts\":[],\"additional_content\":{\"reasoningSummaries\":[]},\"raw\":{\"id\":\"resp_conformance_0007\",\"object\":\"response\",\"status\":\"completed\",\"model\":\"gpt-4o-2024-08-06\",\"output\":[{\"id\":\"msg_0007\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"text\":\"No tier.\",\"refusal\":null}]}],\"usage\":{\"input_tokens\":3,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":2,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":5}},\"tool_approval_requests\":[]}],\"text\":\"No tier.\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":3,\"completion_tokens\":2,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"resp_conformance_0007\",\"model\":\"gpt-4o-2024-08-06\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"hi\",\"additional_content\":[{\"text\":\"hi\"}],\"additional_attributes\":{\"turn\":\"1\"}},{\"type\":\"assistant\",\"content\":\"No tier.\",\"tool_calls\":[],\"additional_content\":{\"reasoningSummaries\":[]},\"tool_approval_requests\":[]}],\"additional_content\":{\"reasoningSummaries\":[]},\"raw\":{\"id\":\"resp_conformance_0007\",\"object\":\"response\",\"status\":\"completed\",\"model\":\"gpt-4o-2024-08-06\",\"output\":[{\"id\":\"msg_0007\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"text\":\"No tier.\",\"refusal\":null}]}],\"usage\":{\"input_tokens\":3,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":2,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":5}}}"
+            }
+        }
+    ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "openai-text-request",
+  "title": "OpenAI Responses API — text request body",
+  "kind": "request-payload",
+  "pins": "The provider request body produced by the pending-request builder for Prism::text() against the OpenAI provider in its default 'responses' api_format. Covers which keys survive when their value is null, false, zero, an empty string or an empty array — the decisions that differ between PHP, JavaScript and Python and that no reviewer catches by reading two files side by side.",
+  "pattern_doc": "docs/patterns/05-request-mapping.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
+  "implementations": {
+    "php": {
+      "status": "partial",
+      "gap": "trq-0021 and trq-0022 are skipped for the reference because it drops a falsy prompt (empty string, or the string \"0\") instead of sending it. Recorded here so the reference's green tick on this suite is not read as agreement on every row. See finding F-2.",
+      "runner": "prism-parity:runners/php/runner.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-ts:conformance/runner.mjs"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-py:conformance/runner.py"
+    }
+  }
+}

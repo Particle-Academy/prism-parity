@@ -1,0 +1,23 @@
+{
+  "id": "openai-text-response",
+  "title": "OpenAI Responses API — parsing a text response",
+  "kind": "response-parse",
+  "pins": "The parsed result produced from a raw OpenAI Responses body: the text, the finish reason, the usage arithmetic, the metadata, and the message list the caller gets back. Restricted to finishes that do not enter the tool-execution loop, which is not part of this slice.",
+  "pattern_doc": "docs/patterns/06-response-parsing.md",
+  "reference": "php",
+  "comparison": { "mode": "canonical-json-string" },
+  "discrimination": { "status": "probed" },
+  "implementations": {
+    "php": { "status": "full", "runner": "prism-parity:runners/php/runner.php" },
+    "ts": {
+      "status": "partial",
+      "gap": "trs-0006 is skipped: the reference renders an empty PHP array for a map-typed field, which TypeScript cannot express without modelling maps as arrays. See finding F-3.",
+      "runner": "prism-ts:conformance/runner.mjs"
+    },
+    "py": {
+      "status": "partial",
+      "gap": "trs-0006 is skipped: the reference renders an empty PHP array for a map-typed field, which Python cannot express without modelling maps as lists. See finding F-3.",
+      "runner": "prism-py:conformance/runner.py"
+    }
+  }
+}

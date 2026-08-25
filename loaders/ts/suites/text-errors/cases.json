@@ -1,0 +1,48 @@
+{
+    "suite": "text-errors",
+    "cases": [
+        {
+            "id": "err-0001",
+            "title": "prompt and messages together",
+            "since": "0.1.0",
+            "notes": "The one misuse the builder actively refuses. A prompt and an explicit message list are mutually exclusive because there is no defensible order to merge them in, and silently picking one would send a conversation the caller did not write. Pins that this is a refusal rather than a silent precedence rule.",
+            "builder": [
+                { "call": "using", "args": ["openai", "gpt-4o"] },
+                { "call": "withPrompt", "args": ["Who are you?"] },
+                { "call": "withMessages", "args": [[{ "$": "UserMessage", "content": "hi" }]] }
+            ],
+            "expect": { "error_code": "prompt_and_messages" }
+        },
+        {
+            "id": "err-0002",
+            "title": "tool call arguments that are not valid JSON",
+            "since": "0.1.0",
+            "notes": "A stored or streamed tool call whose arguments string cannot be decoded fails at MAPPING time with its own code, rather than reaching the provider as a malformed function call. Pins that the failure is attributed to the tool call rather than surfacing as a generic encoding error.",
+            "builder": [
+                { "call": "using", "args": ["openai", "gpt-4o"] },
+                { "call": "withMessages", "args": [[
+                    { "$": "UserMessage", "content": "Weather?" },
+                    { "$": "AssistantMessage", "content": "", "toolCalls": [
+                        { "$": "ToolCall", "id": "fc_1", "name": "weather", "arguments": "{\"city\": ", "resultId": "call_1" }
+                    ] }
+                ]] }
+            ],
+            "expect": { "error_code": "malformed_tool_call_arguments" }
+        },
+        {
+            "id": "err-0003",
+            "title": "a falsy prompt alongside messages still refuses",
+            "since": "0.1.0",
+            "notes": "The same refusal as err-0001, with a prompt of \"0\". The reference guards it with a truthiness test on both fields, so a prompt that is exactly \"0\" slips past the guard and the request is built with the prompt silently discarded — the caller gets a successful call that answered a different question. Same root cause as trq-0022. The golden records the CORRECT behaviour.",
+            "builder": [
+                { "call": "using", "args": ["openai", "gpt-4o"] },
+                { "call": "withPrompt", "args": ["0"] },
+                { "call": "withMessages", "args": [[{ "$": "UserMessage", "content": "hi" }]] }
+            ],
+            "expect": { "error_code": "prompt_and_messages" },
+            "skip": {
+                "php": "Known reference defect, the same one as trq-0022: the prompt-versus-messages guard is a truthiness test, so a prompt of \"0\" does not trip it and the prompt is dropped instead of refused. The golden records what the reference SHOULD do. Remove this skip when the reference is fixed."
+            }
+        }
+    ]
+}

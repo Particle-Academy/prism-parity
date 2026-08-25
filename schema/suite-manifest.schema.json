@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Particle-Academy/prism-parity/schema/suite-manifest.schema.json",
+  "title": "Conformance suite manifest",
+  "description": "Declares what contract a suite pins, which implementation is the reference the goldens were generated from, and every implementation known to run it — including the ones with recorded gaps, so a green tick is never over-read.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "title",
+    "kind",
+    "pins",
+    "reference",
+    "implementations",
+    "comparison"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "description": "request-payload: builder script -> provider request body. response-parse: raw provider response -> parsed result. roundtrip: value object -> serialized form -> value object. error-code: builder script -> error code. container-identity: two raw JSON strings -> whether this language's parser considers them equal.",
+      "enum": [
+        "request-payload",
+        "response-parse",
+        "roundtrip",
+        "error-code",
+        "container-identity"
+      ]
+    },
+    "pins": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Prose statement of the contract under test. Not asserted; read by humans deciding whether a change belongs here."
+    },
+    "pattern_doc": {
+      "type": "string",
+      "description": "Path to the canonical pattern documentation this suite enforces."
+    },
+    "reference": {
+      "type": "string",
+      "enum": [
+        "php",
+        "ts",
+        "py"
+      ],
+      "description": "The implementation the goldens were GENERATED from by execution. Never hand-authored."
+    },
+    "implementations": {
+      "type": "object",
+      "minProperties": 1,
+      "description": "Every implementation known to run this suite, keyed by language. A language absent from here is not covered, and the existence check reads this.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "full",
+              "partial",
+              "absent"
+            ]
+          },
+          "gap": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Required when status is not 'full'. What is NOT covered, so the green tick is not misread."
+          },
+          "runner": {
+            "type": "string",
+            "description": "Repo-relative or repo-qualified path to the runner CLI."
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "full"
+                }
+              }
+            },
+            "then": true,
+            "else": {
+              "required": [
+                "gap"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "comparison": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "const": "canonical-json-string",
+          "description": "The only comparison mode this corpus has. See docs/decisions/0005-canonical-json.md — there is deliberately no float epsilon, because four loaders that each pick their own tolerance are four different contracts."
+        }
+      }
+    },
+    "discrimination": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "probed",
+            "unprobed"
+          ]
+        },
+        "gap": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "probed"
+              }
+            }
+          },
+          "then": true,
+          "else": {
+            "required": [
+              "gap"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
