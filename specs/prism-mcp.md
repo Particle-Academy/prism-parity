@@ -1,7 +1,13 @@
 # prism-mcp
 
-**Status:** specified, not built.
+**Status:** first slice built — the client, over Streamable HTTP, speaking MCP
+`2026-07-28`. Repository: https://github.com/Particle-Academy/prism-mcp
 **Fills:** Model Context Protocol — server and client.
+
+> **The open questions below are now answered** in
+> [decision 0009](../docs/decisions/0009-consuming-untrusted-mcp-tools.md).
+> They are left in place because a spec is the thing that was disagreed with,
+> and editing the question out would leave only the answer.
 
 Read [`docs/patterns/`](../docs/patterns/) and [`docs/decisions/`](../docs/decisions/)
 first. This file says only what is particular to this package.
@@ -58,6 +64,14 @@ plainly in the docs what a consumer is trusting when they connect.
 **What does `laravel/mcp` already do?** Answer this first. It changes whether
 this package is a protocol implementation or a thin bridge, and those are very
 different amounts of work.
+
+> **Answered.** As of `v1.0.0-beta.1` (2026-08-14) it ships a full client —
+> stdio and Streamable HTTP, OAuth with DCR and PKCE, protocol `2026-07-28`,
+> pagination, timeouts, serializable connections — documented in the Laravel
+> 13.x docs. Its stable line, `v0.9.4`, has no client at all. It has no trust
+> boundary, no client-side caching, and no permission model. `prism-php/relay`
+> also already exists and is two protocol eras stale. Decision 0009 records why
+> the answer was still to build a client rather than adopt or fork one.
 
 **Transport.** stdio, SSE, HTTP — which are in scope, and does the client need
 to survive a server that disconnects mid-call?

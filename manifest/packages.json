@@ -203,9 +203,33 @@
       "registry": "packagist",
       "name": "particle-academy/prism-mcp",
       "repository": "https://github.com/Particle-Academy/prism-mcp",
-      "version": null,
-      "carries": "Model Context Protocol - client, and server if laravel/mcp does not already cover it",
-      "status": "in progress"
+      "version": "0.1.0",
+      "published": false,
+      "carries": "consuming Model Context Protocol servers as Prism tools, across an explicit trust boundary",
+      "supersedes": "prism-php/relay",
+      "status": "first slice - client only",
+      "protocol": "2026-07-28",
+      "surface": [
+        "http-transport",
+        "tool-discovery",
+        "tool-invocation",
+        "trust-declaration",
+        "definition-pinning",
+        "result-guard",
+        "tool-gate-contract",
+        "mirrored-parameters",
+        "discovery-cache"
+      ],
+      "deferred": [
+        "stdio-transport",
+        "legacy-protocol-eras",
+        "oauth-dcr-pkce",
+        "mrtr-elicitation",
+        "subscriptions-listen",
+        "prompts",
+        "resources",
+        "server-direction"
+      ]
     },
     "prism-rag": {
       "language": "php",
