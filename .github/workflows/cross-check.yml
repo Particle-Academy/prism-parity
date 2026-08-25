@@ -19,6 +19,11 @@ on:
   # can be red on Tuesday without anything here changing.
   schedule:
     - cron: "0 7 * * *"
+  # This job's inputs are three repositories, and only one of them can trigger
+  # it by pushing. Being able to run it on demand — after a port merges
+  # something — is the difference between finding a divergence now and finding
+  # it at 07:00 tomorrow.
+  workflow_dispatch:
 
 permissions:
   contents: read
