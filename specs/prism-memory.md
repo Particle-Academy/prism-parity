@@ -37,13 +37,19 @@ $memory->remember($response->messages);          // derive and store
 $relevant = $memory->recall('billing address');  // retrieve what matters now
 
 Prism::text()
-    ->withMessages($relevant->asMessages())
+    ->withSystemPrompt($relevant->asContext())
     ->withPrompt($question)
     ->asText();
 ```
 
-Recall returns something that can become messages, not raw rows — the caller
+Recall returns something that can become context, not raw rows — the caller
 should not be assembling provider payloads by hand.
+
+**This example was wrong in the first draft**, and the way it was wrong is
+worth keeping. It read `->withMessages($relevant->asMessages())->withPrompt($question)`,
+which throws `prompt_and_messages` the moment recall returns anything — and
+passes in development against an empty store. A spec example that only fails
+once the feature starts working is the worst kind.
 
 ## Decisions already taken
 

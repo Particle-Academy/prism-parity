@@ -1,7 +1,7 @@
 {
-  "$comment": "The registry of what exists, in which language, at what version. Read by tools/parity-check.mjs, which DISCOVERS languages from the repository rather than trusting this list — a hand-maintained list is exactly how a fifth copy of a version number goes three releases stale while the test written to catch that drift covers only four.",
+  "$comment": "The registry of what exists, in which language, at what version. Read by tools/parity-check.mjs, which DISCOVERS languages from the repository rather than trusting this list \u2014 a hand-maintained list is exactly how a fifth copy of a version number goes three releases stale while the test written to catch that drift covers only four.",
   "kit_version": "2026.08.1",
-  "kit_note": "The kit version names a SET tested together. It is not a version any package carries. Packages version independently — see docs/decisions/0001-versioning.md — and the kit does the compatibility-matrix job with one number instead of N squared.",
+  "kit_note": "The kit version names a SET tested together. It is not a version any package carries. Packages version independently \u2014 see docs/decisions/0001-versioning.md \u2014 and the kit does the compatibility-matrix job with one number instead of N squared.",
   "kit": {
     "prism": "0.114.0",
     "prism-ts": "0.1.0",
@@ -136,7 +136,7 @@
       ]
     }
   ],
-  "$deferred_comment": "Units present in the reference that the ports deliberately do NOT have yet. Listed so the drift report can tell a decision apart from an oversight — an unlisted absence is drift and gets reported; a listed one is the plan.",
+  "$deferred_comment": "Units present in the reference that the ports deliberately do NOT have yet. Listed so the drift report can tell a decision apart from an oversight \u2014 an unlisted absence is drift and gets reported; a listed one is the plan.",
   "deferred": [
     {
       "unit": "feature:tool-execution-loop",
@@ -154,5 +154,67 @@
       "unit": "feature:threads",
       "reason": "Deferred with telemetry: the Thread contract is one method, but its value is in the Eloquent/storage integrations around it."
     }
-  ]
+  ],
+  "satellites": {
+    "$comment": "Packages that are NOT language mirrors of the reference. A satellite adds a capability the core shuttle deliberately does not carry (see .ai/discovery/the-prism-boundary.md). Listed here because decision 0008 makes the manifest the existence check: a package absent from this file does not exist to the ecosystem, however much code it has. Their language ports, when they exist, belong in `packages` alongside the core mirrors.",
+    "prism-harness": {
+      "language": "php",
+      "registry": "packagist",
+      "name": "particle-academy/prism-harness",
+      "repository": "https://github.com/Particle-Academy/prism-harness",
+      "version": "0.1.2",
+      "carries": "durable agent sessions - threads, session state, store drivers"
+    },
+    "prism-perplexity": {
+      "language": "php",
+      "registry": "packagist",
+      "name": "particle-academy/prism-perplexity",
+      "repository": "https://github.com/Particle-Academy/prism-perplexity",
+      "version": "0.1.0",
+      "carries": "the Perplexity surface core does not - embeddings, search"
+    },
+    "prism-memory": {
+      "language": "php",
+      "registry": "packagist",
+      "name": "particle-academy/prism-memory",
+      "repository": "https://github.com/Particle-Academy/prism-memory",
+      "version": "0.1.0",
+      "carries": "persistent context, semantic recall, and the ecosystem's VectorStore contract"
+    },
+    "prism-opentelemetry": {
+      "language": "php",
+      "registry": "packagist",
+      "name": "particle-academy/prism-opentelemetry",
+      "repository": "https://github.com/Particle-Academy/prism-opentelemetry",
+      "version": "0.1.1",
+      "carries": "the telemetry bridge"
+    },
+    "prism-workspace": {
+      "language": "php",
+      "registry": "packagist",
+      "name": "particle-academy/prism-workspace",
+      "repository": "https://github.com/Particle-Academy/prism-workspace",
+      "version": null,
+      "carries": "sandboxed filesystem, and code execution if the isolation question is answered",
+      "status": "in progress"
+    },
+    "prism-mcp": {
+      "language": "php",
+      "registry": "packagist",
+      "name": "particle-academy/prism-mcp",
+      "repository": "https://github.com/Particle-Academy/prism-mcp",
+      "version": null,
+      "carries": "Model Context Protocol - client, and server if laravel/mcp does not already cover it",
+      "status": "in progress"
+    },
+    "prism-rag": {
+      "language": "php",
+      "registry": "packagist",
+      "name": "particle-academy/prism-rag",
+      "repository": null,
+      "version": null,
+      "carries": "document ingestion, chunking, retrieval - consumes prism-memory's VectorStore",
+      "status": "specified, not started - held until the VectorStore contract is ratified"
+    }
+  }
 }
