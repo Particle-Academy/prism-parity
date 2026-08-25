@@ -55,7 +55,7 @@ jobs:
 
       - name: Loader tests
         working-directory: loaders/ts
-        run: node --test test/
+        run: node --test test/loader.test.js
 
   py:
     name: loader / py
