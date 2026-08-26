@@ -18,6 +18,11 @@ because a missing mirror has nothing to run the rows against. That limitation is
 the reason this repository ships two tools rather than one, and it is written up
 in [docs/decisions/0003](docs/decisions/0003-drift-and-existence.md).
 
+> **Working on this package?** Read **[`AGENTS.md`](AGENTS.md)** first — the boundary
+> this package has to hold, the gates that must be green, and the traps that have
+> already caught someone.
+> `@link AGENTS.md`
+
 ## Layout
 
 ```
