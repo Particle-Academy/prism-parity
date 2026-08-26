@@ -19,6 +19,7 @@ of them.
 | [prism-rag.md](prism-rag.md) | `prism-rag` | document ingestion, chunking, retrieval |
 | [prism-workspace.md](prism-workspace.md) | `prism-workspace` | sandboxed filesystem, code execution, skill files |
 | [prism-mcp.md](prism-mcp.md) | `prism-mcp` | Model Context Protocol, server and client |
+| [prism-agent-team.md](prism-agent-team.md) | *(the Lab + one agent per language)* | ecosystem-wide testing team, coordinated by Prism.php |
 
 ## What is deliberately NOT being built
 
