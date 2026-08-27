@@ -102,6 +102,65 @@ for (const mirror of manifest.mirrors ?? []) {
 // ---------------------------------------------------------------------------
 const reference = [...declared.values()].find((pkg) => pkg.role === 'reference');
 
+// ---------------------------------------------------------------------------
+// IS THE MANIFEST TRUE?
+//
+// Everything below compares one DECLARATION against another: the reference's
+// declared surface against a port's declared surface. Nothing checked either
+// against the code, so the registry of what exists could be -- and was --
+// wrong about what exists. Anthropic shipped in both ports and this file went
+// on saying they had only OpenAI, which then travelled into an agent's
+// reasoning and came out as a filed finding.
+//
+// That is the failure this file's own $comment warns about, one level up: a
+// hand-maintained list going stale beneath the check written to catch drift.
+//
+// Only runs where the port is checked out beside this repo. Where it is not,
+// the package is COUNTED as unverified rather than passed over -- an
+// unverifiable declaration must not read like a verified one.
+// ---------------------------------------------------------------------------
+let surfaceVerified = 0;
+const surfaceUnverified = [];
+
+for (const pkg of declared.values()) {
+  const dir = pkg.surface_paths?.providers;
+  if (!dir) continue;
+
+  const repo = join(dirname(root), pkg.repository.split('/').pop());
+  const providersPath = join(repo, dir);
+
+  if (!existsSync(providersPath)) {
+    surfaceUnverified.push(pkg.name);
+    continue;
+  }
+
+  surfaceVerified += 1;
+
+  const onDisk = new Set(
+    readdirSync(providersPath)
+      .filter((entry) => statSync(join(providersPath, entry)).isDirectory())
+      .filter((entry) => !entry.startsWith('__') && entry !== 'Support')
+      .map((entry) => entry.toLowerCase()),
+  );
+
+  const stated = new Set((pkg.surface?.providers ?? []).map((name) => name.toLowerCase()));
+
+  for (const provider of onDisk) {
+    if (!stated.has(provider)) {
+      failures.push(
+        `${pkg.name}: [${provider}] is implemented on disk and missing from the manifest. ` +
+          'A registry that under-reports is worse than none, because it is read as authoritative.',
+      );
+    }
+  }
+
+  for (const provider of stated) {
+    if (!onDisk.has(provider)) {
+      failures.push(`${pkg.name}: the manifest claims provider [${provider}]; no such directory under ${dir}.`);
+    }
+  }
+}
+
 if (!reference) failures.push('no package is marked as the reference — the drift report has nothing to measure against');
 
 const deferred = new Set((manifest.deferred ?? []).map((entry) => entry.unit));
@@ -151,4 +210,9 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
+console.error(
+  surfaceUnverified.length > 0
+    ? `Manifest surface verified against disk for ${surfaceVerified} package(s); ${surfaceUnverified.length} UNVERIFIED (not checked out): ${surfaceUnverified.join(', ')}.`
+    : `Manifest surface verified against disk for ${surfaceVerified} package(s).`,
+);
 console.error(`Parity check passed: ${discovered.size} languages, ${manifest.mirrors.length} mirrors enforced.`);
