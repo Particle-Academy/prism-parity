@@ -176,6 +176,12 @@ I have not verified it"* — and then either verify it or hand it over labelled.
 Half the corrections above came from a claim that was volunteered with its
 provenance attached, which is what let the other side notice it was stale.
 
+That second half is the stronger one, and it is easy to under-weight. "Read the
+source" is a discipline, and a discipline only works while the person exercising
+it is right. **A claim carrying where it came from can be checked by whoever
+receives it** — so it catches the case where the careful party was careful and
+wrong. Care does not survive being mistaken; a citation does.
+
 ## The blind spot to keep in view
 
 **Cross-language agreement is not correctness.** The corpus detects
