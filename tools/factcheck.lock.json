@@ -1,7 +1,7 @@
 {
   "contract": "1.0",
   "note": "Written by tools/factcheck.mjs --reconcile. Records what each repo was at when its claims were last verified, and how many claims of each kind were found. Both are staleness signals; see docs/decisions/0019-checking-the-prose.md.",
-  "reconciledAt": "2026-08-27T00:07:44.849Z",
+  "reconciledAt": "2026-08-27T00:10:35.481Z",
   "packages": {
     "particle-academy/prism": {
       "published": true
@@ -58,7 +58,7 @@
       }
     },
     "prism-labs": {
-      "version": "9e70649",
+      "version": "a5a3d56",
       "census": {
         "decision": 1,
         "composer-script": 1,
@@ -100,15 +100,13 @@
       }
     },
     "prism-parity": {
-      "version": "f83ad74",
+      "version": "39f40ba",
       "census": {
         "local-link": 80,
         "decision": 22,
         "composer-script": 3,
         "npm-script": 3,
-        "decision-number": 11,
-        "composer-package": 1,
-        "test-name": 1
+        "decision-number": 11
       }
     },
     "prism-perplexity": {
@@ -121,21 +119,21 @@
       }
     },
     "prism-provider-watch": {
-      "version": "d4a87ba",
+      "version": "e387c26",
       "census": {
         "composer-script": 7,
         "local-link": 4
       }
     },
     "prism-py": {
-      "version": "113c18e",
+      "version": "504daa9",
       "census": {
         "decision": 1,
         "local-link": 3
       }
     },
     "prism-sandbox": {
-      "version": "503db42",
+      "version": "becaeba",
       "census": {
         "composer-script": 1,
         "npm-script": 4,
@@ -146,7 +144,7 @@
       }
     },
     "prism-ts": {
-      "version": "2ec9511",
+      "version": "499eb31",
       "census": {
         "npm-script": 12,
         "decision": 1,

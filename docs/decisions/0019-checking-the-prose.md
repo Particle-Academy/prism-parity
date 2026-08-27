@@ -36,10 +36,10 @@ extracts them and verifies each against the code.
 |---|---|
 | `use A\B\C;` in a php block | a class under some repo's psr-4 root |
 | `php artisan <ours>` | a command declaring that name |
-| `composer require particle-academy/…` | the published census, or a `"type": "vcs"` block on the same page |
+| an install line for one of ours | the published census, or a `"type": "vcs"` block on the same page |
 | `composer <script>` / `npm run <script>` | that repo's manifests |
 | `decisions/NNNN-slug`, "decision NNNN" | a file in `docs/decisions/` |
-| `it('…')` cited in prose | a test of that name in that repo |
+| a test cited by name in prose | a test of that name in that repo |
 | relative and site-absolute links | the filesystem, and the site's content root |
 | repeated keys in a config object literal | each other |
 
@@ -107,3 +107,15 @@ That limit is the same shape as the one in
 [0017](0017-the-0l-report-format.md): the corpus detects disagreement, not
 correctness. Knowing which half a mechanism covers is the difference between a
 guard and a comfort.
+
+## A note the first CI run earned
+
+This document tripped its own checker. The table above originally spelled the
+claim formats out literally, so the extractor read them as claims and asked
+which test was named `…`.
+
+The fix was to describe the kinds rather than quote their syntax, which the
+table wanted anyway. It is worth recording because it is the general hazard of
+a checker that reads prose: **the document explaining a format is written in
+that format.** The escape hatch exists for the cases where quoting really is
+necessary, and it costs a reason.

@@ -96,7 +96,10 @@ function discoverRepos() {
 const walk = (dir, test, out = []) => {
   if (!existsSync(dir)) return out;
   for (const entry of readdirSync(dir)) {
-    if (['node_modules', 'vendor', '.git', 'dist', 'storage', '__pycache__'].includes(entry)) continue;
+    // `.parity` is THIS repository checked out inside the one being tested.
+    // Walking into it would attribute prism-parity's own pages to whoever is
+    // under test, and report each of its claims twice.
+    if (['node_modules', 'vendor', '.git', 'dist', 'storage', '__pycache__', '.parity'].includes(entry)) continue;
     const path = join(dir, entry);
     const stat = statSync(path);
     if (stat.isDirectory()) walk(path, test, out);
