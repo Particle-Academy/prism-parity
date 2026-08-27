@@ -89,6 +89,42 @@ Keep this example: it is what "read the callers" looks like in the direction
 nobody expects, and a tool whose only documented outcome is a real bug teaches
 its reader that every hit is one.
 
+## A rule going quiet looks exactly like code getting better
+
+Refining a rule is where this class bites its own tooling, and the Fancy team
+hit it first.
+
+They added the announce-discount, ran it over four repos, and Rule A went from
+four candidates to **zero**. Every instinct read that as the discount working.
+It was not: they had already *fixed* those four functions, so the run could not
+distinguish "the discount works" from "the discount does nothing" from "the
+discount broke everything". **Three states, one observation** — the shape this
+decision is about, arriving in the measurement rather than the code.
+
+Synthetic fixtures are what separated them, and they caught a real defect: the
+discount matched the two-line form and missed
+`{ $this->skip('x'); return false; }` on a single line, which is the more
+idiomatic one in PHP.
+
+Ours then repeated the lesson within a minute. The first fixture run printed
+*"No candidates"* — because it had walked **nothing**, the fixture directory
+having neither `src/` nor `app/`. That reads identically to the rule working,
+and only the scanned-file count gave it away. Which is why the tool prints that
+count at all: a hunter that silently scanned less than you think is the failure
+it hunts.
+
+So: **never judge a change to a rule by whether a real repository got quieter.**
+`node tools/collapse-hunt.mjs --self-check` runs three fixtures that do not
+move — one that collapses, one that announces every state (in both the two-line
+and single-line forms), one that announces some and hides three. It must report
+exactly the first and the third.
+
+This is a stronger guard than the claim census in
+[0019](0019-checking-the-prose.md), and worth noting as an improvement on it. A
+census tells you the count moved; it cannot tell you whether the rule or the
+world changed. A fixture tells you the rule still fires **regardless** of what
+the world is doing.
+
 ## What to do with a real one
 
 Name the outcomes. An enum, a result object, distinct exceptions — the form

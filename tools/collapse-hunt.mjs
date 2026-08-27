@@ -58,7 +58,10 @@ const PREDICATE = /^(is|has|have|can|could|should|must|may|matches|equals|contai
 const walk = (dir, test, out = []) => {
   if (!existsSync(dir)) return out;
   for (const entry of readdirSync(dir)) {
-    if (['node_modules', 'vendor', '.git', 'dist', 'storage', '__pycache__', '.parity'].includes(entry)) continue;
+    // The fixtures are deliberately-broken code. They are reached only by
+    // --self-check; letting them into an estate sweep would report two known
+    // hits forever and teach the reader to skim past the list.
+    if (['node_modules', 'vendor', '.git', 'dist', 'storage', '__pycache__', '.parity', 'collapse-hunt-fixtures'].includes(entry)) continue;
     const path = join(dir, entry);
     if (statSync(path).isDirectory()) walk(path, test, out);
     else if (test(entry)) out.push(path);
@@ -66,7 +69,40 @@ const walk = (dir, test, out = []) => {
   return out;
 };
 
-const repos = explicit.length
+// A `return false` whose state is ANNOUNCED first is not hidden: the caller
+// loses it, but the operator does not. `$this->skip('already awarded')` before
+// the return reports the state through a different channel, and a function that
+// does this everywhere is correct however much it looks like the shape.
+//
+// SOFTENED, NOT EXCLUDED. A function where some returns announce and three or
+// more do not is still hiding those three.
+//
+// Both forms count. The two-line one is what you picture; the SINGLE-LINE
+// `{ $this->skip('x'); return false; }` is more idiomatic in PHP and is the one
+// that slipped through the Fancy team's first version of this discount.
+const ANNOUNCED = /(?:->|::)\w+\s*\([^)]*['"][^)]*\)\s*;\s*$/;
+
+function hidden(body) {
+  let count = 0;
+  for (const m of body.matchAll(/return\s+false\s*;/g)) {
+    const before = body.slice(Math.max(0, m.index - 200), m.index);
+    if (!ANNOUNCED.test(before)) count += 1;
+  }
+  return count;
+}
+
+// SELF-CHECK. Run this after ANY change to the rule, and never judge a change
+// by whether a real repository got quieter -- a rule going blind and code
+// getting better are indistinguishable there. The fixtures do not move.
+//
+//   node tools/collapse-hunt.mjs --self-check
+//
+// Expects exactly collapses() and partiallyAnnounces(), never announces().
+const selfCheck = args.includes('--self-check');
+
+const repos = selfCheck
+  ? [{ name: 'fixtures', path: join(root, 'tools', 'collapse-hunt-fixtures'), fixtures: true }]
+  : explicit.length
   ? explicit.map((p) => ({ name: basename(resolve(p)), path: resolve(p) }))
   : readdirSync(dirname(root))
       .map((e) => ({ name: e, path: join(dirname(root), e) }))
@@ -77,7 +113,18 @@ let scanned = 0;
 let unreadable = 0;
 
 for (const repo of repos) {
-  for (const file of [...walk(join(repo.path, 'src'), (n) => n.endsWith('.php')), ...walk(join(repo.path, 'app'), (n) => n.endsWith('.php'))]) {
+    // src/ and app/ in a real repo; the whole directory when neither exists,
+    // which is how the fixtures get scanned. Falling back matters more than it
+    // looks: the first fixture run reported "no candidates" because it had
+    // walked NOTHING, and that reads identically to the rule working.
+    let files = [...walk(join(repo.path, 'src'), (n) => n.endsWith('.php')), ...walk(join(repo.path, 'app'), (n) => n.endsWith('.php'))];
+    if (files.length === 0) {
+      files = repo.fixtures
+        ? readdirSync(repo.path).filter((n) => n.endsWith('.php')).map((n) => join(repo.path, n))
+        : walk(repo.path, (n) => n.endsWith('.php'));
+    }
+
+  for (const file of files) {
     let source;
     try {
       source = readFileSync(file, 'utf8');
@@ -100,7 +147,7 @@ for (const repo of repos) {
       }
 
       const body = source.slice(m.index + m[0].length, i);
-      const falses = (body.match(/return\s+false\s*;/g) ?? []).length;
+      const falses = hidden(body);
 
       if (falses >= 3) {
         hits.push({
@@ -126,6 +173,15 @@ if (hits.length === 0) {
   }
   console.log(`\n  ${hits.length} candidate(s). READ THE CALLERS before dismissing any of them —`);
   console.log('  the states are lost here, the harm is wherever the bit gets interpreted.\n');
+}
+
+if (selfCheck) {
+  const found = hits.map((h) => h.name).sort();
+  const want = ['collapses', 'partiallyAnnounces'];
+  const ok = scanned > 0 && found.length === want.length && found.every((n, i) => n === want[i]);
+
+  console.log(ok ? '  SELF-CHECK PASSED' : `  SELF-CHECK FAILED - wanted [${want}], got [${found}] over ${scanned} file(s)`);
+  process.exit(ok ? 0 : 1);
 }
 
 process.exit(0);
