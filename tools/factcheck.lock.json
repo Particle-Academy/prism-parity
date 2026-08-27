@@ -1,7 +1,7 @@
 {
   "contract": "1.0",
   "note": "Written by tools/factcheck.mjs --reconcile. Records what each repo was at when its claims were last verified, and how many claims of each kind were found. Both are staleness signals; see docs/decisions/0019-checking-the-prose.md.",
-  "reconciledAt": "2026-08-27T00:17:43.883Z",
+  "reconciledAt": "2026-08-27T02:22:21.827Z",
   "packages": {
     "particle-academy/prism": {
       "published": true
@@ -100,9 +100,9 @@
       }
     },
     "prism-parity": {
-      "version": "e9f3cff",
+      "version": "ba8c3d9",
       "census": {
-        "local-link": 80,
+        "local-link": 81,
         "decision": 22,
         "composer-script": 3,
         "npm-script": 3,
@@ -133,7 +133,7 @@
       }
     },
     "prism-sandbox": {
-      "version": "becaeba",
+      "version": "600c985",
       "census": {
         "composer-script": 1,
         "npm-script": 4,
