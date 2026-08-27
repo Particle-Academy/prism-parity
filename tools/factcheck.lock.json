@@ -1,0 +1,168 @@
+{
+  "contract": "1.0",
+  "note": "Written by tools/factcheck.mjs --reconcile. Records what each repo was at when its claims were last verified, and how many claims of each kind were found. Both are staleness signals; see docs/decisions/0019-checking-the-prose.md.",
+  "reconciledAt": "2026-08-27T00:07:44.849Z",
+  "packages": {
+    "particle-academy/prism": {
+      "published": true
+    },
+    "particle-academy/prism-harness": {
+      "published": true
+    },
+    "particle-academy/prism-labs": {
+      "published": false
+    },
+    "particle-academy/prism-mcp": {
+      "published": true
+    },
+    "particle-academy/prism-memory": {
+      "published": false
+    },
+    "particle-academy/prism-opentelemetry": {
+      "published": true
+    },
+    "particle-academy/prism-perplexity": {
+      "published": true
+    },
+    "particle-academy/prism-provider-watch": {
+      "published": false
+    },
+    "particle-academy/prism-sandbox": {
+      "published": false
+    },
+    "particle-academy/prism-workspace": {
+      "published": false
+    }
+  },
+  "repos": {
+    "prism": {
+      "version": "v0.114.0",
+      "census": {
+        "decision": 1,
+        "composer-script": 3,
+        "local-link": 71,
+        "php-class": 652,
+        "composer-package": 11,
+        "artisan-command": 7,
+        "npm-script": 2
+      }
+    },
+    "prism-harness": {
+      "version": "v0.1.2",
+      "census": {
+        "test-name": 1,
+        "decision": 1,
+        "composer-script": 3,
+        "local-link": 2,
+        "php-class": 1
+      }
+    },
+    "prism-labs": {
+      "version": "9e70649",
+      "census": {
+        "decision": 1,
+        "composer-script": 1,
+        "npm-script": 2,
+        "local-link": 2,
+        "artisan-command": 2
+      }
+    },
+    "prism-mcp": {
+      "version": "v0.1.0",
+      "census": {
+        "decision": 4,
+        "test-name": 2,
+        "composer-script": 6,
+        "local-link": 2,
+        "php-class": 2,
+        "artisan-command": 2,
+        "composer-package": 1,
+        "decision-number": 2
+      }
+    },
+    "prism-memory": {
+      "version": "v0.1.0",
+      "census": {
+        "artisan-command": 2,
+        "decision": 2,
+        "composer-script": 3,
+        "local-link": 4,
+        "composer-package": 1,
+        "decision-number": 1
+      }
+    },
+    "prism-opentelemetry": {
+      "version": "v0.1.1",
+      "census": {
+        "local-link": 2,
+        "composer-package": 2,
+        "artisan-command": 1
+      }
+    },
+    "prism-parity": {
+      "version": "f83ad74",
+      "census": {
+        "local-link": 80,
+        "decision": 22,
+        "composer-script": 3,
+        "npm-script": 3,
+        "decision-number": 11,
+        "composer-package": 1,
+        "test-name": 1
+      }
+    },
+    "prism-perplexity": {
+      "version": "v0.1.0",
+      "census": {
+        "decision": 1,
+        "composer-script": 3,
+        "local-link": 2,
+        "composer-package": 1
+      }
+    },
+    "prism-provider-watch": {
+      "version": "d4a87ba",
+      "census": {
+        "composer-script": 7,
+        "local-link": 4
+      }
+    },
+    "prism-py": {
+      "version": "113c18e",
+      "census": {
+        "decision": 1,
+        "local-link": 3
+      }
+    },
+    "prism-sandbox": {
+      "version": "503db42",
+      "census": {
+        "composer-script": 1,
+        "npm-script": 4,
+        "local-link": 8,
+        "artisan-command": 5,
+        "composer-package": 5,
+        "php-class": 9
+      }
+    },
+    "prism-ts": {
+      "version": "2ec9511",
+      "census": {
+        "npm-script": 12,
+        "decision": 1,
+        "local-link": 6
+      }
+    },
+    "prism-workspace": {
+      "version": "v0.1.0",
+      "census": {
+        "composer-script": 3,
+        "local-link": 2,
+        "php-class": 2,
+        "decision-number": 1,
+        "composer-package": 1,
+        "artisan-command": 1
+      }
+    }
+  }
+}

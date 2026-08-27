@@ -75,7 +75,7 @@ of rather than behind:
 The obvious way to lose is to match a competitor's feature list and be worse at
 each item. The subtle way is to add features nobody asked for because a
 competitor had them — which is why
-[specs/README.md](../specs/README.md) records a workflow engine as
+[specs/README.md](../../specs/README.md) records a workflow engine as
 *deliberately not built* despite Mastra having one.
 
 Exceeding is not the same as covering more surface. It is being better at the

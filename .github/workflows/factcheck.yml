@@ -1,0 +1,47 @@
+name: Factcheck
+
+# Verifies that this repository's PROSE agrees with its CODE.
+#
+# The corpus checks behaviour and parity-check checks existence; neither reads a
+# word of documentation, which is where this ecosystem has actually been wrong.
+# See docs/decisions/0019-checking-the-prose.md.
+
+on:
+  push:
+    branches: [main, "*.x"]
+  pull_request:
+  # Claims rot without anything in this repository changing: a package gets
+  # published, a sibling renames a class. A nightly run notices.
+  schedule:
+    - cron: "40 7 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  factcheck:
+    name: Claims
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The lockfile records versions as git tags. A shallow clone has no
+          # tags, so every repo would read as "unknown" and the staleness check
+          # would compare nothing to nothing and pass.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Check claims
+        run: node tools/factcheck.mjs --repo .
+
+      # --strict makes version drift a failure rather than a warning. Only the
+      # nightly does it, so a release in one repo cannot redden an unrelated
+      # pull request in another — while currency is still enforced daily.
+      - name: Check currency
+        if: github.event_name == 'schedule'
+        run: node tools/factcheck.mjs --repo . --strict
