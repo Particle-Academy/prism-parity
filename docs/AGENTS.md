@@ -145,6 +145,37 @@ part of it is required, is [0017](decisions/0017-the-0l-report-format.md).
 Do not file one for a routine pass. The value of the channel is that a 0L
 arriving is worth reading, and that survives exactly as long as they stay rare.
 
+## Plausible is not verified, and it does not feel like guessing
+
+Every mechanism in this repository — the corpus, the existence check, the
+fact-checker, the collapse hunter — exists to catch something a person would
+otherwise act on because it seemed reasonable. So the state worth learning to
+notice is not *doubt*. It is **plausibility**.
+
+Doubt already sends you to look. Plausible does not: a name that is adjacent to
+the right one, a README that seems to point that way, a manifest that matches
+what you remember, a tool that got quieter after you improved it. None of those
+feel like guessing, which is precisely why they get acted on.
+
+The day this was written produced five corrections between two estates, and
+every one began the same way — someone treating a plausible thing as a settled
+thing:
+
+- a server about to be moved onto a client library because the names were adjacent
+- a finding filed from a tool reading that was true eleven hours earlier
+- a manifest believed over the instrument that read the disk
+- a rule that went quiet, read as the code getting better
+- a sabotage that "passed", read from an exit code a pipe had replaced
+
+None was carelessness and none was resolved by argument. Each moved when
+somebody went and looked.
+
+**So the operational rule is not "be rigorous".** It is: when a thing seems
+reasonable and you have not checked it, say so in that sentence — *"I believe X,
+I have not verified it"* — and then either verify it or hand it over labelled.
+Half the corrections above came from a claim that was volunteered with its
+provenance attached, which is what let the other side notice it was stale.
+
 ## The blind spot to keep in view
 
 **Cross-language agreement is not correctness.** The corpus detects
