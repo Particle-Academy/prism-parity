@@ -125,6 +125,46 @@ census tells you the count moved; it cannot tell you whether the rule or the
 world changed. A fixture tells you the rule still fires **regardless** of what
 the world is doing.
 
+## Verify a guard by sabotage, not by passing
+
+**A self-check that has never been seen to fail asserts nothing** — the same
+principle as a regression test that also passes against the unfixed code.
+
+So each guard is broken deliberately and watched to fail:
+
+| sabotage | expected |
+|---|---|
+| raise the threshold `3 → 4` | `collapses()` and `partiallyAnnounces()` stop firing |
+| remove the announce-discount | `announces()` starts firing |
+| delete the fixtures directory | fails, naming zero files scanned |
+| fixtures directory present but empty | the same |
+
+That took two minutes and found a real defect in ours. The first two sabotages
+reported cleanly. **The last two CRASHED** — `readdirSync` threw on a missing
+directory, so the process died before reaching the `scanned > 0` assertion.
+
+Which means the guard written specifically for the zero-file trap **had never
+been able to fire.** It exited non-zero, so it looked correct; it was exiting
+non-zero because it was broken, not because it had detected anything. A guard
+that crashes rather than reports produces a red that reads as a tooling fault,
+and those get ignored — which is how a guard stops guarding while still
+appearing present.
+
+## Census and fixture: neither subsumes the other
+
+A **census** measures the tool against the world. When its number moves it
+cannot say which side changed — the tool or the code. That is the same
+three-states-one-observation shape as everything above, one level up in the
+instrumentation.
+
+A **fixture** measures the tool against something that does not move, which is
+the only reason it can answer *did the rule change?* independently of *did the
+code change?*
+
+Fixtures are primary. But the census still catches what a fixture cannot: a rule
+that narrows across a whole estate while still firing correctly on its fixture.
+Keep both, and know which question each answers.
+
 ## What to do with a real one
 
 Name the outcomes. An enum, a result object, distinct exceptions — the form

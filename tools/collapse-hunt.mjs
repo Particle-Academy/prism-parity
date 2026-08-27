@@ -119,8 +119,13 @@ for (const repo of repos) {
     // walked NOTHING, and that reads identically to the rule working.
     let files = [...walk(join(repo.path, 'src'), (n) => n.endsWith('.php')), ...walk(join(repo.path, 'app'), (n) => n.endsWith('.php'))];
     if (files.length === 0) {
+      // existsSync first. A missing fixtures directory used to THROW here, so
+      // the `scanned > 0` assertion below -- written for exactly this trap --
+      // could never run: the process died before reaching it. A guard that
+      // crashes instead of reporting is a guard whose red looks like a tooling
+      // fault, and those get ignored.
       files = repo.fixtures
-        ? readdirSync(repo.path).filter((n) => n.endsWith('.php')).map((n) => join(repo.path, n))
+        ? (existsSync(repo.path) ? readdirSync(repo.path).filter((n) => n.endsWith('.php')).map((n) => join(repo.path, n)) : [])
         : walk(repo.path, (n) => n.endsWith('.php'));
     }
 
