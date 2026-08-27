@@ -51,6 +51,20 @@ stated without the outputs that produced it cannot be re-checked, and a finding
 that is only outputs has not been understood by the agent that filed it. Both,
 or it is not a 0L.
 
+**Evidence carries WHEN it was gathered.** Amended 2026-08-26, from a live
+case: 0L-0001 cited a tool reporting that two ports implemented one provider
+each. That was true at the moment of the call and false eleven hours later,
+when a second provider landed in both. The tool was correct, nothing was
+broken, and the finding still became misleading — because the reading had no
+date on it.
+
+This matters more here than in an ordinary report, and for the reason the
+format exists at all: **a 0L is written precisely because it should outlive its
+run.** An observation meant to be re-read months later, with no timestamp, is a
+claim about the present tense of a moment nobody can identify. Timestamp the
+reading, not just the filing — `filed_at` says when the agent wrote, which is
+not the same as when it looked.
+
 **Why it matters to the ecosystem is REQUIRED and enforced in code, not left to
 the filer's discipline.** It is the section that makes a 0L worth reading later,
 and it is the first one an agent in a hurry leaves blank. A filing without it is
@@ -83,6 +97,22 @@ that only appears when they meet.
 Do not file one for a routine pass, and do not file one that cannot be supported
 with evidence. The value of the channel is that a 0L arriving is worth reading,
 and that survives exactly as long as they stay rare.
+
+**Check whether the gap is already declared.** Amended 2026-08-26, same case.
+Absent-because-planned and absent-because-nobody-noticed look identical from a
+port's source, and only the declaration separates them — in this ecosystem,
+`manifest/packages.json`. 0L-0001 reported a provider missing from two ports
+that are declared text-only at 0.1.0, which is the roadmap rather than a
+finding. Reporting a documented boundary as a discovery spends the channel's
+credit without adding anything.
+
+**When a tool contradicts a document, suspect the document.** The same case
+again, and it is the most transferable part. `describe_port` reads the
+directory from disk; the manifest is typed by hand. The instrument was right
+and the registry was wrong — and the manifest had been wrong for eleven hours
+with nothing to catch it, because the check that existed compared one
+declaration against another and never against code. Believing the measurement
+over the map turns this kind of run into the better finding on the first pass.
 
 ## The blind spot this does not close
 
