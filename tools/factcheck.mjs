@@ -326,6 +326,20 @@ function verify(world) {
           claim.verdict = 'external';
           break;
         }
+        // A command name is namespaced by the package that ships it, so
+        // `prism-mcp:pins` documented in prism's docs is a claim about
+        // prism-mcp. When that repo is not checked out, nothing here could
+        // declare it and the honest verdict is UNRESOLVABLE — the same rule as
+        // a class whose package is absent. Failing instead would make every
+        // cross-package reference red in single-repo CI, and a checker that is
+        // red for a reason nobody can fix gets switched off.
+        const owner = claim.value.includes(':') ? claim.value.split(':')[0] : null;
+
+        if (owner && owner !== 'make' && !byName.has(owner)) {
+          claim.verdict = 'unresolvable';
+          break;
+        }
+
         claim.verdict = allCommands.has(claim.value) ? 'ok' : 'failed';
         if (claim.verdict === 'failed') {
           finding('error', claim.kind, claim.repo, claim.file, claim.line, claim.value, `No command declares this name.`);
