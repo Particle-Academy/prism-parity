@@ -150,6 +150,65 @@ that crashes rather than reports produces a red that reads as a tooling fault,
 and those get ignored — which is how a guard stops guarding while still
 appearing present.
 
+## Read the message, not the exit status
+
+A sabotage is only evidence if the observation channel is trustworthy, and it
+usually is not.
+
+```
+A deliberately BROKEN rule, observed three ways:
+   bare .............. exit=1   (truth)
+   piped, $?  ........ exit=0   <-- LIES
+   piped, PIPESTATUS . exit=1   (truth)
+```
+
+`tool --self-check | tail -1` reports **`tail`'s** status. A correctly failing
+check reads as a pass, and the finding you write up is an artefact of how you
+looked rather than anything about the tool. The Fancy team hit this and nearly
+reported their own guard broken; ours was true only because the run happened to
+use `PIPESTATUS` — the buggy form had been written into a helper in the same
+command and went uncalled. Avoided by not using it, which is luck.
+
+And a status is thin evidence even when it is real: a crash exits non-zero too.
+**Passing the sabotage and failing for the wrong reason are indistinguishable
+from an exit code** — which is exactly how the zero-file guard above looked
+correct while being incapable of running.
+
+So: run a verification bare, or redirect to a file, or read no status at all —
+and judge every failure by its **message**.
+
+## After adding an exception, test that the exception did not eat the rule
+
+The generalisation of the `partiallyAnnounces()` fixture, and the more useful
+half of it.
+
+When a rule gains a discount or an exception it has **three** behaviours, not
+two, and the interesting one is neither extreme. The obvious fixture proves the
+exception works. The one worth writing proves the exception did not swallow the
+rule — that a function announcing *some* states while hiding three is still
+reported.
+
+Without it, a discount silently becomes "does it ever announce?" and nothing
+says so. Only the second test can fail interestingly.
+
+Worth recording how that fixture actually arrived: not from foresight. It came
+from having just been burned by one end of the case and needing to be sure the
+discount had not become a blanket excuse.
+
+## Why the tool is the least-tested code
+
+Everything a checker examines gets examined. The checker is the one thing in the
+loop with **nothing pointed at it** — it is the observer, so by construction it
+sits outside its own field of view.
+
+That makes it predictable rather than ironic, and therefore budgetable: whatever
+effort goes into a checker, some fixed fraction belongs to checking the checker,
+and that fraction is normally zero. In one day the instrumentation carried the
+shape it was built to hunt three times — a corpus that moved underneath a rule,
+a guard that could not run, and an observation channel that reported the wrong
+status. None of them was carelessness. Each was someone standing in the one
+place they were not looking.
+
 ## Census and fixture: neither subsumes the other
 
 A **census** measures the tool against the world. When its number moves it
