@@ -1,13 +1,19 @@
 {
   "contract": "1.0",
   "note": "Written by tools/factcheck.mjs --reconcile. Records what each repo was at when its claims were last verified, and how many claims of each kind were found. Both are staleness signals; see docs/decisions/0019-checking-the-prose.md.",
-  "reconciledAt": "2026-08-27T02:39:04.255Z",
+  "reconciledAt": "2026-08-30T21:14:48.313Z",
   "packages": {
     "particle-academy/prism": {
       "published": true
     },
+    "particle-academy/prism-browser": {
+      "published": false
+    },
     "particle-academy/prism-harness": {
       "published": true
+    },
+    "particle-academy/prism-human-plus": {
+      "published": false
     },
     "particle-academy/prism-labs": {
       "published": false
@@ -47,18 +53,31 @@
         "npm-script": 2
       }
     },
+    "prism-browser": {
+      "version": "6f78f7c",
+      "census": {
+        "composer-script": 3,
+        "php-class": 2
+      }
+    },
     "prism-harness": {
       "version": "v0.1.2",
       "census": {
         "test-name": 1,
         "decision": 1,
         "composer-script": 3,
-        "local-link": 2,
+        "local-link": 106,
         "php-class": 1
       }
     },
+    "prism-human-plus": {
+      "version": "941a984",
+      "census": {
+        "composer-script": 3
+      }
+    },
     "prism-labs": {
-      "version": "491920b",
+      "version": "edd6fae",
       "census": {
         "decision": 1,
         "composer-script": 1,
@@ -100,13 +119,13 @@
       }
     },
     "prism-parity": {
-      "version": "049fe2c",
+      "version": "ca5a567",
       "census": {
-        "local-link": 82,
-        "decision": 22,
+        "local-link": 83,
+        "decision": 23,
         "composer-script": 3,
         "npm-script": 3,
-        "decision-number": 11
+        "decision-number": 12
       }
     },
     "prism-perplexity": {
@@ -126,7 +145,7 @@
       }
     },
     "prism-py": {
-      "version": "504daa9",
+      "version": "feb2fff",
       "census": {
         "decision": 1,
         "local-link": 3
@@ -136,15 +155,15 @@
       "version": "600c985",
       "census": {
         "composer-script": 1,
-        "npm-script": 4,
-        "local-link": 8,
+        "npm-script": 5,
+        "local-link": 16,
         "artisan-command": 5,
-        "composer-package": 5,
-        "php-class": 9
+        "composer-package": 6,
+        "php-class": 11
       }
     },
     "prism-ts": {
-      "version": "499eb31",
+      "version": "ec341ce",
       "census": {
         "npm-script": 12,
         "decision": 1,
@@ -161,6 +180,14 @@
         "composer-package": 1,
         "artisan-command": 1
       }
+    },
+    "prism-workspace-py": {
+      "version": "e1bc54d",
+      "census": {}
+    },
+    "prism-workspace-ts": {
+      "version": "dbcbb5b",
+      "census": {}
     }
   }
 }
