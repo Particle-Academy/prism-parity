@@ -8,6 +8,85 @@
     "prism-py": "0.1.0",
     "prism-conformance": "0.1.0"
   },
+  "parity_target": {
+    "$comment": "The coordinated three-language launch target. A planned implementation is an explicit gap, not a package that exists. Promote it to shipped only when its repository and conformance runner are real; tools/parity-check.mjs refuses a shipped claim without both.",
+    "release_policy": "single-coordinated-launch",
+    "workflow_runtime": "fancy-flow",
+    "families": {
+      "core": {
+        "php_baseline": { "repository": "prism", "ref": "a38a85a" },
+        "implementations": {
+          "php": { "status": "shipped", "package": "particle-academy/prism", "repository": "prism" },
+          "ts": { "status": "in-progress", "package": "@particle-academy/prism", "repository": "prism-ts" },
+          "py": { "status": "in-progress", "package": "prism-ai", "repository": "prism-py" }
+        }
+      },
+      "browser": {
+        "php_baseline": { "repository": "prism-browser", "ref": "6f78f7c" },
+        "implementations": {
+          "php": { "status": "shipped", "package": "particle-academy/prism-browser", "repository": "prism-browser" },
+          "ts": { "status": "planned", "package": "@particle-academy/prism-browser", "repository": null },
+          "py": { "status": "planned", "package": "prism-ai-browser", "repository": null }
+        }
+      },
+      "harness": {
+        "php_baseline": { "repository": "prism-harness", "ref": "03817c7" },
+        "implementations": {
+          "php": { "status": "shipped", "package": "particle-academy/prism-harness", "repository": "prism-harness" },
+          "ts": { "status": "planned", "package": "@particle-academy/prism-harness", "repository": null },
+          "py": { "status": "planned", "package": "prism-ai-harness", "repository": null }
+        }
+      },
+      "human-plus": {
+        "php_baseline": { "repository": "prism-human-plus", "ref": "941a984" },
+        "implementations": {
+          "php": { "status": "shipped", "package": "particle-academy/prism-human-plus", "repository": "prism-human-plus" },
+          "ts": { "status": "planned", "package": "@particle-academy/prism-human-plus", "repository": null },
+          "py": { "status": "planned", "package": "prism-ai-human-plus", "repository": null }
+        }
+      },
+      "mcp": {
+        "php_baseline": { "repository": "prism-mcp", "ref": "91e1bca" },
+        "implementations": {
+          "php": { "status": "shipped", "package": "particle-academy/prism-mcp", "repository": "prism-mcp" },
+          "ts": { "status": "planned", "package": "@particle-academy/prism-mcp", "repository": null },
+          "py": { "status": "planned", "package": "prism-ai-mcp", "repository": null }
+        }
+      },
+      "memory": {
+        "php_baseline": { "repository": "prism-memory", "ref": "19b3140" },
+        "implementations": {
+          "php": { "status": "shipped", "package": "particle-academy/prism-memory", "repository": "prism-memory" },
+          "ts": { "status": "planned", "package": "@particle-academy/prism-memory", "repository": null },
+          "py": { "status": "planned", "package": "prism-ai-memory", "repository": null }
+        }
+      },
+      "opentelemetry": {
+        "php_baseline": { "repository": "prism-opentelemetry", "ref": "fc50673" },
+        "implementations": {
+          "php": { "status": "shipped", "package": "particle-academy/prism-opentelemetry", "repository": "prism-opentelemetry" },
+          "ts": { "status": "planned", "package": "@particle-academy/prism-opentelemetry", "repository": null },
+          "py": { "status": "planned", "package": "prism-ai-opentelemetry", "repository": null }
+        }
+      },
+      "perplexity": {
+        "php_baseline": { "repository": "prism-perplexity", "ref": "88b2567" },
+        "implementations": {
+          "php": { "status": "shipped", "package": "particle-academy/prism-perplexity", "repository": "prism-perplexity" },
+          "ts": { "status": "planned", "package": "@particle-academy/prism-perplexity", "repository": null },
+          "py": { "status": "planned", "package": "prism-ai-perplexity", "repository": null }
+        }
+      },
+      "workspace": {
+        "php_baseline": { "repository": "prism-workspace", "ref": "70a979c" },
+        "implementations": {
+          "php": { "status": "shipped", "package": "particle-academy/prism-workspace", "repository": "prism-workspace" },
+          "ts": { "status": "in-progress", "package": "@particle-academy/prism-workspace", "repository": "prism-workspace-ts" },
+          "py": { "status": "in-progress", "package": "prism-ai-workspace", "repository": "prism-workspace-py" }
+        }
+      }
+    }
+  },
   "packages": {
     "prism": {
       "language": "php",

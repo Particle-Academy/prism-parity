@@ -17,6 +17,7 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const manifest = JSON.parse(readFileSync(join(root, 'manifest', 'packages.json'), 'utf8'));
 const failures = [];
 const report = process.argv.includes('--report');
+const targetStatuses = new Set(['planned', 'in-progress', 'shipped']);
 
 const directories = (path) =>
   existsSync(path) ? readdirSync(path).filter((entry) => statSync(join(path, entry)).isDirectory()) : [];
@@ -52,6 +53,47 @@ if (discovered.size < 3) {
 }
 
 const declared = new Map(Object.entries(manifest.packages).map(([name, pkg]) => [pkg.language, { name, ...pkg }]));
+
+// The package axis. Core parity used to be the only enforced target, which
+// allowed a green three-language report while every satellite existed in PHP
+// alone. Planned is deliberately not existence: it keeps the launch gap
+// visible without claiming a repository or runner already exists.
+const targetFamilies = manifest.parity_target?.families ?? {};
+const targetGaps = [];
+
+if (Object.keys(targetFamilies).length === 0) {
+  failures.push('no parity_target families declared — full-ecosystem parity would assert nothing');
+}
+
+for (const [family, target] of Object.entries(targetFamilies)) {
+  if (!target.php_baseline?.repository || !target.php_baseline?.ref) {
+    failures.push(`parity target '${family}' has no immutable PHP baseline repository and ref`);
+  }
+
+  for (const language of discovered) {
+    const implementation = target.implementations?.[language];
+    if (!implementation) {
+      failures.push(`parity target '${family}' does not declare a '${language}' implementation`);
+      continue;
+    }
+
+    if (!targetStatuses.has(implementation.status)) {
+      failures.push(`parity target '${family}' has invalid status '${implementation.status}' for '${language}'`);
+    }
+
+    if (!implementation.package) {
+      failures.push(`parity target '${family}' has no registry package name for '${language}'`);
+    }
+
+    if (implementation.status === 'shipped' && !implementation.repository) {
+      failures.push(`parity target '${family}' claims '${language}' is shipped without a repository`);
+    }
+
+    if (implementation.status !== 'shipped') {
+      targetGaps.push(`${family}:${language} (${implementation.status})`);
+    }
+  }
+}
 
 for (const language of discovered) {
   if (!declared.has(language)) {
@@ -203,6 +245,11 @@ if (reference) {
 if (report) {
   console.log(`# Drift report\n\nKit ${manifest.kit_version}. Reference: ${reference?.name} v${reference?.version}.`);
   console.log(lines.join('\n'));
+  console.log(
+    `\n# Coordinated launch target\n\n${Object.keys(targetFamilies).length} package families; ` +
+      `${targetGaps.length} implementation gap(s).\n\n` +
+      (targetGaps.length ? targetGaps.map((gap) => `  - ${gap}`).join('\n') : '  - none'),
+  );
 }
 
 if (failures.length > 0) {
@@ -216,3 +263,6 @@ console.error(
     : `Manifest surface verified against disk for ${surfaceVerified} package(s).`,
 );
 console.error(`Parity check passed: ${discovered.size} languages, ${manifest.mirrors.length} mirrors enforced.`);
+console.error(
+  `Coordinated launch target: ${Object.keys(targetFamilies).length} package families, ${targetGaps.length} implementation gap(s).`,
+);

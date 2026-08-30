@@ -46,6 +46,12 @@ docs/decisions/             why this is shaped the way it is
 
 ## The corpus today
 
+The corpus began with one core vertical slice. The coordinated launch target is
+larger: core plus every reusable shipping satellite in PHP, TypeScript and
+Python. `manifest/packages.json` records that package-family matrix and
+`tools/parity-check.mjs --report` prints its remaining gaps. See
+[decision 0021](docs/decisions/0021-parity-is-the-shipping-library-set.md).
+
 Corpus `0.1.0`. Five suites, 49 cases.
 
 | Suite | Kind | Cases | Pins |
