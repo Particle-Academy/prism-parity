@@ -290,7 +290,8 @@
       "surface": {
         "capabilities": [
           "text",
-          "structured"
+          "structured",
+          "stream"
         ],
         "providers": [
           "anthropic",
@@ -317,7 +318,8 @@
       "surface": {
         "capabilities": [
           "text",
-          "structured"
+          "structured",
+          "stream"
         ],
         "providers": [
           "anthropic",
