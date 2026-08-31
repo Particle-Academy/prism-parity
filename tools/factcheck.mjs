@@ -250,6 +250,17 @@ function extractClaims(repo) {
 
       if (fileIgnored || skipFence) return;
 
+      // `ignore-next` used to be consumed ONLY by a fence, so it silently did
+      // nothing on a prose line. That went unnoticed while every claim kind
+      // lived inside a fence; the negative-claim and status kinds read prose,
+      // and the first suppression written for one of them had no effect at all.
+      // A suppression that fails silently is worse than none: the author
+      // believes the line is handled.
+      if (ignoreNext) {
+        ignoreNext = false;
+        return;
+      }
+
       const add = (kind, value, extra = {}) => claims.push({ kind, value, repo: repo.name, file: rel, line, ...extra });
 
       if (fence === 'php') {
@@ -271,6 +282,28 @@ function extractClaims(repo) {
       }
 
       if (fence === null) {
+        // NEGATIVE CLAIMS — "there is no X in src/". Every other kind here is
+        // existential: it asks whether something named in prose exists. This
+        // asks whether something prose says is ABSENT really is, and it went
+        // unchecked until a README asserted "there is no `Gate` reference
+        // anywhere in `src/`" while four of them sat in two files. The suite
+        // passed 112/112 over that sentence.
+        //
+        // It is the more dangerous direction. A reader uses a negative claim to
+        // decide something still needs BUILDING — so a stale one does not merely
+        // mislead, it commissions duplicate work. See decision 0019.
+        for (const m of text.matchAll(/\bno\s+`?([A-Z][A-Za-z0-9_]*)`?\s+(?:reference|references|usage|mention)s?\s+(?:anywhere\s+)?in\s+`([^`]+)`/gi)) {
+          add('absence', m[1], { within: m[2] });
+        }
+
+        // STATUS LABELS — `| Modes | *planned* |`. A table cell asserting a
+        // surface is unbuilt is a negative claim wearing different punctuation,
+        // and it is how the same README described two shipped subsystems as
+        // design. Checked against the surface path the manifest declares.
+        for (const m of text.matchAll(/^\|\s*([A-Z][A-Za-z0-9 +-]*?)\s*\|\s*\*(planned)\*\s*\|/gm)) {
+          add('status', m[1].trim(), { asserted: m[2] });
+        }
+
         for (const m of text.matchAll(/decisions\/(\d{4})-([a-z0-9-]+)/g)) add('decision', `${m[1]}-${m[2]}`);
         for (const m of text.matchAll(/\bdecision (\d{4})\b/gi)) add('decision-number', m[1]);
         for (const m of text.matchAll(/\bit\('([^']+)'\)/g)) add('test-name', m[1]);
@@ -278,6 +311,66 @@ function extractClaims(repo) {
       }
     });
   }
+}
+
+// ---------------------------------------------------------------------------
+// NEGATIVE-CLAIM SUPPORT.
+// ---------------------------------------------------------------------------
+
+/**
+ * How many times an identifier appears under a directory.
+ *
+ * Word-boundary matched, so a claim about `Gate` is not satisfied by
+ * `Gateway`. Counts rather than short-circuits: the number is what makes the
+ * finding persuasive to whoever wrote the sentence.
+ */
+function grepCount(dir, identifier) {
+  const pattern = new RegExp(`\\b${identifier.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`);
+  let hits = 0;
+
+  const walk = (current) => {
+    if (!existsSync(current)) return;
+    if (!statSync(current).isDirectory()) {
+      if (/\.(php|ts|tsx|js|mjs|py)$/.test(current) && pattern.test(readFileSync(current, 'utf8'))) hits += 1;
+      return;
+    }
+    for (const entry of readdirSync(current)) {
+      if (['node_modules', 'vendor', '.git', 'dist', '__pycache__'].includes(entry)) continue;
+      walk(join(current, entry));
+    }
+  };
+
+  walk(dir);
+  return hits;
+}
+
+/**
+ * Where a concept named in a status table would live if it were built.
+ *
+ * Convention over configuration, deliberately: a concept called "Subagents"
+ * lives in `src/Subagents`, "Permissions" is the odd one out and is mapped by
+ * hand. A concept with no known home returns null and is reported UNRESOLVABLE
+ * rather than passed, because "we could not check it" and "it is genuinely
+ * unbuilt" are different answers and only one of them is reassuring.
+ */
+const STATUS_SURFACES = {
+  permissions: ['src/Tools/ToolAuthorizer.php'],
+  modes: ['src/Modes'],
+  skills: ['src/Skills'],
+  subagents: ['src/Subagents'],
+  session: ['src/Sessions'],
+  thread: ['src/Models/Thread.php'],
+};
+
+function statusSurface(repo, concept) {
+  const candidates = STATUS_SURFACES[concept.toLowerCase()] ?? [`src/${concept.replace(/\s+/g, '')}`];
+  for (const candidate of candidates) {
+    const full = join(repo.path, candidate);
+    if (existsSync(full)) return full;
+  }
+  // Nothing exists at any candidate path. That is a PASS for a *planned* row,
+  // so return the first candidate for the existsSync check to fail on.
+  return join(repo.path, candidates[0]);
 }
 
 // ---------------------------------------------------------------------------
@@ -317,6 +410,49 @@ function verify(world) {
         claim.verdict = allClasses.has(claim.value) ? 'ok' : 'failed';
         if (claim.verdict === 'failed') {
           finding('error', claim.kind, claim.repo, claim.file, claim.line, claim.value, `No such class. Documented in a php block; nothing under a psr-4 root defines it.`);
+        }
+        break;
+      }
+
+      // "There is no X in <path>." Verified by looking. A hit means the prose
+      // asserts an absence that is not absent.
+      case 'absence': {
+        if (!repo) {
+          claim.verdict = 'unresolvable';
+          break;
+        }
+        const target = join(repo.path, claim.within.replace(/^\/+|\/+$/g, ''));
+        if (!existsSync(target)) {
+          // The path itself is gone. Not a pass: the sentence describes a place
+          // that no longer exists, so nobody can check it either.
+          claim.verdict = 'failed';
+          finding('error', claim.kind, claim.repo, claim.file, claim.line, claim.value, `Claims no ${claim.value} in \`${claim.within}\`, but that path does not exist.`);
+          break;
+        }
+        const hits = grepCount(target, claim.value);
+        claim.verdict = hits === 0 ? 'ok' : 'failed';
+        if (claim.verdict === 'failed') {
+          finding('error', claim.kind, claim.repo, claim.file, claim.line, claim.value, `Prose says there is no ${claim.value} in \`${claim.within}\`; found ${hits}. A negative claim is what a reader uses to decide something still needs building.`);
+        }
+        break;
+      }
+
+      // `| Modes | *planned* |` — a surface asserted to be unbuilt.
+      case 'status': {
+        if (!repo) {
+          claim.verdict = 'unresolvable';
+          break;
+        }
+        const surface = statusSurface(repo, claim.value);
+        if (!surface) {
+          // Nothing declares where this concept would live, so "planned" is
+          // not checkable. Reported rather than silently passed.
+          claim.verdict = 'unresolvable';
+          break;
+        }
+        claim.verdict = existsSync(surface) ? 'failed' : 'ok';
+        if (claim.verdict === 'failed') {
+          finding('error', claim.kind, claim.repo, claim.file, claim.line, claim.value, `Listed as *planned*, but ${relative(repo.path, surface).split(/[\\/]/).join('/')} exists. A planned row reads exactly like a shipped one to whoever quotes it.`);
         }
         break;
       }
