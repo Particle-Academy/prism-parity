@@ -297,7 +297,9 @@
           "moderation",
           "audio",
           "textToSpeech",
-          "speechToText"
+          "speechToText",
+          "files",
+          "batch"
         ],
         "providers": [
           "anthropic",
@@ -331,7 +333,9 @@
           "moderation",
           "audio",
           "textToSpeech",
-          "speechToText"
+          "speechToText",
+          "files",
+          "batch"
         ],
         "providers": [
           "anthropic",
@@ -381,8 +385,16 @@
   "$deferred_comment": "Units present in the reference that the ports deliberately do NOT have yet. Listed so the drift report can tell a decision apart from an oversight — an unlisted absence is drift and gets reported; a listed one is the plan.",
   "deferred": [
     {
+      "unit": "capability:fim",
+      "reason": "BLOCKED ON A PROVIDER, not on the capability. Fill-in-the-middle is implemented by exactly one provider in the reference — Mistral — and neither port has Mistral. Porting the surface now would add a builder, a request and a response that every provider in both ports refuses: the count would move from 10 of 12 to 11 of 12 and no caller could use the eleventh. `files` and `batch` were taken first because both run on Anthropic AND OpenAI, which the ports do have. Mistral first, then fim on it; the other order ships a stub. Tracked as G-14 in the envelope's port gaps register."
+    },
+    {
       "unit": "feature:tool-execution-loop",
       "reason": "Out of the vertical slice. Tools can be declared and tool calls parsed, but the multi-step execution loop, approvals and concurrency are a much larger surface and porting them before the mapping patterns settled would have replicated whatever is wrong with them."
+    },
+    {
+      "unit": "feature:tool-approval",
+      "reason": "Deferred WITH the execution loop, and listed separately only because it was an oversight not to be. Approving a tool call is a decision made mid-loop; a port that can parse a tool call and not run one has nothing to approve. It becomes portable when the loop does, and is not a separate piece of work."
     },
     {
       "unit": "feature:value-object-rehydration",
