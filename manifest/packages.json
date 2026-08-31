@@ -229,7 +229,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism",
       "repository": "https://github.com/Particle-Academy/prism",
-      "version": "0.114.0",
+      "version": "0.115.0",
       "surface": {
         "capabilities": [
           "text",
@@ -294,7 +294,10 @@
           "stream",
           "embeddings",
           "images",
-          "moderation"
+          "moderation",
+          "audio",
+          "textToSpeech",
+          "speechToText"
         ],
         "providers": [
           "anthropic",
@@ -325,7 +328,10 @@
           "stream",
           "embeddings",
           "images",
-          "moderation"
+          "moderation",
+          "audio",
+          "textToSpeech",
+          "speechToText"
         ],
         "providers": [
           "anthropic",
