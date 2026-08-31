@@ -291,7 +291,8 @@
         "capabilities": [
           "text",
           "structured",
-          "stream"
+          "stream",
+          "embeddings"
         ],
         "providers": [
           "anthropic",
@@ -319,7 +320,8 @@
         "capabilities": [
           "text",
           "structured",
-          "stream"
+          "stream",
+          "embeddings"
         ],
         "providers": [
           "anthropic",
