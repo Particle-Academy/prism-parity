@@ -292,7 +292,8 @@
           "text",
           "structured",
           "stream",
-          "embeddings"
+          "embeddings",
+          "images"
         ],
         "providers": [
           "anthropic",
@@ -321,7 +322,8 @@
           "text",
           "structured",
           "stream",
-          "embeddings"
+          "embeddings",
+          "images"
         ],
         "providers": [
           "anthropic",
