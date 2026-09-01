@@ -434,7 +434,18 @@
           "thread-positions",
           "store-drivers",
           "cross-process-lock",
-          "php-compatible-session-key"
+          "php-compatible-session-key",
+          "modes",
+          "skills",
+          "tool-registry",
+          "tool-authorization",
+          "subagents",
+          "nested-budgets",
+          "run-ledger",
+          "events",
+          "doctor",
+          "agent-runtime",
+          "durable-approvals"
         ]
       }
     },
@@ -458,7 +469,18 @@
           "thread-positions",
           "store-drivers",
           "cross-process-lock",
-          "php-compatible-session-key"
+          "php-compatible-session-key",
+          "modes",
+          "skills",
+          "tool-registry",
+          "tool-authorization",
+          "subagents",
+          "nested-budgets",
+          "run-ledger",
+          "events",
+          "doctor",
+          "agent-runtime",
+          "durable-approvals"
         ]
       }
     }
