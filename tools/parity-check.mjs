@@ -52,7 +52,25 @@ if (discovered.size < 3) {
   );
 }
 
-const declared = new Map(Object.entries(manifest.packages).map(([name, pkg]) => [pkg.language, { name, ...pkg }]));
+// Keyed by FAMILY and language, not by language alone.
+//
+// It was language alone until satellites gained ports, and then a second `ts`
+// package silently OVERWROTE the first: `@particle-academy/prism-workspace`
+// became "the ts package", and every core mirror was reported missing from a
+// package that was never supposed to carry it. The map was correct only while
+// there was exactly one package per language, and nothing said so.
+//
+// A package with no `family` is core, which is what the three original entries
+// are.
+const declared = new Map(
+  Object.entries(manifest.packages).map(([name, pkg]) => [
+    `${pkg.family ?? 'core'}:${pkg.language}`,
+    { name, family: pkg.family ?? 'core', ...pkg },
+  ]),
+);
+
+/** Every language that has at least one declared package. */
+const declaredLanguages = new Set([...declared.values()].map((pkg) => pkg.language));
 
 // The package axis. Core parity used to be the only enforced target, which
 // allowed a green three-language report while every satellite existed in PHP
@@ -96,7 +114,7 @@ for (const [family, target] of Object.entries(targetFamilies)) {
 }
 
 for (const language of discovered) {
-  if (!declared.has(language)) {
+  if (!declaredLanguages.has(language)) {
     failures.push(
       `the repository contains an implementation for '${language}' that manifest/packages.json does not list. ` +
         'Add it to packages, and decide which mirrors it is required to carry.',
@@ -104,9 +122,9 @@ for (const language of discovered) {
   }
 }
 
-for (const [language, pkg] of declared) {
-  if (!discovered.has(language)) {
-    failures.push(`manifest/packages.json declares ${pkg.name} for '${language}', but nothing in the repository runs it.`);
+for (const pkg of declared.values()) {
+  if (!discovered.has(pkg.language)) {
+    failures.push(`manifest/packages.json declares ${pkg.name} for '${pkg.language}', but nothing in the repository runs it.`);
   }
 }
 
@@ -118,12 +136,16 @@ if (!manifest.mirrors?.length) failures.push('no mirrors declared — the existe
 
 for (const mirror of manifest.mirrors ?? []) {
   const [, value] = mirror.unit.split(':');
+  // A mirror belongs to ONE family. `capability:text` is a core commitment and
+  // says nothing about the workspace package, which is why this defaults to
+  // core rather than applying to every package in the language.
+  const family = mirror.family ?? 'core';
 
   for (const language of mirror.required_in) {
-    const pkg = declared.get(language);
+    const pkg = declared.get(`${family}:${language}`);
 
     if (!pkg) {
-      failures.push(`mirror ${mirror.unit} requires '${language}', which is not a declared package.`);
+      failures.push(`mirror ${mirror.unit} requires the '${family}' package for '${language}', which is not declared.`);
       continue;
     }
 
@@ -142,7 +164,7 @@ for (const mirror of manifest.mirrors ?? []) {
 // Informational, not enforced. What separates a decision from an oversight is
 // the `deferred` list — a listed absence is the plan, an unlisted one is drift.
 // ---------------------------------------------------------------------------
-const reference = [...declared.values()].find((pkg) => pkg.role === 'reference');
+const reference = [...declared.values()].find((pkg) => pkg.role === 'reference' && pkg.family === 'core');
 
 // ---------------------------------------------------------------------------
 // IS THE MANIFEST TRUE?
@@ -178,11 +200,23 @@ for (const pkg of declared.values()) {
 
   surfaceVerified += 1;
 
+  // Directories that are NOT providers, declared per package rather than
+  // guessed here. `Support` used to be hardcoded in this filter, which held
+  // exactly until a port added a lowercase `support/` for the data-uri encoder
+  // two providers share -- and the checker then reported a provider named
+  // "support" that `using()` would reject. A shared directory is a fact about
+  // the package's layout, so the package declares it; forgetting to is a loud
+  // failure here rather than a silently wrong count.
+  const shared = new Set(
+    (pkg.surface_paths?.providers_shared ?? []).map((entry) => entry.toLowerCase()),
+  );
+
   const onDisk = new Set(
     readdirSync(providersPath)
       .filter((entry) => statSync(join(providersPath, entry)).isDirectory())
-      .filter((entry) => !entry.startsWith('__') && entry !== 'Support')
-      .map((entry) => entry.toLowerCase()),
+      .filter((entry) => !entry.startsWith('__'))
+      .map((entry) => entry.toLowerCase())
+      .filter((entry) => !shared.has(entry)),
   );
 
   const stated = new Set((pkg.surface?.providers ?? []).map((name) => name.toLowerCase()));

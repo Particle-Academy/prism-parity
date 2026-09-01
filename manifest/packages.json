@@ -1,7 +1,7 @@
 {
-  "$comment": "The registry of what exists, in which language, at what version. Read by tools/parity-check.mjs, which DISCOVERS languages from the repository rather than trusting this list — a hand-maintained list is exactly how a fifth copy of a version number goes three releases stale while the test written to catch that drift covers only four.",
+  "$comment": "The registry of what exists, in which language, at what version. Read by tools/parity-check.mjs, which DISCOVERS languages from the repository rather than trusting this list \u2014 a hand-maintained list is exactly how a fifth copy of a version number goes three releases stale while the test written to catch that drift covers only four.",
   "kit_version": "2026.08.1",
-  "kit_note": "The kit version names a SET tested together. It is not a version any package carries. Packages version independently — see docs/decisions/0001-versioning.md — and the kit does the compatibility-matrix job with one number instead of N squared.",
+  "kit_note": "The kit version names a SET tested together. It is not a version any package carries. Packages version independently \u2014 see docs/decisions/0001-versioning.md \u2014 and the kit does the compatibility-matrix job with one number instead of N squared.",
   "kit": {
     "prism": "0.114.0",
     "prism-ts": "0.1.0",
@@ -209,12 +209,12 @@
             "repository": "prism-workspace"
           },
           "ts": {
-            "status": "in-progress",
+            "status": "shipped",
             "package": "@particle-academy/prism-workspace",
             "repository": "prism-workspace-ts"
           },
           "py": {
-            "status": "in-progress",
+            "status": "shipped",
             "package": "prism-ai-workspace",
             "repository": "prism-workspace-py"
           }
@@ -276,7 +276,10 @@
       },
       "surface_paths": {
         "providers": "src/Providers",
-        "$comment": "PHP directories are StudlyCase; the checker lowercases before comparing."
+        "$comment": "PHP directories are StudlyCase; the checker lowercases before comparing.",
+        "providers_shared": [
+          "Support"
+        ]
       }
     },
     "prism-ts": {
@@ -314,7 +317,10 @@
         ]
       },
       "surface_paths": {
-        "providers": "src/providers"
+        "providers": "src/providers",
+        "providers_shared": [
+          "support"
+        ]
       }
     },
     "prism-py": {
@@ -352,7 +358,60 @@
         ]
       },
       "surface_paths": {
-        "providers": "src/prism/providers"
+        "providers": "src/prism/providers",
+        "providers_shared": [
+          "support"
+        ]
+      }
+    },
+    "prism-workspace-ts": {
+      "language": "ts",
+      "role": "port",
+      "registry": "npm",
+      "name": "@particle-academy/prism-workspace",
+      "repository": "https://github.com/Particle-Academy/prism-workspace-ts",
+      "version": "0.1.0",
+      "published": false,
+      "family": "workspace",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "lexical-path-guard",
+          "symlink-containment",
+          "owner-addressing",
+          "authorization-hook",
+          "streamed-listing",
+          "byte-paths",
+          "streamed-io",
+          "escape-corpus",
+          "corpus-runner"
+        ]
+      }
+    },
+    "prism-workspace-py": {
+      "language": "py",
+      "role": "port",
+      "registry": "pypi",
+      "name": "prism-ai-workspace",
+      "repository": "https://github.com/Particle-Academy/prism-workspace-py",
+      "version": "0.1.0",
+      "published": false,
+      "family": "workspace",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "lexical-path-guard",
+          "symlink-containment",
+          "owner-addressing",
+          "authorization-hook",
+          "streamed-listing",
+          "byte-paths",
+          "streamed-io",
+          "escape-corpus",
+          "corpus-runner"
+        ]
       }
     }
   },
@@ -386,7 +445,7 @@
       ]
     }
   ],
-  "$deferred_comment": "Units present in the reference that the ports deliberately do NOT have yet. Listed so the drift report can tell a decision apart from an oversight — an unlisted absence is drift and gets reported; a listed one is the plan.",
+  "$deferred_comment": "Units present in the reference that the ports deliberately do NOT have yet. Listed so the drift report can tell a decision apart from an oversight \u2014 an unlisted absence is drift and gets reported; a listed one is the plan.",
   "deferred": [
     {
       "unit": "feature:tool-execution-loop",
