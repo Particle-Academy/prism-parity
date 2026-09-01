@@ -71,14 +71,14 @@
             "repository": "prism-harness"
           },
           "ts": {
-            "status": "planned",
+            "status": "in-progress",
             "package": "@particle-academy/prism-harness",
-            "repository": null
+            "repository": "prism-harness-ts"
           },
           "py": {
-            "status": "planned",
+            "status": "in-progress",
             "package": "prism-ai-harness",
-            "repository": null
+            "repository": "prism-harness-py"
           }
         }
       },
@@ -411,6 +411,54 @@
           "streamed-io",
           "escape-corpus",
           "corpus-runner"
+        ]
+      }
+    },
+    "prism-harness-ts": {
+      "language": "ts",
+      "role": "port",
+      "registry": "npm",
+      "name": "@particle-academy/prism-harness",
+      "repository": "https://github.com/Particle-Academy/prism-harness-ts",
+      "version": "0.1.0",
+      "published": false,
+      "family": "harness",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "session-state",
+          "two-slot-durability",
+          "durability-guard",
+          "threads",
+          "thread-positions",
+          "store-drivers",
+          "cross-process-lock",
+          "php-compatible-session-key"
+        ]
+      }
+    },
+    "prism-harness-py": {
+      "language": "py",
+      "role": "port",
+      "registry": "pypi",
+      "name": "prism-ai-harness",
+      "repository": "https://github.com/Particle-Academy/prism-harness-py",
+      "version": "0.1.0",
+      "published": false,
+      "family": "harness",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "session-state",
+          "two-slot-durability",
+          "durability-guard",
+          "threads",
+          "thread-positions",
+          "store-drivers",
+          "cross-process-lock",
+          "php-compatible-session-key"
         ]
       }
     }
