@@ -78,6 +78,8 @@ const declaredLanguages = new Set([...declared.values()].map((pkg) => pkg.langua
 // visible without claiming a repository or runner already exists.
 const targetFamilies = manifest.parity_target?.families ?? {};
 const targetGaps = [];
+const gapsPlanned = [];
+const gapsInProgress = [];
 
 if (Object.keys(targetFamilies).length === 0) {
   failures.push('no parity_target families declared — full-ecosystem parity would assert nothing');
@@ -109,6 +111,15 @@ for (const [family, target] of Object.entries(targetFamilies)) {
 
     if (implementation.status !== 'shipped') {
       targetGaps.push(`${family}:${language} (${implementation.status})`);
+
+      // Split by KIND of gap, not just counted. `planned` means nothing
+      // exists; `in-progress` means the repository is real and its own suite is
+      // green, and what is missing is a conformance suite in THIS repo.
+      // Collapsing the two into one number made twelve real packages invisible
+      // — the total did not move when they landed, which reads as no progress.
+      (implementation.status === 'planned' ? gapsPlanned : gapsInProgress).push(
+        `${family}:${language}`,
+      );
     }
   }
 }
@@ -183,6 +194,45 @@ const reference = [...declared.values()].find((pkg) => pkg.role === 'reference' 
 // the package is COUNTED as unverified rather than passed over -- an
 // unverifiable declaration must not read like a verified one.
 // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// DOES THE CLAIMED REPOSITORY EXIST, AND DOES IT HAVE A SUITE?
+//
+// `in-progress` is a claim that code exists. Before this ran, that claim rested
+// on a string in a JSON file — a family could say `in-progress` with a
+// repository name and nothing behind it, and this check would agree.
+//
+// A port checked out beside this repo is verified: the directory is there and
+// it carries tests. One that is NOT checked out is counted as UNCHECKED, never
+// as passed — the same rule the provider check above already follows.
+// ---------------------------------------------------------------------------
+const portsWithSuite = [];
+const portsUnchecked = [];
+const TEST_DIRS = ['test', 'tests', 'src/__tests__'];
+
+for (const [family, target] of Object.entries(targetFamilies)) {
+  for (const [language, implementation] of Object.entries(target.implementations ?? {})) {
+    if (implementation.status === 'planned' || !implementation.repository) continue;
+
+    const repo = join(dirname(root), implementation.repository);
+
+    if (!existsSync(repo)) {
+      portsUnchecked.push(`${family}:${language}`);
+      continue;
+    }
+
+    if (!TEST_DIRS.some((dir) => existsSync(join(repo, dir)))) {
+      failures.push(
+        `parity target '${family}' claims '${language}' is ${implementation.status} at ` +
+          `${implementation.repository}, and that repository has no test directory. ` +
+          'A status is a claim about code; a claim nothing tests is not one.',
+      );
+      continue;
+    }
+
+    portsWithSuite.push(`${family}:${language}`);
+  }
+}
+
 let surfaceVerified = 0;
 const surfaceUnverified = [];
 
@@ -281,7 +331,8 @@ if (report) {
   console.log(lines.join('\n'));
   console.log(
     `\n# Coordinated launch target\n\n${Object.keys(targetFamilies).length} package families; ` +
-      `${targetGaps.length} implementation gap(s).\n\n` +
+      `${targetGaps.length} implementation gap(s) — ${gapsPlanned.length} not started, ` +
+      `${gapsInProgress.length} built but not conformance-verified here.\n\n` +
       (targetGaps.length ? targetGaps.map((gap) => `  - ${gap}`).join('\n') : '  - none'),
   );
 }
@@ -296,7 +347,13 @@ console.error(
     ? `Manifest surface verified against disk for ${surfaceVerified} package(s); ${surfaceUnverified.length} UNVERIFIED (not checked out): ${surfaceUnverified.join(', ')}.`
     : `Manifest surface verified against disk for ${surfaceVerified} package(s).`,
 );
+console.error(
+  portsUnchecked.length > 0
+    ? `Ports with a suite on disk: ${portsWithSuite.length}; ${portsUnchecked.length} UNCHECKED (not checked out): ${portsUnchecked.join(', ')}.`
+    : `Ports with a suite on disk: ${portsWithSuite.length}.`,
+);
 console.error(`Parity check passed: ${discovered.size} languages, ${manifest.mirrors.length} mirrors enforced.`);
 console.error(
-  `Coordinated launch target: ${Object.keys(targetFamilies).length} package families, ${targetGaps.length} implementation gap(s).`,
+  `Coordinated launch target: ${Object.keys(targetFamilies).length} package families, ${targetGaps.length} implementation gap(s) ` +
+    `— ${gapsPlanned.length} not started, ${gapsInProgress.length} built but not conformance-verified here.`,
 );

@@ -1,7 +1,7 @@
 {
-  "$comment": "The registry of what exists, in which language, at what version. Read by tools/parity-check.mjs, which DISCOVERS languages from the repository rather than trusting this list \u2014 a hand-maintained list is exactly how a fifth copy of a version number goes three releases stale while the test written to catch that drift covers only four.",
+  "$comment": "The registry of what exists, in which language, at what version. Read by tools/parity-check.mjs, which DISCOVERS languages from the repository rather than trusting this list — a hand-maintained list is exactly how a fifth copy of a version number goes three releases stale while the test written to catch that drift covers only four.",
   "kit_version": "2026.08.1",
-  "kit_note": "The kit version names a SET tested together. It is not a version any package carries. Packages version independently \u2014 see docs/decisions/0001-versioning.md \u2014 and the kit does the compatibility-matrix job with one number instead of N squared.",
+  "kit_note": "The kit version names a SET tested together. It is not a version any package carries. Packages version independently — see docs/decisions/0001-versioning.md — and the kit does the compatibility-matrix job with one number instead of N squared.",
   "kit": {
     "prism": "0.114.0",
     "prism-ts": "0.1.0",
@@ -48,14 +48,14 @@
             "repository": "prism-browser"
           },
           "ts": {
-            "status": "planned",
+            "status": "in-progress",
             "package": "@particle-academy/prism-browser",
-            "repository": null
+            "repository": "prism-browser-ts"
           },
           "py": {
-            "status": "planned",
+            "status": "in-progress",
             "package": "prism-ai-browser",
-            "repository": null
+            "repository": "prism-browser-py"
           }
         }
       },
@@ -94,14 +94,14 @@
             "repository": "prism-human-plus"
           },
           "ts": {
-            "status": "planned",
+            "status": "in-progress",
             "package": "@particle-academy/prism-human-plus",
-            "repository": null
+            "repository": "prism-human-plus-ts"
           },
           "py": {
-            "status": "planned",
+            "status": "in-progress",
             "package": "prism-ai-human-plus",
-            "repository": null
+            "repository": "prism-human-plus-py"
           }
         }
       },
@@ -117,14 +117,14 @@
             "repository": "prism-mcp"
           },
           "ts": {
-            "status": "planned",
+            "status": "in-progress",
             "package": "@particle-academy/prism-mcp",
-            "repository": null
+            "repository": "prism-mcp-ts"
           },
           "py": {
-            "status": "planned",
+            "status": "in-progress",
             "package": "prism-ai-mcp",
-            "repository": null
+            "repository": "prism-mcp-py"
           }
         }
       },
@@ -140,14 +140,14 @@
             "repository": "prism-memory"
           },
           "ts": {
-            "status": "planned",
+            "status": "in-progress",
             "package": "@particle-academy/prism-memory",
-            "repository": null
+            "repository": "prism-memory-ts"
           },
           "py": {
-            "status": "planned",
+            "status": "in-progress",
             "package": "prism-ai-memory",
-            "repository": null
+            "repository": "prism-memory-py"
           }
         }
       },
@@ -163,14 +163,14 @@
             "repository": "prism-opentelemetry"
           },
           "ts": {
-            "status": "planned",
+            "status": "in-progress",
             "package": "@particle-academy/prism-opentelemetry",
-            "repository": null
+            "repository": "prism-opentelemetry-ts"
           },
           "py": {
-            "status": "planned",
+            "status": "in-progress",
             "package": "prism-ai-opentelemetry",
-            "repository": null
+            "repository": "prism-opentelemetry-py"
           }
         }
       },
@@ -186,14 +186,14 @@
             "repository": "prism-perplexity"
           },
           "ts": {
-            "status": "planned",
+            "status": "in-progress",
             "package": "@particle-academy/prism-perplexity",
-            "repository": null
+            "repository": "prism-perplexity-ts"
           },
           "py": {
-            "status": "planned",
+            "status": "in-progress",
             "package": "prism-ai-perplexity",
-            "repository": null
+            "repository": "prism-perplexity-py"
           }
         }
       },
@@ -282,44 +282,419 @@
         ]
       }
     },
-    "prism-ts": {
+    "prism-browser-py": {
+      "language": "py",
+      "role": "port",
+      "registry": "pypi",
+      "name": "prism-ai-browser",
+      "repository": "https://github.com/Particle-Academy/prism-browser-py",
+      "version": "0.1.0",
+      "published": false,
+      "family": "browser",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "browser-policy",
+          "host-allowlist",
+          "wildcard-subdomain-not-apex",
+          "url-credentials-refused",
+          "https-required",
+          "port-allowlist",
+          "private-address-refused",
+          "action-allowlist",
+          "observation-guard",
+          "observation-byte-cap",
+          "nonce-framing",
+          "guarded-browser",
+          "injected-engine"
+        ]
+      }
+    },
+    "prism-browser-ts": {
       "language": "ts",
       "role": "port",
       "registry": "npm",
-      "name": "@particle-academy/prism",
-      "repository": "https://github.com/Particle-Academy/prism-ts",
+      "name": "@particle-academy/prism-browser",
+      "repository": "https://github.com/Particle-Academy/prism-browser-ts",
       "version": "0.1.0",
       "published": false,
+      "family": "browser",
       "surface": {
-        "capabilities": [
-          "text",
-          "structured",
-          "stream",
-          "embeddings",
-          "images",
-          "moderation",
-          "audio",
-          "textToSpeech",
-          "speechToText",
-          "files",
-          "batch",
-          "fim"
-        ],
-        "providers": [
-          "anthropic",
-          "mistral",
-          "openai"
-        ],
+        "capabilities": [],
+        "providers": [],
         "features": [
-          "provider-tools",
-          "value-object-serialization",
-          "value-object-rehydration"
+          "browser-policy",
+          "host-allowlist",
+          "wildcard-subdomain-not-apex",
+          "url-credentials-refused",
+          "https-required",
+          "port-allowlist",
+          "private-address-refused",
+          "action-allowlist",
+          "observation-guard",
+          "observation-byte-cap",
+          "nonce-framing",
+          "guarded-browser",
+          "injected-engine"
         ]
-      },
-      "surface_paths": {
-        "providers": "src/providers",
-        "providers_shared": [
-          "support"
+      }
+    },
+    "prism-harness-py": {
+      "language": "py",
+      "role": "port",
+      "registry": "pypi",
+      "name": "prism-ai-harness",
+      "repository": "https://github.com/Particle-Academy/prism-harness-py",
+      "version": "0.1.0",
+      "published": false,
+      "family": "harness",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "session-state",
+          "two-slot-durability",
+          "durability-guard",
+          "threads",
+          "thread-positions",
+          "store-drivers",
+          "cross-process-lock",
+          "php-compatible-session-key",
+          "modes",
+          "skills",
+          "tool-registry",
+          "tool-authorization",
+          "subagents",
+          "nested-budgets",
+          "run-ledger",
+          "events",
+          "doctor",
+          "agent-runtime",
+          "durable-approvals"
+        ]
+      }
+    },
+    "prism-harness-ts": {
+      "language": "ts",
+      "role": "port",
+      "registry": "npm",
+      "name": "@particle-academy/prism-harness",
+      "repository": "https://github.com/Particle-Academy/prism-harness-ts",
+      "version": "0.1.0",
+      "published": false,
+      "family": "harness",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "session-state",
+          "two-slot-durability",
+          "durability-guard",
+          "threads",
+          "thread-positions",
+          "store-drivers",
+          "cross-process-lock",
+          "php-compatible-session-key",
+          "modes",
+          "skills",
+          "tool-registry",
+          "tool-authorization",
+          "subagents",
+          "nested-budgets",
+          "run-ledger",
+          "events",
+          "doctor",
+          "agent-runtime",
+          "durable-approvals"
+        ]
+      }
+    },
+    "prism-human-plus-py": {
+      "language": "py",
+      "role": "port",
+      "registry": "pypi",
+      "name": "prism-ai-human-plus",
+      "repository": "https://github.com/Particle-Academy/prism-human-plus-py",
+      "version": "0.1.0",
+      "published": false,
+      "family": "human-plus",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "surface-invitation",
+          "invitation-validation",
+          "surface-attachment",
+          "attachment-generations",
+          "owner-re-presentation",
+          "trust-policy",
+          "undeclared-refuses-discovery",
+          "definition-pinning",
+          "human-only-tools-reserved",
+          "result-guard",
+          "nonce-framing",
+          "activity-notifications",
+          "agent-actor-stamp",
+          "terminal-state-separation",
+          "mcp-2025-06-18",
+          "response-correlation",
+          "sse-post-relay",
+          "client-scoped-relay",
+          "egress-proxy-required",
+          "relay-url-policy",
+          "attachment-store",
+          "conditional-writes",
+          "toolset",
+          "local-approval-policy",
+          "injected-transport"
+        ]
+      }
+    },
+    "prism-human-plus-ts": {
+      "language": "ts",
+      "role": "port",
+      "registry": "npm",
+      "name": "@particle-academy/prism-human-plus",
+      "repository": "https://github.com/Particle-Academy/prism-human-plus-ts",
+      "version": "0.1.0",
+      "published": false,
+      "family": "human-plus",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "surface-invitation",
+          "invitation-validation",
+          "surface-attachment",
+          "attachment-generations",
+          "owner-re-presentation",
+          "trust-policy",
+          "undeclared-refuses-discovery",
+          "definition-pinning",
+          "human-only-tools-reserved",
+          "result-guard",
+          "nonce-framing",
+          "activity-notifications",
+          "agent-actor-stamp",
+          "terminal-state-separation",
+          "mcp-2025-06-18",
+          "response-correlation",
+          "sse-post-relay",
+          "client-scoped-relay",
+          "egress-proxy-required",
+          "relay-url-policy",
+          "attachment-store",
+          "conditional-writes",
+          "toolset",
+          "local-approval-policy",
+          "injected-transport"
+        ]
+      }
+    },
+    "prism-mcp-py": {
+      "language": "py",
+      "role": "port",
+      "registry": "pypi",
+      "name": "prism-ai-mcp",
+      "repository": "https://github.com/Particle-Academy/prism-mcp-py",
+      "version": "0.1.0",
+      "published": false,
+      "family": "mcp",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "trust-policy",
+          "undeclared-refuses-discovery",
+          "tool-definition-digest",
+          "definition-pinning",
+          "result-guard",
+          "result-byte-cap",
+          "nonce-framing",
+          "mirrored-parameters",
+          "rfc9110-token-names",
+          "schema-depth-bound",
+          "protocol-negotiation",
+          "injected-transport"
+        ]
+      }
+    },
+    "prism-mcp-ts": {
+      "language": "ts",
+      "role": "port",
+      "registry": "npm",
+      "name": "@particle-academy/prism-mcp",
+      "repository": "https://github.com/Particle-Academy/prism-mcp-ts",
+      "version": "0.1.0",
+      "published": false,
+      "family": "mcp",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "trust-policy",
+          "undeclared-refuses-discovery",
+          "tool-definition-digest",
+          "definition-pinning",
+          "result-guard",
+          "result-byte-cap",
+          "nonce-framing",
+          "mirrored-parameters",
+          "rfc9110-token-names",
+          "schema-depth-bound",
+          "protocol-negotiation",
+          "injected-transport"
+        ]
+      }
+    },
+    "prism-memory-py": {
+      "language": "py",
+      "role": "port",
+      "registry": "pypi",
+      "name": "prism-ai-memory",
+      "repository": "https://github.com/Particle-Academy/prism-memory-py",
+      "version": "0.1.0",
+      "published": false,
+      "family": "memory",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "vector",
+          "little-endian-float64",
+          "base64-vector-storage",
+          "cosine-similarity",
+          "binary-signature",
+          "weighting",
+          "recall-over-fetch",
+          "unscorable-guard",
+          "memory-store",
+          "injected-embedder"
+        ]
+      }
+    },
+    "prism-memory-ts": {
+      "language": "ts",
+      "role": "port",
+      "registry": "npm",
+      "name": "@particle-academy/prism-memory",
+      "repository": "https://github.com/Particle-Academy/prism-memory-ts",
+      "version": "0.1.0",
+      "published": false,
+      "family": "memory",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "vector",
+          "little-endian-float64",
+          "base64-vector-storage",
+          "cosine-similarity",
+          "binary-signature",
+          "weighting",
+          "recall-over-fetch",
+          "unscorable-guard",
+          "memory-store",
+          "injected-embedder"
+        ]
+      }
+    },
+    "prism-opentelemetry-py": {
+      "language": "py",
+      "role": "port",
+      "registry": "pypi",
+      "name": "prism-ai-opentelemetry",
+      "repository": "https://github.com/Particle-Academy/prism-opentelemetry-py",
+      "version": "0.1.0",
+      "published": false,
+      "family": "opentelemetry",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "span-store",
+          "trace-id-keying",
+          "capture-gate",
+          "prompt-capture-off-by-default",
+          "attribute-redaction",
+          "token-usage-attributes",
+          "tool-call-spans",
+          "error-status",
+          "injected-tracer"
+        ]
+      }
+    },
+    "prism-opentelemetry-ts": {
+      "language": "ts",
+      "role": "port",
+      "registry": "npm",
+      "name": "@particle-academy/prism-opentelemetry",
+      "repository": "https://github.com/Particle-Academy/prism-opentelemetry-ts",
+      "version": "0.1.0",
+      "published": false,
+      "family": "opentelemetry",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "span-store",
+          "trace-id-keying",
+          "capture-gate",
+          "prompt-capture-off-by-default",
+          "attribute-redaction",
+          "token-usage-attributes",
+          "tool-call-spans",
+          "error-status",
+          "injected-tracer"
+        ]
+      }
+    },
+    "prism-perplexity-py": {
+      "language": "py",
+      "role": "port",
+      "registry": "pypi",
+      "name": "prism-ai-perplexity",
+      "repository": "https://github.com/Particle-Academy/prism-perplexity-py",
+      "version": "0.1.0",
+      "published": false,
+      "family": "perplexity",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "search",
+          "search-filters",
+          "embeddings",
+          "agent-client",
+          "agent-polling",
+          "poll-budget",
+          "citation-passthrough",
+          "injected-transport"
+        ]
+      }
+    },
+    "prism-perplexity-ts": {
+      "language": "ts",
+      "role": "port",
+      "registry": "npm",
+      "name": "@particle-academy/prism-perplexity",
+      "repository": "https://github.com/Particle-Academy/prism-perplexity-ts",
+      "version": "0.1.0",
+      "published": false,
+      "family": "perplexity",
+      "surface": {
+        "capabilities": [],
+        "providers": [],
+        "features": [
+          "search",
+          "search-filters",
+          "embeddings",
+          "agent-client",
+          "agent-polling",
+          "poll-budget",
+          "citation-passthrough",
+          "injected-transport"
         ]
       }
     },
@@ -364,28 +739,44 @@
         ]
       }
     },
-    "prism-workspace-ts": {
+    "prism-ts": {
       "language": "ts",
       "role": "port",
       "registry": "npm",
-      "name": "@particle-academy/prism-workspace",
-      "repository": "https://github.com/Particle-Academy/prism-workspace-ts",
+      "name": "@particle-academy/prism",
+      "repository": "https://github.com/Particle-Academy/prism-ts",
       "version": "0.1.0",
       "published": false,
-      "family": "workspace",
       "surface": {
-        "capabilities": [],
-        "providers": [],
+        "capabilities": [
+          "text",
+          "structured",
+          "stream",
+          "embeddings",
+          "images",
+          "moderation",
+          "audio",
+          "textToSpeech",
+          "speechToText",
+          "files",
+          "batch",
+          "fim"
+        ],
+        "providers": [
+          "anthropic",
+          "mistral",
+          "openai"
+        ],
         "features": [
-          "lexical-path-guard",
-          "symlink-containment",
-          "owner-addressing",
-          "authorization-hook",
-          "streamed-listing",
-          "byte-paths",
-          "streamed-io",
-          "escape-corpus",
-          "corpus-runner"
+          "provider-tools",
+          "value-object-serialization",
+          "value-object-rehydration"
+        ]
+      },
+      "surface_paths": {
+        "providers": "src/providers",
+        "providers_shared": [
+          "support"
         ]
       }
     },
@@ -414,73 +805,28 @@
         ]
       }
     },
-    "prism-harness-ts": {
+    "prism-workspace-ts": {
       "language": "ts",
       "role": "port",
       "registry": "npm",
-      "name": "@particle-academy/prism-harness",
-      "repository": "https://github.com/Particle-Academy/prism-harness-ts",
+      "name": "@particle-academy/prism-workspace",
+      "repository": "https://github.com/Particle-Academy/prism-workspace-ts",
       "version": "0.1.0",
       "published": false,
-      "family": "harness",
+      "family": "workspace",
       "surface": {
         "capabilities": [],
         "providers": [],
         "features": [
-          "session-state",
-          "two-slot-durability",
-          "durability-guard",
-          "threads",
-          "thread-positions",
-          "store-drivers",
-          "cross-process-lock",
-          "php-compatible-session-key",
-          "modes",
-          "skills",
-          "tool-registry",
-          "tool-authorization",
-          "subagents",
-          "nested-budgets",
-          "run-ledger",
-          "events",
-          "doctor",
-          "agent-runtime",
-          "durable-approvals"
-        ]
-      }
-    },
-    "prism-harness-py": {
-      "language": "py",
-      "role": "port",
-      "registry": "pypi",
-      "name": "prism-ai-harness",
-      "repository": "https://github.com/Particle-Academy/prism-harness-py",
-      "version": "0.1.0",
-      "published": false,
-      "family": "harness",
-      "surface": {
-        "capabilities": [],
-        "providers": [],
-        "features": [
-          "session-state",
-          "two-slot-durability",
-          "durability-guard",
-          "threads",
-          "thread-positions",
-          "store-drivers",
-          "cross-process-lock",
-          "php-compatible-session-key",
-          "modes",
-          "skills",
-          "tool-registry",
-          "tool-authorization",
-          "subagents",
-          "nested-budgets",
-          "run-ledger",
-          "events",
-          "doctor",
-          "agent-runtime",
-          "durable-approvals"
+          "lexical-path-guard",
+          "symlink-containment",
+          "owner-addressing",
+          "authorization-hook",
+          "streamed-listing",
+          "byte-paths",
+          "streamed-io",
+          "escape-corpus",
+          "corpus-runner"
         ]
       }
     }
@@ -515,7 +861,7 @@
       ]
     }
   ],
-  "$deferred_comment": "Units present in the reference that the ports deliberately do NOT have yet. Listed so the drift report can tell a decision apart from an oversight \u2014 an unlisted absence is drift and gets reported; a listed one is the plan.",
+  "$deferred_comment": "Units present in the reference that the ports deliberately do NOT have yet. Listed so the drift report can tell a decision apart from an oversight — an unlisted absence is drift and gets reported; a listed one is the plan.",
   "deferred": [
     {
       "unit": "feature:tool-execution-loop",
