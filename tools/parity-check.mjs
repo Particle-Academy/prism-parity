@@ -209,6 +209,36 @@ const portsWithSuite = [];
 const portsUnchecked = [];
 const TEST_DIRS = ['test', 'tests', 'src/__tests__'];
 
+// ---------------------------------------------------------------------------
+// WHICH FAMILIES HAVE A CROSS-LANGUAGE SUITE AT ALL?
+//
+// `in-progress` versus `shipped` turns on exactly this, and until now nothing
+// counted it — so writing the first satellite suite moved no number, the same
+// way twelve packages landing moved no number. A family with a suite is not
+// automatically shipped (one suite covering one value is not a family), but a
+// family with NO suite cannot be, and that is worth being able to see.
+// ---------------------------------------------------------------------------
+const suitesByFamily = new Map();
+
+for (const id of directories(join(root, 'suites'))) {
+  const manifest = JSON.parse(readFileSync(join(root, 'suites', id, 'manifest.json'), 'utf8'));
+  const languages = Object.keys(manifest.implementations ?? {});
+
+  // A suite only counts as cross-language if it actually names more than one.
+  if (languages.length < 2) continue;
+
+  // The family is the suite id's first segment when it names one, else core —
+  // the same defaulting the package map uses.
+  const family = Object.keys(targetFamilies).find((name) => id.startsWith(`${name}-`)) ?? 'core';
+
+  suitesByFamily.set(family, [...(suitesByFamily.get(family) ?? []), id]);
+}
+
+const familiesWithSuite = [...suitesByFamily.keys()].sort();
+const familiesWithoutSuite = Object.keys(targetFamilies)
+  .filter((family) => !suitesByFamily.has(family))
+  .sort();
+
 for (const [family, target] of Object.entries(targetFamilies)) {
   for (const [language, implementation] of Object.entries(target.implementations ?? {})) {
     if (implementation.status === 'planned' || !implementation.repository) continue;
@@ -351,6 +381,11 @@ console.error(
   portsUnchecked.length > 0
     ? `Ports with a suite on disk: ${portsWithSuite.length}; ${portsUnchecked.length} UNCHECKED (not checked out): ${portsUnchecked.join(', ')}.`
     : `Ports with a suite on disk: ${portsWithSuite.length}.`,
+);
+console.error(
+  `Families with a cross-language suite: ${familiesWithSuite.length} of ${Object.keys(targetFamilies).length}` +
+    (familiesWithSuite.length ? ` (${familiesWithSuite.join(', ')})` : '') +
+    `. Without one: ${familiesWithoutSuite.join(', ') || 'none'}.`,
 );
 console.error(`Parity check passed: ${discovered.size} languages, ${manifest.mirrors.length} mirrors enforced.`);
 console.error(

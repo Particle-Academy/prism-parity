@@ -1,0 +1,15 @@
+{
+  "id": "workspace-path-guard",
+  "title": "Workspace path boundary",
+  "kind": "security-corpus",
+  "pins": "All 134 byte-exact path hazards, their stable refusal codes, and the platform-specific behavior of an unguarded resolver. Base64 preserves invalid UTF-8 without laundering it through JSON.",
+  "pattern_doc": "docs/decisions/0021-parity-is-the-shipping-library-set.md",
+  "reference": "php",
+  "comparison": { "mode": "canonical-json-string" },
+  "discrimination": { "status": "probed" },
+  "implementations": {
+    "php": { "status": "full", "runner": "prism-workspace:tests/Unit/PathGuardTest.php" },
+    "ts": { "status": "full", "runner": "prism-workspace-ts:test/corpus.test.ts" },
+    "py": { "status": "full", "runner": "prism-workspace-py:tests/test_corpus.py" }
+  }
+}

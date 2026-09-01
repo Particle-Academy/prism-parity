@@ -1,0 +1,26 @@
+{
+  "id": "mcp-tool-digest",
+  "title": "MCP tool-definition digest",
+  "kind": "security-corpus",
+  "pins": "The exact digest an MCP tool definition produces in every language. A digest is the material of a TrustPolicy pin, so this is the one value in the package that MUST be byte-identical across implementations: a pin computed against a PHP deployment is pasted into a TypeScript or Python config by an operator who has no way to know the two disagree. Per-language suites cannot see this — each one is perfectly happy digesting its own way.",
+  "pattern_doc": "docs/decisions/0005-canonical-json.md",
+  "reference": "php",
+  "comparison": { "mode": "canonical-json-string" },
+  "discrimination": { "status": "probed" },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-mcp:tests/Unit/ToolDigestCorpusTest.php"
+    },
+    "ts": {
+      "status": "partial",
+      "gap": "dig-0002, dig-0003 and dig-0007 diverge from the reference and are recorded as `divergence` rather than skipped, because a skip would hide the finding. Two causes, both proven by dumping the pre-hash material: PHP renders an empty map-typed field as `[]` where this language renders `{}` (the same F-3 artefact as rtp-0009), and PHP coerces an absent description to `\"\"` where this language keeps `null`. Consequence: a pin does not transfer between PHP and this language for those shapes. See G-20.",
+      "runner": "prism-mcp-ts:test/digest-corpus.test.ts"
+    },
+    "py": {
+      "status": "partial",
+      "gap": "Identical to ts, and identical byte-for-byte to ts on all ten rows — the two ports agree with each other and disagree with the reference on the same three. That is itself the useful signal: it is one reference-side artefact plus one coercion choice, not two independent port bugs. See G-20.",
+      "runner": "prism-mcp-py:tests/test_digest_corpus.py"
+    }
+  }
+}
