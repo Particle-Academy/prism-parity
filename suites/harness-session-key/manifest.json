@@ -1,0 +1,24 @@
+{
+  "id": "harness-session-key",
+  "title": "The session address, in three languages",
+  "kind": "security-corpus",
+  "pins": "The exact string a session resolves to. This is the address a PHP application and a TypeScript or Python agent use to find the SAME conversation, and it is what a store is keyed by. Drift here does not error: every language reads and writes its own key perfectly happily, and the two simply stop seeing each other's turns. A conversation that appears empty is the whole failure mode, and nothing reports it.",
+  "pattern_doc": "docs/decisions/0021-parity-is-the-shipping-library-set.md",
+  "reference": "php",
+  "comparison": { "mode": "canonical-json-string" },
+  "discrimination": { "status": "probed" },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-harness:tests/Unit/SessionKeyCorpusTest.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-harness-ts:test/session-key-corpus.test.ts"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-harness-py:tests/test_session_key_corpus.py"
+    }
+  }
+}
