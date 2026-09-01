@@ -1,0 +1,26 @@
+{
+  "id": "browser-url-policy",
+  "title": "Browser navigation policy refusals",
+  "kind": "security-corpus",
+  "pins": "Which URLs a browser policy refuses, and under WHICH CODE, in every language. The code is the contract — a consumer switches on it to decide whether to retry, widen a list, or surface a hard stop. The message is deliberately not pinned; the three implementations word these differently on purpose, and a test over the prose holds every language to a translation and reddens on a wording improvement that changed nothing.",
+  "pattern_doc": "docs/decisions/0021-parity-is-the-shipping-library-set.md",
+  "reference": "php",
+  "comparison": { "mode": "canonical-json-string" },
+  "discrimination": { "status": "probed" },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-browser:tests/Unit/UrlPolicyCorpusTest.php"
+    },
+    "ts": {
+      "status": "partial",
+      "gap": "url-0005, url-0006 and url-0007 diverge and are recorded as `divergence` rather than skipped. All three languages REFUSE the same URLs — the security behaviour is identical and every private address is blocked — but the reference names the refusal `private_network_refused` and this port names it `private_address_refused`. A consumer switching on the code gets no match. The port also exposes it as `.code` where the reference exposes `.reason`. See G-21.",
+      "runner": "prism-browser-ts:test/url-policy-corpus.test.ts"
+    },
+    "py": {
+      "status": "partial",
+      "gap": "Identical to ts, on the same three rows, with the same code. The two ports agree with each other everywhere — this is one rename made once and mirrored, not two independent drifts. See G-21.",
+      "runner": "prism-browser-py:tests/test_url_policy_corpus.py"
+    }
+  }
+}

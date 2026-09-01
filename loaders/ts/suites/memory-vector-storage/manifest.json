@@ -1,0 +1,24 @@
+{
+  "id": "memory-vector-storage",
+  "title": "Vector storage bytes and the write-path guard",
+  "kind": "security-corpus",
+  "pins": "The exact base64 a vector stores as, and which vectors are refused before they can be stored at all. A vector is written by whichever service embedded it and read back by whichever service is recalling, so the bytes have to survive the language boundary intact: a string that decodes to different doubles elsewhere does not error, it silently scores wrong, and a recall that returns the wrong memory looks exactly like one that returned a mediocre one.",
+  "pattern_doc": "docs/decisions/0005-canonical-json.md",
+  "reference": "php",
+  "comparison": { "mode": "canonical-json-string" },
+  "discrimination": { "status": "probed" },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-memory:tests/Unit/VectorStorageCorpusTest.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-memory-ts:test/vector-storage-corpus.test.ts"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-memory-py:tests/test_vector_storage_corpus.py"
+    }
+  }
+}
