@@ -1,0 +1,32 @@
+{
+  "id": "human-plus-tool-admission",
+  "title": "Which surface tool an agent may call, in three languages",
+  "kind": "security-corpus",
+  "pins": "The ADMISSION DECISION for a tool a Human+ surface declares, and the digest its pin is compared against. Both cross a language boundary for the same reason: a surface is SHARED. The same surface is driven by a PHP application and by a TypeScript or Python agent, so a tool the reference reserves for the human must be reserved everywhere — a name refused in two languages and callable in the third is an agent approving its own proposals in whichever one got it wrong, and nothing errors to say so. The digest is that story one level down: it is the material of a pin, so a pin computed against a PHP deployment has to validate in a TypeScript app, and where it does not the failure LOOKS like a surface that swapped a tool definition — a rug pull that did not happen — and the usual response to that is to delete the pin.",
+  "scope": "Tool admission and the digest. The relay, the attachment store and the result guard are not covered. The Lab probes four Human+ properties live at /lab/team and reports both languages agreeing on all four -- including 'confirmation stays with the human under wildcard trust'. That probe uses a CLEAN tool name, so it is green while G-33 and G-36 are both live. The live board and this corpus are not redundant: one shows the packages working over the wire, the other asks what happens at the boundary.",
+  "construction": "Decisions are recorded as BEHAVIOUR, never as prose. No language here exposes a machine-readable refusal code, so `allows` and `admitted` are read as two separate questions instead: allows=false means the NAME was refused, allows=true with admitted=false means the PIN was. Message text is recorded but excluded from the comparison — and as it happens all three emit byte-identical sentences, which is worth knowing but is not a contract anyone can switch on. The schema is carried as RAW JSON TEXT for a load-bearing reason stated in cases.json.",
+  "pattern_doc": "docs/decisions/0005-canonical-json.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
+  "findings": "17 of 20 rows agree, and the agreement is not automatically the good news -- two of the agreeing rows record a hole all three share. THE MOST SERIOUS FINDING IS G-36, which agreement is exactly what hides: a reserved verb followed by a single SPACE (adm-0019), or by a second NEWLINE (adm-0020), defeats the human-only reservation in ALL THREE languages, so a surface that names its tool `terminal_confirm ` hands the confirmation tool to the agent everywhere. `$` tolerates at most one trailing newline in PCRE and Python and none in JavaScript, and nothing normalises the name first. A cross-language suite cannot surface that by COMPARING languages -- there is nothing to compare -- so it is pinned as a row that goes red the day someone closes it. The three disagreements: (1) G-33 -- `terminal_confirm\n` is RESERVED in PHP and Python and ADMITTED in TypeScript, because `$` matches before a final newline in PCRE and Python but not in JavaScript. A live bypass, but a special case of G-36 rather than the whole of it, which is why it is NOT band-aided by teaching JavaScript the same quirk. (2) G-34 -- a tool with NO schema, the default, digests differently in PHP (`[]`) than in either port (`{}`). G-20's shape, third family, on the most ordinary tool there is. (3) G-35 -- an integral float digests as `1` in PHP and JavaScript and `1.0` in Python; the pair is 'everyone except Python', not the two languages with a float type. Same divergence as trq-0025, with a PIN as the consequence.",
+  "construction_note": "The first version of this corpus carried the schema DECODED and reported 17 of 18 agreeing. That was wrong: writing the file back through PHP replaced adm-0016's `{}` with `[]` and adm-0018's `1.0` with `1`, so all three languages agreed on inputs none of them had been asked about. Recorded here because the corrected corpus finding TWO more divergences is the whole argument for carrying such values as text — and because a suite that quietly tests the wrong input is worse than no suite.",
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-human-plus:tests/ToolAdmissionCorpusTest.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-human-plus-ts:test/tool-admission-corpus.test.ts"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-human-plus-py:tests/test_tool_admission_corpus.py"
+    }
+  }
+}
