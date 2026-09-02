@@ -3,10 +3,15 @@
   "title": "MCP tool-definition digest",
   "kind": "security-corpus",
   "pins": "The exact digest an MCP tool definition produces in every language. A digest is the material of a TrustPolicy pin, so this is the one value in the package that MUST be byte-identical across implementations: a pin computed against a PHP deployment is pasted into a TypeScript or Python config by an operator who has no way to know the two disagree. Per-language suites cannot see this — each one is perfectly happy digesting its own way.",
+  "scope": "The tool-definition DIGEST -- the material of a TrustPolicy pin. It does not cover which tools a policy admits, how results are framed, or the transport. A green run means a pin computed in one language validates in another; it says nothing about whether the policy around it is right.",
   "pattern_doc": "docs/decisions/0005-canonical-json.md",
   "reference": "php",
-  "comparison": { "mode": "canonical-json-string" },
-  "discrimination": { "status": "probed" },
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
   "implementations": {
     "php": {
       "status": "full",

@@ -2,14 +2,29 @@
   "id": "workspace-path-guard",
   "title": "Workspace path boundary",
   "kind": "security-corpus",
-  "pins": "All 134 byte-exact path hazards, their stable refusal codes, and the platform-specific behavior of an unguarded resolver. Base64 preserves invalid UTF-8 without laundering it through JSON.",
+  "pins": "All 134 byte-exact path hazards, their stable refusal codes, and the platform-specific behaviour of an unguarded resolver. What a consumer loses if this drifts is the workspace boundary itself: a path the guard refuses in one language and resolves in another is a read or a write outside the workspace, reached through a service that believed it was protected. The refusal CODE matters as much as the refusal -- a consumer switches on it to tell a traversal attempt from an encoding problem from a device-name collision, and a code that differs by language collapses all three into an unknown failure. Paths are carried as base64 so invalid UTF-8 survives without being laundered through JSON, which is the same reason json-container-identity carries its boundary values as raw strings: the recording format must not repair the input the corpus is asking about.",
+  "scope": "Path admission and its refusal code, across eight hazard families -- traversal, absolute paths, UNC, homoglyphs, device names, alternate data streams, encoding and raw bytes. It does NOT cover what happens to a path once admitted: no file is opened, no permission is checked, and the store behind the workspace is not exercised at all.",
+  "findings": "All 134 rows agree across the three languages, which for a boundary this large is the result worth having -- and is still not the same as safety. Stated explicitly because this is the suite where `agrees: true` is most tempting to read as a guarantee: the corpus compares LANGUAGES, so any hazard none of the three refuses is invisible to it by construction. It confirms that a path refused by a PHP application is refused by a TypeScript or Python agent under the same code; it does not confirm that the hazard list is complete. New hazard families are added by writing rows, not by this run passing.",
   "pattern_doc": "docs/decisions/0021-parity-is-the-shipping-library-set.md",
   "reference": "php",
-  "comparison": { "mode": "canonical-json-string" },
-  "discrimination": { "status": "probed" },
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
   "implementations": {
-    "php": { "status": "full", "runner": "prism-workspace:tests/Unit/PathGuardTest.php" },
-    "ts": { "status": "full", "runner": "prism-workspace-ts:test/corpus.test.ts" },
-    "py": { "status": "full", "runner": "prism-workspace-py:tests/test_corpus.py" }
+    "php": {
+      "status": "full",
+      "runner": "prism-workspace:tests/Unit/PathGuardTest.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-workspace-ts:test/corpus.test.ts"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-workspace-py:tests/test_corpus.py"
+    }
   }
 }

@@ -3,10 +3,15 @@
   "title": "Browser navigation policy refusals",
   "kind": "security-corpus",
   "pins": "Which URLs a browser policy refuses, and under WHICH CODE, in every language. The code is the contract — a consumer switches on it to decide whether to retry, widen a list, or surface a hard stop. The message is deliberately not pinned; the three implementations word these differently on purpose, and a test over the prose holds every language to a translation and reddens on a wording improvement that changed nothing.",
+  "scope": "The URL policy's refusal decision and its code. It does NOT cover what the engine does once a URL is allowed, the page content that comes back, or the harness binding (G-19). A green run here means the policy refuses the right URLs under the right code, and nothing about what happens after one is admitted.",
   "pattern_doc": "docs/decisions/0021-parity-is-the-shipping-library-set.md",
   "reference": "php",
-  "comparison": { "mode": "canonical-json-string" },
-  "discrimination": { "status": "probed" },
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
   "implementations": {
     "php": {
       "status": "full",

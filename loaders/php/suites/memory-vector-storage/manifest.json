@@ -3,10 +3,16 @@
   "title": "Vector storage bytes and the write-path guard",
   "kind": "security-corpus",
   "pins": "The exact base64 a vector stores as, and which vectors are refused before they can be stored at all. A vector is written by whichever service embedded it and read back by whichever service is recalling, so the bytes have to survive the language boundary intact: a string that decodes to different doubles elsewhere does not error, it silently scores wrong, and a recall that returns the wrong memory looks exactly like one that returned a mediocre one.",
+  "scope": "The stored BYTES of a vector and the write-path refusal. Recall ranking, the store contract, embedding and eviction are all outside it. A green run means a vector written by one language reads back identically in another; it says nothing about whether the recall that uses it returns the right memory.",
+  "findings": "All nine rows now agree -- but they did not when this suite was written, and the reason they do is worth keeping. Two rows disagreed on first run: `[1e-300, 1e300]` (squares overflow) and `[0.0, -0.0]` (zero magnitude) were STORED by both ports and REFUSED by the reference, because the ports asserted scorability lazily at the first comparison while the reference asserts it on the WRITE path. Not cosmetic: a degenerate vector the ports accepted reached a shared store, and every later recall that scored against it threw. Fixed in both ports rather than recorded as a divergence, because unlike G-20 and G-21 this one had a right answer and the reference had it -- see G-22. Current agreement therefore means the write-path guard is aligned, and nothing more: a bug all three share would still be invisible here.",
   "pattern_doc": "docs/decisions/0005-canonical-json.md",
   "reference": "php",
-  "comparison": { "mode": "canonical-json-string" },
-  "discrimination": { "status": "probed" },
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
   "implementations": {
     "php": {
       "status": "full",

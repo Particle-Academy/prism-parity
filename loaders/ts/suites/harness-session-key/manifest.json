@@ -3,10 +3,16 @@
   "title": "The session address, in three languages",
   "kind": "security-corpus",
   "pins": "The exact string a session resolves to. This is the address a PHP application and a TypeScript or Python agent use to find the SAME conversation, and it is what a store is keyed by. Drift here does not error: every language reads and writes its own key perfectly happily, and the two simply stop seeing each other's turns. A conversation that appears empty is the whole failure mode, and nothing reports it.",
+  "scope": "The session KEY, and nothing else about a session. Store durability, the approval lifecycle, thread persistence and the resume path are all outside it. A green run here means two languages resolve the same address; it says nothing about whether they then agree on what is stored there.",
+  "findings": "All nine rows agree, on the first run, with no fix needed -- and that is worth stating explicitly rather than leaving to `agrees: true`, because agreement is the one result a cross-language corpus cannot interpret for you. What it licenses: the key derivation is byte-identical in three languages, including the sha1-over-BYTES case (key-0008) where a language hashing UTF-16 code units would diverge invisibly, and the zero-id case (key-0006) where a truthiness check anywhere on the id path would silently produce a different address. What it does NOT license: agreement here says nothing about a bug all three share, which is by construction invisible to a comparison. See G-36 in the port gaps register for what that looks like when it happens.",
   "pattern_doc": "docs/decisions/0021-parity-is-the-shipping-library-set.md",
   "reference": "php",
-  "comparison": { "mode": "canonical-json-string" },
-  "discrimination": { "status": "probed" },
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
   "implementations": {
     "php": {
       "status": "full",

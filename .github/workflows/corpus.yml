@@ -39,6 +39,15 @@ jobs:
       - name: Corpus copies are current
         run: node tools/sync-corpus.mjs --check
 
+      # Trust, security and alignment are the foundation this ecosystem is built
+      # on, and a rubric only a human applies is a rubric that stops being
+      # applied. Every criterion here exists because something got through —
+      # most importantly, that a suite must carry ADVERSARIAL rows, which is how
+      # G-36 was found after the Lab's live probe of the same property had been
+      # reporting it green. See docs/trust-rubric.md.
+      - name: Trust rubric
+        run: node tools/trust-rubric.mjs --report
+
   goldens:
     name: Goldens match the reference
     runs-on: ubuntu-latest
