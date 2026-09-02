@@ -1,0 +1,27 @@
+{
+  "id": "perplexity-agent-response",
+  "title": "One Agent API response, parsed in three languages",
+  "kind": "security-corpus",
+  "pins": "What ONE Agent API response body becomes for the caller. Three decisions ride on it that a consumer cannot make for itself: whether the run is FINISHED, which is what the polling loop turns on; which CITATIONS it carries and in what order, because a UI numbers them and the answer text refers to them by that number; and whether the body is REFUSED at all and under which identifier, because a consumer switches on that identifier to tell a bad request from a rate limit from an unreadable body. The body is UNTRUSTED input -- it is whatever the provider sent -- so the malformed rows are not hypothetical shapes but the ones a parser is most likely to disagree about.",
+  "scope": "Parsing one response. The request side is not covered, and neither is the polling loop that calls this in a cycle -- though what the loop decides is entirely determined by the `terminal` field pinned here.",
+  "construction": "Every row is driven through the REAL client against a stubbed transport, using `retrieve` rather than `create`: it is the call the polling loop makes, it sends no body of its own, and so each row records the PARSE and nothing about the request that provoked it.",
+  "pattern_doc": "docs/decisions/0005-canonical-json.md",
+  "reference": "php",
+  "comparison": { "mode": "canonical-json-string" },
+  "discrimination": { "status": "probed" },
+  "findings": "One of seventeen rows agrees across all three languages -- but the two PORTS agree with each other on seventeen of seventeen, so this is a reference-versus-ports split rather than a three-way scatter, and every divergence has one side to move. Registered as G-29 through G-32. The good news is worth stating first because it is the load-bearing part: the status vocabulary, the terminal/non-terminal classification, and the citation flattening (including its ORDER, and including every malformed row) agree everywhere. The polling loop and the citation list are sound in all three. What differs: (1) G-29, an empty `usage` is `[]` in the reference and `{}` in both ports -- a second instance of G-20; (2) G-30, the refusal identifier has a different SHAPE, not just a different name -- the reference has no machine-readable code and puts its own client identifier in the slot the ports reserve for the provider's error type; (3) G-31, a JSON ARRAY body is `invalid_response` in the reference and `unreadable_response` in the ports, and the ports are right; (4) G-32, a numeric-string `created_at` is coerced by the reference and nulled by both ports.",
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-perplexity:tests/AgentResponseCorpusTest.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-perplexity-ts:test/agent-response-corpus.test.ts"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-perplexity-py:tests/test_agent_response_corpus.py"
+    }
+  }
+}
