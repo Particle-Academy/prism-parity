@@ -1,0 +1,27 @@
+{
+  "id": "opentelemetry-span-attributes",
+  "title": "The root span a generation exports, in three languages",
+  "kind": "security-corpus",
+  "pins": "The name, status and attribute map of the ROOT span one generation exports. A span is read by a backend that does not know which language produced it: Phoenix groups by `session.id`, filters by `gen_ai.response.finish_reasons` and `gen_ai.operation.name`, and dedupes on `input.value`. Every one of those is a string comparison against spans from other services, so a key or a value spelled differently in one language does not error — the two services simply stop appearing in the same result, and a dashboard that looks complete is quietly missing half its traffic. The security half is narrower and sharper: `input.value` carries user content, and a span leaves the application.",
+  "scope": "The root span only. Step and tool spans are a separate value with a separate failure mode and are NOT covered here. This suite existing does not make the opentelemetry family conformance-verified.",
+  "construction": "Each case supplies the generation in Prism's own neutral vocabulary — a `TelemetryOperation` value (text, structured, embeddings, image, stream) and a `FinishReason` value (stop, tool-calls) — and lets every language map it as it does. No language is handed a value pre-translated into its own spelling, which would hide the mapping being compared. That the ports EXPECT this vocabulary is not an assumption: their own root-kind branch tests for `text` and `structured` by name.",
+  "pattern_doc": "docs/decisions/0005-canonical-json.md",
+  "reference": "php",
+  "comparison": { "mode": "canonical-json-string" },
+  "discrimination": { "status": "probed" },
+  "findings": "ZERO of thirteen rows agree across all three languages, in six distinct classes. Registered as G-23 through G-28 in .ai/plans/port-gaps-register.md; each is pinned in the negative in the three runners, so whoever fixes one gets a red test that forces the corpus to be regenerated in the same change. Summarised because a reader who sees `agrees: false` on every row learns nothing about which of six problems they are looking at: (1) `gen_ai.operation.name` and the span name — the reference maps onto the GenAI convention's own vocabulary, the ports pass Prism's internal operation string straight through; (2) `openinference.span.kind` for image and stream; (3) span status on success — the reference leaves it unset, the ports set ok; (4) `gen_ai.response.finish_reasons` — the reference emits the PHP enum's CASE NAME, the ports the neutral value; (5) the JSON encoding of captured content — Python's dumps defaults put a space after every separator and escape non-ASCII; (6) the truncation ruler — bytes, UTF-16 code units and escaped characters give three different strings from one input, none of which errors.",
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-opentelemetry:tests/Unit/SpanAttributeCorpusTest.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-opentelemetry-ts:test/span-attribute-corpus.test.ts"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-opentelemetry-py:tests/test_span_attribute_corpus.py"
+    }
+  }
+}
