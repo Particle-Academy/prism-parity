@@ -48,7 +48,25 @@ export interface ResolvedCase extends ConformanceCase {
 export interface SuiteManifest {
   id: string;
   title: string;
-  kind: 'request-payload' | 'response-parse' | 'roundtrip' | 'error-code';
+  /**
+   * The five golden-based kinds, plus `security-corpus`.
+   *
+   * A `security-corpus` suite has no `expect`: each row records what every
+   * language PRODUCED, per language, so it is compared in the family's own
+   * three repositories rather than by the central runners, which skip it by
+   * this field.
+   *
+   * `container-identity` and `security-corpus` were both missing here while the
+   * corpus already shipped suites using them, which made a consumer narrowing
+   * on `kind` a type error against real data.
+   */
+  kind:
+    | 'request-payload'
+    | 'response-parse'
+    | 'roundtrip'
+    | 'error-code'
+    | 'container-identity'
+    | 'security-corpus';
   pins: string;
   pattern_doc?: string;
   reference: Language;

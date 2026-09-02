@@ -149,9 +149,49 @@ test('a duplicate case id is a load error', function (): void {
     });
 });
 
-test('case ids must ascend, so a new case goes at the end', function (): void {
+test('case ids must ascend within their family, so a new case goes at the end', function (): void {
+    // Two `trq-` rows swapped. The rule still bites inside one family.
     expectLoadError('unsorted_case_ids', function (array &$document): void {
         [$document['cases'][0], $document['cases'][1]] = [$document['cases'][1], $document['cases'][0]];
+    });
+});
+
+test('separate families need not ascend between them', function (): void {
+    // The permission the rule grants, pinned rather than merely allowed. A suite
+    // may group its cases by what they probe — `workspace-path-guard` runs eight
+    // hazard families and reads as eight blocks — and the renumbering hazard the
+    // rule guards is entirely WITHIN a family.
+    //
+    // Without this test the loosening would be invisible: every existing case
+    // still passes under the OLD global rule too, so nothing would fail if
+    // someone tightened it back.
+    $dir = corruptedCorpus(function (array &$document): void {
+        foreach (['aaa-0001', 'zzz-0001', 'aaa-0002'] as $id) {
+            $document['cases'][] = ['id' => $id] + $document['cases'][0];
+        }
+    });
+
+    try {
+        $ids = array_map(
+            fn (array $case): string => (string) $case['id'],
+            Corpus::open($dir)->suite('openai-text-request')->cases('php')
+        );
+
+        assertSame(['aaa-0001', 'zzz-0001', 'aaa-0002'], array_slice($ids, -3), 'interleaved families should load');
+    } finally {
+        removeTree($dir);
+    }
+});
+
+test('a family that goes backwards is still a load error', function (): void {
+    // `aaa-0002` then `aaa-0001`, with another family in between. Interleaving
+    // must not become a way to smuggle a descending id past the check — which is
+    // exactly what a naive "reset the previous id when the family changes"
+    // implementation would allow.
+    expectLoadError('unsorted_case_ids', function (array &$document): void {
+        foreach (['aaa-0002', 'zzz-0001', 'aaa-0001'] as $id) {
+            $document['cases'][] = ['id' => $id] + $document['cases'][0];
+        }
     });
 });
 
@@ -243,7 +283,12 @@ test('the comparator accepts each shipped golden and rejects any byte change', f
 
     foreach ($corpus->suiteIds() as $suiteId) {
         foreach ($corpus->suite($suiteId)->cases('php') as $case) {
-            foreach ($case['expect'] as $value) {
+            // A `security-corpus` row has no `expect` at all: it records what
+            // each language PRODUCED, per language, rather than one golden the
+            // others must match. There is nothing for the comparator to check
+            // on those, and the `checked` floor below is what stops this skip
+            // from quietly turning the whole test into a no-op.
+            foreach ($case['expect'] ?? [] as $value) {
                 if (! is_string($value)) {
                     continue;
                 }

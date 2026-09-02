@@ -74,9 +74,53 @@ test('a duplicate case id is a load error', () => {
   });
 });
 
-test('case ids must ascend, so a new case goes at the end', () => {
+test('case ids must ascend within their family, so a new case goes at the end', () => {
+  // Two `trq-` rows swapped. The rule still bites inside one family.
   expectLoadError('unsorted_case_ids', (document) => {
     [document.cases[0], document.cases[1]] = [document.cases[1], document.cases[0]];
+  });
+});
+
+test('separate families need not ascend between them', () => {
+  // The permission the rule grants, pinned rather than merely allowed. A suite
+  // may group its cases by what they probe — `workspace-path-guard` runs eight
+  // hazard families and reads as eight blocks — and the renumbering hazard the
+  // rule guards is entirely WITHIN a family.
+  //
+  // Without this test the loosening would be invisible: every existing case
+  // still passes under the OLD global rule too, so nothing would fail if
+  // someone tightened it back.
+  const { dir, cleanup } = corruptedCorpus((document) => {
+    document.cases.push(
+      { ...document.cases[0], id: 'aaa-0001' },
+      { ...document.cases[0], id: 'zzz-0001' },
+      { ...document.cases[0], id: 'aaa-0002' },
+    );
+  });
+
+  try {
+    const ids = Corpus.open(dir)
+      .suite('openai-text-request')
+      .cases('ts')
+      .map((testCase) => testCase.id);
+
+    assert.deepEqual(ids.slice(-3), ['aaa-0001', 'zzz-0001', 'aaa-0002']);
+  } finally {
+    cleanup();
+  }
+});
+
+test('a family that goes backwards is still a load error', () => {
+  // `aaa-0002` then `aaa-0001`, with another family in between. Interleaving
+  // must not become a way to smuggle a descending id past the check — which is
+  // exactly what a naive "reset the previous id when the family changes"
+  // implementation would allow.
+  expectLoadError('unsorted_case_ids', (document) => {
+    document.cases.push(
+      { ...document.cases[0], id: 'aaa-0002' },
+      { ...document.cases[0], id: 'zzz-0001' },
+      { ...document.cases[0], id: 'aaa-0001' },
+    );
   });
 });
 
@@ -176,7 +220,12 @@ test('the comparator accepts each shipped golden and rejects any byte change', (
     const suite = corpus.suite(suiteId);
 
     for (const testCase of suite.cases('ts')) {
-      const golden = Object.values(testCase.expect).find((value) => typeof value === 'string');
+      // A `security-corpus` row has no `expect` at all: it records what each
+      // language PRODUCED, per language, rather than one golden the others must
+      // match. There is nothing for the comparator to check on those, and the
+      // `checked` floor below is what stops this skip from quietly turning the
+      // whole test into a no-op.
+      const golden = Object.values(testCase.expect ?? {}).find((value) => typeof value === 'string');
       if (golden === undefined) continue;
 
       assert.equal(compare(golden, golden, testCase.tolerance), true, `${testCase.id} should match itself`);

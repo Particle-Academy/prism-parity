@@ -59,7 +59,7 @@ final class Suite
         }
 
         $seen = [];
-        $previous = null;
+        $lastInFamily = [];
 
         foreach ($cases as $case) {
             $id = $case['id'] ?? null;
@@ -74,18 +74,36 @@ final class Suite
 
             $seen[$id] = true;
 
-            // Ids are unique AND sorted. That is what makes "a new case goes at
-            // the END of the file" a rule a machine enforces rather than a habit:
-            // file order is not chronology, and inserting between two existing
-            // rows would renumber ids that other repos' skip lists point at.
+            // Ids are unique AND ascend WITHIN THEIR FAMILY. That is what makes
+            // "a new case goes at the END" a rule a machine enforces rather than
+            // a habit: file order is not chronology, and inserting between two
+            // existing rows would renumber ids that other repos' skip lists
+            // point at.
+            //
+            // Per-family rather than global, because a suite may group its cases
+            // by what they probe — `workspace-path-guard` runs eight hazard
+            // families (trv-, abs-, unc-, hom-, dev-, ads-, enc-, byt-) and
+            // reads as eight blocks. A global rule would force those into one
+            // alphabetical run, which reorders the file for no benefit: the
+            // renumbering hazard the rule exists to prevent is entirely WITHIN a
+            // family, since that is the only place a number can shift.
+            $family = self::familyOf($id);
+            $previous = $lastInFamily[$family] ?? null;
+
             if ($previous !== null && strcmp($id, $previous) <= 0) {
                 throw CorpusError::make(
                     'unsorted_case_ids',
-                    sprintf('Case id %s follows %s in %s; ids must ascend. New cases go at the end.', $id, $previous, $suiteId)
+                    sprintf(
+                        'Case id %s follows %s in %s; ids must ascend within the %s- family. New cases go at the end of theirs.',
+                        $id,
+                        $previous,
+                        $suiteId,
+                        $family
+                    )
                 );
             }
 
-            $previous = $id;
+            $lastInFamily[$family] = $id;
 
             if (! isset($case['notes']) || ! is_string($case['notes']) || trim($case['notes']) === '') {
                 throw CorpusError::make(
@@ -159,6 +177,21 @@ final class Suite
             fn (array $case): string => (string) $case['id'],
             array_filter($this->cases($language), fn (array $case): bool => $case['skipped'] === true)
         ));
+    }
+
+    /**
+     * The id's FAMILY — everything before the last hyphen.
+     *
+     * `trv-0023` and `trv-0024` are the same family; `trv-0023` and `abs-0001`
+     * are not. An id with no hyphen is its own family, so a suite that numbers
+     * every case in one sequence behaves exactly as it did before families
+     * existed.
+     */
+    private static function familyOf(string $id): string
+    {
+        $cut = strrpos($id, '-');
+
+        return $cut === false ? $id : substr($id, 0, $cut);
     }
 
     /**

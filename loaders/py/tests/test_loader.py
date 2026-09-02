@@ -81,11 +81,61 @@ def test_duplicate_case_id_is_a_load_error(tmp_path: Path) -> None:
     _expect_load_error(tmp_path, "duplicate_case_id", lambda doc: doc["cases"].append(dict(doc["cases"][0])))
 
 
-def test_case_ids_must_ascend(tmp_path: Path) -> None:
+def test_case_ids_must_ascend_within_their_family(tmp_path: Path) -> None:
+    """Two `trq-` rows swapped. The rule still bites inside one family."""
+
     def swap(doc: dict[str, Any]) -> None:
         doc["cases"][0], doc["cases"][1] = doc["cases"][1], doc["cases"][0]
 
     _expect_load_error(tmp_path, "unsorted_case_ids", swap)
+
+
+def test_separate_families_need_not_ascend_between_them(tmp_path: Path) -> None:
+    """The permission this rule grants, pinned rather than merely allowed.
+
+    A suite may group its cases by what they probe -- `workspace-path-guard`
+    runs eight hazard families and reads as eight blocks. Interleaving them, or
+    starting a lower-sorting family after a higher one, is legal because the
+    renumbering hazard the rule guards is entirely within a family.
+
+    Without this test the loosening would be invisible: every existing case
+    would still pass under the OLD global rule too, so nothing would fail if
+    someone tightened it back.
+    """
+    root = _corrupted(
+        tmp_path,
+        lambda doc: doc["cases"].extend(
+            [
+                {**doc["cases"][0], "id": "aaa-0001"},
+                {**doc["cases"][0], "id": "zzz-0001"},
+                {**doc["cases"][0], "id": "aaa-0002"},
+            ]
+        ),
+    )
+
+    suite = Corpus.open(root).suite("openai-text-request")
+
+    assert [case["id"] for case in suite.cases("php")][-3:] == ["aaa-0001", "zzz-0001", "aaa-0002"]
+
+
+def test_a_family_that_goes_backwards_is_still_a_load_error(tmp_path: Path) -> None:
+    """`aaa-0002` then `aaa-0001`, with another family in between.
+
+    The interleaving must not become a way to smuggle a descending id past the
+    check -- which is the failure a naive "reset the previous id when the family
+    changes" implementation would have.
+    """
+
+    def descend(doc: dict[str, Any]) -> None:
+        doc["cases"].extend(
+            [
+                {**doc["cases"][0], "id": "aaa-0002"},
+                {**doc["cases"][0], "id": "zzz-0001"},
+                {**doc["cases"][0], "id": "aaa-0001"},
+            ]
+        )
+
+    _expect_load_error(tmp_path, "unsorted_case_ids", descend)
 
 
 def test_case_without_notes_is_a_load_error(tmp_path: Path) -> None:
@@ -181,7 +231,15 @@ def test_comparator_accepts_every_shipped_golden_and_rejects_a_byte_change() -> 
 
     for suite_id in corpus.suite_ids():
         for case in corpus.suite(suite_id).cases("py"):
-            golden = next((value for value in case["expect"].values() if isinstance(value, str)), None)
+            # A `security-corpus` row has no `expect` at all: it records what
+            # each language PRODUCED, per language, rather than one golden the
+            # others must match. There is nothing for the comparator to check on
+            # those, and the `checked` floor below is what stops this skip from
+            # quietly turning the whole test into a no-op.
+            golden = next(
+                (value for value in case.get("expect", {}).values() if isinstance(value, str)),
+                None,
+            )
             if golden is None:
                 continue
 

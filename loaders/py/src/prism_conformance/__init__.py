@@ -142,12 +142,24 @@ class Suite:
         return [case["id"] for case in self.cases(language) if case["skipped"]]
 
 
+def _family_of(case_id: str) -> str:
+    """The id's FAMILY -- everything before the last hyphen.
+
+    `trv-0023` and `trv-0024` are the same family; `trv-0023` and `abs-0001` are
+    not. An id with no hyphen is its own family, so a suite that numbers every
+    case in one sequence behaves exactly as it did before families existed.
+    """
+    prefix, _, _ = case_id.rpartition("-")
+
+    return prefix or case_id
+
+
 def _guard_cases(suite_id: str, cases: Any) -> None:
     if not isinstance(cases, list) or not cases:
         raise CorpusError("empty_suite", f"Suite {suite_id} has no cases.")
 
     seen: set[str] = set()
-    previous: str | None = None
+    last_in_family: dict[str, str] = {}
 
     for case in cases:
         case_id = case.get("id") if isinstance(case, dict) else None
@@ -160,17 +172,30 @@ def _guard_cases(suite_id: str, cases: Any) -> None:
 
         seen.add(case_id)
 
-        # Ids are unique AND sorted. That is what makes "a new case goes at the
-        # END of the file" a rule a machine enforces rather than a habit: file
-        # order is not chronology, and inserting between two existing rows would
-        # renumber ids that other repos' skip lists point at.
+        # Ids are unique AND ascend WITHIN THEIR FAMILY. That is what makes "a
+        # new case goes at the END" a rule a machine enforces rather than a
+        # habit: file order is not chronology, and inserting between two
+        # existing rows would renumber ids that other repos' skip lists point
+        # at.
+        #
+        # Per-family rather than global, because a suite may group its cases by
+        # what they probe -- `workspace-path-guard` runs eight hazard families
+        # (trv-, abs-, unc-, hom-, dev-, ads-, enc-, byt-) and reads as eight
+        # blocks. A global rule would force those into one alphabetical run,
+        # which reorders the file for no benefit: the renumbering hazard the
+        # rule exists to prevent is entirely WITHIN a family, since that is the
+        # only place a number can shift.
+        family = _family_of(case_id)
+        previous = last_in_family.get(family)
+
         if previous is not None and case_id <= previous:
             raise CorpusError(
                 "unsorted_case_ids",
-                f"Case id {case_id} follows {previous} in {suite_id}; ids must ascend. New cases go at the end.",
+                f"Case id {case_id} follows {previous} in {suite_id}; ids must ascend within "
+                f"the {family}- family. New cases go at the end of theirs.",
             )
 
-        previous = case_id
+        last_in_family[family] = case_id
 
         notes = case.get("notes")
         if not isinstance(notes, str) or not notes.strip():

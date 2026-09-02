@@ -142,13 +142,26 @@ export class Suite {
   }
 }
 
+/**
+ * The id's FAMILY — everything before the last hyphen.
+ *
+ * `trv-0023` and `trv-0024` are the same family; `trv-0023` and `abs-0001` are
+ * not. An id with no hyphen is its own family, so a suite that numbers every
+ * case in one sequence behaves exactly as it did before families existed.
+ */
+function familyOf(id) {
+  const cut = id.lastIndexOf('-');
+
+  return cut === -1 ? id : id.slice(0, cut);
+}
+
 function guardCases(suiteId, cases) {
   if (!Array.isArray(cases) || cases.length === 0) {
     throw new CorpusError('empty_suite', `Suite ${suiteId} has no cases.`);
   }
 
   const seen = new Set();
-  let previous = null;
+  const lastInFamily = new Map();
 
   for (const testCase of cases) {
     const id = testCase?.id;
@@ -163,18 +176,29 @@ function guardCases(suiteId, cases) {
 
     seen.add(id);
 
-    // Ids are unique AND sorted. That is what makes "a new case goes at the END
-    // of the file" a rule a machine enforces rather than a habit: file order is
-    // not chronology, and inserting between two existing rows would renumber ids
-    // that other repos' skip lists point at.
+    // Ids are unique AND ascend WITHIN THEIR FAMILY. That is what makes "a new
+    // case goes at the END" a rule a machine enforces rather than a habit: file
+    // order is not chronology, and inserting between two existing rows would
+    // renumber ids that other repos' skip lists point at.
+    //
+    // Per-family rather than global, because a suite may group its cases by
+    // what they probe — `workspace-path-guard` runs eight hazard families
+    // (trv-, abs-, unc-, hom-, dev-, ads-, enc-, byt-) and reads as eight
+    // blocks. A global rule would force those into one alphabetical run, which
+    // reorders the file for no benefit: the renumbering hazard the rule exists
+    // to prevent is entirely WITHIN a family, since that is the only place a
+    // number can shift.
+    const family = familyOf(id);
+    const previous = lastInFamily.get(family) ?? null;
+
     if (previous !== null && id <= previous) {
       throw new CorpusError(
         'unsorted_case_ids',
-        `Case id ${id} follows ${previous} in ${suiteId}; ids must ascend. New cases go at the end.`,
+        `Case id ${id} follows ${previous} in ${suiteId}; ids must ascend within the ${family}- family. New cases go at the end of theirs.`,
       );
     }
 
-    previous = id;
+    lastInFamily.set(family, id);
 
     if (typeof testCase.notes !== 'string' || testCase.notes.trim() === '') {
       throw new CorpusError(

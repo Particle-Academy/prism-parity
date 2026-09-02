@@ -90,6 +90,23 @@ foreach ($suiteIds as $suiteId) {
         exit(2);
     }
 
+    // A `security-corpus` suite is not run from here, and reporting nothing for
+    // it is correct rather than a gap. Those suites have no `expect`: each row
+    // records what every language PRODUCED, per language, and the comparison
+    // lives in the family's own three repositories (e.g.
+    // `prism-memory:tests/Unit/VectorStorageCorpusTest.php` and its two port
+    // siblings), where the code under test actually is. This runner drives the
+    // PHP reference through the five golden-based kinds and nothing else.
+    //
+    // Named rather than silent, for the same reason as in
+    // `tools/generate-goldens.php`: a suite whose kind is a typo would
+    // otherwise be run by nothing at all and report as fine.
+    if ($suite->manifest['kind'] === 'security-corpus') {
+        fwrite(STDERR, "{$suiteId}: security-corpus, run in the family's own repos — not from here.\n");
+
+        continue;
+    }
+
     $results = [];
 
     foreach ($suite->cases('php') as $case) {
