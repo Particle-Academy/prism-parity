@@ -1,0 +1,32 @@
+{
+  "id": "agent-task-claim",
+  "title": "The claim/release state machine of an agent task list, in three languages",
+  "kind": "security-corpus",
+  "pins": "Who may hold a task, when a lease has lapsed, who may release it, and the bytes of the stored record. A task list is DURABLE state that outlives the process which wrote it, and nothing says the process reading it back is in the same language -- so the list itself is the shared surface. A one-tick disagreement about expiry hands one task to two workers. A disagreement about how claimed_by is compared lets one worker close another's work. Neither errors, and both look like ordinary operation.",
+  "scope": "The claim and release paths, and the canonical record. NOT the completion tool, NOT lease extension, and NOT the store's locking primitive -- each is a separate value with its own failure mode, and this suite existing does not cover them. The generator's store uses a no-op lock deliberately: the lock has its own defects, three of which were found and fixed while this feature was built, and measuring them here would conflate two things.",
+  "construction": "Each row seeds a list state DIRECTLY rather than through add(), so a row may describe a state the public API would refuse to build -- an inconsistent one, say. A corpus that can only express states the implementation is willing to create cannot test what it does when it meets one it did not. Time is frozen per row, so expiry boundaries are exact rather than raced.",
+  "pattern_doc": "docs/decisions/0005-canonical-json.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
+  "findings": "PHP recorded; the two ports have no runner yet, so NOTHING IS COMPARED ACROSS LANGUAGES YET and this suite has therefore found nothing. That is a statement about the suite, not about the ports. Nine suites exist in this repository and every one of them found a disagreement between implementations whose authors believed they were aligned; there is no reason to expect this to be the tenth exception, and the three ports here converged on a READING of the contracts rather than on a measurement. Two things are already recorded that were not expected: atc-0015 shows duplicate ids are guarded at add() and TOLERATED on read, so a list written by a less careful port is accepted and find() resolves the id to whichever comes first; and atc-0017 is SKIPPED for PHP under 0002, because claim() declares ?int and the fractional lease is rejected by the type system before any guard in the package runs -- the reachable path in PHP is the configuration route, which is a different value and belongs in its own row.",
+  "construction_note": "The generator's seeding writes to the source's OWN key. An earlier version wrote to the bare list name, so every row read an empty list and the generator recorded 'nothing happened' for all 21 as though it were an answer -- outcome ok, pending 0, no record, entirely plausible. It now asserts the source can see the tasks it was given and exits loudly if it cannot. A generator that silently measures nothing is the defect this repository exists to catch, one level up.",
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-parity:tools/generate-agent-task-claim.php"
+    },
+    "ts": {
+      "status": "partial",
+      "gap": "No runner. prism-harness-ts implements the contract and is green in its own suite, which is exactly the check a cross-language corpus cannot be replaced by."
+    },
+    "py": {
+      "status": "partial",
+      "gap": "No runner. prism-harness-py implements the contract and is green in its own suite, which is exactly the check a cross-language corpus cannot be replaced by."
+    }
+  }
+}
