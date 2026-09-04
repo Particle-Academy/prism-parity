@@ -5,15 +5,27 @@
   "pins": "WHICH failure a given misuse produces, identified by a stable code. Error prose is explicitly outside the contract: it is worded idiomatically per language, and pinning it would hold every implementation to a translation and go red on a wording improvement that changed nothing.",
   "pattern_doc": "docs/patterns/07-errors.md",
   "reference": "php",
-  "comparison": { "mode": "canonical-json-string" },
-  "discrimination": { "status": "probed" },
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
   "implementations": {
     "php": {
       "status": "partial",
       "gap": "particle-academy/prism carries no error codes at all — PrismException identifies its failures by an English sentence and nothing else. The reference runner therefore reaches its verdict by MATCHING ON PROSE, in a suite whose entire argument is that prose is not the contract. That shim lives in runners/php/src/Driver.php and is marked as one. See finding F-1, which is the highest-value change this work suggests for the PHP package.",
-      "runner": "prism-parity:runners/php/runner.php"
+      "runner": "prism-parity:runners/php/runner.php",
+      "cause": "reference-limit",
+      "cause_note": "particle-academy/prism carries NO ERROR CODES AT ALL -- PrismException identifies its failures by an English sentence. Both ports have codes. The reference is behind its own ports here."
     },
-    "ts": { "status": "full", "runner": "prism-ts:conformance/runner.mjs" },
-    "py": { "status": "full", "runner": "prism-py:conformance/runner.py" }
+    "ts": {
+      "status": "full",
+      "runner": "prism-ts:conformance/runner.mjs"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-py:conformance/runner.py"
+    }
   }
 }

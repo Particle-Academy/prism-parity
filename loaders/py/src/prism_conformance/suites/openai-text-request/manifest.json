@@ -15,7 +15,9 @@
     "php": {
       "status": "partial",
       "gap": "trq-0021 and trq-0022 are skipped for the reference because it drops a falsy prompt (empty string, or the string \"0\") instead of sending it. Recorded here so the reference's green tick on this suite is not read as agreement on every row. See finding F-2.",
-      "runner": "prism-parity:runners/php/runner.php"
+      "runner": "prism-parity:runners/php/runner.php",
+      "cause": "reference-limit",
+      "cause_note": "The REFERENCE drops a falsy prompt -- an empty string, or the string \"0\" -- instead of sending it. The ports send it. This is a defect in the reference, not a port gap."
     },
     "ts": {
       "status": "full",

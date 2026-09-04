@@ -20,12 +20,16 @@
     "ts": {
       "status": "partial",
       "gap": "dig-0002, dig-0003 and dig-0007 diverge from the reference and are recorded as `divergence` rather than skipped, because a skip would hide the finding. Two causes, both proven by dumping the pre-hash material: PHP renders an empty map-typed field as `[]` where this language renders `{}` (the same F-3 artefact as rtp-0009), and PHP coerces an absent description to `\"\"` where this language keeps `null`. Consequence: a pin does not transfer between PHP and this language for those shapes. See G-20.",
-      "runner": "prism-mcp-ts:test/digest-corpus.test.ts"
+      "runner": "prism-mcp-ts:test/digest-corpus.test.ts",
+      "cause": "decision-pending",
+      "cause_note": "G-20. Two causes: F-3 (a reference-limit) on dig-0002/0003, plus an absent-description coercion on dig-0007 where the register says neither side is obviously wrong. Both change digests, so either side moving invalidates existing pins."
     },
     "py": {
       "status": "partial",
       "gap": "Identical to ts, and identical byte-for-byte to ts on all ten rows — the two ports agree with each other and disagree with the reference on the same three. That is itself the useful signal: it is one reference-side artefact plus one coercion choice, not two independent port bugs. See G-20.",
-      "runner": "prism-mcp-py:tests/test_digest_corpus.py"
+      "runner": "prism-mcp-py:tests/test_digest_corpus.py",
+      "cause": "decision-pending",
+      "cause_note": "G-20, byte-identical to ts on all ten rows. The ports agree with each other and differ from the reference on the same three."
     }
   }
 }
