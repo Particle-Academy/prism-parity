@@ -411,14 +411,35 @@ was a bad test rather than sound code:
 A suite that has only ever passed cannot be distinguished from one that cannot
 fail. Breaking each pinned decision on purpose is how you tell.
 
-### …and the mutation harness itself can lie
+### …and the mutation harness itself can lie — in two different ways
 
-Python's read pytest's **exit code 5 — "no tests collected" — as "mutation
-caught"**. A mutation that broke the suite into *not running* therefore scored
-as a pass, in the tool whose entire job is deciding whether the tests work. It
-must distinguish a real failure (exit 1) from a collection or compile error.
+Both ports' harnesses were wrong, and neither failure announced itself.
 
-That false positive is what led to finding the next one.
+**Python's classified on the exit code.** It read pytest's **exit code 5 — "no
+tests collected" — as "mutation caught"**, so a mutation that broke the suite
+into *not running* scored as a pass, in the tool whose entire job is deciding
+whether the tests work. Distinguish a real failure from a collection or compile
+error. That false positive is what led to finding the unwired fixtures above.
+
+**TypeScript's corrupted the source it was verifying, which is worse.** It
+reverted each mutation by **text substitution**, and the pattern for a 4-space
+`return null;` matched *inside* an 8-space one — silently rewriting `claim()`.
+Twelve mutations then ran stacked on a progressively corrupted tree, so **every
+verdict after the first was meaningless**. Nothing errored. The only visible
+symptom was absurd failure counts (16, 18, 21 of 232) that a reader skimming for
+"caught" would accept.
+
+Two rules fall out, and a harness without both is not evidence:
+
+1. **Revert from a byte snapshot**, never by re-substituting text. Refuse a
+   mutation target that is not unique in the file.
+2. **Carry a poison control** — a deliberately compile-breaking mutation whose
+   expected verdict is POISONED. The old harness scored it a *pass*, which is
+   exactly the signal that would have exposed both bugs on day one.
+
+A clean re-run afterwards: 21 mutations, all caught, 1–52 failures each, poison
+control POISONED, and **sources byte-identical before and after**. That last
+check is the cheap one nobody runs.
 
 ### A padding fixture proves a DIFFERENT thing in every language
 
