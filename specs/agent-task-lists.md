@@ -291,11 +291,35 @@ implementation check anything**, and a third party writing their own
 `AgentTaskSource` will implement `release()` as "find it, set the state" —
 because that is exactly what the signature suggests.
 
-So the suite carries a deliberately **unguarded fixture source**, and a task
-whose holder cannot be established at all, and requires the tool to refuse both
-while still closing a task the worker really holds. A guarantee that only holds
-because *your* implementation happens to enforce it is not a guarantee the
-contract makes.
+So the suite carries a deliberately **unguarded fixture source** — one that
+implements `release()` as "find it, set the state", ignoring the worker — and
+requires the tool to refuse against it while still closing a task the worker
+really holds. A guarantee that only holds because *your* implementation happens
+to enforce it is not a guarantee the contract makes.
+
+Two refinements, both of which turn an apparent guard into a real one:
+
+**Type the tool to the CONTRACT, not to your concrete source.** That is what
+makes the tool's own check observable at all — after it, deleting the check
+fails three tests instead of zero.
+
+**A control needs its own control.** The unguarded fixture must have a test
+proving it really is unguarded, run *before* it is used as one. If the fixture
+ever silently grows a guard, every tool test still passes and proves nothing —
+the tool tests would be measuring the fixture rather than the tool.
+
+### A conforming task need not expose a holder at all
+
+`AgentTask` is `id`, `instruction`, `state`, and nothing else. So an
+implementation may legally return a task from which **no holder can be
+established**, and the completion tool has to decide what that means.
+
+It resolves to a sentinel matching no worker, and refuses.
+
+**Reading silence as permission is the same mistake as inferring `done` from an
+absent outcome, asked about a different field.** The second was ruled on
+explicitly; this is the first, and it arrives through the contract's own
+minimalism rather than through anything an implementation did wrong.
 
 ### A hole this spec had, found by building it
 
