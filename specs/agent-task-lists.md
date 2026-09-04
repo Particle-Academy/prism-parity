@@ -287,9 +287,47 @@ flake.
 **`claim()` atomicity rests entirely on that lock**, so a stolen lock means two
 workers holding the same task — the single thing this design exists to prevent.
 A capability is only as sound as the primitive under it, and this one was never
-exercised hard enough to fail until something depended on it. Both other
-languages must check their own store for the same shape: anywhere an empty or
-unparsable expiry can read as "already expired".
+exercised hard enough to fail until something depended on it.
+
+**There are TWO variants, and no language had both.** Checking for one and
+declaring victory is how the second survives:
+
+| | empty expiry | truncated expiry |
+|---|---|---|
+| TypeScript | had it (`Number('') === 0`) | **still had it after fixing the first** |
+| Python | safe by accident (`float('')` raises) | **had it, and it was live** |
+
+The truncated variant is the nastier one because it does not look like a parse
+failure. **Every prefix of a ten-digit timestamp is a smaller number**, so a torn
+write parses cleanly as a time in the past: `float('1735689')` is `1735689.0`,
+comfortably `<= now`. Nothing errors; the lock is simply taken from a live
+holder.
+
+Python's fix is the one to copy: write the expiry in ONE unbuffered write with a
+terminator, and refuse any value that is not terminated. Unreadable then means
+**wait** — a loud, recoverable `session_locked` — rather than deleting somebody's
+live lock. Failing safe here means waiting, never reclaiming.
+
+### The lockfile format is SHARED SURFACE
+
+If a PHP, TypeScript or Python worker ever runs against the same store
+directory, they must agree on the byte format. Python now requires a trailing
+terminator and TypeScript writes none, so Python would wait TypeScript's locks
+out instead of reclaiming them. Safe direction, and still a divergence.
+
+**The reference decides the format**, and it is an observable decision across
+ports rather than an implementation detail of any one of them.
+
+### Plant nothing you also have to read
+
+A mutation run found a hole in Python's own lock tests: removing the terminator
+from the written payload went **green**, because every test planted its lockfile
+BY HAND and nothing ever round-tripped the store's own writer against its own
+reader. A suite can pin a format exhaustively and still never check that the
+thing under test produces it.
+
+Any store test that constructs its fixture directly needs one companion that
+writes with the real writer and reads with the real reader.
 
 ### Assert the TYPE of a stored timestamp, not its value
 
