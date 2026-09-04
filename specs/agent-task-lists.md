@@ -530,6 +530,22 @@ byte-identical before and after**. That last check is the cheap one nobody runs.
 **Treat every mutation count produced before those fixes as unverified.** Not a
 weaker form of evidence — none.
 
+### "Caught" has a margin, and the margin is worth reading
+
+The same mutation — deleting the completion tool's own check — is caught in PHP
+by **1** failing test and in Python by **3**. Both are green. They are not
+equivalent.
+
+A property protected by exactly one test is one deletion, one skip or one
+refactor away from being unprotected, and nothing would go red at the moment it
+stopped being covered. The count of *failures per mutation* is the cheapest
+available measure of that margin, and it is discarded by every summary that
+records only caught-or-not.
+
+Record it. Do not pad it — a test added to raise the number teaches nothing.
+But when two ports report the same verdict at 1 and at 3, say so rather than
+reading them as the same result.
+
 ### A padding fixture proves a DIFFERENT thing in every language
 
 There is no portable list of adversarial whitespace, and a shared one is worse
