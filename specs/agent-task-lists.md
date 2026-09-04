@@ -633,8 +633,13 @@ The corpus is part of the first slice, not a follow-up. Every cross-language
 suite written in this ecosystem so far has found a disagreement, and the two
 that found the worst defects found them in exactly this kind of boundary case.
 
-**Status, 2026-09-04: items 1–3 are DONE in all three languages. Item 4, the
-corpus, is NOT.**
+**Status, 2026-09-04: items 1–3 are DONE in all three languages. Item 4 is HALF
+done — `suites/agent-task-claim/` exists with 21 rows (9 adversarial, scored and
+passing under the trust rubric) and the reference's answers recorded, but
+NEITHER PORT HAS A RUNNER, so nothing is compared across languages yet.**
+
+Which means the suite has found nothing, and that is a fact about the suite
+rather than about the ports.
 
 That is a gap, not a decision, and it is the one that matters most. The three
 ports converged *on paper* — verified by reading all three contracts, which is a
@@ -643,11 +648,9 @@ Nine suites exist in this repository and **every one of them found a
 disagreement between implementations their own authors believed were aligned.**
 There is no reason to expect this to be the tenth exception.
 
-What it needs: `suites/agent-task-claim/` with `cases.json` and `manifest.json`,
-goldens generated from the reference per
-[0006](../docs/decisions/0006-goldens-from-the-reference.md), and a runner in
-each of the three repositories. The runners are why it was not done in the same
-pass — they land in the implementation repos, and those currently carry unpushed
-work on inconsistent branches.
+What remains: a runner in `prism-harness-ts` and `prism-harness-py` that drives
+the same rows and records its own half. Everything those runners need is on
+disk.
 
-Until it exists, "the three agree" is a claim about a reading, not a measurement.
+Until they exist, "the three agree" is a claim about a reading, not a
+measurement.
