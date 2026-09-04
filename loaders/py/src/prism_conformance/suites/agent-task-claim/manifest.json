@@ -27,7 +27,10 @@
     },
     "py": {
       "status": "partial",
-      "gap": "No runner. prism-harness-py implements the contract and is green in its own suite, which is exactly the check a cross-language corpus cannot be replaced by."
+      "gap": "atc-0017 diverges and is recorded as a divergence rather than skipped, because a skip would hide the finding -- and it is the row where all three languages give a different answer. PHP is SKIPPED under 0002: claim() declares ?int, so 90.4 is rejected by the type system before any guard in the package runs. prism-harness-ts reaches its own guard and REFUSES it as task_lease_invalid. This port reaches _require_lease, which asks only for finite-and-positive, ACCEPTS 90.4, and then truncates in _timestamp -- granting a 90 second lease for a 90.4 second request, with claimed_until on now+90. That is the silent configuration change the row's title says must not happen, and the direction is the unsafe one: the lease expires EARLY, so the next caller may take the task while its holder still believes it holds it. Recorded rather than fixed, because refusing a non-integral lease changes shipped behaviour for a consumer passing 90.5 today and the port's own default lease is a float; that belongs in a decision across the three repositories. See G-40. The other 20 rows agree byte-for-byte, INCLUDING atc-0011 and atc-0012 where ts diverges (G-39): TaskOutcome is a runtime enum here, release() parses the outcome rather than trusting it, and the runner hands the value over unvalidated so that guard is measured rather than supplied by the runner.",
+      "runner": "prism-harness-py:tests/test_agent_task_claim_corpus.py",
+      "cause": "decision-pending",
+      "cause_note": "G-40, one row: atc-0017. The two languages that can express it disagree, and this is the one that accepts a fractional lease and truncates it. Closing it is a behaviour change in a shipped package, so it needs a decision across prism-harness, -ts and -py."
     }
   }
 }
