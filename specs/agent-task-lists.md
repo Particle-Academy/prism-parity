@@ -437,9 +437,33 @@ Two rules fall out, and a harness without both is not evidence:
    expected verdict is POISONED. The old harness scored it a *pass*, which is
    exactly the signal that would have exposed both bugs on day one.
 
-A clean re-run afterwards: 21 mutations, all caught, 1–52 failures each, poison
-control POISONED, and **sources byte-identical before and after**. That last
-check is the cheap one nobody runs.
+**PHP's could not see the test results at all.** Pest *colours* its summary, so
+`Tests:` is followed by an ANSI escape rather than whitespace, and a `Tests:\s`
+pattern matched nothing. All 32 mutations reported POISONED — and the harness
+still printed **"Every mutation was caught"**, because POISONED verdicts were
+never added to the problem list. Two independent bugs composing into a confident
+green.
+
+### A poison control is only as good as the runner's reaction
+
+PHP's poison control worked and still did not help, which is the transferable
+part. **A parse error in an autoloaded file is raised per-test**, so the suite
+runs anyway and reports dozens of failures — which a failure-count classifier
+reads as *caught*. The poison correctly reported `caught (55 failing)` and
+thereby revealed that the classifier could not tell a broken mutation from a
+real one.
+
+A language whose runner **refuses to start** on broken code makes the poison
+obvious. One that raises per-test hides it. So the harness needs a **syntax gate
+before the suite is allowed an opinion** — `php -l`, `tsc --noEmit`, `python -m
+compileall`.
+
+Clean re-runs after all three were fixed: 21, 31 and a re-verified Python run,
+every mutation caught, poison POISONED, targets unique, and **sources
+byte-identical before and after**. That last check is the cheap one nobody runs.
+
+**Treat every mutation count produced before those fixes as unverified.** Not a
+weaker form of evidence — none.
 
 ### A padding fixture proves a DIFFERENT thing in every language
 
