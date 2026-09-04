@@ -56,7 +56,14 @@ AgentTaskSource                 where tasks come from
   claim(worker, lease) -> ?AgentTask     atomically take the next available task
   release(task, outcome)                 record what happened
   pending() -> int                       how many remain claimable
+  find(id) -> ?AgentTask                 resolve an id to a task
 ```
+
+`find()` was **not** in the first draft, and both ports built three methods
+before the reference added it. It is not optional: `release()` takes a *task*
+while every external caller — a tool, an HTTP route, a queued job — holds only
+an **id**. Without it the contract cannot be driven from outside, and the
+completion tool this spec requires cannot exist.
 
 `claim()` is deliberately one call. "Read the next task" and "mark it mine" as
 two calls is the race this whole design exists to prevent.
@@ -339,6 +346,70 @@ renders as `1` — and JavaScript has no integer type at all.
 Equality is not enough for this field in any of the three languages. Assert the
 stored type (`Number.isInteger`, `is_integer`, `is_int`) against the raw store
 payload.
+
+## The reference's rulings
+
+PHP landed last, read both ports, and settled the disagreements. These are
+binding.
+
+| | Ruling |
+|---|---|
+| Absent `outcome` on the completion tool | **Refused**, same `task_outcome_invalid` code as a malformed one. Python had it recording `done`. |
+| A lease of `<= 0` | **Refused**, not clamped. TypeScript clamped to 1s. |
+| Lease extension | Must check the ledger's **exhaustion**, not only `remainingSeconds`. A cancelled or step-exhausted run must not extend. |
+| Lockfile expiry format | **Terminated.** Nothing else distinguishes a complete expiry from the first half of one. |
+| `extendLease` on the contract | **No** — concrete source only. All three agreed. |
+| `pending()` | Counts `todo` plus expired-claimed, and never writes. |
+| A corrupt stored entry | **Refused**, not filtered out. A silently dropped task is work nobody will ever do. |
+
+**On absent `outcome`, the reference's reasoning is worth keeping**, because it
+overturns an argument that sounds right: *"the agent called `complete_task`, so
+it meant completion"* is the **same reasoning that produced the hardcoded-`done`
+bug** one level down. An agent that omits the field has not stated an outcome,
+and inferring the privileged one from silence is that escalation reintroduced as
+a default.
+
+## A third lock defect, in the other store
+
+`DatabaseSessionStore::withLock()` released by deleting the row for the key,
+**without checking the row was still the one it inserted**. A worker whose TTL
+lapsed while it was still inside its callback therefore deleted the lock a
+*different* worker had legitimately reclaimed, and the next caller walked in
+while that worker was mid-run.
+
+**The Redis store has guarded this since it was written** — a random token,
+compare-and-delete on release — and its comment names the hazard verbatim. The
+database store simply never grew the guard. Two implementations of one contract,
+one hardened and one not, is a shape worth looking for on sight.
+
+The fix uses **the expiry as the token**: a reclaimer's expiry is necessarily
+later, because it could only have taken the key after ours had passed and
+stamped its own from that moment. Equality therefore means "nobody has taken
+this since" — no extra column, and it compares on every driver where a JSON
+payload column does not.
+
+**Under SQL the truncated-expiry variant is worse, not better.** `'1735689' <
+'2026-…'` is true as a **string** comparison, before anything attempts to read
+either side as a date. A torn write is not merely parsed as the past — it never
+reaches a parser at all.
+
+## Mutation testing catches weak TESTS, not only weak code
+
+Across the three ports, mutation runs caught 29 + 12 + 15 broken decisions. What
+is worth recording is the ones that **survived**, because every single survivor
+was a bad test rather than sound code:
+
+- A no-trim check using **U+00A0** — which PHP's `trim()` does not strip — would
+  have passed against a trimming implementation. The test proved nothing about
+  the property it was named for.
+- A float mutation that **never actually stored a float**, so the assertion it
+  was meant to defeat was never exercised.
+- A lockfile terminator dropped from the payload went green, because every lock
+  test **planted its fixture by hand** and nothing round-tripped the store's own
+  writer through its own reader.
+
+A suite that has only ever passed cannot be distinguished from one that cannot
+fail. Breaking each pinned decision on purpose is how you tell.
 
 ## Genuinely still open — raise, do not settle
 
