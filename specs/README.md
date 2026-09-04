@@ -1,6 +1,9 @@
 # Specs
 
-One file per package, written **before** the package exists.
+One file per package, written **before** the package exists — or, where a
+capability spans an existing package and its ports, one file for that
+capability, written before it is built. The reason is the same either way:
+the shared half gets decided once instead of three times.
 
 A spec states what the package is for, what it must not do, the contracts it
 exposes, the decisions already taken, and the questions left open. An agent
@@ -20,6 +23,7 @@ of them.
 | [prism-workspace.md](prism-workspace.md) | `prism-workspace` | sandboxed filesystem, code execution, skill files |
 | [prism-mcp.md](prism-mcp.md) | `prism-mcp` | Model Context Protocol, server and client |
 | [prism-agent-team.md](prism-agent-team.md) | *(the Lab + one agent per language)* | ecosystem-wide testing team, coordinated by Prism.php |
+| [agent-task-lists.md](agent-task-lists.md) | *(a capability in `prism-harness` + both ports)* | durable task lists, claim-and-lease, running until a goal is met |
 
 ## What is deliberately NOT being built
 
@@ -46,6 +50,16 @@ new repository.
 Recorded here because the gap is real and someone will propose filling it
 again. The answer is that it is already filled, by the package that should own
 it.
+
+**Read that as "do not build a SECOND one", never as "graphs are out of
+scope".** The distinction has already misled a reader of this file: a design was
+nearly narrowed to a flat list on the strength of the paragraph above, turning a
+statement about where a capability LIVES into a statement that it may not exist.
+A graph runtime is wanted. It is `fancy-flow`.
+
+Which means **extending a Fancy package to serve a Prism capability is expected
+and optimal, not a workaround.** If a needed capability is blocked by a rule
+written here, argue the rule rather than scoping the work down to fit it.
 
 ## Where the gaps came from
 
