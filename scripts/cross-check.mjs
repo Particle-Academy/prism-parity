@@ -12,7 +12,8 @@
 // missing on disk is a FAILURE, not a skip: "we cross-check three languages" has
 // to be a job result rather than a sentence.
 
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -93,6 +94,66 @@ for (const entry of ledger.cross_checked) {
   reports.set(entry.language, Array.isArray(documents) ? documents : [documents]);
 }
 
+// The digest a language's runner SHOULD report: its own loader tree, hashed the
+// way every loader hashes it -- sorted forward-slash paths, then path, newline,
+// raw bytes, newline. Kept in step with loaders/*/src by the cross-language
+// suites themselves; if this drifts, every runner looks stale at once, which is
+// a loud failure rather than a quiet one.
+const LOADER_ROOTS = {
+  php: 'loaders/php',
+  ts: 'loaders/ts',
+  py: 'loaders/py/src/prism_conformance',
+};
+
+function walkForDigest(base, directory) {
+  const start = join(base, directory);
+
+  if (!existsSync(start)) return [];
+
+  const found = [];
+  const stack = [directory];
+
+  while (stack.length > 0) {
+    const relative = stack.pop();
+
+    for (const entry of readdirSync(join(base, relative))) {
+      const next = `${relative}/${entry}`;
+
+      if (statSync(join(base, next)).isDirectory()) stack.push(next);
+      else found.push(next);
+    }
+  }
+
+  return found;
+}
+
+function loaderDigest(language) {
+  const base = join(root, LOADER_ROOTS[language] ?? '');
+
+  if (!LOADER_ROOTS[language] || !existsSync(base)) return null;
+
+  const paths = [];
+
+  if (existsSync(join(base, 'VERSION'))) paths.push('VERSION');
+
+  for (const directory of ['suites', 'probes']) paths.push(...walkForDigest(base, directory));
+
+  if (paths.length === 0) return null;
+
+  paths.sort((a, b) => Buffer.compare(Buffer.from(a, 'utf8'), Buffer.from(b, 'utf8')));
+
+  const hash = createHash('sha256');
+
+  for (const path of paths) {
+    hash.update(Buffer.from(path, 'utf8'));
+    hash.update(Buffer.from([0x0a]));
+    hash.update(readFileSync(join(base, ...path.split('/'))));
+    hash.update(Buffer.from([0x0a]));
+  }
+
+  return `sha256:${hash.digest('hex')}`;
+}
+
 // ---------------------------------------------------------------------------
 // Same corpus?
 //
@@ -106,10 +167,44 @@ const digests = new Map([...reports].map(([language, docs]) => [language, docs[0
 const versions = new Map([...reports].map(([language, docs]) => [language, docs[0]?.corpus_version]));
 
 if (new Set(digests.values()).size > 1) {
-  failures.push(
+  // Naming the disagreement is not enough, and this is the second time it was
+  // not: the failure above says three hashes differ and nothing about which one
+  // is right or how to fix it, so it reads as a mystery and gets stepped around.
+  // It stayed red for exactly that reason while two of three runners were
+  // asserting against a corpus missing an entire suite.
+  //
+  // So: hash each language's OWN loader tree here, and tell the reader which
+  // runners are not reading theirs. A runner whose reported digest matches its
+  // loader tree is fine; one that does not is running an INSTALLED COPY, and
+  // that is a refresh, not a debugging session.
+  const stale = [];
+
+  for (const [language, reported] of digests) {
+    const expected = loaderDigest(language);
+
+    if (expected !== null && reported !== expected) {
+      stale.push({ language, reported, expected });
+    }
+  }
+
+  let message =
     'runners disagree about WHICH CORPUS they ran:\n' +
-      [...digests].map(([language, digest]) => `      ${language}: ${digest ?? 'not reported'}`).join('\n'),
-  );
+    [...digests].map(([language, digest]) => `      ${language}: ${digest ?? 'not reported'}`).join('\n');
+
+  if (stale.length > 0) {
+    message +=
+      '\n\n      These runners are NOT reading their own loader tree — they ran an installed copy:\n' +
+      stale.map(({ language }) => `        ${language}`).join('\n') +
+      '\n\n      Refresh it:\n' +
+      '        php  rm -rf runners/php/vendor/particle-academy/prism-conformance && (cd runners/php && composer install)\n' +
+      '             the path repository sets "symlink": false, so composer COPIES the loader\n' +
+      '             and the copy goes stale on every corpus change\n' +
+      '        py   python -m pip install -e loaders/py\n' +
+      '             an editable install resolves to the tree and cannot go stale\n' +
+      '        all  node tools/sync-corpus.mjs   first, if a suite is missing from the loaders entirely';
+  }
+
+  failures.push(message);
 }
 
 if (new Set(versions.values()).size > 1) {
