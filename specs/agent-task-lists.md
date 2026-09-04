@@ -1,6 +1,9 @@
 # Agent task lists
 
-**Status:** specified, not built. 2026-09-04.
+**Status:** BUILT in all three languages and released as `prism-harness`
+v0.3.0, 2026-09-04. The conformance corpus exists with the reference
+recorded; neither port has a runner yet, so nothing is compared across
+languages. See "First slice" at the end for exactly what remains.
 
 Not a new package. A capability in `prism-harness` and its two ports, specified
 here because it must land in three languages and the shared half has to be
