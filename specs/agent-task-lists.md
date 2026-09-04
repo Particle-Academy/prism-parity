@@ -308,6 +308,24 @@ proving it really is unguarded, run *before* it is used as one. If the fixture
 ever silently grows a guard, every tool test still passes and proves nothing —
 the tool tests would be measuring the fixture rather than the tool.
 
+### A guard can be entirely SHADOWED by the guard in front of it
+
+One mutation survived every sweep in TypeScript: deleting the tool's
+`state === 'claimed'` check changed nothing. The holder check in front of it
+already refused, because a `todo` task has `claimed_by: null` and fails the
+holder comparison anyway.
+
+The `claimed` check is therefore **unreachable** through any state a correct
+source can produce, and it becomes observable only on an **inconsistent row** —
+holder matches, state does not. No guarded implementation can create one.
+
+So the unguarded fixture grew that row, and the mutation is caught.
+
+This is the deeper reason the unguarded fixture exists. It is not only for
+proving the tool does not lean on the source: it is the **only way to reach
+states a correct implementation cannot reach**, and a guard you cannot reach is
+a guard you cannot prove you need. A dead check reads exactly like a live one.
+
 ### A conforming task need not expose a holder at all
 
 `AgentTask` is `id`, `instruction`, `state`, and nothing else. So an
