@@ -200,12 +200,23 @@ pass, and a consumer that wants one already has its own query.
 {"claimed_by":null,"claimed_until":null,"id":"t-1","instruction":"…","state":"todo"}
 ```
 
-Keys sorted; `claimed_by` and `claimed_until` present-and-null when unclaimed,
-never absent — [0002](../docs/decisions/0002-idiom-vs-identity.md) makes absent
-versus null an observable decision, and a port modelling unset as `undefined`
-would drop the keys. `claimed_until` is an integer Unix timestamp, not a
-formatted date, because date formatting is exactly where three languages produce
-three strings from one instant.
+**Keys in DECLARATION order, and never sorted.** An earlier draft of this spec
+said "keys sorted", which contradicts
+[0005](../docs/decisions/0005-canonical-json.md) — an accepted decision that
+pins insertion order precisely so that a mapper being rewritten shows up as its
+output moving. A sort hides that. It also hides it *later*: these five keys
+happen to be alphabetical, so a sort and a declaration produce identical bytes
+today and would diverge silently the first time a sixth key is added.
+
+So the record is BUILT in the order above and no sort is applied. Do not call a
+sort function to arrive at it.
+
+`claimed_by` and `claimed_until` are present-and-null when unclaimed, never
+absent — [0002](../docs/decisions/0002-idiom-vs-identity.md) makes absent versus
+null an observable decision, and a port modelling unset as `undefined` would drop
+the keys. `claimed_until` is an integer Unix timestamp, not a formatted date,
+because date formatting is exactly where three languages produce three strings
+from one instant.
 
 ## Surfaced by the first implementation, 2026-09-04
 
@@ -252,6 +263,33 @@ agent that was denied access to it.
 
 This is the difference between asking "what did we send?" and "what can still be
 invoked?" — the second question is the one that found it.
+
+### A seventh code, because a typo must not grant the privileged outcome
+
+`task_outcome_invalid`. The TypeScript port's completion tool began as
+`args.outcome === 'failed' ? 'failed' : 'done'`, which records **done** for `{}`,
+for `{outcome:'complete'}`, and for `{outcome:'DONE'}`.
+
+That is model-supplied input coerced toward the MORE PRIVILEGED result — an
+agent closing its task by mistyping, which is the completion-authority rule
+defeated by a default branch. The outcome must be validated strictly and
+anything that is not exactly `done` or `failed` refused.
+
+### The lock underneath this is load-bearing, and it was broken
+
+Found while building the TypeScript port, in code that predates this spec.
+`FileSessionStore` acquired a lock with `open(..., 'wx')` and *then* wrote the
+expiry. In the window between, the file exists and is **empty** — and
+`Number('') === 0` read as "expired in 1970", so a waiter deleted a lock another
+process was actively holding. One key, two callers. It presented as a ~1-in-8
+flake.
+
+**`claim()` atomicity rests entirely on that lock**, so a stolen lock means two
+workers holding the same task — the single thing this design exists to prevent.
+A capability is only as sound as the primitive under it, and this one was never
+exercised hard enough to fail until something depended on it. Both other
+languages must check their own store for the same shape: anywhere an empty or
+unparsable expiry can read as "already expired".
 
 ### Assert the TYPE of a stored timestamp, not its value
 
