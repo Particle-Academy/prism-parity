@@ -411,6 +411,58 @@ was a bad test rather than sound code:
 A suite that has only ever passed cannot be distinguished from one that cannot
 fail. Breaking each pinned decision on purpose is how you tell.
 
+### …and the mutation harness itself can lie
+
+Python's read pytest's **exit code 5 — "no tests collected" — as "mutation
+caught"**. A mutation that broke the suite into *not running* therefore scored
+as a pass, in the tool whose entire job is deciding whether the tests work. It
+must distinguish a real failure (exit 1) from a collection or compile error.
+
+That false positive is what led to finding the next one.
+
+### A padding fixture proves a DIFFERENT thing in every language
+
+There is no portable list of adversarial whitespace, and a shared one is worse
+than none because it looks rigorous:
+
+| codepoint | PHP `trim()` | Python `strip()` | JS `trim()` |
+|---|---|---|---|
+| ASCII space | strips | strips | strips |
+| U+00A0 | **leaves** | strips | strips |
+| U+3000 | leaves | strips | strips |
+| U+200B | leaves | leaves | leaves |
+
+So a no-trim guarantee tested with **U+00A0 in PHP proves nothing** — the case
+passes against a trimming implementation, because PHP would not have stripped it
+anyway. The same fixture in Python is sharp. U+200B is useless everywhere.
+
+Each language must pick padding its **own** trim actually removes, and assert
+the codepoints it does *not* remove are preserved. The PHP port does exactly
+this and says so at the fixture.
+
+**Add a meta-test** asserting every padding value in the list is one that
+language really strips, so the list cannot quietly stop being adversarial when
+someone edits it.
+
+### Confirm the adversarial cases are RUNNING
+
+Python's `PADDED_OUTCOMES` fixture was defined and **never wired into the
+parametrised refusal**. The NBSP, U+3000 and tab cases were not executing at
+all — only two ASCII-space entries. A green run looks identical either way, and
+it was found by listing the **collected test ids**, not by reading results.
+
+The count of tests that ran is a fact; the count you believe you wrote is not.
+
+### A silently accepted bad value beats a clamped one, downward
+
+On a lease of `<= 0`, TypeScript clamped and Python **silently accepted** — and
+accepting was worse: `claimed_until` landed in the past, so the claim expired
+the instant it was granted and the next caller stole it. A lock that grants and
+immediately releases is indistinguishable from no lock.
+
+Refuse non-finite values **separately**: `NaN <= 0` is **false**, so `NaN`
+passes a bare positivity check and detonates later.
+
 ## Genuinely still open — raise, do not settle
 
 Per [0008](../docs/decisions/0008-consensus-among-agents.md):
