@@ -54,7 +54,7 @@ AgentTask                       one unit of work
 
 AgentTaskSource                 where tasks come from
   claim(worker, lease) -> ?AgentTask     atomically take the next available task
-  release(task, outcome)                 record what happened
+  release(task, worker, outcome)         record what happened — worker REQUIRED
   pending() -> int                       how many remain claimable
   find(id) -> ?AgentTask                 resolve an id to a task
 ```
@@ -255,6 +255,47 @@ ports follow it and this section is corrected.
 6. **Lease extension sets `now + granted` even when that SHORTENS an existing
    lease** — reachable only when a lease outruns the run's whole wall-clock
    allowance.
+
+### `release()` takes the worker, and a guard in one tool is not a guard
+
+The first draft of this spec gave `release()` two arguments. Both the reference
+and one port hardened the *completion tool* instead and called the remaining gap
+accepted. It is not acceptable, and the reference reversed itself:
+
+> **A guard living in one tool leaves every other caller able to do what the
+> guard forbids** — a queued job, an HTTP route, a direct call.
+
+**No adversary is required to reach it.** Worker A's lease lapses mid-task. B
+legitimately reclaims it and starts. A finishes and calls `release()`. A
+overwrites B's live claim, the task reads `done` while B is still working, B's
+work is discarded — and **B's own release then fails as "already terminal", so
+the second worker is blamed for the first one's mistake.** Every step is normal
+operation.
+
+So the check belongs on the source, beside the rest of the state machine, and
+reports `task_lease_not_held` — the same code as the lease guard, because it is
+the same fact.
+
+**Two audiences, two messages.** The exception may name the holder: a developer
+reads it. The tool's refusal must name nobody: a model reads that, and the
+holder's identity is not its business.
+
+### Test the contract's guarantee against a NAIVE implementation of it
+
+Keep the tool's own pre-check as well — and the reason is the transferable part.
+Against the shipped source, deleting that check **changed nothing observable**:
+the mutation *survived*, because the source already refused.
+
+That reads like redundancy and is not. **An interface cannot make an
+implementation check anything**, and a third party writing their own
+`AgentTaskSource` will implement `release()` as "find it, set the state" —
+because that is exactly what the signature suggests.
+
+So the suite carries a deliberately **unguarded fixture source**, and a task
+whose holder cannot be established at all, and requires the tool to refuse both
+while still closing a task the worker really holds. A guarantee that only holds
+because *your* implementation happens to enforce it is not a guarantee the
+contract makes.
 
 ### A hole this spec had, found by building it
 
