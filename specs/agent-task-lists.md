@@ -207,6 +207,63 @@ would drop the keys. `claimed_until` is an integer Unix timestamp, not a
 formatted date, because date formatting is exactly where three languages produce
 three strings from one instant.
 
+## Surfaced by the first implementation, 2026-09-04
+
+The Python port landed first and hit six things this spec did not pin. They are
+recorded here because a decision that lives only in one implementation is a
+divergence waiting to be discovered — and because
+[0004](../docs/decisions/0004-error-codes.md) pins error codes across languages,
+so item 3 is binding rather than advisory.
+
+**The reference (PHP) confirms or overrides these.** Where it overrides, the
+ports follow it and this section is corrected.
+
+1. **`release()` clears BOTH `claimed_by` and `claimed_until`** on a terminal
+   task. Arguable the other way — retaining who did the work as an audit trail.
+2. **Lease expiry is INCLUSIVE**: `claimed_until <= now` means expired. A
+   one-tick boundary difference between ports is a real divergence, and exactly
+   the kind nothing errors on.
+3. **Five error codes**, identical in all three languages:
+   `duplicate_task_id`, `task_identifier_blank`, `task_not_found`,
+   `task_already_terminal`, `task_lease_not_held`. A volatile store reuses the
+   existing `unsafe_state_configuration`; a budget-exhausted lease extension
+   reuses `run_not_permitted`.
+4. **A blank worker or task id is refused**, compared against `""` exactly, with
+   **no trimming**. Deliberately no `trim()`: each language strips a different
+   codepoint set, which is the G-36 lesson. Note `""` is falsy in PHP, so a blank
+   owner would otherwise read as "unclaimed".
+5. **The list is addressed at `{session.key()}:tasks`**, mirroring how the thread
+   is addressed.
+6. **Lease extension sets `now + granted` even when that SHORTENS an existing
+   lease** — reachable only when a lease outruns the run's whole wall-clock
+   allowance.
+
+### A hole this spec had, found by building it
+
+`release()` takes no worker. A completion tool bound only to a source therefore
+lets an agent close **any** task in the list, including one another worker is
+part-way through — which defeats the completion-authority rule above by going
+around it rather than through it.
+
+**The tool must require a worker and refuse any task that worker does not hold**,
+and its refusal must not name the actual holder: a tool error is returned to the
+model as readable text, so naming the holder leaks the list's contents to an
+agent that was denied access to it.
+
+This is the difference between asking "what did we send?" and "what can still be
+invoked?" — the second question is the one that found it.
+
+### Assert the TYPE of a stored timestamp, not its value
+
+Mutation testing of the Python port caught 14 of 15 broken decisions. The miss:
+`claimed_until` stored as a **float** passed every assertion, because
+`1735689900.0 == 1735689900` is true. PHP has the same hazard inverted — `1.0`
+renders as `1` — and JavaScript has no integer type at all.
+
+Equality is not enough for this field in any of the three languages. Assert the
+stored type (`Number.isInteger`, `is_integer`, `is_int`) against the raw store
+payload.
+
 ## Genuinely still open — raise, do not settle
 
 Per [0008](../docs/decisions/0008-consensus-among-agents.md):
