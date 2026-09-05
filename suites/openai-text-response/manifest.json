@@ -14,21 +14,16 @@
   "implementations": {
     "php": {
       "status": "full",
-      "runner": "prism-parity:runners/php/runner.php"
+      "runner": "prism-parity:runners/php/runner.php",
+      "note": "Goldens here describe a reference NEWER than the released particle-academy/prism the runner installs: trs-0006 records the map-typed serialisation fix for F-3, which is on main and not yet tagged. tools/generate-goldens.php --check is red against the published package until that release lands."
     },
     "ts": {
-      "status": "partial",
-      "gap": "trs-0006 is skipped: the reference renders an empty PHP array for a map-typed field, which TypeScript cannot express without modelling maps as arrays. See finding F-3.",
-      "runner": "prism-ts:conformance/runner.mjs",
-      "cause": "reference-limit",
-      "cause_note": "F-3. The reference renders an empty map-typed field as an empty JSON ARRAY because a PHP array is both a list and a map. 0007 already recommends the reference cast map-typed fields to objects."
+      "status": "full",
+      "runner": "prism-ts:conformance/runner.mjs"
     },
     "py": {
-      "status": "partial",
-      "gap": "trs-0006 is skipped: the reference renders an empty PHP array for a map-typed field, which Python cannot express without modelling maps as lists. See finding F-3.",
-      "runner": "prism-py:conformance/runner.py",
-      "cause": "reference-limit",
-      "cause_note": "F-3, identical to ts. The port is correct; the reference's output is ambiguous."
+      "status": "full",
+      "runner": "prism-py:conformance/runner.py"
     }
   }
 }

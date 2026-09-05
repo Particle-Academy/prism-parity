@@ -47,7 +47,19 @@ $stale = [];
 foreach ($corpus->suiteIds() as $suiteId) {
     $path = $root."/suites/{$suiteId}/cases.json";
     $manifest = json_decode((string) file_get_contents($root."/suites/{$suiteId}/manifest.json"), true, 512, JSON_THROW_ON_ERROR);
-    $document = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+    $raw = (string) file_get_contents($path);
+    $document = json_decode($raw, true, 512, JSON_THROW_ON_ERROR);
+
+    // A SECOND decode, this one lossless, and it is the copy that gets written
+    // back. `json_decode($raw, true)` turns `{}` into `[]`, so rewriting the
+    // file from $document would silently retype every empty object in it —
+    // destroying, with the very defect this corpus records, the rows that exist
+    // to record it. The associative copy above still drives the reference,
+    // because that is what the reference is handed in real life.
+    //
+    // Generalised in 0007: when checking for a defect, do not use a tool that
+    // is subject to that defect. It applies to WRITING the evidence too.
+    $writable = preserveContainerTypes(json_decode($raw, false, 512, JSON_THROW_ON_ERROR));
 
     // A `security-corpus` suite is NOT generated here. Each one brings its own
     // generator (tools/generate-*.php) because each records a different shape —
@@ -108,13 +120,13 @@ foreach ($corpus->suiteIds() as $suiteId) {
 
         if (($case['expect'][$key] ?? null) !== $produced) {
             $stale[] = $case['id'];
-            $document['cases'][$index]['expect'][$key] = $produced;
+            $writable['cases'][$index]['expect'][$key] = $produced;
             $changed = true;
         }
     }
 
     if ($changed && ! $check) {
-        file_put_contents($path, json_encode($document, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)."\n");
+        file_put_contents($path, json_encode($writable, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)."\n");
         fwrite(STDERR, sprintf("  %s: rewrote goldens\n", $suiteId));
     }
 }
@@ -125,3 +137,24 @@ if ($stale !== [] && $check) {
 }
 
 fwrite(STDERR, $stale === [] ? "All goldens current.\n" : sprintf("Regenerated %d golden(s).\n", count($stale)));
+
+/**
+ * Fold every POPULATED object back into an associative array and leave the
+ * EMPTY ones as objects — the one container a PHP array cannot express.
+ *
+ * Nothing is inferred: `[]` arrived as a list and stays one.
+ */
+function preserveContainerTypes(mixed $value): mixed
+{
+    if ($value instanceof stdClass) {
+        $properties = get_object_vars($value);
+
+        return $properties === [] ? $value : array_map(preserveContainerTypes(...), $properties);
+    }
+
+    if (is_array($value)) {
+        return array_map(preserveContainerTypes(...), $value);
+    }
+
+    return $value;
+}

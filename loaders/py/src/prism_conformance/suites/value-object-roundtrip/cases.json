@@ -157,19 +157,15 @@
             "id": "rtp-0009",
             "title": "assistant message with empty additional content",
             "since": "0.1.0",
-            "notes": "The isolated empty-map row for the message side, matching trs-0006 on the response side. PHP has one array type, so an assistant message's additional content — a map — serialises as an empty JSON ARRAY when empty and as an object when populated: the same field changes JSON type with its contents. Verified empirically rather than assumed. Kept here alone so every other row in this suite stays enforceable in all three languages. Finding F-3.",
+            "notes": "The isolated empty-map row for the message side, matching trs-0006 on the response side. An assistant message's additional content is a map, and the reference used to serialise it as an empty JSON ARRAY when empty and an object when populated. It now renders an object either way, so this row is enforced in all three languages rather than skipped in two. Finding F-3, serialise half, closed.",
             "subject": {
                 "$": "AssistantMessage",
                 "content": "Done.",
-                "additionalContent": []
+                "additionalContent": {}
             },
             "expect": {
-                "serialized_json": "{\"type\":\"assistant\",\"content\":\"Done.\",\"tool_calls\":[],\"additional_content\":[],\"tool_approval_requests\":[]}",
+                "serialized_json": "{\"type\":\"assistant\",\"content\":\"Done.\",\"tool_calls\":[],\"additional_content\":{},\"tool_approval_requests\":[]}",
                 "rehydrates": true
-            },
-            "skip": {
-                "ts": "The golden contains an empty JSON ARRAY for additional_content, a map-typed field, because PHP renders an empty array and an empty map identically. TypeScript renders an empty Record as {}. Reproducing [] would mean modelling maps as arrays throughout the port. Recorded rather than fixed on either side — F-3 recommends the reference cast these fields to objects.",
-                "py": "Same as ts: PHP has one array type, so an empty map-typed field serialises as []. Python renders an empty dict as {}. See finding F-3."
             }
         }
     ]

@@ -14,24 +14,18 @@
   "implementations": {
     "php": {
       "status": "partial",
-      "gap": "The reference asserts the SERIALISED half only. particle-academy/prism has no fromArray() for messages — it can write its value objects and cannot read them back — so the rehydration half of every row here is unverified in PHP. That gap is not academic: it forced prism-harness to invent its own MessageMapper, which then shipped a defect that corrupted every stored Anthropic assistant message. See finding F-4.",
+      "gap": "The reference asserts the SERIALISED half only. particle-academy/prism has no fromArray() for messages — it can write its value objects and cannot read them back — so the rehydration half of every row here is unverified in PHP. That gap is not academic: it forced prism-harness to invent its own MessageMapper, which then shipped a defect that corrupted every stored Anthropic assistant message. See finding F-4. Separately, PHP cannot DISCRIMINATE rtp-0009's input: its loader decodes the case's `\"additionalContent\": {}` to the same value as `[]`, so this row is enforcing on ts and py and merely not-failing on php. Goldens here also describe a reference newer than the released package — see F-3.",
       "runner": "prism-parity:runners/php/runner.php",
       "cause": "reference-limit",
       "cause_note": "The reference has no fromArray() for messages: it can WRITE its value objects and cannot READ THEM BACK, so only the serialised half is asserted. Both ports round-trip."
     },
     "ts": {
-      "status": "partial",
-      "gap": "rtp-0009 is skipped: the reference renders an empty map-typed field as an empty JSON array, which this language cannot express without modelling maps as arrays. See finding F-3.",
-      "runner": "prism-ts:conformance/runner.mjs",
-      "cause": "reference-limit",
-      "cause_note": "F-3, the same empty-map ambiguity, on rtp-0009."
+      "status": "full",
+      "runner": "prism-ts:conformance/runner.mjs"
     },
     "py": {
-      "status": "partial",
-      "gap": "rtp-0009 is skipped: the reference renders an empty map-typed field as an empty JSON array, which this language cannot express without modelling maps as arrays. See finding F-3.",
-      "runner": "prism-py:conformance/runner.py",
-      "cause": "reference-limit",
-      "cause_note": "F-3, the same empty-map ambiguity, on rtp-0009."
+      "status": "full",
+      "runner": "prism-py:conformance/runner.py"
     }
   }
 }
