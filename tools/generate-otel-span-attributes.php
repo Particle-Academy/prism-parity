@@ -34,6 +34,7 @@ if (! is_file($autoload)) {
 
 require $autoload;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Support\Arrayable;
 use OpenTelemetry\SDK\Trace\SpanExporter\InMemoryExporter;
 use OpenTelemetry\SDK\Trace\SpanProcessor\SimpleSpanProcessor;
@@ -45,6 +46,8 @@ use Prism\Prism\Enums\TelemetryOperation;
 use Prism\Prism\Events\Telemetry\GenerationCompleted;
 use Prism\Prism\Events\Telemetry\GenerationStarted;
 use Prism\Prism\Telemetry\TelemetryContext;
+use Prism\Prism\ValueObjects\Meta;
+use Prism\Prism\ValueObjects\ProviderRateLimit;
 use Prism\Prism\ValueObjects\Usage;
 
 /**
@@ -62,13 +65,59 @@ use Prism\Prism\ValueObjects\Usage;
 final readonly class CorpusPayload implements Arrayable
 {
     /** @param array<string, mixed> $payload */
-    public function __construct(private array $payload) {}
+    public function __construct(private array $payload, public ?Meta $meta = null) {}
 
     /** @return array<string, mixed> */
     public function toArray(): array
     {
         return $this->payload;
     }
+}
+
+/**
+ * The corpus rate limits, as the value objects the reference actually carries.
+ *
+ * `resets_at` is parsed HERE and not in the bridge: the bridge is handed an
+ * instant, so nothing in this comparison depends on three languages agreeing
+ * about how to render or re-render a date.
+ *
+ * @param  array<int, array<string, mixed>>|null  $rateLimits
+ * @return array<int, ProviderRateLimit>
+ */
+function rateLimitsOf(?array $rateLimits): array
+{
+    return array_map(static fn (array $rateLimit): ProviderRateLimit => new ProviderRateLimit(
+        name: $rateLimit['name'],
+        limit: $rateLimit['limit'],
+        remaining: $rateLimit['remaining'],
+        resetsAt: $rateLimit['resets_at'] === null ? null : new Carbon($rateLimit['resets_at']),
+    ), $rateLimits ?? []);
+}
+
+/**
+ * The response object the reference bridge is handed.
+ *
+ * Rate limits reach the reference on the RESPONSE's Meta and nowhere else, so a
+ * case that declares them needs a response object even when it captures no
+ * content -- which is why this returns one for a null output. That asymmetry is
+ * the reference's, not the corpus's: core nulls the response entirely when
+ * `prism.telemetry.capture_content` is off, so quota headroom currently rides
+ * on the content switch (G-45).
+ *
+ * @param  array<string, mixed>  $generation
+ */
+function responseOf(array $generation): ?CorpusPayload
+{
+    if ($generation['output'] === null && $generation['rate_limits'] === null) {
+        return null;
+    }
+
+    return new CorpusPayload(
+        $generation['output'] ?? [],
+        $generation['rate_limits'] === null
+            ? null
+            : new Meta(id: '', model: $generation['model'], rateLimits: rateLimitsOf($generation['rate_limits'])),
+    );
 }
 
 $check = in_array('--check', $argv, true);
@@ -117,7 +166,7 @@ function emit(array $case, callable $operationOf, callable $finishReasonOf): arr
     // state here and NOT a misuse of the API: it is what otel-0013 exists to
     // record.
     $input = $generation['input'] === null ? null : new CorpusPayload($generation['input']);
-    $output = $generation['output'] === null ? null : new CorpusPayload($generation['output']);
+    $output = responseOf($generation);
 
     $usage = $generation['usage'] === null ? null : new Usage(
         promptTokens: $generation['usage']['prompt_tokens'],
