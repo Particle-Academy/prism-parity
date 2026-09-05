@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/Particle-Academy/prism-parity/schema/suite-manifest.schema.json",
-  "title": "Conformance suite manifest",
-  "description": "Declares what contract a suite pins, which implementation is the reference the goldens were generated from, and every implementation known to run it — including the ones with recorded gaps, so a green tick is never over-read.",
+  "title": "A conformance suite manifest",
+  "description": "Derived from the 14 manifests that actually ship, not from what a manifest was once imagined to look like. An earlier version of this file listed nine keys, forbade everything else, and had no `security-corpus` in its `kind` enum -- so it would have rejected almost every manifest in this repository. Nothing loaded it, so nobody found out. It is enforced by tools/guard-corpus.mjs now, which is the only reason it can be trusted.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -10,142 +10,85 @@
     "title",
     "kind",
     "pins",
+    "pattern_doc",
     "reference",
-    "implementations",
-    "comparison"
+    "comparison",
+    "discrimination",
+    "implementations"
   ],
   "properties": {
     "id": {
       "type": "string",
-      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      "description": "Matches the suite's directory name."
     },
-    "title": {
-      "type": "string",
-      "minLength": 1
-    },
+    "title": { "type": "string" },
     "kind": {
-      "description": "request-payload: builder script -> provider request body. response-parse: raw provider response -> parsed result. roundtrip: value object -> serialized form -> value object. error-code: builder script -> error code. container-identity: two raw JSON strings -> whether this language's parser considers them equal.",
+      "type": "string",
       "enum": [
         "request-payload",
         "response-parse",
         "roundtrip",
         "error-code",
-        "container-identity"
-      ]
+        "container-identity",
+        "security-corpus"
+      ],
+      "description": "`security-corpus` is scored by tools/trust-rubric.mjs and carries extra obligations -- adversarial rows, and a `findings` block once every row agrees."
     },
     "pins": {
       "type": "string",
-      "minLength": 1,
-      "description": "Prose statement of the contract under test. Not asserted; read by humans deciding whether a change belongs here."
+      "description": "What this suite fixes in place, and why it matters ACROSS a language boundary. A suite whose pins could be stated without mentioning two languages is probably a per-language test."
     },
-    "pattern_doc": {
+    "scope": {
       "type": "string",
-      "description": "Path to the canonical pattern documentation this suite enforces."
+      "description": "What the suite deliberately does NOT cover. Its absence is why 'this suite exists' gets read as 'this value is covered'."
     },
+    "construction": { "type": "string" },
+    "construction_note": { "type": "string" },
+    "findings": {
+      "type": "string",
+      "description": "What running it actually established. The trust rubric requires this once no row disagrees, because `agrees: true` speaking for itself is how G-36 survived: three languages agreeing on something wrong."
+    },
+    "pattern_doc": { "type": "string" },
     "reference": {
       "type": "string",
-      "enum": [
-        "php",
-        "ts",
-        "py"
-      ],
-      "description": "The implementation the goldens were GENERATED from by execution. Never hand-authored."
+      "enum": ["php", "ts", "py"]
+    },
+    "comparison": {
+      "type": "object",
+      "required": ["mode"],
+      "properties": { "mode": { "type": "string" } }
+    },
+    "discrimination": {
+      "type": "object",
+      "required": ["status"],
+      "properties": { "status": { "type": "string" } }
     },
     "implementations": {
       "type": "object",
       "minProperties": 1,
-      "description": "Every implementation known to run this suite, keyed by language. A language absent from here is not covered, and the existence check reads this.",
       "additionalProperties": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "status"
-        ],
+        "required": ["status"],
         "properties": {
           "status": {
-            "enum": [
-              "full",
-              "partial",
-              "absent"
-            ]
+            "type": "string",
+            "enum": ["full", "partial"]
           },
+          "runner": { "type": "string" },
+          "note": { "type": "string" },
           "gap": {
             "type": "string",
-            "minLength": 1,
-            "description": "Required when status is not 'full'. What is NOT covered, so the green tick is not misread."
+            "description": "What is missing, in prose."
           },
-          "runner": {
+          "cause": {
             "type": "string",
-            "description": "Repo-relative or repo-qualified path to the runner CLI."
-          }
-        },
-        "allOf": [
-          {
-            "if": {
-              "properties": {
-                "status": {
-                  "const": "full"
-                }
-              }
-            },
-            "then": true,
-            "else": {
-              "required": [
-                "gap"
-              ]
-            }
-          }
-        ]
-      }
-    },
-    "comparison": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "mode"
-      ],
-      "properties": {
-        "mode": {
-          "const": "canonical-json-string",
-          "description": "The only comparison mode this corpus has. See docs/decisions/0005-canonical-json.md — there is deliberately no float epsilon, because four loaders that each pick their own tolerance are four different contracts."
-        }
-      }
-    },
-    "discrimination": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "status"
-      ],
-      "properties": {
-        "status": {
-          "enum": [
-            "probed",
-            "unprobed"
-          ]
-        },
-        "gap": {
-          "type": "string",
-          "minLength": 1
-        }
-      },
-      "allOf": [
-        {
-          "if": {
-            "properties": {
-              "status": {
-                "const": "probed"
-              }
-            }
+            "enum": ["no-runner", "reference-limit", "language-limit", "decision-pending"],
+            "description": "WHOSE gap it is. Required alongside a `partial` status, because `partial` alone flattens a port with no runner, a port that is correct while the reference is ambiguous, and a row a language cannot express into one word -- and read as a scoreboard that reports the ports as behind when the reference is behind its own ports. Enforced by tools/parity-gaps.mjs."
           },
-          "then": true,
-          "else": {
-            "required": [
-              "gap"
-            ]
-          }
+          "cause_note": { "type": "string" }
         }
-      ]
+      }
     }
   }
 }

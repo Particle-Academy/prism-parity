@@ -225,6 +225,99 @@ const allFiles = walk(root);
   }
 }
 
+// ---------------------------------------------------------------------------
+// N. Every suite manifest matches schema/suite-manifest.schema.json.
+//
+// The schema existed for months and NOTHING LOADED IT. It had drifted so far
+// that it would have rejected almost every manifest here: nine known keys with
+// `additionalProperties: false` against manifests carrying thirteen, and a
+// `kind` enum with no `security-corpus` in it -- the kind of nine suites.
+//
+// So it was worse than absent. Wired up on the day it was found, it would have
+// reported the MANIFESTS as broken, and the natural response to a validator
+// that fails everything is to delete the validator.
+//
+// It is enforced here now, which is the only thing that makes it trustworthy.
+// A schema nothing runs is a description of the past.
+//
+// The validator is a deliberate SUBSET of JSON Schema -- type, required,
+// properties, additionalProperties, enum, minProperties -- because this
+// repository ships zero npm dependencies and a real one would be the first.
+// It covers exactly what this schema uses; anything it cannot express does not
+// belong in the schema until it can.
+// ---------------------------------------------------------------------------
+const manifestSchema = JSON.parse(readFileSync(join(root, 'schema', 'suite-manifest.schema.json'), 'utf8'));
+
+function validate(value, schema, where) {
+  const problems = [];
+
+  if (schema.type === 'object') {
+    if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+      return [`${where} must be an object`];
+    }
+
+    for (const key of schema.required ?? []) {
+      if (!(key in value)) problems.push(`${where} is missing required key \`${key}\``);
+    }
+
+    if (schema.minProperties && Object.keys(value).length < schema.minProperties) {
+      problems.push(`${where} needs at least ${schema.minProperties} entr(y|ies)`);
+    }
+
+    for (const [key, child] of Object.entries(value)) {
+      const childSchema = schema.properties?.[key];
+
+      if (childSchema) {
+        problems.push(...validate(child, childSchema, `${where}.${key}`));
+        continue;
+      }
+
+      if (schema.additionalProperties === false) {
+        problems.push(`${where} carries unknown key \`${key}\` — add it to the schema, or remove it`);
+      } else if (typeof schema.additionalProperties === 'object') {
+        problems.push(...validate(child, schema.additionalProperties, `${where}.${key}`));
+      }
+    }
+
+    return problems;
+  }
+
+  if (schema.type === 'string' && typeof value !== 'string') {
+    problems.push(`${where} must be a string`);
+  }
+
+  if (schema.enum && !schema.enum.includes(value)) {
+    problems.push(`${where} is ${JSON.stringify(value)}, which is not one of: ${schema.enum.join(', ')}`);
+  }
+
+  return problems;
+}
+
+for (const suiteId of readdirSync(join(root, 'suites'))) {
+  const manifestPath = join(root, 'suites', suiteId, 'manifest.json');
+
+  if (!existsSync(manifestPath)) continue;
+
+  const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+
+  for (const problem of validate(manifest, manifestSchema, suiteId)) {
+    fail('manifest-schema', problem);
+  }
+
+  if (manifest.id !== suiteId) {
+    fail('manifest-schema', `${suiteId} declares id "${manifest.id}", which is not its directory name`);
+  }
+
+  // A `partial` that does not say WHOSE gap it is reads as no gap at all. This
+  // is the same rule tools/parity-gaps.mjs enforces, asserted here so a manifest
+  // cannot be committed without it and discovered later by a report.
+  for (const [language, entry] of Object.entries(manifest.implementations ?? {})) {
+    if (entry.status === 'partial' && !entry.cause) {
+      fail('manifest-schema', `${suiteId}/${language} is partial and states no \`cause\``);
+    }
+  }
+}
+
 if (failures.length > 0) {
   console.error(`Corpus guards failed:\n\n  ${failures.join('\n  ')}\n`);
   process.exit(1);
