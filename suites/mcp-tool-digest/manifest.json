@@ -4,6 +4,7 @@
   "kind": "security-corpus",
   "pins": "The exact digest an MCP tool definition produces in every language. A digest is the material of a TrustPolicy pin, so this is the one value in the package that MUST be byte-identical across implementations: a pin computed against a PHP deployment is pasted into a TypeScript or Python config by an operator who has no way to know the two disagree. Per-language suites cannot see this — each one is perfectly happy digesting its own way.",
   "scope": "The tool-definition DIGEST -- the material of a TrustPolicy pin. It does not cover which tools a policy admits, how results are framed, or the transport. A green run means a pin computed in one language validates in another; it says nothing about whether the policy around it is right.",
+  "findings": "All thirteen rows agree, as of 2026-09-04. They did not when this suite was written, and what closed them is the part worth keeping. THREE rows disagreed, from TWO independent causes, and the two were resolved in OPPOSITE DIRECTIONS because each was judged on its merits rather than by a rule about which side wins. (1) dig-0002 and dig-0003: PHP has one array type, so an empty map-typed field encoded as `[]` where both ports encoded `{}` — the F-3 artefact that also skips rtp-0009 in value-object-roundtrip. THE REFERENCE MOVED, because an MCP input schema is a JSON Schema and a JSON Schema is an object. It moved by no longer DISCARDING the container type at decode — `tools/list` is decoded keeping an empty JSON object distinguishable from an empty array — rather than by promoting empty arrays, which would have rendered the entirely ordinary `\"required\": []` as `{}` and broken agreement the other way. dig-0012 is that guard and dig-0013 is the reason a rule over known map-typed KEYS would not have been enough: the material a digest covers is arbitrary JSON. (2) dig-0007: an absent description, coerced to `\"\"` by the reference so a terse server stays callable, kept as `null` by both ports. THE PORTS MOVED. See G-20, closed. **EVERY DIGEST IN THIS SUITE CHANGED.** Any pin recorded before 2026-09-04 matches none of the three implementations and must be recomputed — an operator who does not know that sees a pin refusing a tool they trust, which reads exactly like a rug pull, and the usual response to that is to delete the pin. Current agreement means the digest is portable and nothing more: a bug all three share is still invisible to a suite that compares languages.",
   "pattern_doc": "docs/decisions/0005-canonical-json.md",
   "reference": "php",
   "comparison": {
@@ -15,21 +16,18 @@
   "implementations": {
     "php": {
       "status": "full",
-      "runner": "prism-mcp:tests/Unit/ToolDigestCorpusTest.php"
+      "runner": "prism-mcp:tests/Unit/ToolDigestCorpusTest.php",
+      "note": "The reference, and the side that moved on the empty map. Its runner also drives the corpus through the WIRE path in tests/Feature/ProtocolTest.php, because feeding ToolDefinition::from a payload this repository decoded would prove nothing about what a server's JSON does — the corpus and the generator both decode preserving container types, and a runner that did not would test an input no server can send."
     },
     "ts": {
-      "status": "partial",
-      "gap": "dig-0002, dig-0003 and dig-0007 diverge from the reference and are recorded as `divergence` rather than skipped, because a skip would hide the finding. Two causes, both proven by dumping the pre-hash material: PHP renders an empty map-typed field as `[]` where this language renders `{}` (the same F-3 artefact as rtp-0009), and PHP coerces an absent description to `\"\"` where this language keeps `null`. Consequence: a pin does not transfer between PHP and this language for those shapes. See G-20.",
+      "status": "full",
       "runner": "prism-mcp-ts:test/digest-corpus.test.ts",
-      "cause": "decision-pending",
-      "cause_note": "G-20. Two causes: F-3 (a reference-limit) on dig-0002/0003, plus an absent-description coercion on dig-0007 where the register says neither side is obviously wrong. Both change digests, so either side moving invalidates existing pins."
+      "note": "Full as of 2026-09-04: agrees with the reference on all thirteen rows. It was not full on arrival — dig-0002, dig-0003 and dig-0007 were recorded as DIVERGENCES rather than skipped, so that whoever fixed G-20 got a red test forcing the corpus and this manifest to be updated in the same change. That is what happened. This port moved on dig-0007 only: an absent description is now `''`, not null."
     },
     "py": {
-      "status": "partial",
-      "gap": "Identical to ts, and identical byte-for-byte to ts on all ten rows — the two ports agree with each other and disagree with the reference on the same three. That is itself the useful signal: it is one reference-side artefact plus one coercion choice, not two independent port bugs. See G-20.",
+      "status": "full",
       "runner": "prism-mcp-py:tests/test_digest_corpus.py",
-      "cause": "decision-pending",
-      "cause_note": "G-20, byte-identical to ts on all ten rows. The ports agree with each other and differ from the reference on the same three."
+      "note": "Full as of 2026-09-04, and byte-identical to ts on all thirteen rows. The two ports agreeing with each other while both differed from the reference was the useful signal all along: one reference-side artefact plus one coercion choice, not two independent port bugs."
     }
   }
 }

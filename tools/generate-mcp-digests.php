@@ -27,11 +27,26 @@ if (! is_file($autoload)) {
 
 require $autoload;
 
+use Prism\Mcp\Support\Json;
 use Prism\Mcp\Support\ToolDefinition;
 
 $check = in_array('--check', $argv, true);
 $path = __DIR__.'/../suites/mcp-tool-digest/cases.json';
-$document = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+
+// `Json::decode` and not `json_decode($raw, true)`, and this is load-bearing
+// twice over.
+//
+// Reading: the assoc decode collapses `{}` onto `[]`, so it would hand the
+// reference an input the corpus never wrote — the exact trap the human-plus
+// corpus fell into, where a schema carried DECODED reported 17 of 18 rows
+// agreeing on values none of the three languages had been asked about.
+//
+// Writing: this script rewrites the whole file, so an assoc decode would also
+// SILENTLY REWRITE dig-0003's `"properties": {}` to `[]` on its way back out —
+// destroying the case that exists to catch the defect, using the defect.
+// Generalised in decision 0007: when checking for a defect, do not use a tool
+// that is subject to it.
+$document = Json::decode((string) file_get_contents($path), preservingContainerTypes: true);
 
 $stale = [];
 
