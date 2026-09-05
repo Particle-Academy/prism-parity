@@ -44,7 +44,10 @@ foreach ($document['cases'] as $index => $case) {
         $policy->assertUrl($case['url']);
         $produced = null;
     } catch (BrowserRefused $refused) {
-        $produced = $refused->reason;
+        // `code()`, not `->reason`: G-21 moved the reference onto the ports'
+        // accessor as well as their spelling. A method rather than a property
+        // because `Exception::$code` is an int a subclass may not retype.
+        $produced = $refused->code();
     }
 
     // array_key_exists, NOT ??. A row that is ALLOWED records null, and `??`

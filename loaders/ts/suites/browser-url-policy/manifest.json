@@ -4,6 +4,7 @@
   "kind": "security-corpus",
   "pins": "Which URLs a browser policy refuses, and under WHICH CODE, in every language. The code is the contract — a consumer switches on it to decide whether to retry, widen a list, or surface a hard stop. The message is deliberately not pinned; the three implementations word these differently on purpose, and a test over the prose holds every language to a translation and reddens on a wording improvement that changed nothing.",
   "scope": "The URL policy's refusal decision and its code. It does NOT cover what the engine does once a URL is allowed, the page content that comes back, or the harness binding (G-19). A green run here means the policy refuses the right URLs under the right code, and nothing about what happens after one is admitted.",
+  "findings": "All twelve rows now agree, and three of them did not until G-21 was closed. url-0005, url-0006 and url-0007 — the cloud metadata endpoint, loopback, and an RFC 1918 address, each explicitly allow-listed — were refused by every language from the start, so nothing was ever unprotected; what differed was the NAME. The reference said `private_network_refused` and exposed it as `$refused->reason`, both ports said `private_address_refused` and exposed it as `.code`, so a consumer switching on the code fell through to its default branch in one direction and read an SSRF refusal as an unknown failure. The reference moved, not the ports: the check is per-ADDRESS rather than per-network, and `.code` is what every other error surface in this ecosystem carries. Closing it also turned up a second emitter the register had not predicted — the Playwright sidecar raises this code on its post-DNS check, and `PlaywrightSidecarEngine` passes it to the caller verbatim, so the reference would otherwise have disagreed with ITSELF on the runtime path that actually resists rebinding. Read the agreement narrowly: this corpus compares languages, so a bug all three shared would look exactly like the green it now shows, which is why each runner also asserts the refusal happened rather than only comparing strings.",
   "pattern_doc": "docs/decisions/0021-parity-is-the-shipping-library-set.md",
   "reference": "php",
   "comparison": {
@@ -18,18 +19,12 @@
       "runner": "prism-browser:tests/Unit/UrlPolicyCorpusTest.php"
     },
     "ts": {
-      "status": "partial",
-      "gap": "url-0005, url-0006 and url-0007 diverge and are recorded as `divergence` rather than skipped. All three languages REFUSE the same URLs — the security behaviour is identical and every private address is blocked — but the reference names the refusal `private_network_refused` and this port names it `private_address_refused`. A consumer switching on the code gets no match. The port also exposes it as `.code` where the reference exposes `.reason`. See G-21.",
-      "runner": "prism-browser-ts:test/url-policy-corpus.test.ts",
-      "cause": "decision-pending",
-      "cause_note": "G-21. All three REFUSE the same URLs; only the refusal's name and property differ. Nothing is unprotected. Closing it renames a public error code, which breaks whichever side moves."
+      "status": "full",
+      "runner": "prism-browser-ts:test/url-policy-corpus.test.ts"
     },
     "py": {
-      "status": "partial",
-      "gap": "Identical to ts, on the same three rows, with the same code. The two ports agree with each other everywhere — this is one rename made once and mirrored, not two independent drifts. See G-21.",
-      "runner": "prism-browser-py:tests/test_url_policy_corpus.py",
-      "cause": "decision-pending",
-      "cause_note": "G-21, identical to ts and mirrored from it. One rename, not two drifts."
+      "status": "full",
+      "runner": "prism-browser-py:tests/test_url_policy_corpus.py"
     }
   }
 }
