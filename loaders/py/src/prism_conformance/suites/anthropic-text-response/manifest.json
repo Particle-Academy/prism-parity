@@ -17,13 +17,19 @@
       "runner": "prism-parity:runners/php/runner.php"
     },
     "ts": {
-      "status": "full",
-      "runner": "prism-ts:conformance/runner.mjs"
+      "status": "partial",
+      "runner": "prism-ts:conformance/runner.mjs",
+      "cause": "no-runner",
+      "gap": "Every row is skipped: Anthropic response citations are not ported, so the whole parsed document differs from the reference on additional_content even though the USAGE block \u2014 the reason this suite exists \u2014 agrees exactly. Verified before skipping: all five rows produce byte-identical usage in all three languages, including thought_tokens null vs 0 vs 1240.",
+      "cause_note": "The runner exists and works; the PORT lacks the citations capability the reference has. Closing G-49 unskips these rows and makes the cross-language usage assertion mechanical rather than held by three separate unit tests."
     },
     "py": {
-      "status": "full",
-      "runner": "prism-py:conformance/runner.py"
+      "status": "partial",
+      "runner": "prism-py:conformance/runner.py",
+      "cause": "no-runner",
+      "gap": "Every row is skipped: Anthropic response citations are not ported, so the whole parsed document differs from the reference on additional_content even though the USAGE block \u2014 the reason this suite exists \u2014 agrees exactly. Verified before skipping: all five rows produce byte-identical usage in all three languages, including thought_tokens null vs 0 vs 1240.",
+      "cause_note": "The runner exists and works; the PORT lacks the citations capability the reference has. Closing G-49 unskips these rows and makes the cross-language usage assertion mechanical rather than held by three separate unit tests."
     }
   },
-  "findings": "G-48 \u2014 Anthropic reasoning tokens were dropped in ALL THREE languages until 2026-09-05: omitted in PHP, a literal null in TypeScript, hardcoded None in Python. Because the three AGREED, no cross-language comparison could see it, and the corpus asserted thought_tokens sixteen times without one of them being Anthropic. Reported by a human measuring the live API (Moic Suite, prism#33). This suite is the mechanical check that was missing. Goldens are NOT yet generated: the released reference the runner installs is v0.116.0, which predates the fix, so generating now would enshrine the defect and fail the ports that are already correct. They land when a release carrying the fix does."
+  "findings": "G-48 \u2014 Anthropic reasoning tokens were dropped in ALL THREE languages until 2026-09-05: omitted in PHP, a literal null in TypeScript, hardcoded None in Python. Because the three AGREED, no cross-language comparison could see it, and the corpus asserted thought_tokens sixteen times without one of them being Anthropic. Reported by a human measuring the live API (Moic Suite, prism#33); this suite is the mechanical check that was missing. Goldens are generated from particle-academy/prism v0.117.0, the first release carrying the fix \u2014 generated against v0.116.0 they returned null for all five rows INCLUDING the one sending 1240, which is what a golden generated from a defective reference looks like. || G-49 \u2014 the suite's FIRST run found a second disagreement, and it is not about usage. The reference puts a MessagePartWithCitations into additional_content.citations for EVERY text block, including blocks with no citations at all, so every Anthropic text response carries a copy of its own output text under additional_content. Both ports emit an empty object. The two ports agree with EACH OTHER and differ from the reference identically, which is the shape that usually means the reference is the outlier. The reference also serialises that nested object in camelCase (outputText, additionalContent) inside an otherwise snake_case document. Unresolved: it needs a decision about whether an empty citation list should be present at all, not a quick edit \u2014 the reference comment says these are preserved so MessageMap can replay them during multi-step tool loops, so dropping them may be load-bearing."
 }
