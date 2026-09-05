@@ -318,6 +318,50 @@ for (const suiteId of readdirSync(join(root, 'suites'))) {
   }
 }
 
+// ---------------------------------------------------------------------------
+// N. A suite that pins the empty-object distinction must still CONTAIN one.
+//
+// Read AS TEXT, and for the same reason as the big-integer check above: parsing
+// first would destroy the evidence using the very defect being looked for. In
+// PHP, `json_decode($raw, true)` turns `{}` into `[]`, so a generator that
+// decodes associatively and rewrites its whole cases file SILENTLY RETYPES every
+// empty object in it -- deleting the rows that exist to catch the defect, using
+// the defect.
+//
+// That is not hypothetical. Two generators did exactly this and were fixed on
+// the same day; one of them would have destroyed mcp-tool-digest's dig-0003, the
+// row whose entire job is that distinction. Nothing would have failed: the
+// corpus would simply have agreed with itself about the wrong value.
+//
+// Guarded as "at least one", not an exact count, so adding cases does not churn
+// this list. It catches the catastrophic rewrite rather than a single edit --
+// which is the failure that has actually happened.
+// ---------------------------------------------------------------------------
+const PINS_EMPTY_OBJECT = [
+  'human-plus-tool-admission',
+  'json-container-identity',
+  'mcp-tool-digest',
+  'openai-text-response',
+  'perplexity-agent-response',
+  'value-object-roundtrip',
+];
+
+for (const suiteId of PINS_EMPTY_OBJECT) {
+  const casesPath = join(root, 'suites', suiteId, 'cases.json');
+
+  if (!existsSync(casesPath)) {
+    fail('empty-object-pins', `${suiteId} is listed as pinning the empty-object distinction and has no cases.json`);
+    continue;
+  }
+
+  if (!readFileSync(casesPath, 'utf8').includes('{}')) {
+    fail(
+      'empty-object-pins',
+      `${suiteId}/cases.json no longer contains a single \`{}\` — a generator that decoded it associatively will have retyped every one to \`[]\`, which deletes the distinction the suite exists to pin`,
+    );
+  }
+}
+
 if (failures.length > 0) {
   console.error(`Corpus guards failed:\n\n  ${failures.join('\n  ')}\n`);
   process.exit(1);

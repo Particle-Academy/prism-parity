@@ -39,11 +39,53 @@ be rejected, and nothing would catch it.
 - `jci-0001` states the distinction as two RAW JSON STRINGS and asks each
   implementation whether its own parser tells them apart. PHP is skipped, because
   it cannot answer.
-- `trs-0006` and `rtp-0009` isolate the serialisation side. Every *other* row in
-  those suites deliberately carries a NON-EMPTY map so the ambiguity contaminates
-  two rows instead of forty.
-- Recorded as finding F-3, with the recommendation that the reference cast
-  map-typed fields to objects so its own output stops being ambiguous.
+- `trs-0006` and `rtp-0009` isolated the serialisation side. Every *other* row in
+  those suites deliberately carries a NON-EMPTY map so the ambiguity contaminated
+  two rows instead of forty. **Both are un-skipped as of 2026-09-04.**
+
+**F-3 is FIXED, and the recommendation this document used to give was half of the
+answer.** It said "cast map-typed fields to objects". That is *key-aware*: it
+works where you know which fields are maps, and it does not reach a `{}` nested
+arbitrarily deep inside arbitrary JSON. Building it found the rest.
+
+The naive generalisation is worse than the narrow rule, not better. Promoting
+EVERY empty array to an object renders the entirely ordinary `"required": []` as
+`{}` — trading one silent divergence for a commoner one.
+
+**Two mechanisms are needed, and the distinction between them is the finding:**
+
+| | for | why the other one cannot do it |
+|---|---|---|
+| **key-aware** (`JsonMap`) | fields the package *declares* to be maps and defaults to empty | A `UserMessage` built with no `additionalAttributes` was never decoded from anything. **There is no input to carry**, so the declaration is the only evidence there is. |
+| **decode-boundary** (`Json::decode(preservingContainerTypes: true)`) | arbitrary JSON from a provider or a tool | Reaches a `{}` nested at any depth, under keys nobody enumerated. Nothing is inferred: the distinction is carried from the input rather than guessed at the output. |
+
+`json_decode($raw, true)` is the line that throws the information away.
+
+**The prediction in this document came true four times before anyone looked.**
+It warned that "a ninth provider added without that guard would send `[]` and be
+rejected". When the guards were removed, **four send sites had never had one** —
+Azure, OpenAI ChatCompletions and Qwen on tool-call arguments, and OpenAI
+ChatCompletions on tool schemas. Fifteen duplicated guards were deleted and
+replaced by accessors, and the test that covers them **discovers** the provider
+maps from the filesystem, so provider #16 is covered without anyone remembering.
+
+### The same limit applies on the INPUT side, and this document did not say so
+
+Un-skipping `rtp-0009` immediately caught `prism-py` emitting
+`"additional_content":[]` — and the cause was the case's **input**, authored
+`"additionalContent": []` back when `[]` was the only spelling the reference
+could write.
+
+This document's rule is that a GOLDEN cannot hold a distinction its authoring
+language cannot express. The same is true of a **subject**, and that is the
+sharper trap: a wrong golden is compared and fails, while a wrong input is fed
+to all three languages and they agree about the wrong thing. Fixing the
+reference is what made it visible; it had been masked by the very defect being
+fixed.
+
+Where the reference cannot discriminate a row it now enforces on the ports and
+merely does-not-fail for itself, recorded on the manifest rather than left to
+look like agreement.
 
 ## Limit 2 — JavaScript cannot represent integers above 2^53
 
