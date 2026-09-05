@@ -39,18 +39,6 @@ jobs:
         with:
           path: prism-parity
 
-      # The PHP reference is checked out for the same reason the two ports are:
-      # so the runner tests the TREE. It used to install the published package
-      # from Packagist, which made it the only one of three asserting against a
-      # snapshot -- so goldens generated from the tree could not be verified
-      # until a release, and a reference change silently could not be checked at
-      # all in between.
-      - name: Checkout prism
-        uses: actions/checkout@v4
-        with:
-          repository: Particle-Academy/prism
-          path: prism
-
       - name: Checkout prism-ts
         uses: actions/checkout@v4
         with:
