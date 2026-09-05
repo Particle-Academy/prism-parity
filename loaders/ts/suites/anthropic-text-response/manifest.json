@@ -1,0 +1,29 @@
+{
+  "id": "anthropic-text-response",
+  "title": "Anthropic Messages API \u2014 parsing a text response",
+  "kind": "response-parse",
+  "pins": "The parsed result produced from a raw Anthropic Messages body, with the USAGE ARITHMETIC as the reason the suite exists: the reasoning count Anthropic reports at usage.output_tokens_details.thinking_tokens, the difference between that count being absent and being zero, and the cache counts Anthropic reports beside the prompt rather than inside it.",
+  "pattern_doc": "docs/patterns/06-response-parsing.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-parity:runners/php/runner.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-ts:conformance/runner.mjs"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-py:conformance/runner.py"
+    }
+  },
+  "findings": "G-48 \u2014 Anthropic reasoning tokens were dropped in ALL THREE languages until 2026-09-05: omitted in PHP, a literal null in TypeScript, hardcoded None in Python. Because the three AGREED, no cross-language comparison could see it, and the corpus asserted thought_tokens sixteen times without one of them being Anthropic. Reported by a human measuring the live API (Moic Suite, prism#33). This suite is the mechanical check that was missing. Goldens are NOT yet generated: the released reference the runner installs is v0.116.0, which predates the fix, so generating now would enshrine the defect and fail the ports that are already correct. They land when a release carrying the fix does."
+}

@@ -1,0 +1,229 @@
+{
+  "suite": "anthropic-text-response",
+  "cases": [
+    {
+      "id": "atr-0001",
+      "title": "a completed message with no thinking reported",
+      "since": "0.1.0",
+      "notes": "The baseline, and the CONTROL for every row below it. Anthropic sends no `output_tokens_details` at all when the model did not reason, so `thought_tokens` must come back null rather than zero: null means NOT MEASURED and zero means measured-as-none, and a caller tuning `effort` needs to tell those apart. Also pins that Anthropic reports cache tokens SEPARATELY from input_tokens rather than nested inside them, so nothing is subtracted from the prompt count the way the OpenAI mapping subtracts.",
+      "builder": [
+        {
+          "call": "using",
+          "args": [
+            "anthropic",
+            "claude-sonnet-4-5"
+          ]
+        },
+        {
+          "call": "withPrompt",
+          "args": [
+            "Who are you?"
+          ]
+        }
+      ],
+      "response": {
+        "id": "msg_conformance",
+        "type": "message",
+        "role": "assistant",
+        "model": "claude-sonnet-4-5-20250929",
+        "content": [
+          {
+            "type": "text",
+            "text": "I am a language model."
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "usage": {
+          "input_tokens": 11,
+          "output_tokens": 2820
+        }
+      },
+      "expect": {
+        "result_json": "@generate"
+      }
+    },
+    {
+      "id": "atr-0002",
+      "title": "thinking tokens reported, as a breakdown of the output count",
+      "since": "0.1.0",
+      "notes": "The row G-48 existed for. Anthropic puts reasoning at usage.output_tokens_details.thinking_tokens and EVERY language dropped it -- PHP omitted the argument, TypeScript passed a literal null, Python hardcoded None. Because all three agreed, no cross-language comparison could see it; it took a human measuring the live API (Moic Suite, prism#33). The numbers are the ones they measured on claude-opus-5 at effort:high, and they are chosen to be checkable: 1240 thinking INSIDE 2820 output. A consumer pricing completion + thought double-counts the expensive half, so the relationship is part of what this row pins, not just the field's presence.",
+      "builder": [
+        {
+          "call": "using",
+          "args": [
+            "anthropic",
+            "claude-sonnet-4-5"
+          ]
+        },
+        {
+          "call": "withPrompt",
+          "args": [
+            "Who are you?"
+          ]
+        }
+      ],
+      "response": {
+        "id": "msg_conformance",
+        "type": "message",
+        "role": "assistant",
+        "model": "claude-sonnet-4-5-20250929",
+        "content": [
+          {
+            "type": "text",
+            "text": "I am a language model."
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "usage": {
+          "input_tokens": 11,
+          "output_tokens": 2820,
+          "output_tokens_details": {
+            "thinking_tokens": 1240
+          }
+        }
+      },
+      "expect": {
+        "result_json": "@generate"
+      }
+    },
+    {
+      "id": "atr-0003",
+      "title": "thinking tokens reported as ZERO",
+      "since": "0.1.0",
+      "notes": "The row that would have caught the bug the fix nearly shipped. Python's first carry-forward used `or`, which treats 0 as absent -- so a model that reported zero thinking tokens would have silently inherited the previous count instead of reporting the zero. PHP and TypeScript use null-coalescing, which keeps it. Nothing in the corpus asserted a zero on this path, so the three languages could disagree here and stay green; it was caught by chance when ruff complained about line length. Zero and null must NOT collapse into each other: this row and atr-0001 differ only in that distinction.",
+      "builder": [
+        {
+          "call": "using",
+          "args": [
+            "anthropic",
+            "claude-sonnet-4-5"
+          ]
+        },
+        {
+          "call": "withPrompt",
+          "args": [
+            "Who are you?"
+          ]
+        }
+      ],
+      "response": {
+        "id": "msg_conformance",
+        "type": "message",
+        "role": "assistant",
+        "model": "claude-sonnet-4-5-20250929",
+        "content": [
+          {
+            "type": "text",
+            "text": "I am a language model."
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "usage": {
+          "input_tokens": 11,
+          "output_tokens": 2820,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          }
+        }
+      },
+      "expect": {
+        "result_json": "@generate"
+      }
+    },
+    {
+      "id": "atr-0004",
+      "title": "cache tokens and thinking tokens reported together",
+      "since": "0.1.0",
+      "notes": "Both breakdowns at once, because they are read from different places and one masking the other is exactly the kind of defect a single-field row cannot show. Anthropic reports cache_creation_input_tokens and cache_read_input_tokens BESIDE input_tokens, not within them, so the prompt count stays 11 rather than becoming 11 minus 7. Fixing G-48 surfaced a second defect in this same area: both ports dropped the cache counts when rebuilding usage on a streaming message_delta, where PHP carried them, so a streamed call reported different usage than an identical non-streamed one. This row pins the non-streamed side of that pair.",
+      "builder": [
+        {
+          "call": "using",
+          "args": [
+            "anthropic",
+            "claude-sonnet-4-5"
+          ]
+        },
+        {
+          "call": "withPrompt",
+          "args": [
+            "Who are you?"
+          ]
+        }
+      ],
+      "response": {
+        "id": "msg_conformance",
+        "type": "message",
+        "role": "assistant",
+        "model": "claude-sonnet-4-5-20250929",
+        "content": [
+          {
+            "type": "text",
+            "text": "I am a language model."
+          }
+        ],
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "usage": {
+          "input_tokens": 11,
+          "output_tokens": 2820,
+          "cache_creation_input_tokens": 3,
+          "cache_read_input_tokens": 7,
+          "output_tokens_details": {
+            "thinking_tokens": 1240
+          }
+        }
+      },
+      "expect": {
+        "result_json": "@generate"
+      }
+    },
+    {
+      "id": "atr-0005",
+      "title": "a max_tokens finish still reports its usage",
+      "since": "0.1.0",
+      "notes": "A non-`end_turn` finish, to pin that the usage mapping does not depend on the stop reason. Anthropic signals a truncated turn with stop_reason `max_tokens`, and a turn that reasoned and then ran out of room is precisely when a caller most wants the thinking count -- it is the expensive case and the one that produced no useful answer.",
+      "builder": [
+        {
+          "call": "using",
+          "args": [
+            "anthropic",
+            "claude-sonnet-4-5"
+          ]
+        },
+        {
+          "call": "withPrompt",
+          "args": [
+            "Who are you?"
+          ]
+        }
+      ],
+      "response": {
+        "id": "msg_conformance",
+        "type": "message",
+        "role": "assistant",
+        "model": "claude-sonnet-4-5-20250929",
+        "content": [
+          {
+            "type": "text",
+            "text": "I am a langu"
+          }
+        ],
+        "stop_reason": "max_tokens",
+        "stop_sequence": null,
+        "usage": {
+          "input_tokens": 11,
+          "output_tokens": 2820,
+          "output_tokens_details": {
+            "thinking_tokens": 1240
+          }
+        }
+      },
+      "expect": {
+        "result_json": "@generate"
+      }
+    }
+  ]
+}

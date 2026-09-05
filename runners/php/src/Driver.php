@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Facade;
 use Prism\Prism\Enums\ToolChoice;
 use Prism\Prism\Prism;
 use Prism\Prism\PrismManager;
+use Prism\Prism\Providers\Anthropic\Handlers\Text as AnthropicTextHandler;
 use Prism\Prism\Providers\OpenAI\Handlers\Text as OpenAITextHandler;
 use Prism\Prism\Schema\BooleanSchema;
 use Prism\Prism\Schema\NumberSchema;
@@ -58,6 +59,16 @@ final class Driver
                         'organization' => null,
                         'project' => null,
                         'api_format' => 'responses',
+                    ],
+                    'anthropic' => [
+                        // Fixed for the same reason as OpenAI's above: a golden
+                        // must not vary with whoever's environment generated it.
+                        'url' => 'https://api.anthropic.com/v1',
+                        'api_key' => 'sk-ant-conformance',
+                        // Key is `version`, not `anthropic_version`: PrismManager reads
+                        // $config['version'] unguarded, so a wrong name here is a
+                        // null-argument TypeError rather than a default.
+                        'version' => '2023-06-01',
                     ],
                 ],
             ],
@@ -126,9 +137,55 @@ final class Driver
         $factory = new Factory(Container::getInstance()->make('events'));
         $factory->fake(['*' => $factory->response($response, 200)]);
 
-        $handler = new OpenAITextHandler($factory->baseUrl('https://api.openai.com/v1'));
+        $request = self::pending($script)->toRequest();
 
-        return $handler->handle(self::pending($script)->toRequest())->toArray();
+        // Dispatched on the provider the BUILDER names, rather than assuming
+        // OpenAI. It assumed OpenAI until 2026-09-05, which is why no Anthropic
+        // row could exist in the corpus and why G-48 -- reasoning tokens dropped
+        // in all three languages -- was invisible to every cross-language check.
+        //
+        // The two handlers do NOT share a shape: OpenAI takes the client and
+        // receives the request in handle(), Anthropic takes both up front and
+        // handle() takes nothing. Each branch mirrors what that provider's own
+        // Provider::text() does, so the corpus exercises the same construction
+        // the library performs rather than an approximation of it.
+        //
+        // Deliberately NOT routed through PrismManager::resolve(), which would
+        // be the generic call: it builds its own HTTP client, so the fake above
+        // would have to become a global facade fake for every response-parse
+        // suite at once. That is a change to the green OpenAI path in service of
+        // a new one, which is the wrong trade.
+        return match ($provider = self::providerFrom($script)) {
+            'openai' => (new OpenAITextHandler($factory->baseUrl('https://api.openai.com/v1')))
+                ->handle($request)
+                ->toArray(),
+            'anthropic' => (new AnthropicTextHandler($factory->baseUrl('https://api.anthropic.com/v1'), $request))
+                ->handle()
+                ->toArray(),
+            default => throw new RuntimeException(
+                sprintf('No response-parse handler wired for provider %s.', $provider)
+            ),
+        };
+    }
+
+    /**
+     * The provider a case's builder selects, read from its `using` call.
+     *
+     * Read from the SCRIPT rather than from the built request, so the three
+     * languages answer this the same way -- a request object exposes the
+     * provider differently in each, and the script is one shared artifact.
+     *
+     * @param  array<int, array<string, mixed>>  $script
+     */
+    private static function providerFrom(array $script): string
+    {
+        foreach ($script as $step) {
+            if (($step['call'] ?? null) === 'using') {
+                return (string) ($step['args'][0] ?? '');
+            }
+        }
+
+        throw new RuntimeException('The case builder never calls using(), so no provider is named.');
     }
 
     /**
