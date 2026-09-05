@@ -183,9 +183,15 @@ function run(array $case): array
         // 0002: when a language genuinely cannot express a case, SKIP it with a
         // mandatory reason and KEEP the row. A deleted case is a divergence
         // nobody rediscovers until it costs something.
-        return [
-            'skipped' => 'PHP cannot express this row: claim() declares ?int, so the value is rejected by the type system before any guard in the package runs. The reachable path in PHP is the configuration route, which is a different value and belongs in its own row.',
-        ];
+        //
+        // Returned as a SENTINEL and written to the row's canonical `skip` map
+        // below, never into `result`. An earlier version of this generator put
+        // `{"skipped": ...}` inside `result.php`, which every loader's
+        // `skippedIds()` is blind to -- so the row reported as skipped to a human
+        // reading the file and as not-skipped to every tool. A skip a loader
+        // cannot see is the "skip that becomes permanent silently" 0002 exists
+        // to prevent, wearing the shape of compliance.
+        return ['__skip__' => 'PHP cannot express this row: claim() declares ?int, so the value is rejected by the type system before any guard in the package runs. The reachable path in PHP is the configuration route, which is a different value and belongs in its own row.'];
     } finally {
         Carbon::setTestNow();
     }
@@ -195,6 +201,23 @@ $stale = [];
 
 foreach ($document['cases'] as $index => $case) {
     $produced = run($case);
+
+    // A skip lands in the row's `skip` map where the loaders can see it, and
+    // `result.php` stays null. Anything else clears a stale skip, so a row that
+    // becomes expressible stops claiming it is not.
+    if (isset($produced['__skip__'])) {
+        $document['cases'][$index]['skip']['php'] = $produced['__skip__'];
+        $document['cases'][$index]['result']['php'] = null;
+
+        continue;
+    }
+
+    unset($document['cases'][$index]['skip']['php']);
+
+    if (($document['cases'][$index]['skip'] ?? null) === []) {
+        unset($document['cases'][$index]['skip']);
+    }
+
     $recorded = $case['result']['php'] ?? null;
 
     if ($recorded !== $produced) {
