@@ -6,6 +6,13 @@
     "repositories": [
         {
             "type": "path",
+            "url": "../../../prism",
+            "options": {
+                "symlink": false
+            }
+        },
+        {
+            "type": "path",
             "url": "../../loaders/php",
             "options": {
                 "symlink": false
@@ -14,7 +21,7 @@
     ],
     "require": {
         "php": "^8.2",
-        "particle-academy/prism": ">=0.113 <1.0",
+        "particle-academy/prism": "dev-main",
         "particle-academy/prism-conformance": "dev-main|*"
     },
     "minimum-stability": "dev",
