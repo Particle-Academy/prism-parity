@@ -46,7 +46,6 @@ use Prism\Prism\Enums\TelemetryOperation;
 use Prism\Prism\Events\Telemetry\GenerationCompleted;
 use Prism\Prism\Events\Telemetry\GenerationStarted;
 use Prism\Prism\Telemetry\TelemetryContext;
-use Prism\Prism\ValueObjects\Meta;
 use Prism\Prism\ValueObjects\ProviderRateLimit;
 use Prism\Prism\ValueObjects\Usage;
 
@@ -65,7 +64,7 @@ use Prism\Prism\ValueObjects\Usage;
 final readonly class CorpusPayload implements Arrayable
 {
     /** @param array<string, mixed> $payload */
-    public function __construct(private array $payload, public ?Meta $meta = null) {}
+    public function __construct(private array $payload) {}
 
     /** @return array<string, mixed> */
     public function toArray(): array
@@ -97,27 +96,18 @@ function rateLimitsOf(?array $rateLimits): array
 /**
  * The response object the reference bridge is handed.
  *
- * Rate limits reach the reference on the RESPONSE's Meta and nowhere else, so a
- * case that declares them needs a response object even when it captures no
- * content -- which is why this returns one for a null output. That asymmetry is
- * the reference's, not the corpus's: core nulls the response entirely when
- * `prism.telemetry.capture_content` is off, so quota headroom currently rides
- * on the content switch (G-45).
+ * Only the OUTPUT travels here, in all three languages now. Rate limits used to
+ * have to as well: the reference's only channel for them was the response's
+ * Meta, so a case declaring quota needed a response object even with capture
+ * off -- a state core never produces, which is what let the rate-limit rows be
+ * green for a bridge that exported none on a real generation. That was G-45,
+ * and `GenerationCompleted` now carries the buckets as its own argument.
  *
  * @param  array<string, mixed>  $generation
  */
 function responseOf(array $generation): ?CorpusPayload
 {
-    if ($generation['output'] === null && $generation['rate_limits'] === null) {
-        return null;
-    }
-
-    return new CorpusPayload(
-        $generation['output'] ?? [],
-        $generation['rate_limits'] === null
-            ? null
-            : new Meta(id: '', model: $generation['model'], rateLimits: rateLimitsOf($generation['rate_limits'])),
-    );
+    return $generation['output'] === null ? null : new CorpusPayload($generation['output']);
 }
 
 $check = in_array('--check', $argv, true);
@@ -181,6 +171,7 @@ function emit(array $case, callable $operationOf, callable $finishReasonOf): arr
         $finishReasonOf($generation['finish_reason']),
         $usage,
         $output,
+        rateLimitsOf($generation['rate_limits']),
     ));
 
     $spans = $exporter->getSpans();
