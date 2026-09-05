@@ -1,149 +1,262 @@
 {
-    "documentation": "Discrimination probes. A conformance table that every plausible implementation passes proves nothing — it is decoration. Each probe is a deliberately WRONG implementation, and the runner requires it to fail an EXACT set of case ids, not 'at least one'. An exact set is what turns the table into a measurement: it says which rows carry which hazard, and it goes red both when the corpus stops catching a mistake AND when a row starts failing for a reason nobody intended. The control is not optional: without an implementation that passes everything, the mutants prove only that the port is broken. Expected failures are computed as must_fail MINUS the cases that language skips.",
-    "probes": [
-        {
-            "id": "faithful",
-            "kind": "control",
-            "summary": "The port exactly as shipped.",
-            "hazard": "None. This is the control.",
-            "languages": ["ts", "py"],
-            "must_fail": {}
-        },
-        {
-            "id": "omit-null-keys",
-            "kind": "mutant",
-            "summary": "When building the request body, drop any key whose value is null instead of emitting it.",
-            "hazard": "Absent versus null. This is the single mistake a port is most likely to make by accident, because it is what JSON.stringify does to undefined and what a naive dict comprehension does to None. Every row carrying an unset max_output_tokens catches it.",
-            "scope": "request body",
-            "languages": ["ts", "py"],
-            "must_fail": {
-                "openai-text-request": [
-                    "trq-0001", "trq-0002", "trq-0003", "trq-0005", "trq-0006", "trq-0007",
-                    "trq-0008", "trq-0009", "trq-0010", "trq-0011", "trq-0012", "trq-0013",
-                    "trq-0014", "trq-0015", "trq-0016", "trq-0017", "trq-0018", "trq-0019",
-                    "trq-0020", "trq-0021", "trq-0022", "trq-0023", "trq-0024", "trq-0025",
-                    "trq-0026", "trq-0027", "trq-0028"
-                ]
-            }
-        },
-        {
-            "id": "falsy-filter",
-            "kind": "mutant",
-            "summary": "Filter the optional request-body keys on falsiness instead of on nullity.",
-            "hazard": "A deliberate zero or a deliberate false is dropped. Both invert the caller's intent rather than degrading gracefully: temperature 0 becomes the model's default sampling, and store false becomes store true.",
-            "scope": "request body",
-            "languages": ["ts", "py"],
-            "must_fail": {
-                "openai-text-request": ["trq-0006", "trq-0016"]
-            }
-        },
-        {
-            "id": "keep-empty-tools",
-            "kind": "mutant",
-            "summary": "Emit the tools key even when the tool list is empty.",
-            "hazard": "An empty array is falsy in PHP and truthy in JavaScript and Python, so this is what a direct transliteration produces. The wrong payload is still valid JSON and still gets a response, which is why nothing catches it without a fixture.",
-            "scope": "request body",
-            "note": "This set was corrected after measurement. It originally declared only trq-0008, on the mistaken reading that trq-0008 is 'the row with an empty tool list'. It is not — it is the row that DECLARES one explicitly. A request that never calls withTools has an empty tool list too, so every row that does not declare tools carries the hazard: 20 rows, whose complement is exactly the 8 that declare tools, and 20 + 8 = 28 confirms the set is complete. The mutant was deliberately NOT narrowed to match the old declaration; adding a 'withTools was called' flag that exists only to make a probe narrow is precisely the tautology the exact-set design prevents.",
-            "languages": ["ts", "py"],
-            "must_fail": {
-                "openai-text-request": [
-                    "trq-0001", "trq-0002", "trq-0003", "trq-0004", "trq-0005", "trq-0006",
-                    "trq-0007", "trq-0008", "trq-0014", "trq-0015", "trq-0016", "trq-0017",
-                    "trq-0018", "trq-0019", "trq-0020", "trq-0021", "trq-0022", "trq-0023",
-                    "trq-0025", "trq-0028"
-                ]
-            }
-        },
-        {
-            "id": "tool-choice-any-verbatim",
-            "kind": "mutant",
-            "summary": "Serialize the Any tool-choice member as the string 'any' rather than mapping it to 'required'.",
-            "hazard": "A port that derives wire strings from enum member names gets every other member right and this one wrong.",
-            "scope": "request body",
-            "languages": ["ts", "py"],
-            "must_fail": {
-                "openai-text-request": ["trq-0012"]
-            }
-        },
-        {
-            "id": "tool-arguments-as-object",
-            "kind": "mutant",
-            "summary": "Send a tool call's arguments as a JSON object instead of a JSON-encoded string.",
-            "hazard": "The double encoding is unusual enough that a port is likely to 'fix' it. OpenAI accepts the object and misreads the call.",
-            "scope": "request body",
-            "languages": ["ts", "py"],
-            "must_fail": {
-                "openai-text-request": ["trq-0018", "trq-0019"]
-            }
-        },
-        {
-            "id": "provider-tools-last",
-            "kind": "mutant",
-            "summary": "Append provider-native tools after the caller's tools instead of in front of them.",
-            "hazard": "Ordering reaches the model and influences selection. Nothing errors; the model just chooses differently, which is the hardest class of divergence to notice in production.",
-            "scope": "request body",
-            "languages": ["ts", "py"],
-            "must_fail": {
-                "openai-text-request": ["trq-0027"]
-            }
-        },
-        {
-            "id": "system-prompts-last",
-            "kind": "mutant",
-            "summary": "Append system prompts after the conversation instead of prepending them.",
-            "hazard": "Same shape as provider-tools-last: a valid request that means something different.",
-            "scope": "request body",
-            "languages": ["ts", "py"],
-            "must_fail": {
-                "openai-text-request": ["trq-0002", "trq-0003"]
-            }
-        },
-        {
-            "id": "prompt-tokens-unadjusted",
-            "kind": "mutant",
-            "summary": "Report input_tokens as the prompt count without subtracting the cached tokens.",
-            "hazard": "Invisible until a request actually hits the prompt cache, at which point the caller's cost reporting silently inflates. Only one row in the corpus has a non-zero cached count, which is exactly why that row exists.",
-            "scope": "response parsing",
-            "languages": ["ts", "py"],
-            "must_fail": {
-                "openai-text-response": ["trs-0002"]
-            }
-        },
-        {
-            "id": "omit-null-on-serialize",
-            "kind": "mutant",
-            "summary": "Drop null-valued fields when serializing a value object for storage.",
-            "hazard": "The storage-side twin of omit-null-keys. A stored row that omits its unset counters rebuilds into a value object that is not the one that was saved, and the divergence only surfaces on the NEXT provider call.",
-            "scope": "value object serialization",
-            "languages": ["ts", "py"],
-            "must_fail": {
-                "value-object-roundtrip": ["rtp-0002", "rtp-0003", "rtp-0004", "rtp-0008"]
-            }
-        },
-        {
-            "id": "omit-null-on-parse",
-            "kind": "mutant",
-            "summary": "Drop null-valued fields when serializing a PARSED result, rather than when serializing a value object for storage.",
-            "hazard": "The same absent-versus-null axis as omit-null-on-serialize, on the other side of the boundary. Kept as a separate probe rather than by widening that one: a probe's declared scope is part of its contract, and broadening the behaviour to match a wider intuition would make the declaration wrong rather than the probe better. Every response row carries a null cache-write counter and a null cost, so every one of them catches it.",
-            "scope": "response parsing",
-            "note": "Declares all seven response rows. trs-0006 is skipped in both ports for an unrelated reason (the empty-map artefact), so the effective expectation is six in each — the loader subtracts skips, because a skipped row cannot fail.",
-            "languages": ["ts", "py"],
-            "must_fail": {
-                "openai-text-response": [
-                    "trs-0001", "trs-0002", "trs-0003", "trs-0004", "trs-0005", "trs-0006", "trs-0007"
-                ]
-            }
-        },
-        {
-            "id": "rehydrate-reappends-text",
-            "kind": "mutant",
-            "summary": "When rebuilding a user message, pass the stored content parts straight back into the constructor.",
-            "hazard": "The reference's user-message constructor appends a text part built from its own content argument, so doing this appends a second copy and the message text doubles on every save-and-load cycle. A real consumer shipped this. Nothing errors — the conversation just grows.",
-            "scope": "value object rehydration",
-            "languages": ["ts", "py"],
-            "must_fail": {
-                "value-object-roundtrip": ["rtp-0001"]
-            }
-        }
-    ]
+  "documentation": "Discrimination probes. A conformance table that every plausible implementation passes proves nothing \u2014 it is decoration. Each probe is a deliberately WRONG implementation, and the runner requires it to fail an EXACT set of case ids, not 'at least one'. An exact set is what turns the table into a measurement: it says which rows carry which hazard, and it goes red both when the corpus stops catching a mistake AND when a row starts failing for a reason nobody intended. The control is not optional: without an implementation that passes everything, the mutants prove only that the port is broken. Expected failures are computed as must_fail MINUS the cases that language skips.",
+  "probes": [
+    {
+      "id": "faithful",
+      "kind": "control",
+      "summary": "The port exactly as shipped.",
+      "hazard": "None. This is the control.",
+      "languages": [
+        "ts",
+        "py"
+      ],
+      "must_fail": {}
+    },
+    {
+      "id": "omit-null-keys",
+      "kind": "mutant",
+      "summary": "When building the request body, drop any key whose value is null instead of emitting it.",
+      "hazard": "Absent versus null. This is the single mistake a port is most likely to make by accident, because it is what JSON.stringify does to undefined and what a naive dict comprehension does to None. Every row carrying an unset max_output_tokens catches it.",
+      "scope": "request body",
+      "languages": [
+        "ts",
+        "py"
+      ],
+      "must_fail": {
+        "openai-text-request": [
+          "trq-0001",
+          "trq-0002",
+          "trq-0003",
+          "trq-0005",
+          "trq-0006",
+          "trq-0007",
+          "trq-0008",
+          "trq-0009",
+          "trq-0010",
+          "trq-0011",
+          "trq-0012",
+          "trq-0013",
+          "trq-0014",
+          "trq-0015",
+          "trq-0016",
+          "trq-0017",
+          "trq-0018",
+          "trq-0019",
+          "trq-0020",
+          "trq-0021",
+          "trq-0022",
+          "trq-0023",
+          "trq-0024",
+          "trq-0025",
+          "trq-0026",
+          "trq-0027",
+          "trq-0028"
+        ]
+      }
+    },
+    {
+      "id": "falsy-filter",
+      "kind": "mutant",
+      "summary": "Filter the optional request-body keys on falsiness instead of on nullity.",
+      "hazard": "A deliberate zero or a deliberate false is dropped. Both invert the caller's intent rather than degrading gracefully: temperature 0 becomes the model's default sampling, and store false becomes store true.",
+      "scope": "request body",
+      "languages": [
+        "ts",
+        "py"
+      ],
+      "must_fail": {
+        "openai-text-request": [
+          "trq-0006",
+          "trq-0016"
+        ]
+      }
+    },
+    {
+      "id": "keep-empty-tools",
+      "kind": "mutant",
+      "summary": "Emit the tools key even when the tool list is empty.",
+      "hazard": "An empty array is falsy in PHP and truthy in JavaScript and Python, so this is what a direct transliteration produces. The wrong payload is still valid JSON and still gets a response, which is why nothing catches it without a fixture.",
+      "scope": "request body",
+      "note": "This set was corrected after measurement. It originally declared only trq-0008, on the mistaken reading that trq-0008 is 'the row with an empty tool list'. It is not \u2014 it is the row that DECLARES one explicitly. A request that never calls withTools has an empty tool list too, so every row that does not declare tools carries the hazard: 20 rows, whose complement is exactly the 8 that declare tools, and 20 + 8 = 28 confirms the set is complete. The mutant was deliberately NOT narrowed to match the old declaration; adding a 'withTools was called' flag that exists only to make a probe narrow is precisely the tautology the exact-set design prevents.",
+      "languages": [
+        "ts",
+        "py"
+      ],
+      "must_fail": {
+        "openai-text-request": [
+          "trq-0001",
+          "trq-0002",
+          "trq-0003",
+          "trq-0004",
+          "trq-0005",
+          "trq-0006",
+          "trq-0007",
+          "trq-0008",
+          "trq-0014",
+          "trq-0015",
+          "trq-0016",
+          "trq-0017",
+          "trq-0018",
+          "trq-0019",
+          "trq-0020",
+          "trq-0021",
+          "trq-0022",
+          "trq-0023",
+          "trq-0025",
+          "trq-0028"
+        ]
+      }
+    },
+    {
+      "id": "tool-choice-any-verbatim",
+      "kind": "mutant",
+      "summary": "Serialize the Any tool-choice member as the string 'any' rather than mapping it to 'required'.",
+      "hazard": "A port that derives wire strings from enum member names gets every other member right and this one wrong.",
+      "scope": "request body",
+      "languages": [
+        "ts",
+        "py"
+      ],
+      "must_fail": {
+        "openai-text-request": [
+          "trq-0012"
+        ]
+      }
+    },
+    {
+      "id": "tool-arguments-as-object",
+      "kind": "mutant",
+      "summary": "Send a tool call's arguments as a JSON object instead of a JSON-encoded string.",
+      "hazard": "The double encoding is unusual enough that a port is likely to 'fix' it. OpenAI accepts the object and misreads the call.",
+      "scope": "request body",
+      "languages": [
+        "ts",
+        "py"
+      ],
+      "must_fail": {
+        "openai-text-request": [
+          "trq-0018",
+          "trq-0019"
+        ]
+      }
+    },
+    {
+      "id": "provider-tools-last",
+      "kind": "mutant",
+      "summary": "Append provider-native tools after the caller's tools instead of in front of them.",
+      "hazard": "Ordering reaches the model and influences selection. Nothing errors; the model just chooses differently, which is the hardest class of divergence to notice in production.",
+      "scope": "request body",
+      "languages": [
+        "ts",
+        "py"
+      ],
+      "must_fail": {
+        "openai-text-request": [
+          "trq-0027"
+        ]
+      }
+    },
+    {
+      "id": "system-prompts-last",
+      "kind": "mutant",
+      "summary": "Append system prompts after the conversation instead of prepending them.",
+      "hazard": "Same shape as provider-tools-last: a valid request that means something different.",
+      "scope": "request body",
+      "languages": [
+        "ts",
+        "py"
+      ],
+      "must_fail": {
+        "openai-text-request": [
+          "trq-0002",
+          "trq-0003"
+        ]
+      }
+    },
+    {
+      "id": "prompt-tokens-unadjusted",
+      "kind": "mutant",
+      "summary": "Report input_tokens as the prompt count without subtracting the cached tokens.",
+      "hazard": "Invisible until a request actually hits the prompt cache, at which point the caller's cost reporting silently inflates. Only one row in the corpus has a non-zero cached count, which is exactly why that row exists.",
+      "scope": "response parsing",
+      "languages": [
+        "ts",
+        "py"
+      ],
+      "must_fail": {
+        "openai-text-response": [
+          "trs-0002"
+        ],
+        "anthropic-text-response": [
+          "atr-0004"
+        ]
+      },
+      "note": " atr-0004 is the Anthropic counterpart and the only Anthropic row with a non-zero cached count. It discriminates for the OPPOSITE reason to the OpenAI rows: Anthropic reports cache tokens BESIDE input_tokens rather than inside them, so the correct behaviour there is to subtract NOTHING. A mutant that subtracts breaks it, and a mutant that fails to subtract breaks the OpenAI row -- the two providers pin the two directions of the same mistake."
+    },
+    {
+      "id": "omit-null-on-serialize",
+      "kind": "mutant",
+      "summary": "Drop null-valued fields when serializing a value object for storage.",
+      "hazard": "The storage-side twin of omit-null-keys. A stored row that omits its unset counters rebuilds into a value object that is not the one that was saved, and the divergence only surfaces on the NEXT provider call.",
+      "scope": "value object serialization",
+      "languages": [
+        "ts",
+        "py"
+      ],
+      "must_fail": {
+        "value-object-roundtrip": [
+          "rtp-0002",
+          "rtp-0003",
+          "rtp-0004",
+          "rtp-0008"
+        ]
+      }
+    },
+    {
+      "id": "omit-null-on-parse",
+      "kind": "mutant",
+      "summary": "Drop null-valued fields when serializing a PARSED result, rather than when serializing a value object for storage.",
+      "hazard": "The same absent-versus-null axis as omit-null-on-serialize, on the other side of the boundary. Kept as a separate probe rather than by widening that one: a probe's declared scope is part of its contract, and broadening the behaviour to match a wider intuition would make the declaration wrong rather than the probe better. Every response row carries a null cache-write counter and a null cost, so every one of them catches it.",
+      "scope": "response parsing",
+      "note": "Declares all seven response rows. trs-0006 is skipped in both ports for an unrelated reason (the empty-map artefact), so the effective expectation is six in each \u2014 the loader subtracts skips, because a skipped row cannot fail. The Anthropic rows are declared too: every one of them carries a null somewhere in usage, and atr-0001 exists precisely to assert that a null thought_tokens survives as null. atr-0005 is skipped in both ports for an unrelated reason (G-50, a Length finish raises there and returns in the reference), and the loader subtracts skips because a skipped row cannot fail.",
+      "languages": [
+        "ts",
+        "py"
+      ],
+      "must_fail": {
+        "openai-text-response": [
+          "trs-0001",
+          "trs-0002",
+          "trs-0003",
+          "trs-0004",
+          "trs-0005",
+          "trs-0006",
+          "trs-0007"
+        ],
+        "anthropic-text-response": [
+          "atr-0001",
+          "atr-0002",
+          "atr-0003",
+          "atr-0004",
+          "atr-0005"
+        ]
+      }
+    },
+    {
+      "id": "rehydrate-reappends-text",
+      "kind": "mutant",
+      "summary": "When rebuilding a user message, pass the stored content parts straight back into the constructor.",
+      "hazard": "The reference's user-message constructor appends a text part built from its own content argument, so doing this appends a second copy and the message text doubles on every save-and-load cycle. A real consumer shipped this. Nothing errors \u2014 the conversation just grows.",
+      "scope": "value object rehydration",
+      "languages": [
+        "ts",
+        "py"
+      ],
+      "must_fail": {
+        "value-object-roundtrip": [
+          "rtp-0001"
+        ]
+      }
+    }
+  ]
 }
