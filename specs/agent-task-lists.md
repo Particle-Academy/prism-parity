@@ -45,6 +45,19 @@ expected, not a workaround.
 
 **It must not let an ordering decision be invisible.** See "Ordering" below.
 
+**It must not grow a GOAL abstraction.** The owner's instruction, verbatim:
+*"we want to keep it light so developers can tailor their own workflows."*
+
+A goal is the instruction you hand the agent, and "done" is the application
+deciding the list is empty. Making the goal a first-class thing the list rolls
+up to — with its own state, its own completion rule, its own idea of progress —
+is where a mechanism becomes a framework, and every consumer whose notion of
+"met" differs from ours then has to work around it.
+
+This is the same line as the no-task-model and no-workflow-engine rules above,
+and it will be proposed again as an obvious improvement, because from inside one
+consumer's workflow it looks like one.
+
 ## The shape
 
 Two contracts. Everything else is an adapter.
