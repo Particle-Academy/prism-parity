@@ -182,6 +182,22 @@ const allFiles = walk(root);
       fail('suite-manifests', `suites/${id} declares an unknown comparison mode`);
     }
 
+    // `authority: external` says the definition lives OUTSIDE this ecosystem --
+    // somebody else's protocol or spec -- and therefore that a disagreement
+    // between the PHP package and that definition is a PHP bug rather than a
+    // port bug. That inverts how every other suite is read, so it has to say
+    // WHICH authority and WHERE it is watched, or it is just a word.
+    //
+    // Checked here rather than in the schema: the validator above is a
+    // deliberate subset and ignores if/then, so the conditional this replaces
+    // passed a manifest with `external` and no note at all.
+    if (manifest.authority === 'external' && !manifest.authority_note?.trim()) {
+      fail(
+        'suite-manifests',
+        `suites/${id} claims an external authority without naming it — say which spec decides, and where it is watched`,
+      );
+    }
+
     for (const [language, implementation] of Object.entries(manifest.implementations ?? {})) {
       if (implementation.status !== 'full' && !implementation.gap?.trim()) {
         fail('suite-manifests', `suites/${id} marks ${language} as ${implementation.status} without stating the gap`);

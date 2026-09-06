@@ -21,7 +21,9 @@
       "type": "string",
       "description": "Matches the suite's directory name."
     },
-    "title": { "type": "string" },
+    "title": {
+      "type": "string"
+    },
     "kind": {
       "type": "string",
       "enum": [
@@ -42,26 +44,48 @@
       "type": "string",
       "description": "What the suite deliberately does NOT cover. Its absence is why 'this suite exists' gets read as 'this value is covered'."
     },
-    "construction": { "type": "string" },
-    "construction_note": { "type": "string" },
+    "construction": {
+      "type": "string"
+    },
+    "construction_note": {
+      "type": "string"
+    },
     "findings": {
       "type": "string",
       "description": "What running it actually established. The trust rubric requires this once no row disagrees, because `agrees: true` speaking for itself is how G-36 survived: three languages agreeing on something wrong."
     },
-    "pattern_doc": { "type": "string" },
+    "pattern_doc": {
+      "type": "string"
+    },
     "reference": {
       "type": "string",
-      "enum": ["php", "ts", "py"]
+      "enum": [
+        "php",
+        "ts",
+        "py"
+      ]
     },
     "comparison": {
       "type": "object",
-      "required": ["mode"],
-      "properties": { "mode": { "type": "string" } }
+      "required": [
+        "mode"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string"
+        }
+      }
     },
     "discrimination": {
       "type": "object",
-      "required": ["status"],
-      "properties": { "status": { "type": "string" } }
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "type": "string"
+        }
+      }
     },
     "implementations": {
       "type": "object",
@@ -69,26 +93,54 @@
       "additionalProperties": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["status"],
+        "required": [
+          "status"
+        ],
         "properties": {
           "status": {
             "type": "string",
-            "enum": ["full", "partial"]
+            "enum": [
+              "full",
+              "partial"
+            ]
           },
-          "runner": { "type": "string" },
-          "note": { "type": "string" },
+          "runner": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
           "gap": {
             "type": "string",
             "description": "What is missing, in prose."
           },
           "cause": {
             "type": "string",
-            "enum": ["no-runner", "reference-limit", "language-limit", "decision-pending"],
+            "enum": [
+              "no-runner",
+              "reference-limit",
+              "language-limit",
+              "decision-pending"
+            ],
             "description": "WHOSE gap it is. Required alongside a `partial` status, because `partial` alone flattens a port with no runner, a port that is correct while the reference is ambiguous, and a row a language cannot express into one word -- and read as a scoreboard that reports the ports as behind when the reference is behind its own ports. Enforced by tools/parity-gaps.mjs."
           },
-          "cause_note": { "type": "string" }
+          "cause_note": {
+            "type": "string"
+          }
         }
       }
+    },
+    "authority": {
+      "type": "string",
+      "enum": [
+        "reference",
+        "external"
+      ],
+      "description": "WHO DECIDES WHAT IS CORRECT, which is a different question from `reference` (who GENERATES the goldens). For almost every family they are the same: the PHP package defines the behaviour and the ports must agree with it, so a disagreement is a port bug. `external` says the definition lives outside this ecosystem entirely -- a published protocol or spec -- and therefore a disagreement between the PHP package and that definition is a PHP BUG, not a port bug. Defaults to `reference` when absent."
+    },
+    "authority_note": {
+      "type": "string",
+      "description": "Required when `authority` is `external`: names the actual authority and where it is watched, so a reader can check it rather than take the claim on trust. Enforced by tools/guard-corpus.mjs rather than by this schema -- the validator here is a deliberate subset of JSON Schema (type, required, properties, additionalProperties, enum, minProperties) and silently ignores if/then, so a conditional expressed here would look enforced and would not be."
     }
   }
 }
