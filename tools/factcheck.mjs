@@ -30,6 +30,10 @@ const CONTRACT = '1.0';
 const parityRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const lockPath = join(parityRoot, 'tools', 'factcheck.lock.json');
 
+// The repo this script and its lockfile live in. Its own SHA-drift is not
+// checkable — see checkStaleness().
+const SELF_REPO = 'prism-parity';
+
 const args = process.argv.slice(2);
 const argv = new Set(args);
 
@@ -759,6 +763,29 @@ function checkStaleness(world) {
 
     const drifted = recorded.version !== repo.version;
     status.push({ repo: repo.name, recorded: recorded.version, actual: repo.version, state: drifted ? 'drifted' : 'current' });
+
+    // THE LOCKFILE CANNOT ASK THIS ABOUT ITS OWN REPO.
+    //
+    // `--reconcile` records each repo's current commit and then WRITES THIS
+    // FILE, so the commit that carries the reconciliation is by construction a
+    // commit later than the one it recorded for prism-parity. Reconciling and
+    // committing therefore leaves the lock instantly stale about itself, the
+    // next --strict run fails on it, and reconciling again reproduces it
+    // exactly. There is no sequence of commits that satisfies it.
+    //
+    // That is not hypothetical: it is why the nightly currency run was failing
+    // across THIRTEEN repos — every one of them checks this repo out and reads
+    // this lock — which in turn blocked a release in prism-harness, because its
+    // release guard refuses a commit any other workflow has failed on.
+    //
+    // Only the SHA-drift heuristic is meaningless here. Every other rule still
+    // reads this repo's prose and checks it: a class this repo names must
+    // exist, a link must resolve, a command must be declared. What is skipped
+    // is the question "has it changed since it was verified", asked of the file
+    // doing the verifying.
+    if (drifted && repo.name === SELF_REPO) {
+      continue;
+    }
 
     if (drifted) {
       finding(
