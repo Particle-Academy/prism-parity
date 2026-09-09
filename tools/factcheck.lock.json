@@ -1,19 +1,19 @@
 {
   "contract": "1.0",
   "note": "Written by tools/factcheck.mjs --reconcile. Records what each repo was at when its claims were last verified, and how many claims of each kind were found. Both are staleness signals; see docs/decisions/0019-checking-the-prose.md.",
-  "reconciledAt": "2026-08-31T18:34:26.688Z",
+  "reconciledAt": "2026-09-09T16:32:49.066Z",
   "packages": {
     "particle-academy/prism": {
       "published": true
     },
     "particle-academy/prism-browser": {
-      "published": false
+      "published": true
     },
     "particle-academy/prism-harness": {
       "published": true
     },
     "particle-academy/prism-human-plus": {
-      "published": false
+      "published": true
     },
     "particle-academy/prism-labs": {
       "published": false
@@ -22,7 +22,7 @@
       "published": true
     },
     "particle-academy/prism-memory": {
-      "published": false
+      "published": true
     },
     "particle-academy/prism-opentelemetry": {
       "published": true
@@ -37,31 +37,46 @@
       "published": false
     },
     "particle-academy/prism-workspace": {
-      "published": false
+      "published": true
     }
   },
   "repos": {
     "prism": {
-      "version": "v0.115.0",
+      "version": "v0.117.2",
       "census": {
         "decision": 1,
         "composer-script": 3,
         "local-link": 71,
-        "php-class": 652,
+        "php-class": 654,
         "composer-package": 11,
         "artisan-command": 7,
         "npm-script": 2
       }
     },
     "prism-browser": {
-      "version": "6f78f7c",
+      "version": "v0.1.0",
       "census": {
+        "decision": 1,
+        "decision-number": 1,
         "composer-script": 3,
         "php-class": 2
       }
     },
+    "prism-browser-py": {
+      "version": "0944a21",
+      "census": {
+        "local-link": 1
+      }
+    },
+    "prism-browser-ts": {
+      "version": "v0.1.0",
+      "census": {
+        "npm-script": 2,
+        "local-link": 1
+      }
+    },
     "prism-harness": {
-      "version": "v0.2.0",
+      "version": "v0.7.1",
       "census": {
         "test-name": 1,
         "decision": 1,
@@ -70,14 +85,40 @@
         "php-class": 1
       }
     },
+    "prism-harness-py": {
+      "version": "74fbc17",
+      "census": {
+        "local-link": 1
+      }
+    },
+    "prism-harness-ts": {
+      "version": "v0.1.0",
+      "census": {
+        "npm-script": 2,
+        "local-link": 1
+      }
+    },
     "prism-human-plus": {
-      "version": "941a984",
+      "version": "v0.1.0",
       "census": {
         "composer-script": 3
       }
     },
+    "prism-human-plus-py": {
+      "version": "432abf8",
+      "census": {
+        "local-link": 1
+      }
+    },
+    "prism-human-plus-ts": {
+      "version": "v0.1.0",
+      "census": {
+        "npm-script": 2,
+        "local-link": 1
+      }
+    },
     "prism-labs": {
-      "version": "654075c",
+      "version": "98f0ec8",
       "census": {
         "decision": 1,
         "composer-script": 1,
@@ -87,49 +128,90 @@
       }
     },
     "prism-mcp": {
-      "version": "v0.1.0",
+      "version": "v0.2.0",
       "census": {
         "decision": 4,
         "test-name": 2,
         "composer-script": 6,
         "local-link": 2,
         "php-class": 2,
-        "artisan-command": 2,
+        "artisan-command": 3,
         "composer-package": 1,
         "decision-number": 2
       }
     },
-    "prism-memory": {
+    "prism-mcp-py": {
+      "version": "cdc4e16",
+      "census": {
+        "local-link": 1
+      }
+    },
+    "prism-mcp-ts": {
       "version": "v0.1.0",
       "census": {
-        "artisan-command": 2,
+        "npm-script": 2,
+        "local-link": 1
+      }
+    },
+    "prism-memory": {
+      "version": "v0.2.0",
+      "census": {
+        "artisan-command": 4,
         "decision": 2,
         "composer-script": 3,
-        "local-link": 4,
+        "local-link": 6,
+        "php-class": 1,
         "composer-package": 1,
         "decision-number": 1
       }
     },
-    "prism-opentelemetry": {
-      "version": "v0.1.1",
+    "prism-memory-py": {
+      "version": "77610ba",
       "census": {
+        "local-link": 1
+      }
+    },
+    "prism-memory-ts": {
+      "version": "v0.1.0",
+      "census": {
+        "npm-script": 2,
+        "local-link": 1
+      }
+    },
+    "prism-opentelemetry": {
+      "version": "v0.2.0",
+      "census": {
+        "composer-script": 1,
         "local-link": 2,
         "composer-package": 2,
         "artisan-command": 1
       }
     },
-    "prism-parity": {
-      "version": "ab30c31",
+    "prism-opentelemetry-py": {
+      "version": "07cc49b",
       "census": {
-        "local-link": 83,
-        "decision": 23,
+        "local-link": 1
+      }
+    },
+    "prism-opentelemetry-ts": {
+      "version": "v0.1.0",
+      "census": {
+        "npm-script": 2,
+        "local-link": 1
+      }
+    },
+    "prism-parity": {
+      "version": "bee03c2",
+      "census": {
+        "local-link": 92,
+        "decision": 29,
         "composer-script": 3,
         "npm-script": 3,
         "decision-number": 12
       }
     },
     "prism-perplexity": {
-      "version": "v0.1.0",
+      "version": "v0.2.0",
       "census": {
         "decision": 1,
         "composer-script": 3,
@@ -137,34 +219,46 @@
         "composer-package": 1
       }
     },
+    "prism-perplexity-py": {
+      "version": "d5214e0",
+      "census": {
+        "local-link": 1
+      }
+    },
+    "prism-perplexity-ts": {
+      "version": "v0.1.0",
+      "census": {
+        "npm-script": 2,
+        "local-link": 1
+      }
+    },
     "prism-provider-watch": {
-      "version": "e387c26",
+      "version": "a828587",
       "census": {
         "composer-script": 7,
         "local-link": 4
       }
     },
     "prism-py": {
-      "version": "2cfa2f5",
+      "version": "1c55b90",
       "census": {
         "decision": 1,
         "local-link": 3
       }
     },
     "prism-sandbox": {
-      "version": "600c985",
+      "version": "535ecd4",
       "census": {
         "composer-script": 1,
         "npm-script": 5,
-        "local-link": 16,
-        "artisan-command": 5,
-        "composer-package": 6,
-        "php-class": 11,
-        "status": 2
+        "local-link": 29,
+        "artisan-command": 6,
+        "php-class": 15,
+        "composer-package": 7
       }
     },
     "prism-ts": {
-      "version": "774843d",
+      "version": "v0.1.0",
       "census": {
         "npm-script": 12,
         "decision": 1,
@@ -172,7 +266,7 @@
       }
     },
     "prism-workspace": {
-      "version": "v0.1.0",
+      "version": "v0.2.0",
       "census": {
         "composer-script": 3,
         "local-link": 2,
@@ -183,11 +277,11 @@
       }
     },
     "prism-workspace-py": {
-      "version": "e1bc54d",
+      "version": "5b65ed5",
       "census": {}
     },
     "prism-workspace-ts": {
-      "version": "dbcbb5b",
+      "version": "v0.1.0",
       "census": {}
     }
   }
