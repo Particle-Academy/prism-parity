@@ -31,7 +31,7 @@
           },
           "py": {
             "status": "in-progress",
-            "package": "prism-ai",
+            "package": "prism-ai-core",
             "repository": "prism-py"
           }
         }
@@ -702,7 +702,7 @@
       "language": "py",
       "role": "port",
       "registry": "pypi",
-      "name": "prism-ai",
+      "name": "prism-ai-core",
       "repository": "https://github.com/Particle-Academy/prism-py",
       "version": "0.1.0",
       "published": false,

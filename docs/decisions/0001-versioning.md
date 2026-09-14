@@ -22,7 +22,7 @@ Today:
 |---|---|---|
 | `particle-academy/prism` | PHP | 0.114.0 |
 | `@particle-academy/prism` | TypeScript | 0.1.0 |
-| `prism-ai` | Python | 0.1.0 |
+| `prism-ai-core` | Python | 0.1.0 |
 
 Kit version `2026.08.1`.
 

@@ -25,7 +25,7 @@ from prism_harness import HarnessError, admit_attachments  # noqa: E402
 
 
 class _FromFile:
-    """What prism-ai's from_local_path() gives a caller: media that knows it came
+    """What prism-ai-core's from_local_path() gives a caller: media that knows it came
     from a file, and serializes as bytes with no path."""
 
     def __init__(self, payload: dict[str, Any]) -> None:
