@@ -1,0 +1,30 @@
+{
+  "id": "harness-thread-rows",
+  "title": "The rows a harness stores for a run, and what it replays, in three languages",
+  "kind": "security-corpus",
+  "pins": "The rows each language writes for an assistant turn and a tool result turn, including tool call arguments, provider ids and state, approval requests and approval decisions, and the view a stored run is replayed as. A PHP app and a TypeScript or Python agent can share one session. If one language keys an approval to a call differently, it resumes another language's approval against the wrong call or never. If one stores an empty map as a list, a typed reader refuses the row. If one replays consecutive tool result rows unfolded, a provider receives a tool output twice or an empty turn it refuses.",
+  "scope": "Row SHAPE: key names, key order, and the JSON type of empty maps, for the assistant and tool_result rows the harness runtime records, and the fold of consecutive tool result rows applied on replay. NOT user rows (their attachments are pinned by harness-turn-attachments and media-roundtrip), NOT the approval RESOLUTION logic (which calls run on resume; each language's own tests drive that, the PHP reference through real provider handlers), NOT how a client maps rows onto a provider's wire format, and NOT rows written by earlier port releases, which the ports read and the reference never wrote.",
+  "findings": "All ten rows agree, and seven of them did not when the corpus was first run: the reference stored an assistant turn with no provider state as `\"additional_content\":[]`, an empty list, where both ports store `{}`. The reference moved (prism-harness MessageMapper now stores a map). The ports' earlier releases wrote tool calls with an id and a name only, tool results one row per call, and approvals in rows of their own, so every write row in this corpus would have disagreed with them. Agreement licenses one conclusion: the three languages store and replay a run in the same shape, so a thread written by one reads the same in the others. It says nothing about whether the decisions stored in it were authorised, which is the application's to check before recording them.",
+  "pattern_doc": "docs/decisions/0021-parity-is-the-shipping-library-set.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-harness:tests/Unit/ThreadRowsCorpusTest.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-harness-ts:test/thread-rows-corpus.test.ts"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-harness-py:tests/test_thread_rows_corpus.py"
+    }
+  }
+}
