@@ -1,0 +1,30 @@
+{
+  "id": "harness-turn-attachments",
+  "title": "Which attachments a turn will carry, in three languages",
+  "kind": "security-corpus",
+  "pins": "The verdict each language gives an attachment offered to a turn: admitted, or refused with one of four codes. A turn that admits media built from a URL hands a provider an address somebody else chose, and one that admits media read from a path sends a file's contents to a third-party model. If one language admits what another refuses, an application moving an agent from PHP to TypeScript loses the guard without an error, a log line or a failing test. And a refusal a consumer cannot branch on by code is a refusal it handles as an unknown failure.",
+  "scope": "The ADMISSION decision for turn attachments: admitted or the refusal code, for media built from bytes, a url, a local file, a provider file id, chunks or text, plus non-media and empty prompts. NOT what a provider does with an admitted attachment (a provider may still refuse chunks or a mime type), NOT how admitted media is serialized into the thread (media-roundtrip covers the stored form), NOT storage-disk paths (PHP-only, pinned by prism-harness's own tests), and NOT whether bytes that decode are a real image.",
+  "findings": "All eighteen rows agree, and three of them did not when the corpus was written: the reference admitted an empty provider file id that both ports refused, and the ports tested strings where the reference decodes them, so an empty url was called empty instead of by-reference and whitespace-only base64 was admitted. The implementations moved to the reference's reading. The TypeScript recorder run against a build from before that change still returns the two old verdicts, which is the evidence those rows discriminate. Agreement licenses one conclusion: an attachment one language refuses, the others refuse, with the same code. It says nothing about the safety of what they admit.",
+  "pattern_doc": "docs/decisions/0021-parity-is-the-shipping-library-set.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-harness:tests/Unit/TurnAttachmentsCorpusTest.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-harness-ts:test/turn-attachments-corpus.test.ts"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-harness-py:tests/test_turn_attachments_corpus.py"
+    }
+  }
+}
