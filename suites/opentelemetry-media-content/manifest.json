@@ -1,0 +1,30 @@
+{
+  "id": "opentelemetry-media-content",
+  "title": "Media bytes withheld from captured content, in three languages",
+  "kind": "security-corpus",
+  "pins": "What a span's captured content becomes when it holds media, with capture_media off (the default): each media part keeps its kind, mime type, file id, filename and url, and its bytes are replaced by their decoded size. Content capture was understood to export text, and a serialised message carries each attachment's bytes, so without this an uploaded image or document left the application in a trace. A language that recognised a different shape, or reported a different size, would export a user's file from one runtime and not another under the same configuration.",
+  "scope": "The TRANSFORM each bridge applies to structured captured content before encoding it: prism-opentelemetry's MediaContent::withoutBytes(), prism-opentelemetry-ts's withoutMediaBytes() and prism-opentelemetry-py's without_media_bytes(). NOT span names, attribute keys or the JSON formatting of a whole attribute (opentelemetry-span-attributes covers those, with its own open disagreements), NOT the content_max_length cap, NOT capture_media on (the transform is skipped), and NOT prism core's own streaming capture, which applies the same rule and is pinned by prism's tests.",
+  "findings": "All fifteen rows agree, on the first run. What that licenses is narrow: the three bridges recognise the same media shapes (the four kinds, the kindless pre-v0.120.0 shape and a null kind), compute the same decoded size for padded, malformed and line-wrapped base64, and rewrite nothing that is not a media shape. It does not license the rule: three implementations written together can share a blind spot, and three rows are pinned precisely as limits rather than passes. Bytes under an unknown kind (med-0012), a homoglyph kind (med-0013) or pasted into text (med-0014) are exported in all three languages.",
+  "pattern_doc": "docs/decisions/0021-parity-is-the-shipping-library-set.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-opentelemetry:tests/Unit/MediaContentCorpusTest.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-opentelemetry-ts:test/media-content-corpus.test.ts"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-opentelemetry-py:tests/test_media_content_corpus.py"
+    }
+  }
+}
