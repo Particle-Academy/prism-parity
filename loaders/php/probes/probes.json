@@ -252,7 +252,28 @@
           "atr-0002",
           "atr-0003",
           "atr-0004",
-          "atr-0005"
+          "atr-0005",
+          "atr-0006",
+          "atr-0007",
+          "atr-0008"
+        ]
+      }
+    },
+    {
+      "id": "drop-thinking-signature",
+      "kind": "mutant",
+      "summary": "When parsing a response, keep a thinking block's text and drop its signature.",
+      "hazard": "What both ports did until G-57. The text looks like thinking was captured, so nothing seems missing, but without the signature nothing can send the block back on a later tool-use turn with thinking on, which Anthropic requires. Only the rows whose response carries a thinking block can catch it, and every one of them must.",
+      "scope": "response parsing",
+      "languages": [
+        "ts",
+        "py"
+      ],
+      "must_fail": {
+        "anthropic-text-response": [
+          "atr-0006",
+          "atr-0007",
+          "atr-0008"
         ]
       }
     },
