@@ -1,7 +1,7 @@
 {
   "contract": "1.0",
   "note": "Written by tools/factcheck.mjs --reconcile. Records what each repo was at when its claims were last verified, and how many claims of each kind were found. Both are staleness signals; see docs/decisions/0019-checking-the-prose.md.",
-  "reconciledAt": "2026-09-14T07:53:55.569Z",
+  "reconciledAt": "2026-09-14T08:25:23.614Z",
   "packages": {
     "particle-academy/prism": {
       "published": true
@@ -42,7 +42,7 @@
   },
   "repos": {
     "prism": {
-      "version": "v0.120.0",
+      "version": "v0.121.0",
       "census": {
         "decision": 1,
         "composer-script": 3,
@@ -179,7 +179,7 @@
       }
     },
     "prism-opentelemetry": {
-      "version": "v0.2.0",
+      "version": "v0.3.0",
       "census": {
         "composer-script": 1,
         "local-link": 2,
@@ -188,20 +188,20 @@
       }
     },
     "prism-opentelemetry-py": {
-      "version": "538e591",
+      "version": "d9f0215",
       "census": {
         "local-link": 1
       }
     },
     "prism-opentelemetry-ts": {
-      "version": "v0.1.0",
+      "version": "v0.2.0",
       "census": {
         "npm-script": 2,
         "local-link": 1
       }
     },
     "prism-parity": {
-      "version": "ae4990b",
+      "version": "63867d2",
       "census": {
         "local-link": 92,
         "decision": 29,
