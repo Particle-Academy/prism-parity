@@ -40,7 +40,7 @@ Five things, and every capability has the same five:
 | [01 — The model](01-the-model.md) | — |
 | [02 — The pending request](02-pending-request.md) | `openai-text-request` |
 | [03 — The provider contract](03-provider-contract.md) | `text-errors` |
-| [04 — Messages and value objects](04-messages.md) | `value-object-roundtrip` |
+| [04 — Messages and value objects](04-messages.md) | `value-object-roundtrip`, `media-roundtrip` |
 | [05 — Request mapping](05-request-mapping.md) | `openai-text-request` |
 | [06 — Response parsing](06-response-parsing.md) | `openai-text-response` |
 | [07 — Errors](07-errors.md) | `text-errors` |

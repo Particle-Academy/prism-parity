@@ -52,13 +52,17 @@ Python. `manifest/packages.json` records that package-family matrix and
 `tools/parity-check.mjs --report` prints its remaining gaps. See
 [decision 0021](docs/decisions/0021-parity-is-the-shipping-library-set.md).
 
-Corpus `0.1.0`. Five suites, 49 cases.
+Corpus `0.1.0`. Seven golden-based suites, 66 cases, below. The ten `security-corpus` suites
+record every language's output per row instead of a golden, and are scored by
+`tools/trust-rubric.mjs`.
 
 | Suite | Kind | Cases | Pins |
 |---|---|---|---|
 | `openai-text-request` | request-payload | 28 | The OpenAI Responses request body |
 | `openai-text-response` | response-parse | 7 | Parsing a response into a result |
+| `anthropic-text-response` | response-parse | 5 | Parsing an Anthropic Messages response |
 | `value-object-roundtrip` | roundtrip | 9 | Value objects through storage and back |
+| `media-roundtrip` | roundtrip | 12 | Media through storage and back: bytes kept, no host paths, a `kind` |
 | `text-errors` | error-code | 3 | Which failure a misuse produces |
 | `json-container-identity` | container-identity | 2 | What each language's parser can tell apart |
 

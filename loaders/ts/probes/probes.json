@@ -204,6 +204,20 @@
         "py"
       ],
       "must_fail": {
+        "media-roundtrip": [
+          "mrt-0001",
+          "mrt-0002",
+          "mrt-0003",
+          "mrt-0004",
+          "mrt-0005",
+          "mrt-0006",
+          "mrt-0007",
+          "mrt-0008",
+          "mrt-0009",
+          "mrt-0010",
+          "mrt-0011",
+          "mrt-0012"
+        ],
         "value-object-roundtrip": [
           "rtp-0002",
           "rtp-0003",
@@ -253,6 +267,9 @@
         "py"
       ],
       "must_fail": {
+        "media-roundtrip": [
+          "mrt-0012"
+        ],
         "value-object-roundtrip": [
           "rtp-0001"
         ]

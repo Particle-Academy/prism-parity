@@ -1,0 +1,33 @@
+{
+  "id": "media-roundtrip",
+  "title": "Media through storage and back",
+  "kind": "roundtrip",
+  "pins": "The stored form of every kind of media a message can carry -- image, audio, video, document -- and, where an implementation can rebuild it, that rebuilding returns the identical bytes. This is what a conversation with an attachment is persisted as. A language that stores a different shape cannot replay a thread another language wrote, and one that drops the bytes cannot replay its own.",
+  "scope": "Serialisation and rehydration of media built from a url, base64, raw content, a provider file id, text or chunks. NOT media built from a local or storage path, because a golden generated that way would record bytes read off the generating machine -- the property that such media stores its bytes and never its path is pinned per language instead (prism MediaTest, 'the stored form'). NOT generated media (GeneratedImage, GeneratedAudio), which are response values rather than message parts. NOT the provider payloads media is mapped into. Rows mrt-0011 and mrt-0003 are the security and data-loss properties; the rest pin shape.",
+  "findings": "Written 2026-09-13, and the reference disagreed with both ports on EVERY row before a golden existed: measured by serialising the same media in all three languages first. Three causes, recorded as G-53: the reference dropped bytes it held unless base64() had been read, stored the serialising host's file paths, and carried no discriminator. The ports agreed with each other throughout. THE REFERENCE MOVED, on the owner's decision of 2026-09-13, in particle-academy/prism v0.120.0. Agreement here means the stored form is portable across languages and does not lose content; it says nothing about whether a rebuilt url is safe to send -- that is the provider mappers' refusal, pinned by G-44's tests.",
+  "pattern_doc": "docs/patterns/04-messages.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
+  "implementations": {
+    "php": {
+      "status": "partial",
+      "gap": "The reference asserts the SERIALISED half only: particle-academy/prism has no fromArray() for media or messages, so it can write the stored form and cannot read it back. The rehydration half of every row is unverified in PHP, as in value-object-roundtrip (finding F-4).",
+      "runner": "prism-parity:runners/php/runner.php",
+      "cause": "reference-limit",
+      "cause_note": "No fromArray() in the reference; only the serialised half is asserted. Both ports round-trip."
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-ts:conformance/runner.mjs"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-py:conformance/runner.py"
+    }
+  }
+}

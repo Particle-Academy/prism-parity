@@ -19,6 +19,11 @@ use Prism\Prism\Schema\BooleanSchema;
 use Prism\Prism\Schema\NumberSchema;
 use Prism\Prism\Schema\StringSchema;
 use Prism\Prism\Tool;
+use Prism\Prism\ValueObjects\Media\Audio;
+use Prism\Prism\ValueObjects\Media\Document;
+use Prism\Prism\ValueObjects\Media\Image;
+use Prism\Prism\ValueObjects\Media\Media;
+use Prism\Prism\ValueObjects\Media\Video;
 use Prism\Prism\ValueObjects\Messages\AssistantMessage;
 use Prism\Prism\ValueObjects\Messages\SystemMessage;
 use Prism\Prism\ValueObjects\Messages\ToolResultMessage;
@@ -318,8 +323,57 @@ final class Driver
                 default => throw new RuntimeException('Unknown ToolChoice case '.$value['case']),
             },
             'Tool' => self::tool($value),
+            'Image' => self::media(Image::class, $value),
+            'Audio' => self::media(Audio::class, $value),
+            'Video' => self::media(Video::class, $value),
+            'Document' => self::media(Document::class, $value),
             default => throw new RuntimeException('Unknown construct '.$value['$']),
         };
+    }
+
+    /**
+     * Build media the way a caller would, dispatching on the case's `from`.
+     *
+     * Never from a local or storage path: a golden generated that way would
+     * record bytes read off the machine that generated it, and a case that
+     * needs a file on every runner is not a case about serialisation. Raw
+     * content is carried as a UTF-8 string, which is enough to prove the bytes
+     * reach the stored form.
+     *
+     * A document's title rides where the REFERENCE puts it — the factory's
+     * title argument. The ports set it with `titled()`; the corpus names the
+     * value, not the call.
+     *
+     * @param  class-string<Media>  $class
+     * @param  array<string, mixed>  $spec
+     */
+    private static function media(string $class, array $spec): Media
+    {
+        $mimeType = $spec['mimeType'] ?? null;
+        $title = $spec['title'] ?? null;
+        $document = $class === Document::class;
+
+        if (! $document && $title !== null) {
+            throw new RuntimeException('Only a Document has a title.');
+        }
+
+        $media = match ($spec['from']) {
+            'url' => $document
+                ? ($mimeType === null ? Document::fromUrl($spec['url'], $title) : throw new RuntimeException('The reference cannot give a url Document a mime type: Document::fromUrl() takes a title there.'))
+                : $class::fromUrl($spec['url'], $mimeType),
+            'base64' => $document ? Document::fromBase64($spec['base64'], $mimeType, $title) : $class::fromBase64($spec['base64'], $mimeType),
+            'rawContent' => $document ? Document::fromRawContent($spec['rawContent'], $mimeType, $title) : $class::fromRawContent($spec['rawContent'], $mimeType),
+            'fileId' => $document ? Document::fromFileId($spec['fileId'], $title) : $class::fromFileId($spec['fileId']),
+            'text' => $document ? Document::fromText($spec['text'], $title) : throw new RuntimeException('Only a Document is built from text.'),
+            'chunks' => $document ? Document::fromChunks($spec['chunks'], $title) : throw new RuntimeException('Only a Document is built from chunks.'),
+            default => throw new RuntimeException('Unknown media source '.$spec['from']),
+        };
+
+        if (isset($spec['filename'])) {
+            $media->as($spec['filename']);
+        }
+
+        return $media;
     }
 
     /**

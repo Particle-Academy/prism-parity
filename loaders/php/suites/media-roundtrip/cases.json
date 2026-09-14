@@ -1,0 +1,211 @@
+{
+    "suite": "media-roundtrip",
+    "cases": [
+        {
+            "id": "mrt-0001",
+            "title": "image from a url, with a mime type",
+            "since": "0.1.0",
+            "notes": "The baseline. A url is stored as a url and nothing else: no bytes, because none are held and none may be fetched to produce them.",
+            "subject": {
+                "$": "Image",
+                "from": "url",
+                "url": "https://example.com/diamond.png",
+                "mimeType": "image/png"
+            },
+            "expect": {
+                "serialized_json": "{\"kind\":\"image\",\"url\":\"https://example.com/diamond.png\",\"base64\":null,\"mime_type\":\"image/png\",\"file_id\":null,\"filename\":null}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "mrt-0002",
+            "title": "image from base64",
+            "since": "0.1.0",
+            "notes": "The one source whose bytes the reference ALWAYS stored, because it is the one that fills the base64 field directly. Before G-53 it agreed on the bytes and disagreed on everything else.",
+            "subject": {
+                "$": "Image",
+                "from": "base64",
+                "base64": "UE5HQllURVM=",
+                "mimeType": "image/png"
+            },
+            "expect": {
+                "serialized_json": "{\"kind\":\"image\",\"url\":null,\"base64\":\"UE5HQllURVM=\",\"mime_type\":\"image/png\",\"file_id\":null,\"filename\":null}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "mrt-0003",
+            "title": "image from raw content stores its bytes",
+            "since": "0.1.0",
+            "notes": "G-53, the data-loss row. The reference stored base64 null here unless something had called base64() first, so a message saved before it was sent could not be replayed. Built and serialised with nothing read in between, which is exactly the path that lost the bytes.",
+            "subject": {
+                "$": "Image",
+                "from": "rawContent",
+                "rawContent": "PNGBYTES",
+                "mimeType": "image/png"
+            },
+            "expect": {
+                "serialized_json": "{\"kind\":\"image\",\"url\":null,\"base64\":\"UE5HQllURVM=\",\"mime_type\":\"image/png\",\"file_id\":null,\"filename\":null}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "mrt-0004",
+            "title": "raw content that is exactly \"0\"",
+            "since": "0.1.0",
+            "notes": "A payload a truthiness check drops. PHP's falsy \"0\" has bitten the reference before, and its prompt path still is (trq-0022). A stored base64 of null or \"\" here means a real one-byte file vanished.",
+            "subject": {
+                "$": "Audio",
+                "from": "rawContent",
+                "rawContent": "0",
+                "mimeType": "audio/wav"
+            },
+            "expect": {
+                "serialized_json": "{\"kind\":\"audio\",\"url\":null,\"base64\":\"MA==\",\"mime_type\":\"audio/wav\",\"file_id\":null,\"filename\":null}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "mrt-0005",
+            "title": "audio from base64 is stored as audio",
+            "since": "0.1.0",
+            "notes": "G-53, the discriminator. Without kind, this row and mrt-0002 serialised to arrays that differed only in their bytes, so nothing reading the stored form could tell an image from a recording.",
+            "subject": {
+                "$": "Audio",
+                "from": "base64",
+                "base64": "QVVESU8=",
+                "mimeType": "audio/wav"
+            },
+            "expect": {
+                "serialized_json": "{\"kind\":\"audio\",\"url\":null,\"base64\":\"QVVESU8=\",\"mime_type\":\"audio/wav\",\"file_id\":null,\"filename\":null}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "mrt-0006",
+            "title": "video from a url with no mime type",
+            "since": "0.1.0",
+            "notes": "An absent mime type is stored as null, not guessed from the extension and not omitted. Guessing would mean one language sniffing a string another does not.",
+            "subject": {
+                "$": "Video",
+                "from": "url",
+                "url": "https://example.com/clip.mp4"
+            },
+            "expect": {
+                "serialized_json": "{\"kind\":\"video\",\"url\":\"https://example.com/clip.mp4\",\"base64\":null,\"mime_type\":null,\"file_id\":null,\"filename\":null}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "mrt-0007",
+            "title": "document by provider file id, titled",
+            "since": "0.1.0",
+            "notes": "A reference the provider resolves: an id and a title, no bytes. The title reaches the reference through the factory's argument and the ports through titled(); the row pins that both routes store the same thing.",
+            "subject": {
+                "$": "Document",
+                "from": "fileId",
+                "fileId": "file_2dtbBZdjtDKS",
+                "title": "Quarterly report"
+            },
+            "expect": {
+                "serialized_json": "{\"kind\":\"document\",\"url\":null,\"base64\":null,\"mime_type\":null,\"file_id\":\"file_2dtbBZdjtDKS\",\"filename\":null,\"document_title\":\"Quarterly report\",\"chunks\":null}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "mrt-0008",
+            "title": "document from text keeps the text",
+            "since": "0.1.0",
+            "notes": "G-53's worst case. The reference stored the title and dropped the document: base64 null, because fromText() holds raw content, and Anthropic's document mapper reads rawContent(), which never cached. The text must survive with nothing read beforehand. Carries a line break and a non-ASCII character so the bytes are UTF-8 rather than ASCII in every language.",
+            "subject": {
+                "$": "Document",
+                "from": "text",
+                "text": "The whole document, including a line\nbreak and non-ASCII: café.",
+                "title": "Notes"
+            },
+            "expect": {
+                "serialized_json": "{\"kind\":\"document\",\"url\":null,\"base64\":\"VGhlIHdob2xlIGRvY3VtZW50LCBpbmNsdWRpbmcgYSBsaW5lCmJyZWFrIGFuZCBub24tQVNDSUk6IGNhZsOpLg==\",\"mime_type\":\"text/plain\",\"file_id\":null,\"filename\":null,\"document_title\":\"Notes\",\"chunks\":null}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "mrt-0009",
+            "title": "document from chunks",
+            "since": "0.1.0",
+            "notes": "No bytes and no mime type: the chunks ARE the document, and they are stored in order as a list.",
+            "subject": {
+                "$": "Document",
+                "from": "chunks",
+                "chunks": [
+                    "First chunk.",
+                    "Second chunk."
+                ],
+                "title": "Chunked"
+            },
+            "expect": {
+                "serialized_json": "{\"kind\":\"document\",\"url\":null,\"base64\":null,\"mime_type\":null,\"file_id\":null,\"filename\":null,\"document_title\":\"Chunked\",\"chunks\":[\"First chunk.\",\"Second chunk.\"]}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "mrt-0010",
+            "title": "a filename survives storage",
+            "since": "0.1.0",
+            "notes": "as() names a payload for providers that want a filename. It is the field a rebuild most easily forgets, because no provider sees it until an upload.",
+            "subject": {
+                "$": "Image",
+                "from": "base64",
+                "base64": "UE5HQllURVM=",
+                "mimeType": "image/png",
+                "filename": "diamond.png"
+            },
+            "expect": {
+                "serialized_json": "{\"kind\":\"image\",\"url\":null,\"base64\":\"UE5HQllURVM=\",\"mime_type\":\"image/png\",\"file_id\":null,\"filename\":\"diamond.png\"}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "mrt-0011",
+            "title": "a url naming the cloud metadata endpoint is stored, never fetched",
+            "since": "0.1.0",
+            "notes": "G-44's property, carried into storage. The stored form now always carries the bytes a payload holds, and computing them must not become a way to resolve a url: before G-44, reading base64 on this object made the host request 169.254.169.254. base64 null is the evidence. A serialiser that fetched would put the response here, or throw on a runner with no route to that address.",
+            "subject": {
+                "$": "Image",
+                "from": "url",
+                "url": "http://169.254.169.254/latest/meta-data/iam/security-credentials/"
+            },
+            "expect": {
+                "serialized_json": "{\"kind\":\"image\",\"url\":\"http://169.254.169.254/latest/meta-data/iam/security-credentials/\",\"base64\":null,\"mime_type\":null,\"file_id\":null,\"filename\":null}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "mrt-0012",
+            "title": "a user message carrying an image and a document",
+            "since": "0.1.0",
+            "notes": "Where media is actually persisted. Pins that each part keeps its own kind inside additional_content, in order, and that rebuilding the message rebuilds each part as the type it was rather than as a generic payload.",
+            "subject": {
+                "$": "UserMessage",
+                "content": "Compare these.",
+                "additionalContent": [
+                    {
+                        "$": "Image",
+                        "from": "rawContent",
+                        "rawContent": "PNGBYTES",
+                        "mimeType": "image/png"
+                    },
+                    {
+                        "$": "Document",
+                        "from": "text",
+                        "text": "Reference text.",
+                        "title": "Spec"
+                    }
+                ]
+            },
+            "expect": {
+                "serialized_json": "{\"type\":\"user\",\"content\":\"Compare these.\",\"additional_content\":[{\"kind\":\"image\",\"url\":null,\"base64\":\"UE5HQllURVM=\",\"mime_type\":\"image/png\",\"file_id\":null,\"filename\":null},{\"kind\":\"document\",\"url\":null,\"base64\":\"UmVmZXJlbmNlIHRleHQu\",\"mime_type\":\"text/plain\",\"file_id\":null,\"filename\":null,\"document_title\":\"Spec\",\"chunks\":null},{\"text\":\"Compare these.\"}],\"additional_attributes\":{}}",
+                "rehydrates": true
+            }
+        }
+    ]
+}

@@ -1,6 +1,6 @@
 # 04 — Messages and value objects
 
-**Enforced by:** `suites/value-object-roundtrip`
+**Enforced by:** `suites/value-object-roundtrip`, and `suites/media-roundtrip` for the media a message carries
 
 Four message types, one per role in a conversation:
 
