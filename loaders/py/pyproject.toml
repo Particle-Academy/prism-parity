@@ -14,6 +14,19 @@ keywords = ["prism", "conformance", "parity", "fixtures"]
 [project.urls]
 Homepage = "https://github.com/Particle-Academy/prism-parity"
 
+# DECLARED so they can be CHECKED. These three were installed by name on a
+# `pip install` line in loaders.yml and declared nowhere, which meant the
+# third-party allowlist had nothing to read: `check.mjs --repo .` on this
+# repository reported "0 direct dependencies, all approved" — a green tick
+# standing beside an install it had never examined.
+#
+# A gate added to that workflow would have passed vacuously and made every
+# dashboard call this repository covered while nothing changed. A missing check
+# is honest; a vacuous one is reassuring. So the fix is to make the install come
+# from a declared set rather than to gate a manifest that does not exist.
+[project.optional-dependencies]
+dev = ["pytest", "mypy", "ruff"]
+
 [tool.setuptools.packages.find]
 where = ["src"]
 

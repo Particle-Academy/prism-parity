@@ -65,6 +65,28 @@ jobs:
           php-version: 8.3
           coverage: none
 
+      # THREE TREES, THREE GATES, and none of them is this repository. This job
+      # installs the reference runner's dependencies, then prism-ts's, then
+      # prism-py's — three separate manifests in three checkouts. prism-parity
+      # itself has no root manifest, so a single `--repo .` would examine
+      # nothing and render green beside all three installs.
+      #
+      # The ports gate themselves in their own CI. This is the copy that stands
+      # where THIS install happens, which is the only place it can stop one.
+      - name: Fetch the third-party allowlist
+        uses: actions/checkout@v4
+        with:
+          repository: Particle-Academy/.github
+          path: .third-party-allowlist
+          persist-credentials: false
+
+      - name: Third-party dependency allowlist (all three trees)
+        run: |
+          node .third-party-allowlist/third-party/check.mjs --repo prism-parity/runners/php
+          node .third-party-allowlist/third-party/check.mjs --repo prism-ts
+          node .third-party-allowlist/third-party/check.mjs --repo prism-py
+          node -e "require('node:fs').rmSync('.third-party-allowlist',{recursive:true,force:true})"
+
       - name: Build the PHP reference runner
         working-directory: prism-parity/runners/php
         run: composer install --no-interaction --no-progress

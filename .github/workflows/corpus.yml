@@ -61,6 +61,21 @@ jobs:
           php-version: 8.3
           coverage: none
 
+      # Gated against `runners/php`, which is where the manifest is. This
+      # repository has no root manifest, so `--repo .` would examine nothing and
+      # render green beside the install below.
+      - name: Fetch the third-party allowlist
+        uses: actions/checkout@v4
+        with:
+          repository: Particle-Academy/.github
+          path: .third-party-allowlist
+          persist-credentials: false
+
+      - name: Third-party dependency allowlist
+        run: |
+          node .third-party-allowlist/third-party/check.mjs --repo runners/php
+          node -e "require('node:fs').rmSync('.third-party-allowlist',{recursive:true,force:true})"
+
       # Installs the PUBLISHED particle-academy/prism. The reference a corpus is
       # generated from has to be a released artefact, or the goldens describe
       # someone's uncommitted branch.

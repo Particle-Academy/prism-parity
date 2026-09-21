@@ -68,8 +68,29 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Gated against the tree the install comes FROM, which is `loaders/py`
+      # and not this repository's root. prism-parity has no root manifest, so
+      # `--repo .` here would report "0 direct dependencies, all approved" —
+      # examining nothing and rendering green. The org checker now fails that
+      # outright rather than passing it, but the reason this points at
+      # loaders/py is that loaders/py is where the dependencies are declared.
+      - name: Fetch the third-party allowlist
+        uses: actions/checkout@v4
+        with:
+          repository: Particle-Academy/.github
+          path: .third-party-allowlist
+          persist-credentials: false
+
+      - name: Third-party dependency allowlist
+        run: |
+          node .third-party-allowlist/third-party/check.mjs --repo loaders/py
+          node -e "require('node:fs').rmSync('.third-party-allowlist',{recursive:true,force:true})"
+
+      # From the manifest, not from three names typed here. The tooling used to
+      # be installed by name with nothing declaring it, which is what made the
+      # gate above impossible to point anywhere useful.
       - name: Install tooling
-        run: python -m pip install --quiet pytest mypy ruff
+        run: python -m pip install --quiet "./loaders/py[dev]"
 
       - name: Loader tests
         working-directory: loaders/py
