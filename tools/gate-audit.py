@@ -32,13 +32,46 @@ ROOT = os.environ.get(
 )
 INSTALLS = ("npm ci", "npm install", "composer install", "composer update", "pip install")
 
+# AN INSTALL IS NOT ALWAYS A `run:` COMMAND. `ramsey/composer-install` resolves
+# and installs the whole dependency tree, and a detector that only reads `run:`
+# strings cannot see it — which is how 27 ungated jobs in this estate passed two
+# independent audits, ours and the org's, both reporting green.
+#
+# The step TYPE is not what a step does. That is the same proxy error as reading
+# a filename, a path or a substring, and it is the one that fails silent in both
+# directions: nobody investigates a clean report.
+INSTALL_ACTIONS = ("ramsey/composer-install",)
+
+
+def executable(step: dict) -> str:
+    """The lines of a step's `run:` the runner will actually execute.
+
+    WHOLE-LINE COMMENTS ARE STRIPPED FIRST. fancy's detector read a comment as
+    behaviour and reported a correctly-gated job as ungated — and the comment
+    that broke it was the one documenting the gate. Prose beside a check has
+    always been "not the check"; it turns out it can be worse than inert. It can
+    be INPUT.
+
+    Both directions matter and the second is the dangerous one. A comment
+    mentioning an install raises a false alarm, which someone investigates. A
+    COMMENTED-OUT GATE read as a gate reports an ungated job as blocked — this
+    file's own failure mode, a check examining something that is not there and
+    rendering green.
+    """
+    lines = str(step.get("run", "")).split("\n")
+
+    return "\n".join(line for line in lines if not line.lstrip().startswith("#"))
+
 
 def runs_install(step: dict) -> bool:
-    return any(marker in str(step.get("run", "")) for marker in INSTALLS)
+    if any(action in str(step.get("uses", "")) for action in INSTALL_ACTIONS):
+        return True
+
+    return any(marker in executable(step) for marker in INSTALLS)
 
 
 def runs_check(step: dict) -> bool:
-    return "third-party/check.mjs" in str(step.get("run", ""))
+    return "third-party/check.mjs" in executable(step)
 
 
 def needs_of(job: dict) -> list[str]:
@@ -150,7 +183,28 @@ def self_test() -> None:
     cyclic = {"a": {"needs": "b", "steps": []}, "b": {"needs": "a", "steps": []}}
     assert not reaches_gate("a", cyclic, gates), "a cycle must terminate"
 
-    print("self-test: detector fires on transitive, ignores orphan, survives a cycle\n")
+    # A file says what it does in two registers and only one of them runs.
+    assert not runs_install({"run": "# npm ci is done above\nnpm run build"}), (
+        "a comment mentioning an install is not an install"
+    )
+    assert not runs_check({"run": "# node x/third-party/check.mjs --repo .\necho skip"}), (
+        "a commented-out gate is not a gate"
+    )
+    assert runs_install({"run": "npm ci"}), "a real install must still be seen"
+    assert runs_install({"uses": "ramsey/composer-install@v3"}), (
+        "an install performed by an ACTION is still an install"
+    )
+    assert not runs_install({"uses": "actions/checkout@v4"}), (
+        "checking out a repository is not installing its dependencies"
+    )
+    assert runs_check({"run": "node x/third-party/check.mjs --repo ."}), (
+        "a real gate must still be seen"
+    )
+
+    print(
+        "self-test: fires on transitive, ignores orphan, survives a cycle, "
+        "reads code not comments\n"
+    )
 
 
 self_test()
