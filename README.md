@@ -52,9 +52,10 @@ Python. `manifest/packages.json` records that package-family matrix and
 `tools/parity-check.mjs --report` prints its remaining gaps. See
 [decision 0021](docs/decisions/0021-parity-is-the-shipping-library-set.md).
 
-Corpus `0.1.0`. Seven golden-based suites, 66 cases, below. The ten `security-corpus` suites
-record every language's output per row instead of a golden, and are scored by
-`tools/trust-rubric.mjs`.
+Corpus `0.1.0`. Seven golden-based suites, 66 cases, below. The **fourteen**
+`security-corpus` suites record every language's output per row instead of a
+golden, and are scored by `tools/trust-rubric.mjs` — which is where the count
+comes from, because a number maintained by hand here drifts and this one had.
 
 | Suite | Kind | Cases | Pins |
 |---|---|---|---|

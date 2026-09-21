@@ -1,0 +1,31 @@
+{
+  "id": "human-plus-change-feed",
+  "title": "What an agent learns when it asks a shared surface what changed, in three languages",
+  "kind": "security-corpus",
+  "pins": "The ANSWER an agent acts on when it asks a surface what changed since its last turn: which rows it got, what kind of change each was, WHO made it, whether the surface was in a position to answer at all, and whether it admitted the answer was partial. All of it crosses a language boundary for one reason — a surface is SHARED. A person edits the same canvas a PHP application and a TypeScript or Python agent are editing, and the agent decides from this answer whether to re-read before writing. If one language reports an unanswerable feed as 'nothing changed', the agent in that language re-reads, sees current state, decides the surface has drifted from what it intended, and puts it back OVER THE PERSON'S EDIT. Nothing is stale, so no pin fires; nothing errors, in any layer, ever. The only evidence is a human watching their work disappear.",
+  "scope": "SurfaceChanges::readFrom() — the envelope read changesSince() calls: row extraction, per-change parsing, the attribution upgrade, the completeness flag and the revision marker, plus every derived answer a caller branches on (answered, nothing_changed, attributes, defer_to, handles). NOT the manager's plumbing (the tool-name lookup, the attachment transitions, the store), NOT the result guard — a framed label carries a random nonce and is not comparable across languages, so labels are recorded here UNGUARDED and the framing is pinned by each package's own tests. NOT the refusal of an over-long marker, which raises a different exception type in each language and is a value corpus's blind spot by construction.",
+  "construction": "The surface's result is carried as RAW JSON TEXT, never as a decoded object. `human-plus-tool-admission` shipped the other way once and its own construction note records what happened: writing the file back through PHP turned `1.0` into `1` and `{}` into `[]`, so all three languages agreed on inputs none of them had been asked about. Half the rows here exist because a value's TYPE is the thing under test — `true` where a number belongs, a whole float, a number past safe-integer range — so a corpus that let the file normalise them would be testing nothing while reporting agreement.",
+  "pattern_doc": "docs/decisions/0005-canonical-json.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
+  "findings": "All 23 rows agree, and one did not on the first run. **hpc-0021 — a revision of `1.0` — split TypeScript against the reference and Python**, and the split was the dangerous direction: PHP and Python rejected it as 'not an integer' because that is how each had decoded it, TypeScript accepted it because JavaScript has one number type. Rejecting a marker does not fail loudly. It means the marker is DROPPED, the next call goes out unpinned, and the surface's lost-update protection quietly stops existing — for a serialisation detail the surface cannot control. So the REFERENCE was changed rather than the port: a whole number is now accepted however the host language decoded it. The boundary that fix creates is pinned by two rows added the same day: a fractional marker (hpc-0022) and one past 2^53-1 (hpc-0023) are refused in all three, because neither has a spelling the three agree on and a marker that is not byte-identical everywhere is worse than no marker — it is echoed back on the next call, and a surface enforcing the pin would refuse whichever agent spelled it differently. Worth stating plainly what the other 22 rows are and are not evidence of: they agreed on the first run because all three implementations were written against one design within a day of each other, which is the weakest kind of agreement a corpus can report. Their value is the NEXT change, not this one.",
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-human-plus:tests/Unit/ChangeFeedCorpusTest.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-human-plus-ts:test/change-feed-corpus.test.ts"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-human-plus-py:tests/test_change_feed_corpus.py"
+    }
+  }
+}
