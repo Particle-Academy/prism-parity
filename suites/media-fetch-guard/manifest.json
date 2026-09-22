@@ -1,0 +1,33 @@
+{
+  "id": "media-fetch-guard",
+  "title": "What the guarded media fetch refuses, and under which code",
+  "kind": "security-corpus",
+  "pins": "Which URLs `fetchPublicUrlContent()` refuses, and under WHICH CODE, in every language. The code is the contract — a consumer switches on it to decide whether to widen an allow-list, surface a hard stop, or report an SSRF attempt. The message is deliberately not pinned: the three implementations word these differently on purpose, and a test over the prose holds every language to a translation and reddens on a wording improvement that changed nothing. Same decision as `browser-url-policy`, and the same spellings — `private_address_refused` is one finding with one name across the ecosystem.",
+  "scope": "The refusal decision of the OPT-IN guarded fetch and its code. It does NOT cover the unguarded `fetchUrlContent()`, which is unguarded by design in all three languages and must stay that way — url-0009 is the row that would redden if a language ever quietly guarded it. It does not cover what happens to bytes once a URL is admitted, and it is not a claim that a guarded fetch is safe: a name can resolve differently between the check and the request, which only connection-level pinning closes.",
+  "findings": "Writing this corpus is what produced the codes it compares. The PHP guard originally threw plain exceptions carrying prose, so there was nothing for a consumer to branch on and nothing a port could agree with except wording. Fixed in particle-academy/prism 07f842b before the first row was recorded. The ports have NEITHER the guard nor the codes yet (G-63), so this suite is deliberately RED on two of three columns: it is the failing corpus the ports get built against, rather than a description of them written after the fact. Read a future green narrowly — this corpus compares languages, so a hole all three share would look exactly like agreement, which is why every row here is a hostile input and url-0001 is the only well-behaved one.",
+  "pattern_doc": "docs/decisions/0004-error-codes.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed",
+    "note": "url-0001 fetches successfully and url-0009 proves the UNGUARDED path still fetches a loopback address. A guard that refused everything would pass every refusal row and fail both of these."
+  },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism:tests/ValueObjects/Media/GuardedFetchTest.php"
+    },
+    "ts": {
+      "status": "none",
+      "runner": null,
+      "note": "G-63: prism-ts has the unguarded fetch and no guarded variant."
+    },
+    "py": {
+      "status": "none",
+      "runner": null,
+      "note": "G-63: prism-py has the unguarded fetch and no guarded variant."
+    }
+  }
+}
