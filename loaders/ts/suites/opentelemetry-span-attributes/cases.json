@@ -2439,7 +2439,7 @@
                         "llm.tools.1.tool.name": "write",
                         "openinference.span.kind": "CHAIN",
                         "prism.tools.0.digest": "sha256:4049ebaabfa5e0775edd54fc17b9df1c78a1fe51e63e9a00eb46ea08b9b4a511",
-                        "prism.tools.1.digest": "sha256:efeda25d0d2efe98854a76040fc915fd500ca65a0203b7e6249a61d1600d2ca2"
+                        "prism.tools.1.digest": "sha256:184a4a8f872a711c9fa21807655aebf78cb69cb5adb2d119091e930c57c3374e"
                     }
                 },
                 "ts": {
@@ -2497,7 +2497,6 @@
             "disagrees_on": [
                 "gen_ai.operation.name",
                 "gen_ai.response.finish_reasons",
-                "prism.tools.1.digest",
                 "span name",
                 "span status"
             ]
@@ -2559,8 +2558,8 @@
                         "llm.tools.0.tool.name": "zebra",
                         "llm.tools.1.tool.name": "alpha",
                         "openinference.span.kind": "CHAIN",
-                        "prism.tools.0.digest": "sha256:8d53ef80bf85f98df6d2566d2ec489faa32b762c224907ee2f67d0aa6f0c76f5",
-                        "prism.tools.1.digest": "sha256:a8d2fe5493317488cc2146d61d36430b40b9bbc42cd8a1d20a65ac032c9bbe52"
+                        "prism.tools.0.digest": "sha256:12e22678d682a9a5ff7325b32dc3ff933a035cbe181eeeb3b3a462a4f1c950f7",
+                        "prism.tools.1.digest": "sha256:68a5050930be1c42eb0a2a1a8823169c848073e0423cdf6e73a0116b876b0367"
                     }
                 },
                 "ts": {
@@ -2618,8 +2617,6 @@
             "disagrees_on": [
                 "gen_ai.operation.name",
                 "gen_ai.response.finish_reasons",
-                "prism.tools.0.digest",
-                "prism.tools.1.digest",
                 "span name",
                 "span status"
             ]
@@ -2675,7 +2672,7 @@
                         "llm.token_count.total": 15,
                         "llm.tools.0.tool.name": "ping",
                         "openinference.span.kind": "CHAIN",
-                        "prism.tools.0.digest": "sha256:ca9548dedf624164e250b583b100deee35ff9c29364074aa163fee037cbc5fde"
+                        "prism.tools.0.digest": "sha256:141c202abb08c97535901f980a81224fb348ceb6e951137318a81882a04e96c9"
                     }
                 },
                 "ts": {
@@ -2729,7 +2726,6 @@
             "disagrees_on": [
                 "gen_ai.operation.name",
                 "gen_ai.response.finish_reasons",
-                "prism.tools.0.digest",
                 "span name",
                 "span status"
             ]
