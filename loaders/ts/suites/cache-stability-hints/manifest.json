@@ -1,0 +1,33 @@
+{
+  "id": "cache-stability-hints",
+  "title": "What a stability declaration does to a request, in each caching model",
+  "kind": "conformance-corpus",
+  "pins": "For one hinted conversation: WHICH message carries the cache breakpoint under the mark-in-place model, WHETHER the ordering warning fires under the automatic-prefix model, and WHERE the prefix is split under the create-and-reference model. Those three answers are the whole observable behaviour of a stability hint — everything else about the request is unchanged by it, which is itself pinned by the rows whose answers are all null.",
+  "scope": "The DERIVATION from a declaration: breakpoint index, ordering warning, prefix split. It does NOT cover whether a provider then actually caches, what a cached resource costs, or the wire format of the cache fields themselves — those belong to each provider's own suite. A green run means three languages derive the same thing from the same declaration, not that caching works.",
+  "findings": "Recorded at particle-academy/prism v0.129.0, where all three caching models act on the hint in PHP. The TypeScript and Python ports have neither the enum nor the derivation (G-64), so two of three columns are empty and this suite is RED by construction — the failing corpus the ports are built against rather than a description written after them. One row is worth reading before the rest: hint-0005 declares the volatile part FIRST, and the correct answer is no breakpoint, no cached prefix, and a warning. A port that marked something there would look like it was doing more work rather than less, and a corpus that omitted the row would never say so.",
+  "pattern_doc": "docs/decisions/0021-parity-is-the-shipping-library-set.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed",
+    "note": "hint-0001 declares nothing and must produce nothing anywhere — the control that fails if a language derives a breakpoint from an undeclared conversation. hint-0004 has an explicit breakpoint already placed, where the correct answer is to leave it alone."
+  },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism:tests/CacheStabilityCorpusTest.php"
+    },
+    "ts": {
+      "status": "none",
+      "runner": null,
+      "note": "G-64: prism-ts has no CacheStability enum and no derivation."
+    },
+    "py": {
+      "status": "none",
+      "runner": null,
+      "note": "G-64: prism-py has no CacheStability enum and no derivation."
+    }
+  }
+}
