@@ -18,6 +18,7 @@ import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { execSync } from 'node:child_process';
+import { coverage } from './cross-check-coverage.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const ledger = JSON.parse(readFileSync(join(root, 'parity', 'ledger.json'), 'utf8'));
@@ -254,8 +255,14 @@ for (const key of [...allKeys].sort()) {
   }
 }
 
-// Vacuity guard: agreement across an empty set is not agreement.
+const checked = coverage(reports);
+for (const { key, language, reason } of checked.skips) {
+  console.error(`SKIP ${key} [${language}]: ${reason}`);
+}
+
+// Vacuity guard: an empty or entirely skipped set verifies no behavior.
 if (allKeys.size === 0) failures.push('no cases were compared — the cross-check asserted nothing');
+if (allKeys.size > 0 && checked.verified.length === 0) failures.push('no cases passed in every language — skipped cases are not verified agreement');
 if (languages.length < 2) failures.push(`only ${languages.length} runner(s) reported; a cross-check needs at least two`);
 
 if (failures.length > 0) {
@@ -264,6 +271,7 @@ if (failures.length > 0) {
 }
 
 console.error(
-  `Cross-check passed: ${languages.join(', ')} agree on ${allKeys.size} cases ` +
+  `Cross-check passed: ${checked.verified.length} cases passed in every language (${languages.join(', ')}); ` +
+    `${checked.skippedCases} cases have skips and are not counted as verified ` +
     `(corpus ${versions.get(languages[0])}, ${digests.get(languages[0])}).`,
 );

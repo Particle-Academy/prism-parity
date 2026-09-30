@@ -26,6 +26,9 @@ jobs:
       # the case files AS TEXT — parsing them here would round the offending
       # value and report it safe, destroying the evidence with the very defect
       # being looked for.
+      - name: Cross-check coverage tests
+        run: node --test scripts/cross-check-coverage.test.mjs
+
       - name: Corpus guards
         run: node tools/guard-corpus.mjs
 

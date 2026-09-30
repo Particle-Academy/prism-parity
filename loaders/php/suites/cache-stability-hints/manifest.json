@@ -22,12 +22,12 @@
     "ts": {
       "status": "partial",
       "cause": "no-runner",
-      "gap": "G-64: prism-ts has no CacheStability enum and no derivation."
+      "gap": "G-64: no cache-stability derivation or package-specific runner implemented."
     },
     "py": {
       "status": "partial",
       "cause": "no-runner",
-      "gap": "G-64: prism-py has no CacheStability enum and no derivation."
+      "gap": "G-64: no cache-stability derivation or package-specific runner implemented."
     }
   }
 }
