@@ -42,7 +42,7 @@
   },
   "repos": {
     "prism": {
-      "version": "v0.130.0",
+      "version": "v0.131.0",
       "census": {
         "decision": 1,
         "composer-script": 3,
