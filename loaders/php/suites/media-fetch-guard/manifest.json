@@ -20,14 +20,14 @@
       "runner": "prism:tests/ValueObjects/Media/GuardedFetchTest.php"
     },
     "ts": {
-      "status": "none",
-      "runner": null,
-      "note": "G-63: prism-ts has the unguarded fetch and no guarded variant."
+      "status": "partial",
+      "cause": "no-runner",
+      "gap": "G-63: prism-ts has the unguarded fetch and no guarded variant."
     },
     "py": {
-      "status": "none",
-      "runner": null,
-      "note": "G-63: prism-py has the unguarded fetch and no guarded variant."
+      "status": "partial",
+      "cause": "no-runner",
+      "gap": "G-63: prism-py has the unguarded fetch and no guarded variant."
     }
   }
 }

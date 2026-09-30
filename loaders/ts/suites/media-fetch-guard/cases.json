@@ -45,7 +45,8 @@
                 "ts": null,
                 "py": null
             },
-            "agrees": false
+            "agrees": false,
+            "notes": "Refuse loopback literals before making a request to a service on the caller's own machine."
         },
         {
             "id": "url-0004",
@@ -72,7 +73,8 @@
                 "ts": null,
                 "py": null
             },
-            "agrees": false
+            "agrees": false,
+            "notes": "Refuse private IPv4 literals so public media fetching cannot reach internal network services."
         },
         {
             "id": "url-0006",

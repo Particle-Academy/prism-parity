@@ -10,6 +10,14 @@ Three green ticks are not a three-way comparison. The cross-check is.
 
 ## Invocation
 
+`derivation-corpus` suites describe values derived from declarations, such as
+cache breakpoints and ordering warnings. Package-specific tests execute their
+reference behavior; these suites do not contribute to security-rubric counts.
+Each row records explicit per-language skip reasons for the generic runner.
+The cross-check reports those rows as skipped, preserving visibility without
+claiming that missing port implementations agree. Their reference columns are
+recorded by package-specific generators, not `tools/generate-goldens.php`.
+
 ```
 <runner> [--suite <id>] [--probe <id>] [--root <path>] [--version]
 ```
