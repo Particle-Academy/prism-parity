@@ -2,25 +2,6 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/Particle-Academy/prism-parity/schema/cases.schema.json",
   "title": "Conformance cases",
-  "type": "object",
-  "additionalProperties": false,
-  "required": [
-    "suite",
-    "cases"
-  ],
-  "properties": {
-    "suite": {
-      "type": "string",
-      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
-    },
-    "cases": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "$ref": "#/$defs/case"
-      }
-    }
-  },
   "$defs": {
     "case": {
       "type": "object",
@@ -163,6 +144,228 @@
           "minLength": 1
         }
       }
+    },
+    "goldenDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "cases"
+      ],
+      "properties": {
+        "suite": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "not": {
+            "const": "media-fetch-guard"
+          }
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/case"
+          }
+        }
+      }
+    },
+    "mediaFetchGuardCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "since",
+        "notes",
+        "url",
+        "resolves",
+        "refusal",
+        "agrees"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z]{3}-[0-9]{4}$",
+          "description": "Stable forever. NEVER renumbered — ids appear in other repos' skip lists and in probes/probes.json. Ids are unique and sorted ascending, which means a new case goes at the END of the file. File order is not chronology."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "since": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "The corpus version this case was added in. Makes the age of a row visible without archaeology, and makes 'this went red after we upgraded' answerable."
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1,
+          "description": "REQUIRED. What this case exists to catch. A case without a stated purpose gets deleted by someone later who cannot tell it apart from its neighbour."
+        },
+        "skip": {
+          "type": "object",
+          "description": "A MAP KEYED BY LANGUAGE. Never a scalar — a loader that reads this as truthy skips the row in every language at once AND makes the empty-reason guard unreachable, because a non-empty object is never blank. Both effects are silent. Every loader pins this from both directions.",
+          "minProperties": 1,
+          "propertyNames": {
+            "enum": [
+              "php",
+              "ts",
+              "py"
+            ]
+          },
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1,
+            "description": "MANDATORY and non-empty, enforced at LOAD time in every loader. A skip that does not say why becomes permanent silently."
+          }
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resolves": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "guarded": {
+          "type": "boolean",
+          "description": "Absent or true uses the guarded fetch; false exercises an existing unguarded path."
+        },
+        "redirects_to": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The Location returned by the fake HTTP response; normally the destination serves content."
+        },
+        "redirects_always": {
+          "type": "boolean",
+          "description": "When true, every fake response redirects to redirects_to, including requests already at that destination."
+        },
+        "refusal": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                null,
+                "scheme_not_allowed",
+                "private_address_refused",
+                "host_did_not_resolve",
+                "redirect_refused",
+                "too_many_redirects"
+              ]
+            },
+            "ts": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                null,
+                "scheme_not_allowed",
+                "private_address_refused",
+                "host_did_not_resolve",
+                "redirect_refused",
+                "too_many_redirects"
+              ]
+            },
+            "py": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                null,
+                "scheme_not_allowed",
+                "private_address_refused",
+                "host_did_not_resolve",
+                "redirect_refused",
+                "too_many_redirects"
+              ]
+            }
+          }
+        },
+        "agrees": {
+          "type": "boolean",
+          "description": "Whether the three applicable, recorded outcomes agree; an explicit language skip does not establish agreement."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "redirects_always"
+            ],
+            "properties": {
+              "redirects_always": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "redirects_to"
+            ],
+            "properties": {
+              "guarded": {
+                "const": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    "mediaFetchGuardDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "cases"
+      ],
+      "properties": {
+        "suite": {
+          "const": "media-fetch-guard"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "generated_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/mediaFetchGuardCase"
+          }
+        }
+      }
     }
-  }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/goldenDocument"
+    },
+    {
+      "$ref": "#/$defs/mediaFetchGuardDocument"
+    }
+  ]
 }

@@ -181,6 +181,26 @@
             },
             "agrees": true,
             "notes": "An empty answer must mean \"could not be verified\", never \"nothing to check\". A port that treats no records as a pass turns every DNS failure into an allowed fetch."
+        },
+        {
+            "id": "url-0012",
+            "title": "a public host redirecting forever",
+            "since": "0.1.7",
+            "url": "https://public.test/loop.png",
+            "resolves": {
+                "public.test": [
+                    "93.184.216.34"
+                ]
+            },
+            "redirects_to": "https://public.test/loop.png",
+            "redirects_always": true,
+            "refusal": {
+                "php": "too_many_redirects",
+                "ts": "too_many_redirects",
+                "py": "too_many_redirects"
+            },
+            "agrees": true,
+            "notes": "Six requests pin the default redirect-hop allowance at five in PHP, TypeScript and Python: the initial request plus five allowed hops are sent, then too_many_redirects must be raised before a seventh request. A language that defaults to three would refuse under the same code but fail this six-request assertion. Every response redirects even when already at redirects_to; no hop serves content."
         }
     ]
 }
