@@ -1,7 +1,7 @@
 {
   "$comment": "The release-parity ledger. It records which runners are actually compared against each other, and — just as importantly — which are NOT, so three green ticks in CI are never mistaken for a three-way comparison. scripts/cross-check.mjs reads cross_checked and FAILS when a runner declared here is missing on disk: a runner it quietly skipped would let the remaining ones agree with each other and call that parity.",
   "kit_version": "2026.08.1",
-  "corpus_version": "0.1.3",
+  "corpus_version": "0.1.4",
   "cross_checked": [
     {
       "language": "php",

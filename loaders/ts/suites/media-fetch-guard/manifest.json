@@ -17,12 +17,11 @@
   "implementations": {
     "php": {
       "status": "full",
-      "runner": "prism:tests/ValueObjects/Media/GuardedFetchTest.php"
+      "runner": "prism:tests/ValueObjects/Media/FetchGuardCorpusTest.php"
     },
     "ts": {
-      "status": "partial",
-      "cause": "no-runner",
-      "gap": "G-63: prism-ts has the unguarded fetch and no guarded variant."
+      "status": "full",
+      "runner": "prism-ts:tests/media-fetch-guard-corpus.test.ts"
     },
     "py": {
       "status": "partial",

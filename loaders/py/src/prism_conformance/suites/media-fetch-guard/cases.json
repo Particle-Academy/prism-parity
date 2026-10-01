@@ -2,7 +2,7 @@
     "suite": "media-fetch-guard",
     "schema_version": 1,
     "corpus_version": "0.1.0",
-    "generated_by": "The PHP column is recorded by prism:tests/ValueObjects/Media/GuardedFetchTest.php. The ts and py columns are the EXPECTATION the ports are to be built against and are null until a runner exists, so this suite is red by construction rather than agreeing with itself.",
+    "generated_by": "PHP refusals are exercised by prism:tests/ValueObjects/Media/FetchGuardCorpusTest.php. The TypeScript column was recorded by executing the built prism-ts fetchPublic() against every loader row with injected DNS and fetch seams. Python remains unrecorded; refusal-row agrees values remain false because three-language agreement is not established.",
     "cases": [
         {
             "id": "url-0001",
@@ -28,7 +28,7 @@
             "resolves": {},
             "refusal": {
                 "php": "private_address_refused",
-                "ts": null,
+                "ts": "private_address_refused",
                 "py": null
             },
             "agrees": false,
@@ -42,7 +42,7 @@
             "resolves": {},
             "refusal": {
                 "php": "private_address_refused",
-                "ts": null,
+                "ts": "private_address_refused",
                 "py": null
             },
             "agrees": false,
@@ -56,7 +56,7 @@
             "resolves": {},
             "refusal": {
                 "php": "private_address_refused",
-                "ts": null,
+                "ts": "private_address_refused",
                 "py": null
             },
             "agrees": false,
@@ -70,7 +70,7 @@
             "resolves": {},
             "refusal": {
                 "php": "private_address_refused",
-                "ts": null,
+                "ts": "private_address_refused",
                 "py": null
             },
             "agrees": false,
@@ -86,7 +86,7 @@
             },
             "refusal": {
                 "php": "private_address_refused",
-                "ts": null,
+                "ts": "private_address_refused",
                 "py": null
             },
             "agrees": false,
@@ -102,7 +102,7 @@
             },
             "refusal": {
                 "php": "private_address_refused",
-                "ts": null,
+                "ts": "private_address_refused",
                 "py": null
             },
             "agrees": false,
@@ -119,7 +119,7 @@
             "redirects_to": "http://169.254.169.254/latest/meta-data/",
             "refusal": {
                 "php": "redirect_refused",
-                "ts": null,
+                "ts": "redirect_refused",
                 "py": null
             },
             "agrees": false,
@@ -148,7 +148,7 @@
             "resolves": {},
             "refusal": {
                 "php": "scheme_not_allowed",
-                "ts": null,
+                "ts": "scheme_not_allowed",
                 "py": null
             },
             "agrees": false,
@@ -164,7 +164,7 @@
             },
             "refusal": {
                 "php": "host_did_not_resolve",
-                "ts": null,
+                "ts": "host_did_not_resolve",
                 "py": null
             },
             "agrees": false,
