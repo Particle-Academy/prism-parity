@@ -183,42 +183,11 @@
         "agrees"
       ],
       "properties": {
-        "id": {
-          "type": "string",
-          "pattern": "^[a-z]{3}-[0-9]{4}$",
-          "description": "Stable forever. NEVER renumbered — ids appear in other repos' skip lists and in probes/probes.json. Ids are unique and sorted ascending, which means a new case goes at the END of the file. File order is not chronology."
-        },
-        "title": {
-          "type": "string",
-          "minLength": 1
-        },
-        "since": {
-          "type": "string",
-          "pattern": "^\\d+\\.\\d+\\.\\d+$",
-          "description": "The corpus version this case was added in. Makes the age of a row visible without archaeology, and makes 'this went red after we upgraded' answerable."
-        },
-        "notes": {
-          "type": "string",
-          "minLength": 1,
-          "description": "REQUIRED. What this case exists to catch. A case without a stated purpose gets deleted by someone later who cannot tell it apart from its neighbour."
-        },
-        "skip": {
-          "type": "object",
-          "description": "A MAP KEYED BY LANGUAGE. Never a scalar — a loader that reads this as truthy skips the row in every language at once AND makes the empty-reason guard unreachable, because a non-empty object is never blank. Both effects are silent. Every loader pins this from both directions.",
-          "minProperties": 1,
-          "propertyNames": {
-            "enum": [
-              "php",
-              "ts",
-              "py"
-            ]
-          },
-          "additionalProperties": {
-            "type": "string",
-            "minLength": 1,
-            "description": "MANDATORY and non-empty, enforced at LOAD time in every loader. A skip that does not say why becomes permanent silently."
-          }
-        },
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
         "url": {
           "type": "string",
           "minLength": 1
@@ -298,12 +267,12 @@
             }
           }
         },
-        "agrees": {
-          "type": "boolean",
-          "description": "Whether the three applicable, recorded outcomes agree; an explicit language skip does not establish agreement."
-        }
+        "agrees": {}
       },
       "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        },
         {
           "if": {
             "required": [
@@ -358,6 +327,670 @@
           }
         }
       }
+    },
+    "securityCase": {
+      "type": "object",
+      "required": [
+        "id",
+        "since",
+        "notes"
+      ],
+      "description": "Shared security-corpus spine. Concrete suite definitions close the shape and require their subject fields. The legacy byte-path corpus has no title or recorded language agreement.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z]{3}-[0-9]{4}$",
+          "description": "Stable forever. NEVER renumbered — ids appear in other repos' skip lists and in probes/probes.json. Ids are unique and sorted ascending, which means a new case goes at the END of the file. File order is not chronology."
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "since": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "The corpus version this case was added in. Makes the age of a row visible without archaeology, and makes 'this went red after we upgraded' answerable."
+        },
+        "notes": {
+          "type": "string",
+          "minLength": 1,
+          "description": "REQUIRED. What this case exists to catch. A case without a stated purpose gets deleted by someone later who cannot tell it apart from its neighbour."
+        },
+        "skip": {
+          "type": "object",
+          "description": "A MAP KEYED BY LANGUAGE. Never a scalar — a loader that reads this as truthy skips the row in every language at once AND makes the empty-reason guard unreachable, because a non-empty object is never blank. Both effects are silent. Every loader pins this from both directions.",
+          "minProperties": 1,
+          "propertyNames": {
+            "enum": [
+              "php",
+              "ts",
+              "py"
+            ]
+          },
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1,
+            "description": "MANDATORY and non-empty, enforced at LOAD time in every loader. A skip that does not say why becomes permanent silently."
+          }
+        },
+        "agrees": {
+          "type": "boolean",
+          "description": "Whether the three applicable, recorded outcomes agree; an explicit language skip does not establish agreement."
+        }
+      }
+    },
+    "embeddingDecodingOutcome": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "embedding"
+          ],
+          "properties": {
+            "embedding": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "exception"
+          ],
+          "properties": {
+            "exception": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "embeddingDecodingCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "agrees",
+        "embedding",
+        "expected"
+      ],
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "embedding": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Decoder input includes malformed strings and null deliberately; input validity is the subject under test."
+        },
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/embeddingDecodingOutcome"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "ts": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/embeddingDecodingOutcome"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "py": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/embeddingDecodingOutcome"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "embeddingDecodingDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ],
+      "properties": {
+        "suite": {
+          "const": "embedding-decoding"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "generated_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/embeddingDecodingCase"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "browserUrlPolicyCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "agrees",
+        "policy",
+        "url",
+        "refusal"
+      ],
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "allowed_hosts"
+          ],
+          "properties": {
+            "allowed_hosts": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "allowed_ports": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "require_https": {
+              "type": "boolean"
+            }
+          }
+        },
+        "url": {
+          "type": "string"
+        },
+        "refusal": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "enum": [
+                null,
+                "host_not_allowed",
+                "url_credentials_refused",
+                "https_required",
+                "private_address_refused",
+                "port_not_allowed",
+                "invalid_url"
+              ]
+            },
+            "ts": {
+              "enum": [
+                null,
+                "host_not_allowed",
+                "url_credentials_refused",
+                "https_required",
+                "private_address_refused",
+                "port_not_allowed",
+                "invalid_url"
+              ]
+            },
+            "py": {
+              "enum": [
+                null,
+                "host_not_allowed",
+                "url_credentials_refused",
+                "https_required",
+                "private_address_refused",
+                "port_not_allowed",
+                "invalid_url"
+              ]
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "browserUrlPolicyDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ],
+      "properties": {
+        "suite": {
+          "const": "browser-url-policy"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "generated_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/browserUrlPolicyCase"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "workspacePathGuardCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path_base64",
+        "hazard",
+        "refusal",
+        "on_posix",
+        "on_windows"
+      ],
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "path_base64": {
+          "type": "string"
+        },
+        "hazard": {
+          "type": "string",
+          "minLength": 1
+        },
+        "refusal": {
+          "type": "string",
+          "minLength": 1
+        },
+        "on_posix": {
+          "type": "string",
+          "minLength": 1
+        },
+        "on_windows": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "workspacePathGuardDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases",
+        "encoding"
+      ],
+      "properties": {
+        "suite": {
+          "const": "workspace-path-guard"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "pattern": "^\\d+(\\.\\d+\\.\\d+)?$",
+          "description": "This legacy byte-path corpus uses integer-string versions, currently 1."
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/workspacePathGuardCase"
+          },
+          "minItems": 1
+        },
+        "encoding": {
+          "const": "base64-bytes"
+        }
+      }
+    },
+    "mcpToolDigestCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "agrees",
+        "payload",
+        "digest"
+      ],
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "payload": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "inputSchema": {
+              "type": "object",
+              "description": "Arbitrary MCP input-schema material, including extension keys, is hashed as data."
+            },
+            "annotations": {
+              "type": "object",
+              "description": "Arbitrary MCP annotations are digest input."
+            }
+          }
+        },
+        "digest": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "type": "string",
+              "pattern": "^sha256:[a-f0-9]{32}$"
+            },
+            "ts": {
+              "type": "string",
+              "pattern": "^sha256:[a-f0-9]{32}$"
+            },
+            "py": {
+              "type": "string",
+              "pattern": "^sha256:[a-f0-9]{32}$"
+            }
+          }
+        },
+        "material": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [],
+          "properties": {
+            "all": {
+              "type": "string"
+            },
+            "php": {
+              "type": "string"
+            },
+            "ts": {
+              "type": "string"
+            },
+            "py": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "mcpToolDigestDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ],
+      "properties": {
+        "suite": {
+          "const": "mcp-tool-digest"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "generated_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/mcpToolDigestCase"
+          },
+          "minItems": 1
+        },
+        "divergence_note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "vectorStorageOutcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "refused",
+        "packed",
+        "round_trips"
+      ],
+      "properties": {
+        "refused": {
+          "type": "boolean"
+        },
+        "packed": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "round_trips": {
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "memoryVectorStorageCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "agrees",
+        "values",
+        "storage"
+      ],
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "storage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "$ref": "#/$defs/vectorStorageOutcome"
+            },
+            "ts": {
+              "$ref": "#/$defs/vectorStorageOutcome"
+            },
+            "py": {
+              "$ref": "#/$defs/vectorStorageOutcome"
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "memoryVectorStorageDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ],
+      "properties": {
+        "suite": {
+          "const": "memory-vector-storage"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "generated_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/memoryVectorStorageCase"
+          },
+          "minItems": 1
+        },
+        "divergence_note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     }
   },
   "oneOf": [
@@ -366,6 +999,21 @@
     },
     {
       "$ref": "#/$defs/mediaFetchGuardDocument"
+    },
+    {
+      "$ref": "#/$defs/embeddingDecodingDocument"
+    },
+    {
+      "$ref": "#/$defs/browserUrlPolicyDocument"
+    },
+    {
+      "$ref": "#/$defs/workspacePathGuardDocument"
+    },
+    {
+      "$ref": "#/$defs/mcpToolDigestDocument"
+    },
+    {
+      "$ref": "#/$defs/memoryVectorStorageDocument"
     }
   ]
 }
