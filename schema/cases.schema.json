@@ -154,11 +154,15 @@
       ],
       "properties": {
         "suite": {
-          "type": "string",
-          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
-          "not": {
-            "const": "media-fetch-guard"
-          }
+          "enum": [
+            "anthropic-text-response",
+            "json-container-identity",
+            "media-roundtrip",
+            "openai-text-request",
+            "openai-text-response",
+            "text-errors",
+            "value-object-roundtrip"
+          ]
         },
         "cases": {
           "type": "array",
@@ -174,13 +178,11 @@
       "additionalProperties": false,
       "required": [
         "id",
-        "title",
         "since",
         "notes",
         "url",
         "resolves",
-        "refusal",
-        "agrees"
+        "refusal"
       ],
       "properties": {
         "id": {},
@@ -313,7 +315,7 @@
         },
         "corpus_version": {
           "type": "string",
-          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+          "minLength": 1
         },
         "generated_by": {
           "type": "string",
@@ -339,8 +341,8 @@
       "properties": {
         "id": {
           "type": "string",
-          "pattern": "^[a-z]{3}-[0-9]{4}$",
-          "description": "Stable forever. NEVER renumbered — ids appear in other repos' skip lists and in probes/probes.json. Ids are unique and sorted ascending, which means a new case goes at the END of the file. File order is not chronology."
+          "pattern": "^[a-z]{3,5}-[0-9]{4}$",
+          "description": "Stable forever. NEVER renumbered — ids appear in other repos' skip lists and in probes/probes.json. Ids are unique and sorted ascending, which means a new case goes at the END of the file. File order is not chronology. Security-suite prefixes vary in length, including agent and hint."
         },
         "title": {
           "type": "string",
@@ -415,8 +417,6 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "title",
-        "agrees",
         "embedding",
         "expected"
       ],
@@ -510,7 +510,7 @@
         },
         "corpus_version": {
           "type": "string",
-          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+          "minLength": 1
         },
         "generated_by": {
           "type": "string",
@@ -529,8 +529,6 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "title",
-        "agrees",
         "policy",
         "url",
         "refusal"
@@ -638,7 +636,7 @@
         },
         "corpus_version": {
           "type": "string",
-          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+          "minLength": 1
         },
         "generated_by": {
           "type": "string",
@@ -715,8 +713,7 @@
         },
         "corpus_version": {
           "type": "string",
-          "pattern": "^\\d+(\\.\\d+\\.\\d+)?$",
-          "description": "This legacy byte-path corpus uses integer-string versions, currently 1."
+          "minLength": 1
         },
         "cases": {
           "type": "array",
@@ -734,8 +731,6 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "title",
-        "agrees",
         "payload",
         "digest"
       ],
@@ -853,7 +848,7 @@
         },
         "corpus_version": {
           "type": "string",
-          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+          "minLength": 1
         },
         "generated_by": {
           "type": "string",
@@ -910,8 +905,6 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
-        "title",
-        "agrees",
         "values",
         "storage"
       ],
@@ -973,7 +966,7 @@
         },
         "corpus_version": {
           "type": "string",
-          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+          "minLength": 1
         },
         "generated_by": {
           "type": "string",
@@ -1063,8 +1056,6 @@
         }
       },
       "required": [
-        "title",
-        "agrees",
         "participant",
         "scope",
         "key"
@@ -1086,7 +1077,8 @@
           "const": 1
         },
         "corpus_version": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "generated_by": {
           "type": "string"
@@ -1431,8 +1423,6 @@
         }
       },
       "required": [
-        "title",
-        "agrees",
         "rows"
       ],
       "allOf": [
@@ -1474,7 +1464,8 @@
           "const": 1
         },
         "corpus_version": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "generated_by": {
           "type": "string"
@@ -1586,8 +1577,6 @@
         }
       },
       "required": [
-        "title",
-        "agrees",
         "prompt",
         "attachments",
         "verdict"
@@ -1609,7 +1598,8 @@
           "const": 1
         },
         "corpus_version": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "generated_by": {
           "type": "string"
@@ -1817,7 +1807,6 @@
         }
       },
       "required": [
-        "title",
         "given",
         "when",
         "result"
@@ -1839,7 +1828,8 @@
           "const": 1
         },
         "corpus_version": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "generated_by": {
           "type": "string"
@@ -1876,7 +1866,14 @@
           "type": "string"
         },
         "limit": {
-          "type": "integer"
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "remaining": {
           "oneOf": [
@@ -1997,8 +1994,6 @@
         }
       },
       "required": [
-        "title",
-        "agrees",
         "given",
         "result"
       ],
@@ -2019,7 +2014,8 @@
           "const": 1
         },
         "corpus_version": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "generated_by": {
           "type": "string"
@@ -2180,6 +2176,1394 @@
           ]
         }
       ]
+    },
+    "humanPlusChangeFeedCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input",
+        "rows"
+      ],
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "feed"
+          ],
+          "properties": {
+            "result": {
+              "type": "string"
+            },
+            "feed": {
+              "enum": [
+                "offered",
+                "unavailable",
+                "attributed"
+              ]
+            }
+          }
+        },
+        "rows": {
+          "$ref": "#/$defs/languageStrings"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "humanPlusChangeFeedDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ],
+      "properties": {
+        "suite": {
+          "const": "human-plus-change-feed"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/humanPlusChangeFeedCase"
+          },
+          "minItems": 1
+        },
+        "pins_note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "toolAdmissionOutcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "digest",
+        "declared",
+        "allows",
+        "admitted",
+        "message"
+      ],
+      "properties": {
+        "digest": {
+          "type": "string"
+        },
+        "declared": {
+          "type": "boolean"
+        },
+        "allows": {
+          "type": "boolean"
+        },
+        "admitted": {
+          "type": "boolean"
+        },
+        "message": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "humanPlusToolAdmissionCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tool",
+        "policy",
+        "admission",
+        "disagrees_on"
+      ],
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "tool": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "name",
+            "description",
+            "input_schema_json"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "input_schema_json": {
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mode",
+            "tools"
+          ],
+          "properties": {
+            "mode": {
+              "enum": [
+                "allowing",
+                "undeclared",
+                "everyTool"
+              ]
+            },
+            "tools": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "pins": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "admission": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "$ref": "#/$defs/toolAdmissionOutcome"
+            },
+            "ts": {
+              "$ref": "#/$defs/toolAdmissionOutcome"
+            },
+            "py": {
+              "$ref": "#/$defs/toolAdmissionOutcome"
+            }
+          }
+        },
+        "disagrees_on": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "humanPlusToolAdmissionDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ],
+      "properties": {
+        "suite": {
+          "const": "human-plus-tool-admission"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/humanPlusToolAdmissionCase"
+          },
+          "minItems": 1
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "encoding": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recorded": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "digest",
+            "declared",
+            "allows",
+            "admitted",
+            "message"
+          ],
+          "properties": {
+            "digest": {
+              "type": "string",
+              "minLength": 1
+            },
+            "declared": {
+              "type": "string",
+              "minLength": 1
+            },
+            "allows": {
+              "type": "string",
+              "minLength": 1
+            },
+            "admitted": {
+              "type": "string",
+              "minLength": 1
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "telemetryContent": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/telemetryContent"
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [],
+          "properties": {
+            "kind": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "url": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "base64": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "mime_type": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "file_id": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "filename": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "local_path": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "storage_path": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "document_title": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "chunks": {
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "encoding": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            },
+            "content": {
+              "type": "string"
+            },
+            "messages": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/telemetryContent"
+              }
+            },
+            "additional_content": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/telemetryContent"
+              }
+            },
+            "additional_attributes": {
+              "type": "object",
+              "description": "Application-defined message attributes."
+            }
+          }
+        }
+      ],
+      "description": "Recursive captured-content input. Unknown or homoglyph kinds, kindless objects and malformed base64 are intentional subject data."
+    },
+    "opentelemetryMediaContentCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input",
+        "output"
+      ],
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "input": {
+          "$ref": "#/$defs/telemetryContent"
+        },
+        "output": {
+          "$ref": "#/$defs/languageStrings"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "opentelemetryMediaContentDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ],
+      "properties": {
+        "suite": {
+          "const": "opentelemetry-media-content"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/opentelemetryMediaContentCase"
+          },
+          "minItems": 1
+        },
+        "pins_note": {
+          "type": "string",
+          "minLength": 1
+        },
+        "divergence_note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "telemetryUsage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "prompt_tokens",
+        "completion_tokens",
+        "cost"
+      ],
+      "properties": {
+        "prompt_tokens": {
+          "type": "integer"
+        },
+        "completion_tokens": {
+          "type": "integer"
+        },
+        "cost": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cache_read_input_tokens": {
+          "type": "integer"
+        },
+        "cache_write_input_tokens": {
+          "type": "integer"
+        },
+        "thought_tokens": {
+          "type": "integer"
+        }
+      }
+    },
+    "telemetrySpanAttributes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [],
+      "properties": {
+        "gen_ai.operation.name": {
+          "type": "string"
+        },
+        "gen_ai.request.model": {
+          "type": "string"
+        },
+        "gen_ai.system": {
+          "type": "string"
+        },
+        "llm.model_name": {
+          "type": "string"
+        },
+        "llm.provider": {
+          "type": "string"
+        },
+        "llm.system": {
+          "type": "string"
+        },
+        "openinference.span.kind": {
+          "type": "string"
+        },
+        "session.id": {
+          "type": "string"
+        },
+        "user.id": {
+          "type": "string"
+        },
+        "input.mime_type": {
+          "type": "string"
+        },
+        "input.value": {
+          "type": "string"
+        },
+        "output.mime_type": {
+          "type": "string"
+        },
+        "output.value": {
+          "type": "string"
+        },
+        "gen_ai.usage.input_tokens": {
+          "type": "integer"
+        },
+        "gen_ai.usage.output_tokens": {
+          "type": "integer"
+        },
+        "gen_ai.usage.cache_read.input_tokens": {
+          "type": "integer"
+        },
+        "gen_ai.usage.cache_write.input_tokens": {
+          "type": "integer"
+        },
+        "gen_ai.usage.reasoning.output_tokens": {
+          "type": "integer"
+        },
+        "llm.token_count.completion": {
+          "type": "integer"
+        },
+        "llm.token_count.prompt": {
+          "type": "integer"
+        },
+        "llm.token_count.total": {
+          "type": "integer"
+        },
+        "llm.token_count.completion_details.reasoning": {
+          "type": "integer"
+        },
+        "llm.token_count.prompt_details.cache_read": {
+          "type": "integer"
+        },
+        "llm.token_count.prompt_details.cache_write": {
+          "type": "integer"
+        },
+        "gen_ai.usage.cost": {
+          "type": "number"
+        },
+        "gen_ai.response.finish_reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "prism.rate_limit.buckets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "patternProperties": {
+        "^prism\\.rate_limit\\.[a-z0-9][a-z0-9-]{0,63}\\.(limit|remaining|resets_at_unix)$": {
+          "type": "integer"
+        },
+        "^llm\\.tools\\.[0-9]+\\.tool\\.name$": {
+          "type": "string"
+        },
+        "^prism\\.tools\\.[0-9]+\\.digest$": {
+          "type": "string"
+        }
+      }
+    },
+    "telemetrySpan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "status",
+        "attributes"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "attributes": {
+          "$ref": "#/$defs/telemetrySpanAttributes"
+        }
+      }
+    },
+    "opentelemetrySpanAttributesCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "generation",
+        "capture_content",
+        "max_content_length",
+        "spans",
+        "disagrees_on"
+      ],
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "generation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operation",
+            "provider",
+            "model",
+            "session_id",
+            "user_id",
+            "finish_reason",
+            "usage",
+            "input",
+            "output",
+            "rate_limits"
+          ],
+          "properties": {
+            "operation": {
+              "enum": [
+                "text",
+                "structured",
+                "embeddings",
+                "image",
+                "stream"
+              ]
+            },
+            "provider": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string"
+            },
+            "session_id": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "user_id": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "finish_reason": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "usage": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/telemetryUsage"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "input": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "description": "Generation request data, captured only when enabled."
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "output": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "description": "Provider response data."
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "rate_limits": {
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/rateLimitBucket"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "tools": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name",
+                  "description",
+                  "parameters"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "parameters": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "capture_content": {
+          "type": "boolean"
+        },
+        "max_content_length": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "spans": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "$ref": "#/$defs/telemetrySpan"
+            },
+            "ts": {
+              "$ref": "#/$defs/telemetrySpan"
+            },
+            "py": {
+              "$ref": "#/$defs/telemetrySpan"
+            }
+          }
+        },
+        "disagrees_on": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "opentelemetrySpanAttributesDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ],
+      "properties": {
+        "suite": {
+          "const": "opentelemetry-span-attributes"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/opentelemetrySpanAttributesCase"
+          },
+          "minItems": 1
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inputs": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operation",
+            "finish_reason",
+            "capture_content",
+            "rate_limits"
+          ],
+          "properties": {
+            "operation": {
+              "type": "string",
+              "minLength": 1
+            },
+            "finish_reason": {
+              "type": "string",
+              "minLength": 1
+            },
+            "capture_content": {
+              "type": "string",
+              "minLength": 1
+            },
+            "rate_limits": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "agentResponseError": {
+      "type": "object",
+      "description": "Provider-defined error details are recorded verbatim."
+    },
+    "agentResponseParsed": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "refused",
+            "error_code",
+            "error_type"
+          ],
+          "properties": {
+            "refused": {
+              "const": true
+            },
+            "error_code": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "error_type": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "refused",
+            "id",
+            "status",
+            "terminal",
+            "successful",
+            "model",
+            "created_at",
+            "output_count",
+            "annotations",
+            "usage",
+            "error",
+            "text"
+          ],
+          "properties": {
+            "refused": {
+              "const": false
+            },
+            "id": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "terminal": {
+              "type": "boolean"
+            },
+            "successful": {
+              "type": "boolean"
+            },
+            "model": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "created_at": {
+              "oneOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "output_count": {
+              "type": "integer"
+            },
+            "annotations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "description": "Provider citation details, including optional title and other metadata."
+              }
+            },
+            "usage": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                {
+                  "type": "array",
+                  "maxItems": 0
+                }
+              ],
+              "description": "PHP records an empty usage map as []; the ports preserve {}."
+            },
+            "error": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/agentResponseError"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "text": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "perplexityAgentResponseCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "http_status",
+        "body",
+        "parsed",
+        "ports_agree",
+        "disagrees_on"
+      ],
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "http_status": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 599
+        },
+        "body": {
+          "type": [
+            "object",
+            "array"
+          ],
+          "description": "Untrusted provider response, including deliberately malformed entries and missing fields."
+        },
+        "parsed": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "$ref": "#/$defs/agentResponseParsed"
+            },
+            "ts": {
+              "$ref": "#/$defs/agentResponseParsed"
+            },
+            "py": {
+              "$ref": "#/$defs/agentResponseParsed"
+            }
+          }
+        },
+        "ports_agree": {
+          "type": "boolean"
+        },
+        "disagrees_on": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "perplexityAgentResponseDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ],
+      "properties": {
+        "suite": {
+          "const": "perplexity-agent-response"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/perplexityAgentResponseCase"
+          },
+          "minItems": 1
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "inputs": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "http_status",
+            "body"
+          ],
+          "properties": {
+            "http_status": {
+              "type": "string",
+              "minLength": 1
+            },
+            "body": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "cacheHintMessage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "text",
+        "hint"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "system",
+            "user",
+            "assistant",
+            "tool"
+          ]
+        },
+        "text": {
+          "type": "string"
+        },
+        "hint": {
+          "enum": [
+            null,
+            "stable",
+            "volatile"
+          ]
+        },
+        "ttl": {
+          "type": "string"
+        },
+        "provider_options": {
+          "type": "object",
+          "description": "Provider-defined options are derivation input."
+        }
+      }
+    },
+    "cacheHintOutcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "breakpoint_index",
+        "ordering_warning",
+        "cached_prefix_length"
+      ],
+      "properties": {
+        "breakpoint_index": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ordering_warning": {
+          "type": "boolean"
+        },
+        "cached_prefix_length": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ttl_seconds": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "derivationCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "since",
+        "notes",
+        "messages",
+        "expected"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/securityCase/properties/id"
+        },
+        "since": {
+          "$ref": "#/$defs/securityCase/properties/since"
+        },
+        "notes": {
+          "$ref": "#/$defs/securityCase/properties/notes"
+        },
+        "title": {
+          "$ref": "#/$defs/securityCase/properties/title"
+        },
+        "agrees": {
+          "$ref": "#/$defs/securityCase/properties/agrees"
+        },
+        "skip": {
+          "$ref": "#/$defs/securityCase/properties/skip"
+        },
+        "messages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/cacheHintMessage"
+          }
+        },
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/cacheHintOutcome"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "ts": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/cacheHintOutcome"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "py": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/cacheHintOutcome"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "description": "kind: derivation-corpus. Declared message stability derives cache hints; null language outcomes mark unimplemented derivation, not agreement."
+    },
+    "derivationDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ],
+      "properties": {
+        "suite": {
+          "enum": [
+            "cache-stability-hints"
+          ]
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "legend": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "breakpoint_index",
+            "ordering_warning",
+            "cached_prefix_length"
+          ],
+          "properties": {
+            "breakpoint_index": {
+              "type": "string",
+              "minLength": 1
+            },
+            "ordering_warning": {
+              "type": "string",
+              "minLength": 1
+            },
+            "cached_prefix_length": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/derivationCase"
+          },
+          "minItems": 1
+        }
+      },
+      "description": "Document for the derivation-corpus kind, separate from golden and security corpora."
     }
   },
   "oneOf": [
@@ -2220,19 +3604,22 @@
       "$ref": "#/$defs/providerRateLimitsDocument"
     },
     {
-      "$ref": "#/$defs/harnessSessionKeyDocument"
+      "$ref": "#/$defs/humanPlusChangeFeedDocument"
     },
     {
-      "$ref": "#/$defs/harnessThreadRowsDocument"
+      "$ref": "#/$defs/humanPlusToolAdmissionDocument"
     },
     {
-      "$ref": "#/$defs/harnessTurnAttachmentsDocument"
+      "$ref": "#/$defs/opentelemetryMediaContentDocument"
     },
     {
-      "$ref": "#/$defs/agentTaskClaimDocument"
+      "$ref": "#/$defs/opentelemetrySpanAttributesDocument"
     },
     {
-      "$ref": "#/$defs/providerRateLimitsDocument"
+      "$ref": "#/$defs/perplexityAgentResponseDocument"
+    },
+    {
+      "$ref": "#/$defs/derivationDocument"
     }
   ]
 }
