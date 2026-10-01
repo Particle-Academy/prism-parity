@@ -20,6 +20,36 @@ a pin someone has to change deliberately.
 in place. **None of them can be done from this repository**; each is an account
 action on the registry.
 
+### 0. The npm bootstrap publish — do this FIRST or step 1 cannot be done
+
+**A Trusted Publisher is configured PER PACKAGE, so the package has to exist on npm
+before there is anything to attach one to.** `@particle-academy/prism-conformance` has
+never been published, so the first publish cannot come from this workflow: it has to be
+a throwaway manual publish from a machine with an npm login, after which the Trusted
+Publisher is configured and every later release comes from CI.
+
+Publish a `0.0.0` placeholder for that purpose — not the real version, so no consumer
+can resolve a release that CI did not build:
+
+```
+cd loaders/ts
+npm version 0.0.0 --no-git-tag-version   # do NOT commit this
+npm publish --access public
+git checkout package.json                # restore the real version
+```
+
+Then do step 1, and only then cut a real tag.
+
+**Provenance of this step, since it shapes what you do:** reported by the Fancy estate,
+which hit exactly this when publishing `@particle-academy/fancy-schema` — npm cannot
+claim a scoped name through OIDC alone. It is not verified here, because verifying it
+means attempting the publish. If npm has since changed and step 1 works without it, skip
+this and say so, and this section should be deleted rather than left as folklore.
+
+**PyPI does NOT need this.** Its trusted publishers support a *pending* publisher for a
+project that does not exist yet, which is why step 2 below says "pending publisher" —
+that path is deliberate and correct there.
+
 ### 1. npm Trusted Publisher
 
 On npmjs.com, for `@particle-academy/prism-conformance`, add a trusted publisher:
