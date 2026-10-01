@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "prism-conformance"
-version = "0.1.5"
+version = "0.1.6"
 description = "The prism-parity conformance corpus and its Python loader. Ships the fixtures inside the package."
 readme = "README.md"
 license = "MIT"
