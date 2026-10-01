@@ -1,0 +1,262 @@
+name: Publish
+
+# Named `publish.yml` to match the rest of the estate, and the FILENAME is
+# load-bearing twice over: an npm Trusted Publisher and a PyPI trusted publisher
+# each bind to a repository plus a workflow filename. Renaming this file breaks
+# publishing on both registries until their entries are updated to match.
+
+# Publishing is a tag push, and nothing else. No manual dispatch and no
+# publish-from-a-branch path, because both let a release exist that no commit in
+# this repository claims.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    name: Guard the tag
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # THREE packages ship from this one tag, and they are the SAME corpus in
+      # three languages. A tag matching one declaration and not the others would
+      # publish three artifacts claiming one version while carrying different
+      # rows, so every declaration is checked rather than just the first.
+      - name: Tag must match every declared version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          root="$(cat VERSION)"
+          ts="$(node -p "require('./loaders/ts/package.json').version")"
+          ts_file="$(cat loaders/ts/VERSION)"
+          py="$(grep -E '^version' loaders/py/pyproject.toml | head -1 | sed -E 's/.*"(.*)".*/\1/')"
+          php="$(cat loaders/php/VERSION)"
+          echo "tag=${tag} VERSION=${root} ts=${ts}/${ts_file} py=${py} php=${php}"
+
+          fail=0
+          for pair in "VERSION:${root}" "loaders/ts/package.json:${ts}" \
+                      "loaders/ts/VERSION:${ts_file}" "loaders/py/pyproject.toml:${py}" \
+                      "loaders/php/VERSION:${php}"; do
+            where="${pair%%:*}"
+            got="${pair##*:}"
+            if [ "${got}" != "${tag}" ]; then
+              echo "::error::${where} declares ${got}, but tag ${GITHUB_REF_NAME} means ${tag}."
+              fail=1
+            fi
+          done
+          [ "${fail}" -eq 0 ]
+
+      # A lightweight tag carries no tagger and no date of its own. A published
+      # artifact should trace back to a deliberate act, not just to a commit.
+      - name: Tag must be annotated
+        run: |
+          if [ "$(git cat-file -t "${GITHUB_REF_NAME}")" != "tag" ]; then
+            echo "::error::${GITHUB_REF_NAME} is a lightweight tag. Re-tag with -a or -s."
+            exit 1
+          fi
+
+      # THE GUARD THAT MATTERS MOST HERE, and it is specific to this repository.
+      #
+      # The entire reason to publish these loaders is so a consumer reads the
+      # CORPUS ROWS from a package instead of a hand copy. Each loader ships its
+      # own generated copy of suites/. Publishing while a copy is stale would
+      # ship rows that disagree with this repository -- the exact defect
+      # publishing is meant to remove, now under a version number and cached by
+      # three registries that do not let a version be replaced.
+      - name: Loader fixtures must match suites/
+        run: node tools/sync-corpus.mjs --check
+
+      - name: Corpus guard
+        run: node tools/guard-corpus.mjs
+
+      # Establish that the cross-language comparison PASSED for this exact
+      # commit rather than assuming it. Asked of each workflow by FILENAME,
+      # because a display name can be renamed and the filename is the identity.
+      - name: The corpus workflows must have SUCCEEDED for this exact commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for wf in cross-check.yml loaders.yml corpus.yml; do
+            count="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/${wf}/runs?head_sha=${GITHUB_SHA}&status=success" --jq '.total_count')"
+            echo "${wf}: ${count} successful run(s) for ${GITHUB_SHA}"
+            if [ "${count}" -lt 1 ]; then
+              echo "::error::No successful ${wf} run for ${GITHUB_SHA}. Refusing to publish."
+              exit 1
+            fi
+          done
+
+  npm:
+    name: Publish the TypeScript loader to npm
+    needs: guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      # OIDC, which replaces a stored npm token: no long-lived credential in this
+      # repository to leak or rotate, and it is what lets npm attach a provenance
+      # attestation to the tarball.
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      # package.json's `files` lists src, suites, probes and VERSION. A publish
+      # missing suites/ installs and imports perfectly and then finds no rows,
+      # which npm does not consider an error.
+      - name: The package actually carries the corpus
+        working-directory: loaders/ts
+        run: |
+          for dir in src suites probes; do
+            if [ ! -d "${dir}" ] || [ -z "$(ls -A "${dir}")" ]; then
+              echo "::error::loaders/ts/${dir} is missing or empty; this would publish a loader with no corpus."
+              exit 1
+            fi
+          done
+
+      - name: Publish
+        working-directory: loaders/ts
+        run: npm publish --provenance --access public
+
+  pypi-build:
+    name: Build the Python loader
+    needs: guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build
+        working-directory: loaders/py
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+
+      # Catches malformed metadata before PyPI rejects the upload. Finding it
+      # after the tag exists means cutting a new version for a typo, because a
+      # version number can never be reused.
+      - name: Check the artifacts
+        working-directory: loaders/py
+        run: |
+          python -m pip install --upgrade twine
+          python -m twine check dist/*
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dists
+          path: loaders/py/dist/
+          if-no-files-found: error
+
+  # Separate from the build so `id-token: write` is never held by a job that runs
+  # build code. `python -m build` installs a backend from PyPI; anything it runs
+  # could otherwise mint the token that publishes.
+  pypi:
+    name: Publish the Python loader to PyPI
+    needs: pypi-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: pypi
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dists
+          path: dist/
+
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33
+
+  verify:
+    name: Verify both are installable
+    needs: [npm, pypi]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # A green publish job is not evidence that a registry SERVES the version.
+      # Both registries are eventually consistent, so these retry rather than
+      # asserting once and failing a release that actually worked.
+      - name: npm must serve this version
+        run: |
+          want="${GITHUB_REF_NAME#v}"
+          for attempt in 1 2 3 4 5 6; do
+            got="$(npm view "@particle-academy/prism-conformance@${want}" version 2>/dev/null || true)"
+            if [ "${got}" = "${want}" ]; then
+              echo "npm serves ${want}"
+              exit 0
+            fi
+            echo "attempt ${attempt}: npm does not serve ${want} yet"
+            sleep 20
+          done
+          echo "::error::npm never served ${want}."
+          exit 1
+
+      - name: PyPI must serve this version
+        run: |
+          want="${GITHUB_REF_NAME#v}"
+          for attempt in 1 2 3 4 5 6; do
+            if python -m pip download --no-deps --quiet "prism-conformance==${want}" -d /tmp/dl 2>/dev/null; then
+              echo "PyPI serves ${want}"
+              exit 0
+            fi
+            echo "attempt ${attempt}: PyPI does not serve ${want} yet"
+            sleep 20
+          done
+          echo "::error::PyPI never served ${want}."
+          exit 1
+
+      # The point of the package is the corpus. An installable wheel with no
+      # suites/ inside it is precisely the failure this change exists to stop,
+      # and it would otherwise be discovered by a consumer rather than here.
+      - name: The published Python artifact must contain the rows
+        run: |
+          found=0
+          for f in /tmp/dl/*; do
+            case "${f}" in
+              *.whl) unzip -l "${f}" | grep -q "suites/" && found=1 ;;
+              *.tar.gz) tar -tzf "${f}" | grep -q "suites/" && found=1 ;;
+            esac
+          done
+          if [ "${found}" -ne 1 ]; then
+            echo "::error::The published Python loader contains no suites/ directory."
+            exit 1
+          fi
+          echo "suites/ present in the published artifact"
