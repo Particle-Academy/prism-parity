@@ -991,6 +991,1195 @@
           "minLength": 1
         }
       }
+    },
+    "languageStrings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "php",
+        "ts",
+        "py"
+      ],
+      "properties": {
+        "php": {
+          "type": "string"
+        },
+        "ts": {
+          "type": "string"
+        },
+        "py": {
+          "type": "string"
+        }
+      }
+    },
+    "harnessSessionKeyCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "participant": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "id"
+          ]
+        },
+        "scope": {
+          "type": "string"
+        },
+        "key": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "php": {
+              "type": "string"
+            },
+            "ts": {
+              "type": "string"
+            },
+            "py": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "agrees",
+        "participant",
+        "scope",
+        "key"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "harnessSessionKeyDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "suite": {
+          "const": "harness-session-key"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string"
+        },
+        "generated_by": {
+          "type": "string"
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/harnessSessionKeyCase"
+          },
+          "minItems": 1
+        },
+        "pins_note": {
+          "type": "string"
+        },
+        "divergence_note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ]
+    },
+    "harnessToolCall": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "arguments": {
+          "type": "object",
+          "description": "Arbitrary tool arguments are stored and replayed as data."
+        },
+        "result_id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reasoning_id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reasoning_summary": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "type": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type",
+                  "text"
+                ]
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "arguments"
+      ]
+    },
+    "harnessApprovalRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "approval_id": {
+          "type": "string"
+        },
+        "tool_call_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "approval_id",
+        "tool_call_id"
+      ]
+    },
+    "harnessApprovalResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "approval_id": {
+          "type": "string"
+        },
+        "approved": {
+          "type": "boolean"
+        },
+        "reason": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "approval_id",
+        "approved"
+      ]
+    },
+    "harnessToolResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool_call_id": {
+          "type": "string"
+        },
+        "tool_name": {
+          "type": "string"
+        },
+        "args": {
+          "type": "object",
+          "description": "Arbitrary tool arguments are replay payload."
+        },
+        "result": {
+          "type": "string"
+        },
+        "tool_call_result_id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {}
+        }
+      },
+      "required": [
+        "tool_call_id",
+        "tool_name",
+        "args",
+        "result"
+      ]
+    },
+    "harnessThreadInput": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "write",
+            "content",
+            "tool_calls",
+            "additional_content",
+            "approval_requests"
+          ],
+          "properties": {
+            "write": {
+              "const": "assistant"
+            },
+            "content": {
+              "type": "string"
+            },
+            "tool_calls": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessToolCall"
+              }
+            },
+            "additional_content": {
+              "type": "object",
+              "description": "Provider-specific state, including arbitrary structured response data."
+            },
+            "approval_requests": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessApprovalRequest"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "write",
+            "results",
+            "decisions"
+          ],
+          "properties": {
+            "write": {
+              "const": "tool_result"
+            },
+            "results": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessToolResult"
+              }
+            },
+            "decisions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessApprovalResponse"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "harnessThreadRow": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "content",
+            "tool_calls",
+            "additional_content",
+            "tool_approval_requests"
+          ],
+          "properties": {
+            "type": {
+              "const": "assistant"
+            },
+            "content": {
+              "type": "string"
+            },
+            "tool_calls": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessToolCall"
+              }
+            },
+            "additional_content": {
+              "type": "object",
+              "description": "Provider-specific state, including arbitrary structured response data."
+            },
+            "tool_approval_requests": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessApprovalRequest"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "tool_results",
+            "tool_approval_responses"
+          ],
+          "properties": {
+            "type": {
+              "const": "tool_result"
+            },
+            "tool_results": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessToolResult"
+              }
+            },
+            "tool_approval_responses": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessApprovalResponse"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "harnessThreadRowsCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "input": {
+          "$ref": "#/$defs/harnessThreadWrite"
+        },
+        "fold": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/harnessStoredRow"
+          }
+        },
+        "rows": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "php": {
+              "type": "string"
+            },
+            "ts": {
+              "type": "string"
+            },
+            "py": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "agrees",
+        "rows"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ],
+      "oneOf": [
+        {
+          "required": [
+            "input"
+          ],
+          "not": {
+            "required": [
+              "fold"
+            ]
+          }
+        },
+        {
+          "required": [
+            "fold"
+          ],
+          "not": {
+            "required": [
+              "input"
+            ]
+          }
+        }
+      ]
+    },
+    "harnessThreadRowsDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "suite": {
+          "const": "harness-thread-rows"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string"
+        },
+        "generated_by": {
+          "type": "string"
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/harnessThreadRowsCase"
+          },
+          "minItems": 1
+        },
+        "pins_note": {
+          "type": "string"
+        },
+        "divergence_note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ]
+    },
+    "harnessAttachment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "$": {
+          "type": "string"
+        },
+        "from": {
+          "type": "string"
+        },
+        "base64": {
+          "type": "string"
+        },
+        "mimeType": {
+          "type": "string"
+        },
+        "fileId": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "chunks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "text": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "bytes": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "$"
+      ]
+    },
+    "harnessTurnAttachmentsCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "prompt": {
+          "type": "string"
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/harnessAttachment"
+          }
+        },
+        "verdict": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "php": {
+              "type": "string"
+            },
+            "ts": {
+              "type": "string"
+            },
+            "py": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "agrees",
+        "prompt",
+        "attachments",
+        "verdict"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "harnessTurnAttachmentsDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "suite": {
+          "const": "harness-turn-attachments"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string"
+        },
+        "generated_by": {
+          "type": "string"
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/harnessTurnAttachmentsCase"
+          },
+          "minItems": 1
+        },
+        "pins_note": {
+          "type": "string"
+        },
+        "divergence_note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ]
+    },
+    "agentTaskRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "instruction": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "claimed_by": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "claimed_until": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "instruction"
+      ]
+    },
+    "agentTaskOutcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "outcome": {
+          "enum": [
+            "ok",
+            "refused"
+          ]
+        },
+        "code": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "record": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/agentTaskRecord"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pending": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "outcome",
+        "code",
+        "record",
+        "pending"
+      ]
+    },
+    "agentTaskClaimCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "given": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tasks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/agentTaskRecord"
+              }
+            },
+            "now": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "tasks",
+            "now"
+          ]
+        },
+        "when": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "op": {
+              "type": "string"
+            },
+            "worker": {
+              "type": "string"
+            },
+            "lease_seconds": {
+              "type": "number"
+            },
+            "task_id": {
+              "type": "string"
+            },
+            "outcome": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "op"
+          ]
+        },
+        "result": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "php": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/agentTaskOutcome"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "ts": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/agentTaskOutcome"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "py": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/agentTaskOutcome"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "given",
+        "when",
+        "result"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "agentTaskClaimDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "suite": {
+          "const": "agent-task-claim"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string"
+        },
+        "generated_by": {
+          "type": "string"
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/agentTaskClaimCase"
+          },
+          "minItems": 1
+        },
+        "scope": {
+          "type": "string"
+        },
+        "encoding": {
+          "type": "string"
+        },
+        "recorded": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ]
+    },
+    "rateLimitBucket": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer"
+        },
+        "remaining": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resets_at": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "limit",
+        "remaining",
+        "resets_at"
+      ]
+    },
+    "rateLimitOutcome": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "ok"
+            },
+            "buckets": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/rateLimitBucket"
+              }
+            }
+          },
+          "required": [
+            "outcome",
+            "buckets"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "outcome": {
+              "const": "raised"
+            }
+          },
+          "required": [
+            "outcome"
+          ]
+        }
+      ]
+    },
+    "providerRateLimitsCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "given": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "provider": {
+              "type": "string"
+            },
+            "now": {
+              "type": "integer"
+            },
+            "headers": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Response header names are arbitrary input, including unknown and differently cased headers."
+            }
+          },
+          "required": [
+            "provider",
+            "now",
+            "headers"
+          ]
+        },
+        "result": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "php": {
+              "$ref": "#/$defs/rateLimitOutcome"
+            },
+            "ts": {
+              "$ref": "#/$defs/rateLimitOutcome"
+            },
+            "py": {
+              "$ref": "#/$defs/rateLimitOutcome"
+            }
+          },
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ]
+        }
+      },
+      "required": [
+        "title",
+        "agrees",
+        "given",
+        "result"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "providerRateLimitsDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "suite": {
+          "const": "provider-rate-limits"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string"
+        },
+        "generated_by": {
+          "type": "string"
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/providerRateLimitsCase"
+          },
+          "minItems": 1
+        },
+        "scope": {
+          "type": "string"
+        },
+        "encoding": {
+          "type": "string"
+        },
+        "recorded": {
+          "type": "string"
+        },
+        "clock": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ]
+    },
+    "harnessThreadWrite": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "write": {
+              "const": "assistant"
+            },
+            "content": {
+              "type": "string"
+            },
+            "tool_calls": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessToolCall"
+              }
+            },
+            "additional_content": {
+              "type": "object",
+              "description": "Provider-specific content is arbitrary replay payload."
+            },
+            "approval_requests": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessApprovalRequest"
+              }
+            }
+          },
+          "required": [
+            "write",
+            "content",
+            "tool_calls",
+            "additional_content",
+            "approval_requests"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "write": {
+              "const": "tool_result"
+            },
+            "results": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessToolResult"
+              }
+            },
+            "decisions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessApprovalResponse"
+              }
+            }
+          },
+          "required": [
+            "write",
+            "results",
+            "decisions"
+          ]
+        }
+      ]
+    },
+    "harnessStoredRow": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "assistant"
+            },
+            "content": {
+              "type": "string"
+            },
+            "tool_calls": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessToolCall"
+              }
+            },
+            "additional_content": {
+              "type": "object",
+              "description": "Provider-specific content is arbitrary replay payload."
+            },
+            "tool_approval_requests": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessApprovalRequest"
+              }
+            }
+          },
+          "required": [
+            "type",
+            "content",
+            "tool_calls",
+            "additional_content",
+            "tool_approval_requests"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "tool_result"
+            },
+            "tool_results": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessToolResult"
+              }
+            },
+            "tool_approval_responses": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessApprovalResponse"
+              }
+            }
+          },
+          "required": [
+            "type",
+            "tool_results",
+            "tool_approval_responses"
+          ]
+        }
+      ]
     }
   },
   "oneOf": [
@@ -1014,6 +2203,36 @@
     },
     {
       "$ref": "#/$defs/memoryVectorStorageDocument"
+    },
+    {
+      "$ref": "#/$defs/harnessSessionKeyDocument"
+    },
+    {
+      "$ref": "#/$defs/harnessThreadRowsDocument"
+    },
+    {
+      "$ref": "#/$defs/harnessTurnAttachmentsDocument"
+    },
+    {
+      "$ref": "#/$defs/agentTaskClaimDocument"
+    },
+    {
+      "$ref": "#/$defs/providerRateLimitsDocument"
+    },
+    {
+      "$ref": "#/$defs/harnessSessionKeyDocument"
+    },
+    {
+      "$ref": "#/$defs/harnessThreadRowsDocument"
+    },
+    {
+      "$ref": "#/$defs/harnessTurnAttachmentsDocument"
+    },
+    {
+      "$ref": "#/$defs/agentTaskClaimDocument"
+    },
+    {
+      "$ref": "#/$defs/providerRateLimitsDocument"
     }
   ]
 }
