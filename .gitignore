@@ -11,6 +11,7 @@ build/
 .coverage
 composer.lock
 package-lock.json
+!/package-lock.json
 
 # Composer mirrors the path package into vendor/; `composer update` has been
 # observed reporting success while silently keeping the old bytes, so the mirror
