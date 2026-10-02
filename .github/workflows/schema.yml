@@ -1,0 +1,32 @@
+name: Cases schema
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fetch the third-party allowlist
+        uses: actions/checkout@v4
+        with:
+          repository: Particle-Academy/.github
+          path: .third-party-allowlist
+          persist-credentials: false
+      - name: Root dependency allowlist
+        run: node .third-party-allowlist/third-party/check.mjs --repo .
+      - run: npm ci
+      - name: Gate rejects invalid documents
+        run: npm run test:schema
+      - name: Validate every case document
+        run: npm run validate:cases
