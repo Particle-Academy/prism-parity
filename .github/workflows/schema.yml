@@ -28,22 +28,5 @@ jobs:
       - run: npm ci
       - name: Gate rejects invalid documents
         run: npm run test:schema
-      # Temporary CI discrimination probe; removed after this run supplies evidence.
-      - name: Deliberate bad-document probe (must turn this run red)
-        run: |
-          node --input-type=module <<'NODE'
-          import { mkdtempSync, mkdirSync, copyFileSync, readFileSync, writeFileSync } from 'node:fs';
-          import { tmpdir } from 'node:os';
-          import { join } from 'node:path';
-          import { validateCases } from './tools/validate-cases.mjs';
-          const root = mkdtempSync(join(tmpdir(), 'prism-schema-ci-probe-'));
-          mkdirSync(join(root, 'schema'));
-          mkdirSync(join(root, 'suites/openai-text-request'), { recursive: true });
-          copyFileSync('schema/cases.schema.json', join(root, 'schema/cases.schema.json'));
-          const doc = JSON.parse(readFileSync('suites/openai-text-request/cases.json', 'utf8'));
-          doc.cases[0].skip = { ruby: 'deliberate CI rejection probe' };
-          writeFileSync(join(root, 'suites/openai-text-request/cases.json'), JSON.stringify(doc));
-          process.exitCode = validateCases(root);
-          NODE
       - name: Validate every case document
         run: npm run validate:cases
