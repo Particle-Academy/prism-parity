@@ -1,7 +1,7 @@
 {
   "contract": "1.0",
   "note": "Written by tools/factcheck.mjs --reconcile. Records what each repo was at when its claims were last verified, and how many claims of each kind were found. Both are staleness signals; see docs/decisions/0019-checking-the-prose.md.",
-  "reconciledAt": "2026-10-01T00:54:32.671Z",
+  "reconciledAt": "2026-10-04T21:29:41.107Z",
   "packages": {
     "particle-academy/prism": {
       "published": true
@@ -46,9 +46,9 @@
       "census": {
         "decision": 1,
         "composer-script": 3,
-        "local-link": 75,
+        "local-link": 83,
         "php-class": 654,
-        "composer-package": 11,
+        "composer-package": 10,
         "artisan-command": 7,
         "npm-script": 2
       }
@@ -63,9 +63,9 @@
       }
     },
     "prism-browser-py": {
-      "version": "97a8677",
+      "version": "v0.1.0",
       "census": {
-        "local-link": 1
+        "local-link": 2
       }
     },
     "prism-browser-ts": {
@@ -76,53 +76,53 @@
       }
     },
     "prism-harness": {
-      "version": "v0.10.0",
+      "version": "v0.12.0",
       "census": {
         "test-name": 1,
         "decision": 1,
         "composer-script": 3,
         "local-link": 106,
-        "php-class": 2
+        "php-class": 3
       }
     },
     "prism-harness-py": {
-      "version": "af74f10",
+      "version": "v0.2.0",
       "census": {
         "local-link": 1
       }
     },
     "prism-harness-ts": {
-      "version": "v0.2.0",
+      "version": "v0.5.0",
       "census": {
         "npm-script": 2,
         "local-link": 1
       }
     },
     "prism-human-plus": {
-      "version": "v0.3.0",
+      "version": "v0.4.0",
       "census": {
         "composer-script": 3
       }
     },
     "prism-human-plus-py": {
-      "version": "4a2cb31",
+      "version": "v0.1.0",
       "census": {
-        "local-link": 1
+        "local-link": 2
       }
     },
     "prism-human-plus-ts": {
-      "version": "v0.1.0",
+      "version": "v0.2.0",
       "census": {
         "npm-script": 2,
         "local-link": 1
       }
     },
     "prism-labs": {
-      "version": "086d82b",
+      "version": "e719be1",
       "census": {
         "decision": 1,
-        "composer-script": 2,
-        "npm-script": 3,
+        "composer-script": 3,
+        "npm-script": 4,
         "local-link": 9,
         "artisan-command": 4
       }
@@ -141,20 +141,20 @@
       }
     },
     "prism-mcp-py": {
-      "version": "906d726",
+      "version": "v0.1.0",
       "census": {
-        "local-link": 1
+        "local-link": 2
       }
     },
     "prism-mcp-ts": {
-      "version": "v0.1.0",
+      "version": "v0.2.0",
       "census": {
         "npm-script": 2,
         "local-link": 1
       }
     },
     "prism-memory": {
-      "version": "v0.2.0",
+      "version": "v0.3.0",
       "census": {
         "artisan-command": 4,
         "decision": 2,
@@ -166,9 +166,9 @@
       }
     },
     "prism-memory-py": {
-      "version": "d1b41c2",
+      "version": "v0.1.0",
       "census": {
-        "local-link": 1
+        "local-link": 2
       }
     },
     "prism-memory-ts": {
@@ -179,7 +179,7 @@
       }
     },
     "prism-opentelemetry": {
-      "version": "v0.3.0",
+      "version": "v0.5.2",
       "census": {
         "composer-script": 1,
         "local-link": 2,
@@ -188,20 +188,20 @@
       }
     },
     "prism-opentelemetry-py": {
-      "version": "d9f0215",
+      "version": "v0.3.1",
       "census": {
-        "local-link": 1
+        "local-link": 2
       }
     },
     "prism-opentelemetry-ts": {
-      "version": "v0.2.0",
+      "version": "v0.5.1",
       "census": {
         "npm-script": 2,
         "local-link": 1
       }
     },
     "prism-parity": {
-      "version": "63867d2",
+      "version": "a6c734e",
       "census": {
         "local-link": 92,
         "decision": 29,
@@ -211,7 +211,7 @@
       }
     },
     "prism-perplexity": {
-      "version": "v0.2.0",
+      "version": "v0.3.0",
       "census": {
         "decision": 1,
         "composer-script": 3,
@@ -220,9 +220,9 @@
       }
     },
     "prism-perplexity-py": {
-      "version": "26c47ca",
+      "version": "v0.1.0",
       "census": {
-        "local-link": 1
+        "local-link": 2
       }
     },
     "prism-perplexity-ts": {
@@ -233,7 +233,7 @@
       }
     },
     "prism-provider-watch": {
-      "version": "1cb0ab5",
+      "version": "423fa02",
       "census": {
         "composer-script": 7,
         "local-link": 4
@@ -247,14 +247,14 @@
       }
     },
     "prism-sandbox": {
-      "version": "d3b0d71",
+      "version": "10de201",
       "census": {
-        "composer-script": 1,
+        "composer-script": 2,
         "npm-script": 5,
-        "local-link": 29,
+        "local-link": 66,
         "artisan-command": 6,
-        "php-class": 15,
-        "composer-package": 7
+        "php-class": 25,
+        "composer-package": 10
       }
     },
     "prism-ts": {
@@ -277,7 +277,7 @@
       }
     },
     "prism-workspace-py": {
-      "version": "0dcf82f",
+      "version": "v0.1.0",
       "census": {}
     },
     "prism-workspace-ts": {
