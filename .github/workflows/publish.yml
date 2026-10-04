@@ -79,10 +79,10 @@ jobs:
       # publishing is meant to remove, now under a version number and cached by
       # three registries that do not let a version be replaced.
       - name: Loader fixtures must match suites/
-        run: node tools/sync-corpus.mjs --check
+        run: node tools/run-gate.mjs copies -- node tools/sync-corpus.mjs --check
 
       - name: Corpus guard
-        run: node tools/guard-corpus.mjs
+        run: node tools/run-gate.mjs guards -- node tools/guard-corpus.mjs
 
       # Establish that the cross-language comparison PASSED for this exact
       # commit rather than assuming it. Asked of each workflow by FILENAME,

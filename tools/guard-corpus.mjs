@@ -10,9 +10,11 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { checkRunner } from './alignment-contracts.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const failures = [];
+const uncheckedRunners = [];
 const SKIP_DIRS = new Set(['node_modules', 'vendor', '.git', 'dist', '__pycache__', '.venv', 'build', '.parity']);
 
 function fail(check, message) {
@@ -199,9 +201,9 @@ const allFiles = walk(root);
     }
 
     for (const [language, implementation] of Object.entries(manifest.implementations ?? {})) {
-      if (implementation.status !== 'full' && !implementation.gap?.trim()) {
-        fail('suite-manifests', `suites/${id} marks ${language} as ${implementation.status} without stating the gap`);
-      }
+      const checked = checkRunner(root, `suites/${id}/${language}`, implementation);
+      for (const problem of checked.failures) fail('suite-manifests', problem);
+      uncheckedRunners.push(...checked.unchecked);
     }
 
     if (manifest.discrimination && manifest.discrimination.status !== 'probed' && !manifest.discrimination.gap?.trim()) {
@@ -383,4 +385,5 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
+for (const runner of uncheckedRunners) console.error(`UNVERIFIED runner: ${runner}`);
 console.error(`Corpus guards passed (${allFiles.length} files scanned).`);

@@ -1,6 +1,6 @@
 # 05 — Request mapping
 
-**Enforced by:** `suites/openai-text-request` (28 cases)
+**Enforced by:** `suites/openai-text-request` (<!-- metric:suite.openai-text-request.cases -->28<!-- /metric --> cases)
 
 How a frozen `Request` becomes the bytes a provider receives. This is where ports
 diverge, because it is almost entirely made of decisions about *absence*, and no

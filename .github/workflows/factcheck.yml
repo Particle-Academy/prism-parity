@@ -7,13 +7,8 @@ name: Factcheck
 # See docs/decisions/0019-checking-the-prose.md.
 
 on:
-  push:
-    branches: [main, "*.x"]
-  pull_request:
-  # Claims rot without anything in this repository changing: a package gets
-  # published, a sibling renames a class. A nightly run notices.
-  schedule:
-    - cron: "40 7 * * *"
+  # Alignment's daily trigger also enables the strict currency check below.
+  workflow_call:
 
 permissions:
   contents: read
@@ -37,11 +32,11 @@ jobs:
           node-version: "22"
 
       - name: Check claims
-        run: node tools/factcheck.mjs --repo .
+        run: node tools/run-gate.mjs factcheck -- node tools/factcheck.mjs --repo .
 
       # --strict makes version drift a failure rather than a warning. Only the
       # nightly does it, so a release in one repo cannot redden an unrelated
       # pull request in another — while currency is still enforced daily.
       - name: Check currency
         if: github.event_name == 'schedule'
-        run: node tools/factcheck.mjs --repo . --strict
+        run: node tools/run-gate.mjs factcheck -- node tools/factcheck.mjs --repo . --strict

@@ -388,6 +388,9 @@ console.error(
     `. Without one: ${familiesWithoutSuite.join(', ') || 'none'}.`,
 );
 console.error(`Parity check passed: ${discovered.size} languages, ${manifest.mirrors.length} mirrors enforced.`);
+if (process.argv.includes('--json')) {
+  console.log(JSON.stringify({ familiesWithSuite: familiesWithSuite.length, families: Object.keys(targetFamilies).length }));
+}
 console.error(
   `Coordinated launch target: ${Object.keys(targetFamilies).length} package families, ${targetGaps.length} implementation gap(s) ` +
     `— ${gapsPlanned.length} not started, ${gapsInProgress.length} built but not conformance-verified here.`,

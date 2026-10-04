@@ -1,11 +1,7 @@
 name: Corpus
 
 on:
-  push:
-    branches:
-      - main
-      - "*.x"
-  pull_request:
+  workflow_call:
 
 permissions:
   contents: read
@@ -27,20 +23,20 @@ jobs:
       # value and report it safe, destroying the evidence with the very defect
       # being looked for.
       - name: Cross-check coverage tests
-        run: node --test scripts/cross-check-coverage.test.mjs
+        run: node tools/run-gate.mjs nodeTests -- node --test --test-reporter=tap scripts/cross-check-coverage.test.mjs
 
       - name: Corpus guards
-        run: node tools/guard-corpus.mjs
+        run: node tools/run-gate.mjs guards -- node tools/guard-corpus.mjs
 
       # The EXISTENCE half of parity. A conformance corpus can never fail on
       # absence, because a missing mirror has nothing to run the rows against.
       - name: Parity check and drift report
-        run: node tools/parity-check.mjs --report
+        run: node tools/run-gate.mjs parity -- node tools/parity-check.mjs --report
 
       # Each loader ships the fixtures in its own artifact. The copies are
       # generated and committed, and this is what stops them drifting.
       - name: Corpus copies are current
-        run: node tools/sync-corpus.mjs --check
+        run: node tools/run-gate.mjs copies -- node tools/sync-corpus.mjs --check
 
       # Trust, security and alignment are the foundation this ecosystem is built
       # on, and a rubric only a human applies is a rubric that stops being
@@ -49,7 +45,7 @@ jobs:
       # G-36 was found after the Lab's live probe of the same property had been
       # reporting it green. See docs/trust-rubric.md.
       - name: Trust rubric
-        run: node tools/trust-rubric.mjs --report
+        run: node tools/run-gate.mjs rubric -- node tools/trust-rubric.mjs --report
 
   goldens:
     name: Goldens match the reference
@@ -76,7 +72,7 @@ jobs:
 
       - name: Third-party dependency allowlist
         run: |
-          node .third-party-allowlist/third-party/check.mjs --repo runners/php
+          node tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo runners/php
           node -e "require('node:fs').rmSync('.third-party-allowlist',{recursive:true,force:true})"
 
       # Installs the PUBLISHED particle-academy/prism. The reference a corpus is
@@ -91,7 +87,7 @@ jobs:
       # signal — either the reference changed behaviour or a golden was edited by
       # hand, and both need a human.
       - name: Goldens are current
-        run: php tools/generate-goldens.php --check
+        run: node tools/run-gate.mjs goldens -- php tools/generate-goldens.php --check
 
       - name: Reference runner
-        run: php runners/php/runner.php
+        run: node tools/run-gate.mjs reference -- php runners/php/runner.php

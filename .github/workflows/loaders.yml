@@ -13,11 +13,7 @@ name: Loaders
 # forgotten loader cannot sit here quietly untested.
 
 on:
-  push:
-    branches:
-      - main
-      - "*.x"
-  pull_request:
+  workflow_call:
 
 permissions:
   contents: read
@@ -40,7 +36,7 @@ jobs:
       # installed is a test suite that runs nowhere.
       - name: Loader tests
         working-directory: loaders/php
-        run: php tests/run.php
+        run: node ../../tools/run-gate.mjs phpTests -- php tests/run.php
 
   ts:
     name: loader / ts
@@ -55,7 +51,7 @@ jobs:
 
       - name: Loader tests
         working-directory: loaders/ts
-        run: node --test test/loader.test.js
+        run: node ../../tools/run-gate.mjs nodeTests -- node --test --test-reporter=tap test/loader.test.js
 
   py:
     name: loader / py
@@ -83,7 +79,7 @@ jobs:
 
       - name: Third-party dependency allowlist
         run: |
-          node .third-party-allowlist/third-party/check.mjs --repo loaders/py
+          node tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo loaders/py
           node -e "require('node:fs').rmSync('.third-party-allowlist',{recursive:true,force:true})"
 
       # From the manifest, not from three names typed here. The tooling used to
@@ -96,12 +92,12 @@ jobs:
         working-directory: loaders/py
         env:
           PYTHONPATH: src
-        run: python -m pytest tests -q
+        run: node ../../tools/run-gate.mjs pythonTests -- python -m pytest tests -q
 
       - name: Types
         working-directory: loaders/py
-        run: python -m mypy --strict src
+        run: node ../../tools/run-gate.mjs mypy -- python -m mypy --strict src
 
       - name: Lint
         working-directory: loaders/py
-        run: python -m ruff check .
+        run: node ../../tools/run-gate.mjs ruff -- python -m ruff check .

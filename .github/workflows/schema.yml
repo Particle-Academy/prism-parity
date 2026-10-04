@@ -1,9 +1,9 @@
 name: Cases schema
 
+# Reusable only: the alignment coordinator owns triggers, so this gate cannot
+# run -- or report -- independently of the evidence check that precedes it.
 on:
-  push:
-  pull_request:
-  workflow_dispatch:
+  workflow_call:
 
 permissions:
   contents: read
@@ -24,7 +24,7 @@ jobs:
           path: .third-party-allowlist
           persist-credentials: false
       - name: Root dependency allowlist
-        run: node .third-party-allowlist/third-party/check.mjs --repo .
+        run: node tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo .
       - run: npm ci
       - name: Gate rejects invalid documents
         run: npm run test:schema

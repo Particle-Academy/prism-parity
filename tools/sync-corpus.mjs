@@ -19,6 +19,7 @@
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, rmSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { compareCorpusContent } from './corpus-content.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const check = process.argv.includes('--check');
@@ -47,7 +48,7 @@ for (const target of targets) {
     const to = join(target, file);
     const content = readFileSync(from);
 
-    if (!existsSync(to) || !readFileSync(to).equals(content)) {
+    if (!existsSync(to) || !compareCorpusContent(content, readFileSync(to)).matches) {
       stale.push(relative(root, to));
       if (!check) {
         mkdirSync(dirname(to), { recursive: true });

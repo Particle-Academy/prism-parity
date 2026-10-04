@@ -145,7 +145,20 @@ foreach ($suiteIds as $suiteId) {
 
 fwrite(STDOUT, Canonical::encode(count($documents) === 1 ? $documents[0] : $documents)."\n");
 
-exit($failed ? 1 : 0);
+$executed = 0;
+$skipped = 0;
+foreach ($documents as $document) {
+    foreach ($document['results'] as $result) {
+        if ($result['status'] === 'skip') {
+            $skipped++;
+        } else {
+            $executed++;
+        }
+    }
+}
+fwrite(STDERR, sprintf("Reference runner completed: %d executed, %d skipped.\n", $executed, $skipped));
+
+exit($failed || $executed === 0 ? 1 : 0);
 
 /**
  * @param  array<string, mixed>  $manifest

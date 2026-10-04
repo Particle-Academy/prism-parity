@@ -10,20 +10,8 @@ name: Cross-check
 # runner reports agreement between however many happened to be present.
 
 on:
-  push:
-    branches:
-      - main
-      - "*.x"
-  pull_request:
-  # The ports move on their own schedule, so a corpus that was green on Monday
-  # can be red on Tuesday without anything here changing.
-  schedule:
-    - cron: "0 7 * * *"
-  # This job's inputs are three repositories, and only one of them can trigger
-  # it by pushing. Being able to run it on demand — after a port merges
-  # something — is the difference between finding a divergence now and finding
-  # it at 07:00 tomorrow.
-  workflow_dispatch:
+  # Alignment owns push, daily and manual triggers and runs before this job.
+  workflow_call:
 
 permissions:
   contents: read
@@ -82,9 +70,9 @@ jobs:
 
       - name: Third-party dependency allowlist (all three trees)
         run: |
-          node .third-party-allowlist/third-party/check.mjs --repo prism-parity/runners/php
-          node .third-party-allowlist/third-party/check.mjs --repo prism-ts
-          node .third-party-allowlist/third-party/check.mjs --repo prism-py
+          node prism-parity/tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo prism-parity/runners/php
+          node prism-parity/tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo prism-ts
+          node prism-parity/tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo prism-py
           node -e "require('node:fs').rmSync('.third-party-allowlist',{recursive:true,force:true})"
 
       - name: Build the PHP reference runner
@@ -110,4 +98,4 @@ jobs:
 
       - name: Cross-check
         working-directory: prism-parity
-        run: node scripts/cross-check.mjs
+        run: node tools/run-gate.mjs crossCheck -- node scripts/cross-check.mjs

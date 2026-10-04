@@ -145,7 +145,10 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
-process.stdout.write(
+if (process.argv.includes('--json')) {
+  console.log(JSON.stringify({ securityCorpora: rows.length, adversarialRows: rows.reduce((sum, row) => sum + row.adversarial, 0), suites: rows }));
+}
+process.stderr.write(
   `Trust rubric passed: ${rows.length} security corpus/corpora, ` +
     `${rows.reduce((sum, row) => sum + row.adversarial, 0)} adversarial row(s).\n`,
 );

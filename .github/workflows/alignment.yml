@@ -1,0 +1,45 @@
+name: Alignment
+
+on:
+  push:
+    branches: [main, "*.x"]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "20 6 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  alignment:
+    name: Validate evidence before gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Alignment assertions and regression tests
+        run: node tools/alignment.mjs
+      - name: Public runner claims and corpus copies at main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node tools/run-gate.mjs remote -- node tools/remote-alignment.mjs
+
+  corpus:
+    needs: alignment
+    uses: ./.github/workflows/corpus.yml
+  cross-check:
+    needs: alignment
+    uses: ./.github/workflows/cross-check.yml
+  loaders:
+    needs: alignment
+    uses: ./.github/workflows/loaders.yml
+  factcheck:
+    needs: alignment
+    uses: ./.github/workflows/factcheck.yml
+  schema:
+    needs: alignment
+    uses: ./.github/workflows/schema.yml

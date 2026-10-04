@@ -19,6 +19,7 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { execSync } from 'node:child_process';
 import { coverage } from './cross-check-coverage.mjs';
+import { verifyCoverage } from '../tools/alignment-contracts.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const ledger = JSON.parse(readFileSync(join(root, 'parity', 'ledger.json'), 'utf8'));
@@ -256,6 +257,7 @@ for (const key of [...allKeys].sort()) {
 }
 
 const checked = coverage(reports);
+failures.push(...verifyCoverage(reports, checked));
 for (const { key, language, reason } of checked.skips) {
   console.error(`SKIP ${key} [${language}]: ${reason}`);
 }
