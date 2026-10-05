@@ -117,13 +117,51 @@ what claims them.
 4. Tag, annotated, and push the tag:
 
    ```
-   git tag -a v0.1.7 -m "Conformance loaders 0.1.7"
+   git tag -a v0.1.7 -m "Conformance loaders 0.1.7
+
+   No breaking changes."
    git push origin v0.1.7
    ```
 
    A lightweight tag is refused. Nothing else triggers a publish — there is no
    manual dispatch and no publish-from-a-branch path, because both let a release
    exist that no commit here claims.
+
+   **The annotation must declare its breaking status**, which is why the example
+   above carries that second line. The annotation is the only changelog these
+   packages have — the release is created from it verbatim — so silence there is
+   the answer a consumer gets rather than a neutral default, and the guard
+   refuses it the same way it refuses a lightweight tag. Write one of:
+
+   ```
+   BREAKING CHANGE: <what breaks, and what the consumer must do about it>
+   ```
+
+   ```
+   No breaking changes.
+   ```
+
+   A `## Breaking changes` heading with content under it also counts, but only if
+   you tag with `--cleanup=verbatim` or `-F`: under git's default cleanup every
+   `#` line in a tag message is treated as a comment and **deleted**, so a
+   heading passed to `-m` is published silently missing. The two forms above have
+   no `#` to lose.
+
+   The guard runs before both uploads, so refusing prevents the publish outright.
+   You can see the same verdict before tagging:
+
+   ```
+   sh tools/check-release-notes.sh --tag v0.1.7
+   ```
+
+   Use `--tag`, not a pipe from `git tag -l --format='%(contents)'`: on a
+   lightweight tag that format yields the *commit* message instead, so the check
+   would read text the release will never publish and approve it.
+
+   This was asked for in prose elsewhere before it was checked, and asking did
+   not work: of the twenty most recent annotations across ten of these
+   repositories, EIGHTEEN never used the word "breaking" at all. The example this
+   file gave above would itself have been refused.
 
 5. Watch the `verify` job. It is not decoration: a green publish job means the
    registry accepted an upload, not that it serves the version. `verify` polls

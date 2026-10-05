@@ -43,3 +43,6 @@ jobs:
   schema:
     needs: alignment
     uses: ./.github/workflows/schema.yml
+  release-notes:
+    needs: alignment
+    uses: ./.github/workflows/release-notes.yml

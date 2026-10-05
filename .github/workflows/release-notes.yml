@@ -1,0 +1,56 @@
+name: Release notes
+
+# Only workflow_call: the alignment coordinator owns triggers in this repository,
+# so this runs when alignment says the evidence is good and not before.
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  release-notes:
+    name: Release-notes check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # tools/check-release-notes.sh refuses a tag annotation that does not say
+      # whether the release breaks anything. The annotation IS the changelog for
+      # every package in this ecosystem -- publish.yml reads it from the tag
+      # object and publishes it verbatim -- so silence there is the answer a
+      # consumer gets, not a neutral default.
+      #
+      # It is tested HERE because a guard nobody tried to defeat is the recurring
+      # way one of these ends up checking nothing, which is the argument this
+      # whole repository exists to make. The suite asserts both directions, and
+      # its sharpest case is a note that discusses breakage in prose while
+      # declaring nothing: a plain `grep -i breaking` passes that, and three real
+      # annotations in this estate are exactly that shape.
+      - name: tools/check-release-notes.sh must refuse what it claims to
+        run: sh tools/check-release-notes.test.sh
+
+      # The same argument sync-corpus.mjs makes for the corpus copies: generated
+      # and checked beats generated and trusted. An unchecked duplicate is one
+      # that has already drifted without saying so -- measured here as 38 of 111.
+      - name: Fetch the canonical checker
+        uses: actions/checkout@v4
+        with:
+          repository: Particle-Academy/.github
+          path: .canonical
+          persist-credentials: false
+
+      - name: The vendored checker must match the canonical one
+        run: |
+          for pair in check.sh:check-release-notes.sh check.test.sh:check-release-notes.test.sh; do
+            diff -u ".canonical/release-notes/${pair%%:*}" "tools/${pair##*:}" || {
+              echo "::error::tools/${pair##*:} has drifted from Particle-Academy/.github release-notes/${pair%%:*}. Change the canonical file and re-vendor it; do not patch the copy."
+              exit 1
+            }
+          done
+          echo "Both vendored files match the canonical checker."
+          rm -rf .canonical
