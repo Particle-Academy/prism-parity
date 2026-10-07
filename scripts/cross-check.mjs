@@ -273,7 +273,8 @@ failures.push(...verifyCoverage(reports, checked, manifests));
 // only by a package-specific runner contributes NO cross-language evidence,
 // which is the thing this script exists to measure, so it is named on every run.
 for (const [suite, entries] of manifests) {
-  const statuses = reports.flatMap(([, documents]) =>
+  // `reports` is a Map of language -> documents, not an array.
+  const statuses = [...reports.values()].flatMap((documents) =>
     documents.filter((document) => document.suite === suite).flatMap((document) => document.results.map((result) => result.status)),
   );
   if (statuses.length === 0 || !statuses.every((status) => status === 'skip')) continue;
