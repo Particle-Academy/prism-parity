@@ -19,8 +19,13 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// Criterion 8's reader. Its own module so the discriminators are testable;
+// each one suppresses a false positive found against the real corpora.
+import { claimsIdentifierHazard, hazardMarks, identifierValues } from './name-hazards.mjs';
+
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const report = process.argv.includes('--report');
+const names = process.argv.includes('--names');
 
 function directories(path) {
   return readdirSync(path).filter((entry) => statSync(join(path, entry)).isDirectory());
@@ -51,6 +56,10 @@ const EXPLAIN = {
     'every row agrees and the manifest states no `findings`. A corpus compares LANGUAGES, so a bug all three share is invisible to it: say what you conclude from the agreement rather than letting `agrees: true` speak for itself — criterion 3.',
   scope:
     '`scope` is missing. Say what this suite does NOT cover; one that covers a single value and implies a family stops anyone looking — criterion 6.',
+  nameProbe:
+    'claims an identifier-shaped hazard (homoglyph, zero-width, trailing space) and NO identifier-shaped value could be extracted from it at all. The case shape moved under the probe, or IDENTIFIER_FIELDS in tools/name-hazards.mjs went stale — what failed here is the CHECK, not the corpus — criterion 8.',
+  nameBytes:
+    'claims an identifier-shaped hazard in its prose, and every identifier-shaped value in the corpus is clean. G-36 was a trailing SPACE on a tool name; because criterion 2 is satisfied by the notes, the padded rows can be deleted while the claim survives them. Restore a row whose BYTES wear the hazard — criterion 8.',
 };
 
 const failures = [];
@@ -107,9 +116,39 @@ for (const id of directories(join(root, 'suites'))) {
   //    column read as a completeness claim before.
   scores.scope = typeof manifest.scope === 'string' && manifest.scope.trim() !== '';
 
+  // 8. A claimed identifier hazard must be visible in the BYTES.
+  //    Criterion 2 reads the notes; this one reads the values. G-36 was a
+  //    trailing space on a tool NAME, and nothing here used to ask whether a
+  //    row wearing one still existed -- which is why this ran for a while as a
+  //    separate one-suite probe instead.
+  const identifiers = identifierValues(cases);
+  const fuzzed = identifiers.filter((value) => hazardMarks(value) !== null);
+  const claimsHazard = claimsIdentifierHazard(manifest, cases);
+
+  if (names) {
+    process.stdout.write(`\n${id} — ${fuzzed.length} of ${identifiers.length} identifier value(s)\n`);
+    for (const value of fuzzed) {
+      process.stdout.write(`  ${JSON.stringify(value).padEnd(34)} ${hazardMarks(value).join(',')}\n`);
+    }
+  }
+
+  // Vacuity first. A claim with NO identifier value extracted at all means the
+  // case shape moved under the probe, or IDENTIFIER_FIELDS went stale. A probe
+  // that finds nothing must say whether it looked, so this is not a pass.
+  scores.nameProbe = !claimsHazard || identifiers.length > 0;
+  scores.nameBytes = !claimsHazard || fuzzed.length > 0;
+
   const failed = Object.entries(scores).filter(([, ok]) => !ok).map(([name]) => name);
 
-  rows.push({ id, cases: cases.length, adversarial: adversarial.length, failed });
+  rows.push({
+    id,
+    cases: cases.length,
+    adversarial: adversarial.length,
+    identifiers: identifiers.length,
+    fuzzed: fuzzed.length,
+    claimsHazard,
+    failed,
+  });
 
   for (const criterion of failed) {
     failures.push(`${id}: ${EXPLAIN[criterion]}`);
@@ -127,12 +166,14 @@ if (report) {
   const width = Math.max(...rows.map((row) => row.id.length), 10);
 
   process.stdout.write('\nTrust rubric — docs/trust-rubric.md\n\n');
-  process.stdout.write(`${'suite'.padEnd(width)}  cases  adversarial  verdict\n`);
+  process.stdout.write(`${'suite'.padEnd(width)}  cases  adversarial  ident  fuzzed  claim  verdict\n`);
 
   for (const row of rows.sort((a, b) => (a.id < b.id ? -1 : 1))) {
     const verdict = row.failed.length === 0 ? 'pass' : `FAIL (${row.failed.join(', ')})`;
     process.stdout.write(
-      `${row.id.padEnd(width)}  ${String(row.cases).padStart(5)}  ${String(row.adversarial).padStart(11)}  ${verdict}\n`,
+      `${row.id.padEnd(width)}  ${String(row.cases).padStart(5)}  ${String(row.adversarial).padStart(11)}  ` +
+        `${String(row.identifiers).padStart(5)}  ${String(row.fuzzed).padStart(6)}  ` +
+        `${(row.claimsHazard ? 'yes' : '-').padStart(5)}  ${verdict}\n`,
     );
   }
 
@@ -145,10 +186,14 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
+const adversarialRows = rows.reduce((sum, row) => sum + row.adversarial, 0);
+const fuzzedIdentifiers = rows.reduce((sum, row) => sum + row.fuzzed, 0);
+
 if (process.argv.includes('--json')) {
-  console.log(JSON.stringify({ securityCorpora: rows.length, adversarialRows: rows.reduce((sum, row) => sum + row.adversarial, 0), suites: rows }));
+  console.log(JSON.stringify({ securityCorpora: rows.length, adversarialRows, fuzzedIdentifiers, suites: rows }));
 }
 process.stderr.write(
   `Trust rubric passed: ${rows.length} security corpus/corpora, ` +
-    `${rows.reduce((sum, row) => sum + row.adversarial, 0)} adversarial row(s).\n`,
+    `${adversarialRows} adversarial row(s), ` +
+    `${fuzzedIdentifiers} identifier value(s) wearing a hazard.\n`,
 );

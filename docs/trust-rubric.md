@@ -106,6 +106,64 @@ integers, which is why it reads case files as text rather than parsing them.
 **Not enforced**, because it is a property of the generator rather than of the
 corpus. Ask it at review: *could the tool that wrote this row have changed it?*
 
+## 8. A claimed identifier hazard must be in the BYTES — ENFORCED
+
+When a suite says it probes a padded, homoglyphed or zero-width **identifier**,
+at least one identifier-shaped value in it must actually wear one.
+
+**Why.** This criterion exists because of criterion 2, not in spite of it.
+Criterion 2 is satisfied by `notes` prose, deliberately — a boolean on a case
+would be set to `true` by whoever wanted the suite green. But prose is a claim
+*about* a row, not a reading *of* one. Delete all eleven padded tool names from
+`human-plus-tool-admission`, leave the word "homoglyph" in the notes, and
+criterion 2 never notices. G-36 was a trailing **space**; what has to survive a
+refactor is the bytes.
+
+**Checked** by `tools/name-hazards.mjs`. A value is read only at an
+identifier-named field (`name`, `tool`, `kind`, `worker`, `outcome`, …), and it
+counts as hazardous when it carries edge whitespace, a format/control
+codepoint, a non-ASCII character, or interior whitespace that leaves a
+malformed token. Three suites claim a hazard and all three back it:
+`human-plus-tool-admission` (11 of 43), `opentelemetry-span-attributes` (3 of
+284, padded rate-limit bucket names) and `opentelemetry-media-content` (1 of 13,
+a Cyrillic `і` in a part kind).
+
+**Vacuity is a failure too.** A suite that claims a hazard and yields *no*
+identifier value at all means the case shape moved under the probe, or the field
+list went stale. A probe that finds nothing must say whether it looked — so that
+reports the CHECK as broken rather than the corpus as clean.
+
+**The two discriminators are the content of the check, and both are load-bearing
+by measurement, not by argument:**
+
+- Interior whitespace counts only when a token it separates is malformed.
+  OpenTelemetry span names legitimately read `chat gpt-4o`; counting those took
+  the corpus-wide total from 18 to **87** and would have let that suite look
+  name-fuzzed on the strength of a naming convention.
+- `invisible` is not in the hazard vocabulary. `provider-rate-limits` uses it
+  about a failure mode — "the failure is invisible at the moment it happens" —
+  beside the word `names`. Including it turns **three** suites red that never
+  asserted an identifier hazard.
+
+**The blind spot, and the floor under it.** Being claim-gated, criterion 8 goes
+quiet rather than red if a suite's padded rows *and* every claim to them are
+deleted together — in the manifest as well as the cases. Reading the claim from
+`pins`/`scope`/`findings` as well as from the cases is what makes that the only
+way through, and criterion 6 forces `scope` to be stated, so it is a scope change
+visible in the diff rather than a silent one.
+
+Under that sits a mechanical floor: the `rubric` gate contract requires the
+corpus-wide hazard count to be **at least one**, so the corpora cannot all stop
+fuzzing identifiers and still report success. Measured rather than assumed —
+scrubbing every security corpus leaves the rubric itself green at `0` and fails
+the gate. It is a corpus-wide floor, not a per-suite one: scrubbing only the
+three suites that claim a hazard leaves rows elsewhere and passes. Neither the
+criterion nor the floor is a substitute for reading a manifest diff.
+
+```
+node tools/trust-rubric.mjs --names    # print every flagged value and its marks
+```
+
 ---
 
 ## Running it

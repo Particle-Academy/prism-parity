@@ -23,7 +23,7 @@ jobs:
       # value and report it safe, destroying the evidence with the very defect
       # being looked for.
       - name: Cross-check coverage tests
-        run: node tools/run-gate.mjs nodeTests -- node --test --test-reporter=tap scripts/cross-check-coverage.test.mjs
+        run: node tools/run-gate.mjs nodeTests -- node --test --test-reporter=tap scripts/cross-check-coverage.test.mjs tools/name-hazards.test.mjs
 
       - name: Corpus guards
         run: node tools/run-gate.mjs guards -- node tools/guard-corpus.mjs
