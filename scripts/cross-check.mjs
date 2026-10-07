@@ -257,7 +257,31 @@ for (const key of [...allKeys].sort()) {
 }
 
 const checked = coverage(reports);
-failures.push(...verifyCoverage(reports, checked));
+
+// Read alongside the reports so the all-skip rule can tell a suite nothing
+// verifies from one whose verification is DECLARED to live in a
+// package-specific runner. Without this, `cache-stability-hints` fails as
+// vacuous while prism:tests/CacheStabilityCorpusTest.php executes it.
+const manifests = new Map(
+  readdirSync(join(root, 'suites'))
+    .filter((id) => existsSync(join(root, 'suites', id, 'manifest.json')))
+    .map((id) => [id, JSON.parse(readFileSync(join(root, 'suites', id, 'manifest.json'), 'utf8'))]),
+);
+failures.push(...verifyCoverage(reports, checked, manifests));
+
+// Relaxing a rule must not make what it covered invisible. A suite verified
+// only by a package-specific runner contributes NO cross-language evidence,
+// which is the thing this script exists to measure, so it is named on every run.
+for (const [suite, entries] of manifests) {
+  const statuses = reports.flatMap(([, documents]) =>
+    documents.filter((document) => document.suite === suite).flatMap((document) => document.results.map((result) => result.status)),
+  );
+  if (statuses.length === 0 || !statuses.every((status) => status === 'skip')) continue;
+  const where = Object.entries(entries.implementations ?? {})
+    .filter(([, implementation]) => implementation?.status === 'full' && typeof implementation.runner === 'string')
+    .map(([language, implementation]) => `${language}=${implementation.runner}`);
+  console.error(`DECLARED ELSEWHERE ${suite}: no cross-language evidence here; verified by ${where.join(', ') || 'nothing'}`);
+}
 for (const { key, language, reason } of checked.skips) {
   console.error(`SKIP ${key} [${language}]: ${reason}`);
 }

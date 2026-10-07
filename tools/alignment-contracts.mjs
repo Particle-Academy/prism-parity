@@ -136,7 +136,33 @@ export function checkWorkflowDependencies(file, text) {
 
 // Independent accounting oracle: assert the reporting helper cannot turn
 // silence into agreement. Used with synthetic reports by the first CI job.
-export function verifyCoverage(reports, actual) {
+// `manifests` is a Map of suite id -> manifest, and it only ever RELAXES the
+// per-suite all-skip rule below. Omit it and the rule stays strict, which is
+// what the synthetic-report tests rely on.
+//
+// A suite skipped by every generic runner usually does assert nothing. But a
+// suite can declare that its verification lives in a PACKAGE-SPECIFIC runner:
+// `cache-stability-hints` is executed by prism:tests/CacheStabilityCorpusTest.php
+// (nine assertions, green) while both ports carry G-64. Failing that as vacuous
+// states something the manifest has already declared otherwise, and it also
+// contradicts the design it sits on: skip-with-reason exists so a language can
+// decline a row, so a suite where all three decline is an expressible state
+// rather than a broken one.
+//
+// The floor is kept: a suite nothing verifies ANYWHERE still fails, and so does
+// one whose languages claim `full` against the generic runner and then skip
+// every row — that is a runner reporting agreement it never measured, which is
+// the whole reason this oracle exists.
+function verifiedByPackageRunner(manifest) {
+  return Object.values(manifest?.implementations ?? {}).some(
+    (implementation) =>
+      implementation?.status === 'full' &&
+      typeof implementation.runner === 'string' &&
+      !implementation.runner.startsWith('prism-parity:'),
+  );
+}
+
+export function verifyCoverage(reports, actual, manifests = new Map()) {
   const failures = [];
   const keys = new Set();
   const rows = new Map();
@@ -165,7 +191,9 @@ export function verifyCoverage(reports, actual) {
   if (JSON.stringify(sorted(actual.skips)) !== JSON.stringify(sorted(expectedSkips))) failures.push('skip report omits a language, case, or reason');
   if (actual.skippedCases !== new Set(expectedSkips.map(({ key }) => key)).size) failures.push('skipped case count disagrees with per-language skips');
   for (const [suite, statuses] of suites) {
-    if (statuses.length > 0 && statuses.every((status) => status === 'skip')) failures.push(`${suite}: suite skipped in every language`);
+    if (statuses.length > 0 && statuses.every((status) => status === 'skip') && !verifiedByPackageRunner(manifests.get(suite))) {
+      failures.push(`${suite}: suite skipped in every language, and no implementation declares a package-specific runner that verifies it`);
+    }
   }
   return failures;
 }

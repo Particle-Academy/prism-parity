@@ -154,3 +154,77 @@ test('the coordinator exemption covers publish only, and does not excuse it from
     [],
   );
 });
+
+// --- the all-skip rule, and what it must keep catching --------------------
+//
+// This rule landed red in 6a691d9 against a corpus state that had existed
+// since September, and was invisible for three days because the coordinator's
+// first job failed before the job carrying it ever ran. Relaxing it is only
+// safe if the cases it was right about still fail.
+
+const allSkipped = () => new Map(['php', 'ts', 'py'].map((language) => [language, [
+  { suite: 'working', results: [{ id: 'ok', status: 'pass' }] },
+  { suite: 'declared', results: [{ id: 'never', status: 'skip', reason: 'No runner.' }] },
+]]));
+
+test('an all-skip suite verified by a PACKAGE-SPECIFIC runner is not vacuous', () => {
+  // cache-stability-hints: executed by prism:tests/CacheStabilityCorpusTest.php
+  // while both ports carry G-64. Skip-with-reason exists so a language can
+  // decline a row; all three declining is expressible, not broken.
+  const manifests = new Map([['declared', {
+    implementations: {
+      php: { status: 'full', runner: 'prism:tests/CacheStabilityCorpusTest.php' },
+      ts: { status: 'partial', cause: 'no-runner', gap: 'G-64' },
+      py: { status: 'partial', cause: 'no-runner', gap: 'G-64' },
+    },
+  }]]);
+  const reports = allSkipped();
+  assert.deepEqual(verifyCoverage(reports, coverage(reports), manifests), []);
+});
+
+test('THE FLOOR: an all-skip suite nothing verifies anywhere still fails', () => {
+  const manifests = new Map([['declared', {
+    implementations: {
+      php: { status: 'partial', cause: 'no-runner', gap: 'G-64' },
+      ts: { status: 'partial', cause: 'no-runner', gap: 'G-64' },
+      py: { status: 'partial', cause: 'no-runner', gap: 'G-64' },
+    },
+  }]]);
+  const reports = allSkipped();
+  assert.match(verifyCoverage(reports, coverage(reports), manifests).join('\n'), /declared.*every language/);
+});
+
+test('a suite claiming full against the GENERIC runner and skipping every row fails', () => {
+  // The case the rule was written for: a runner reporting agreement it never
+  // measured. prism-parity's own runner is the generic one, so declaring it
+  // cannot excuse skipping every row.
+  const manifests = new Map([['declared', {
+    implementations: {
+      php: { status: 'full', runner: 'prism-parity:runners/php/runner.php' },
+      ts: { status: 'full', runner: 'prism-parity:runners/php/runner.php' },
+      py: { status: 'full', runner: 'prism-parity:runners/php/runner.php' },
+    },
+  }]]);
+  const reports = allSkipped();
+  assert.match(verifyCoverage(reports, coverage(reports), manifests).join('\n'), /declared.*every language/);
+});
+
+test('with no manifests supplied the all-skip rule stays strict', () => {
+  const reports = allSkipped();
+  assert.match(verifyCoverage(reports, coverage(reports)).join('\n'), /declared.*every language/);
+});
+
+test('a PARTIAL implementation with a package-specific runner does not excuse an all-skip suite', () => {
+  // A runner that exists is not a declaration that the suite is verified. Only
+  // `full` says that, and without this the status check is dead weight: the
+  // floor test above passes on the absent `runner` alone.
+  const manifests = new Map([['declared', {
+    implementations: {
+      php: { status: 'partial', cause: 'reference-limit', gap: 'G-64', runner: 'prism:tests/PartialTest.php' },
+      ts: { status: 'partial', cause: 'no-runner', gap: 'G-64' },
+      py: { status: 'partial', cause: 'no-runner', gap: 'G-64' },
+    },
+  }]]);
+  const reports = allSkipped();
+  assert.match(verifyCoverage(reports, coverage(reports), manifests).join('\n'), /declared.*every language/);
+});
