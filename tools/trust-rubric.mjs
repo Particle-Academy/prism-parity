@@ -190,7 +190,7 @@ const adversarialRows = rows.reduce((sum, row) => sum + row.adversarial, 0);
 const fuzzedIdentifiers = rows.reduce((sum, row) => sum + row.fuzzed, 0);
 
 if (process.argv.includes('--json')) {
-  console.log(JSON.stringify({ securityCorpora: rows.length, adversarialRows, fuzzedIdentifiers, suites: rows }));
+  console.log(JSON.stringify({ securityCorpora: rows.length, adversarialRows, fuzzedIdentifiers, hazardClaimingCorpora: rows.filter((row) => row.claimsHazard).length, suites: rows }));
 }
 process.stderr.write(
   `Trust rubric passed: ${rows.length} security corpus/corpora, ` +

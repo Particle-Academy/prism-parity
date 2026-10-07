@@ -123,10 +123,11 @@ refactor is the bytes.
 identifier-named field (`name`, `tool`, `kind`, `worker`, `outcome`, …), and it
 counts as hazardous when it carries edge whitespace, a format/control
 codepoint, a non-ASCII character, or interior whitespace that leaves a
-malformed token. Three suites claim a hazard and all three back it:
-`human-plus-tool-admission` (11 of 43), `opentelemetry-span-attributes` (3 of
-284, padded rate-limit bucket names) and `opentelemetry-media-content` (1 of 13,
-a Cyrillic `і` in a part kind).
+malformed token. <!-- metric:security.hazardClaimingCorpora -->3<!-- /metric -->
+corpora claim such a hazard, and every one of them backs it:
+`human-plus-tool-admission` (11 of 43 identifier values),
+`opentelemetry-span-attributes` (3 of 284, padded rate-limit bucket names) and
+`opentelemetry-media-content` (1 of 13, a Cyrillic `і` in a part kind).
 
 **Vacuity is a failure too.** A suite that claims a hazard and yields *no*
 identifier value at all means the case shape moved under the probe, or the field
@@ -142,8 +143,9 @@ by measurement, not by argument:**
   name-fuzzed on the strength of a naming convention.
 - `invisible` is not in the hazard vocabulary. `provider-rate-limits` uses it
   about a failure mode — "the failure is invisible at the moment it happens" —
-  beside the word `names`. Including it turns **three** suites red that never
-  asserted an identifier hazard.
+  beside the word `names`. Including it reddened `provider-rate-limits`,
+  `mcp-tool-digest` and `workspace-path-guard`, none of which had asserted an
+  identifier hazard at all.
 
 **The blind spot, and the floor under it.** Being claim-gated, criterion 8 goes
 quiet rather than red if a suite's padded rows *and* every claim to them are
@@ -157,8 +159,10 @@ corpus-wide hazard count to be **at least one**, so the corpora cannot all stop
 fuzzing identifiers and still report success. Measured rather than assumed —
 scrubbing every security corpus leaves the rubric itself green at `0` and fails
 the gate. It is a corpus-wide floor, not a per-suite one: scrubbing only the
-three suites that claim a hazard leaves rows elsewhere and passes. Neither the
-criterion nor the floor is a substitute for reading a manifest diff.
+corpora that claim a hazard leaves rows elsewhere and still passes, because
+`agent-task-claim` and `harness-session-key` carry padded identifiers without
+claiming one. Neither the criterion nor the floor is a substitute for reading a
+manifest diff.
 
 ```
 node tools/trust-rubric.mjs --names    # print every flagged value and its marks
