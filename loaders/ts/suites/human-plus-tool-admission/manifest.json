@@ -18,7 +18,7 @@
   "implementations": {
     "php": {
       "status": "full",
-      "runner": "prism-human-plus:tests/ToolAdmissionCorpusTest.php"
+      "runner": "prism-human-plus:tests/Unit/ToolAdmissionCorpusTest.php"
     },
     "ts": {
       "status": "full",

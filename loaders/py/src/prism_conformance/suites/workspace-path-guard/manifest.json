@@ -16,7 +16,8 @@
   "implementations": {
     "php": {
       "status": "full",
-      "runner": "prism-workspace:tests/Unit/PathGuardTest.php"
+      "runner": "prism-workspace:tests/Unit/PathGuardTest.php",
+      "references": "prism-workspace:src/Security/EscapeCorpus.php"
     },
     "ts": {
       "status": "full",

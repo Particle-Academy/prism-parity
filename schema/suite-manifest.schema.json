@@ -108,6 +108,10 @@
           "runner": {
             "type": "string"
           },
+          "references": {
+            "type": "string",
+            "description": "Locator, `repo:path`, for a corpus this runner reads that is NOT a discoverable JSON copy — one embedded in the package as source. prism-workspace ships the 134 escape rows as `src/Security/EscapeCorpus.php` on purpose, so no amount of JSON discovery will find it. Declaring it is not an exemption: tools/remote-alignment.mjs requires the file to exist on that repository's main AND the runner to name it, and refuses a locator naming a repository other than the runner's."
+          },
           "note": {
             "type": "string"
           },

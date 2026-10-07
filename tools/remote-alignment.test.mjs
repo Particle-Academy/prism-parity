@@ -134,3 +134,154 @@ test('contents access refuses traversal before making a request', async () => {
   await assert.rejects(() => api.file('prism-ts', '../private', 'a'.repeat(40)), /Invalid/);
   await assert.rejects(() => api.file('other-owner/repo', 'test.ts', 'a'.repeat(40)), /Invalid/);
 });
+
+// --- Generic runners, derived copies, and declared in-source corpora --------
+//
+// These three shapes accounted for EIGHTEEN of the twenty-two failures the
+// first time this audit was run against real repositories, and none of them
+// was a defect. Each test below has a negative twin, because the risk in
+// loosening a check is that it stops catching the thing it was built for.
+
+const refusalCorpus = Buffer.from('{"suite":"example","cases":[{"id":"one","refusal":"escape","notes":"authoring only"}]}\n');
+const refusalSuites = [{
+  id: 'example',
+  bytes: refusalCorpus,
+  implementations: { ts: { status: 'full', runner: 'prism-ts:test/corpus.test.ts' } },
+}];
+
+test('a generic runner that opens the published corpus is evidence for every suite', async () => {
+  // prism-ts:conformance/runner.mjs serves six suites by enumerating them, so
+  // it can contain no suite id at all. Six failures came from this one file.
+  for (const locator of ['@particle-academy/prism-conformance', 'prism_conformance', 'Corpus::open', 'Corpus.open']) {
+    const result = await auditRemote(suites, fakeApi({
+      tree: async () => [],
+      file: async (_repo, path) => path.endsWith('.ts') ? Buffer.from(`const c = ${locator}(root);`) : corpus,
+    }));
+    assert.equal(result.ok, true, locator);
+    assert.equal(result.verifiedClaims, 1, locator);
+  }
+});
+
+test('a runner naming no suite, no copy and no loader still fails', async () => {
+  // The control for the test above. Loosening the check must not make it vacuous.
+  const result = await auditRemote(suites, fakeApi({
+    tree: async () => [],
+    file: async (_repo, path) => path.endsWith('.ts') ? Buffer.from('const c = openSomethingElse(root);') : corpus,
+  }));
+  assert.equal(result.ok, false);
+  assert.equal(result.unreferencedFullRunners, 1);
+});
+
+test('a derived copy is recognised by case identity and verified on shared fields', async () => {
+  // prism-workspace-ts ships 134 rows as escape-corpus.json: same ids, `note`
+  // for `notes`, no `since`. Byte comparison is the wrong question for it.
+  const derived = Buffer.from('{"cases":[{"id":"one","refusal":"escape","note":"narrowed"}]}');
+  const result = await auditRemote(refusalSuites, fakeApi({
+    tree: async () => [{ type: 'blob', path: 'src/security/escape-corpus.json' }],
+    file: async (_repo, path) => path.endsWith('.ts') ? Buffer.from("read('escape-corpus.json')") : derived,
+  }));
+  assert.equal(result.ok, true);
+  assert.equal(result.discoveredCopies, 1);
+  assert.equal(result.verifiedCopies, 1);
+  assert.equal(result.staleCopies, 0);
+});
+
+test('DERIVED IS NOT AN ESCAPE HATCH: a changed value in a derived copy is stale', async () => {
+  // Dropping `suite` to dodge the byte comparison must buy nothing. Every
+  // field the copy does carry is still compared.
+  const tampered = Buffer.from('{"cases":[{"id":"one","refusal":"allowed","note":"narrowed"}]}');
+  const result = await auditRemote(refusalSuites, fakeApi({
+    tree: async () => [{ type: 'blob', path: 'src/security/escape-corpus.json' }],
+    file: async (_repo, path) => path.endsWith('.ts') ? Buffer.from("read('escape-corpus.json')") : tampered,
+  }));
+  assert.equal(result.ok, false);
+  assert.equal(result.staleCopies, 1);
+  assert.match(result.failures.join('\n'), /derived.*one\.refusal/s);
+});
+
+test('a copy whose case ids differ is not derived from the suite at all', async () => {
+  const unrelated = Buffer.from('{"cases":[{"id":"somethingelse","refusal":"escape"}]}');
+  const result = await auditRemote(refusalSuites, fakeApi({
+    tree: async () => [{ type: 'blob', path: 'src/security/escape-corpus.json' }],
+    file: async (_repo, path) => path.endsWith('.ts') ? Buffer.from("read('escape-corpus.json')") : unrelated,
+  }));
+  assert.equal(result.ok, false);
+  assert.equal(result.discoveredCopies, 0);
+  assert.equal(result.unreferencedFullRunners, 1);
+});
+
+test('a declared in-source corpus satisfies the reference when it exists and is named', async () => {
+  // prism-workspace embeds the rows as EscapeCorpus.php, shipped in the
+  // distributed package on purpose. No JSON discovery can ever find it.
+  const declared = [{
+    ...suites[0],
+    implementations: {
+      php: { status: 'full', runner: 'prism-workspace:tests/Unit/PathGuardTest.php', references: 'prism-workspace:src/Security/EscapeCorpus.php' },
+    },
+  }];
+  const result = await auditRemote(declared, fakeApi({
+    tree: async () => [],
+    file: async (_repo, path) => Buffer.from(path.endsWith('PathGuardTest.php') ? 'use EscapeCorpus; EscapeCorpus::all();' : 'final class EscapeCorpus {}'),
+  }));
+  assert.equal(result.ok, true);
+  assert.equal(result.verifiedClaims, 1);
+});
+
+test('a declared in-source corpus that does not exist fails', async () => {
+  const declared = [{
+    ...suites[0],
+    implementations: {
+      php: { status: 'full', runner: 'prism-workspace:tests/Unit/PathGuardTest.php', references: 'prism-workspace:src/Security/Missing.php' },
+    },
+  }];
+  const result = await auditRemote(declared, fakeApi({
+    tree: async () => [],
+    file: async (_repo, path) => path.endsWith('Missing.php') ? null : Buffer.from('use EscapeCorpus;'),
+  }));
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /MISSING REFERENCES/);
+});
+
+test('a declared corpus the runner never names does not satisfy the reference', async () => {
+  // Declaring a file is not the same as reading it.
+  const declared = [{
+    ...suites[0],
+    implementations: {
+      php: { status: 'full', runner: 'prism-workspace:tests/Unit/PathGuardTest.php', references: 'prism-workspace:src/Security/EscapeCorpus.php' },
+    },
+  }];
+  const result = await auditRemote(declared, fakeApi({
+    tree: async () => [],
+    file: async () => Buffer.from('assert(true);'),
+  }));
+  assert.equal(result.ok, false);
+  assert.equal(result.unreferencedFullRunners, 1);
+});
+
+test('a references locator pointing at another repository is refused', async () => {
+  // A runner cannot read another repository's source, so a locator that says
+  // it does is a manifest error rather than evidence.
+  const declared = [{
+    ...suites[0],
+    implementations: {
+      php: { status: 'full', runner: 'prism-workspace:tests/Unit/PathGuardTest.php', references: 'prism-parity:suites/example/cases.json' },
+    },
+  }];
+  const result = await auditRemote(declared, fakeApi({ tree: async () => [] }));
+  assert.equal(result.ok, false);
+  assert.match(result.failures.join('\n'), /cannot read another repository/);
+});
+
+test('a derived copy carrying a field the suite does not have is stale', async () => {
+  // The other half of the escape hatch. A copy that INVENTS a field has either
+  // been hand-edited or has diverged in shape; either way the two are no longer
+  // the same corpus, and reporting only changed values would miss it.
+  const invented = Buffer.from('{"cases":[{"id":"one","refusal":"escape","expected":"allowed"}]}');
+  const result = await auditRemote(refusalSuites, fakeApi({
+    tree: async () => [{ type: 'blob', path: 'src/security/escape-corpus.json' }],
+    file: async (_repo, path) => path.endsWith('.ts') ? Buffer.from("read('escape-corpus.json')") : invented,
+  }));
+  assert.equal(result.ok, false);
+  assert.equal(result.staleCopies, 1);
+  assert.match(result.failures.join('\n'), /one\.expected is absent from the suite/);
+});

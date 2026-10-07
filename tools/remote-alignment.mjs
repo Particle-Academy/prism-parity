@@ -9,6 +9,64 @@ import { compareCorpusContent } from './corpus-content.mjs';
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const slug = /^[a-z0-9][a-z0-9-]*$/;
 
+// A GENERIC runner serves every suite by opening the corpus and enumerating it,
+// so it cannot contain any one suite's id — and requiring one reported fifteen
+// failures against three runners that were doing exactly what they claim.
+//
+// These are the loader entry points. Textual evidence, like the suite-id check
+// it stands beside: it says this file opens the published corpus and walks it,
+// not that a run happened. Execution is the cross-check workflow's job.
+const LOADER_EVIDENCE = [
+  '@particle-academy/prism-conformance', // TypeScript
+  'prism_conformance',                   // Python
+  'Corpus::open',                        // PHP
+  'Corpus.open',                         // TS/Python call form
+];
+
+// Fields a derived copy is allowed not to carry. `suites/*/cases.json` is the
+// authoring format; a package that SHIPS the corpus in its own artifact may
+// legitimately narrow it — prism-workspace-ts vendors 134 rows as
+// `escape-corpus.json` with `note` for `notes` and no `since`.
+const DERIVED_OPTIONAL = new Set(['notes', 'note', 'since', 'title']);
+
+function caseIds(document) {
+  const cases = Array.isArray(document?.cases) ? document.cases : [];
+  return cases.every((entry) => typeof entry?.id === 'string') ? cases.map((entry) => entry.id) : null;
+}
+
+// Compare a DERIVED copy on the fields it actually carries.
+//
+// Byte comparison is right for a vendored copy and wrong for a derived one, but
+// "derived" must not become the way to escape the staleness check: a copy whose
+// case ids do not match the suite's exactly is not derived from it, and every
+// field the copy DOES carry is compared. So dropping `suite` to dodge the byte
+// check buys nothing — the values are still checked, field by field.
+function compareDerived(suite, document) {
+  let canonicalDocument;
+  try { canonicalDocument = JSON.parse(suite.bytes.toString('utf8')); }
+  catch { return { derived: false }; }
+
+  const ids = caseIds(document);
+  const expected = caseIds(canonicalDocument);
+  if (ids === null || expected === null) return { derived: false };
+  if (ids.length !== expected.length || ids.some((id, index) => id !== expected[index])) return { derived: false };
+
+  const byId = new Map(canonicalDocument.cases.map((entry) => [entry.id, entry]));
+  const differences = [];
+  for (const entry of document.cases) {
+    const canonical = byId.get(entry.id);
+    for (const [key, value] of Object.entries(entry)) {
+      if (DERIVED_OPTIONAL.has(key)) continue;
+      if (!Object.hasOwn(canonical, key)) {
+        differences.push(`${entry.id}.${key} is absent from the suite`);
+      } else if (JSON.stringify(canonical[key]) !== JSON.stringify(value)) {
+        differences.push(`${entry.id}.${key}`);
+      }
+    }
+  }
+  return { derived: true, differences };
+}
+
 function safePath(path) {
   return typeof path === 'string' && path.length > 0 && !path.startsWith('/') && !path.includes('\\') && !path.split('/').some((part) => part === '..' || part === '.' || part === '');
 }
@@ -82,7 +140,28 @@ export async function auditRemote(suites, api) {
         result.failures.push(`${suite.id}/${language}: invalid runner locator ${implementation.runner}`);
         continue;
       }
-      claims.push({ suite: suite.id, language, status: implementation.status, repo: match[1], path: match[2] });
+      // `references` is for a corpus that is not a discoverable JSON copy — one
+      // embedded in the package as source. prism-workspace ships the 134 rows
+      // as `EscapeCorpus.php` deliberately ("a sandbox boundary nobody outside
+      // the project can verify is a claim"), so no amount of JSON discovery
+      // will find it. Declaring it is not an exemption: the file must exist on
+      // that repo's main AND the runner must name it, both checked below.
+      let references;
+      if (implementation.references !== undefined) {
+        const declared = /^([a-z0-9-]+):(.+)$/.exec(implementation.references);
+        if (!declared || !safePath(declared[2])) {
+          result.unresolvedClaims++;
+          result.failures.push(`${suite.id}/${language}: invalid references locator ${implementation.references}`);
+          continue;
+        }
+        if (declared[1] !== match[1]) {
+          result.unresolvedClaims++;
+          result.failures.push(`${suite.id}/${language}: references ${declared[1]} but the runner lives in ${match[1]}; a runner cannot read another repository's source`);
+          continue;
+        }
+        references = declared[2];
+      }
+      claims.push({ suite: suite.id, language, status: implementation.status, repo: match[1], path: match[2], references });
     }
   }
   if (result.claimedRunners === 0) result.failures.push('No runner claims discovered; the audit verified nothing.');
@@ -139,7 +218,32 @@ export async function auditRemote(suites, api) {
         let document;
         try { document = JSON.parse(bytes.toString('utf8')); }
         catch { throw new Error(`${repo}:${entry.path}: candidate corpus is not JSON`); }
-        const suite = byId.get(document?.suite);
+        let suite = byId.get(document?.suite);
+
+        // A copy that does not name its suite may still BE one, narrowed. Try
+        // every suite by case-id identity before dismissing the file: the
+        // alternative reported three real corpus consumers as referencing
+        // nothing, because the copy they read is called `escape-corpus.json`
+        // and drops the authoring-only fields.
+        if (!suite && document?.suite === undefined) {
+          for (const candidate of suites) {
+            const { derived, differences } = compareDerived(candidate, document);
+            if (!derived) continue;
+            result.discoveredCopies++;
+            fixtureNames.set(candidate.id, [...(fixtureNames.get(candidate.id) ?? []), name]);
+            if (differences.length === 0) result.verifiedCopies++;
+            else {
+              result.staleCopies++;
+              result.failures.push(
+                `STALE ${repo}:${entry.path} (${candidate.id}, derived): ${differences.length} field(s) differ — ${differences.slice(0, 5).join(', ')}`,
+              );
+            }
+            suite = candidate;
+            break;
+          }
+          if (suite) continue; // Counted as a derived copy; not byte-compared.
+        }
+
         if (!suite) {
           if (namedSuite || name === 'cases.json') throw new Error(`${repo}:${entry.path}: corpus copy has no recognized suite id`);
           continue; // A referenced config JSON is not a corpus copy.
@@ -158,7 +262,27 @@ export async function auditRemote(suites, api) {
       result.failures.push(`COPY DISCOVERY ${repo}@${ref}: ${error.message}`);
     }
     for (const claim of loaded) {
-      const references = [claim.suite, ...(fixtureNames.get(claim.suite) ?? [])];
+      // Either the runner names this suite, or it names a copy of it that was
+      // discovered in the repo, or it opens the published corpus and walks it,
+      // or the manifest declared the in-source corpus it reads.
+      const references = [claim.suite, ...(fixtureNames.get(claim.suite) ?? []), ...LOADER_EVIDENCE];
+      if (claim.references !== undefined) {
+        const declared = basename(claim.references).replace(/\.[^.]+$/, '');
+        let declaredBytes;
+        try { declaredBytes = await read(claim.references); }
+        catch (error) {
+          result.unresolvedClaims++;
+          result.checkedClaims++;
+          result.failures.push(`${claim.suite}/${claim.language}: ${error.message}`);
+          continue;
+        }
+        if (declaredBytes === null) {
+          result.checkedClaims++;
+          result.failures.push(`MISSING REFERENCES ${claim.suite}/${claim.language}: ${repo}:${claim.references}@${ref} is declared as the in-source corpus and does not exist`);
+          continue;
+        }
+        if (declared !== '') references.push(declared);
+      }
       if (claim.status === 'full' && !references.some((reference) => claim.text.includes(reference))) {
         if (!discoveryComplete) {
           result.unresolvedClaims++;
