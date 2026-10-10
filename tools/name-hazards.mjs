@@ -62,7 +62,7 @@ export const HAZARD_SUBJECTS = [
 ];
 
 export function mentions(prose, term) {
-  return new RegExp(`(?<![A-Za-z0-9_])${term.replace(/[-+.]/g, '\\$&')}(?![A-Za-z0-9_])`, 'i').test(prose);
+  return new RegExp(`(?<![A-Za-z0-9_])${term.replace(/[.*+?^${}()|[\]\\-]/g, '\\$&')}(?![A-Za-z0-9_])`, 'i').test(prose);
 }
 
 // The marks an identifier-shaped value wears, or null when the value is not an

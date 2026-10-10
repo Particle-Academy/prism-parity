@@ -1,0 +1,6078 @@
+{
+  "capturedFrom": "main, original mentions() before full regex escaping",
+  "claims": [
+    "homoglyph",
+    "zero-width",
+    "zero width",
+    "byte order mark",
+    "non-breaking space",
+    "ideographic space",
+    "control character",
+    "trailing space",
+    "trailing newline",
+    "leading space",
+    "interior whitespace",
+    "codepoint"
+  ],
+  "subjects": [
+    "name",
+    "names",
+    "tool",
+    "tools",
+    "verb",
+    "verbs",
+    "identifier",
+    "kind",
+    "type"
+  ],
+  "samples": [
+    {
+      "claim": "homoglyph",
+      "subject": "name",
+      "prose": "A homoglyph in the name must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "name",
+      "prose": "The NAME carries a HOMOGLYPH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "name",
+      "prose": "(homoglyph): 'name'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "name",
+      "prose": "A prefixhomoglyph in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "name",
+      "prose": "A homoglyphSuffix in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "name",
+      "prose": "A homoglyph in prefixnameSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "name",
+      "prose": "_prefix_homoglyph_suffix_ name_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "name",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "names",
+      "prose": "A homoglyph in the names must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "names",
+      "prose": "The NAMES carries a HOMOGLYPH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "names",
+      "prose": "(homoglyph): 'names'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "names",
+      "prose": "A prefixhomoglyph in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "names",
+      "prose": "A homoglyphSuffix in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "names",
+      "prose": "A homoglyph in prefixnamesSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "names",
+      "prose": "_prefix_homoglyph_suffix_ names_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "names",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tool",
+      "prose": "A homoglyph in the tool must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tool",
+      "prose": "The TOOL carries a HOMOGLYPH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tool",
+      "prose": "(homoglyph): 'tool'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tool",
+      "prose": "A prefixhomoglyph in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tool",
+      "prose": "A homoglyphSuffix in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tool",
+      "prose": "A homoglyph in prefixtoolSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tool",
+      "prose": "_prefix_homoglyph_suffix_ tool_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tool",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tools",
+      "prose": "A homoglyph in the tools must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tools",
+      "prose": "The TOOLS carries a HOMOGLYPH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tools",
+      "prose": "(homoglyph): 'tools'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tools",
+      "prose": "A prefixhomoglyph in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tools",
+      "prose": "A homoglyphSuffix in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tools",
+      "prose": "A homoglyph in prefixtoolsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tools",
+      "prose": "_prefix_homoglyph_suffix_ tools_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "tools",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verb",
+      "prose": "A homoglyph in the verb must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verb",
+      "prose": "The VERB carries a HOMOGLYPH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verb",
+      "prose": "(homoglyph): 'verb'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verb",
+      "prose": "A prefixhomoglyph in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verb",
+      "prose": "A homoglyphSuffix in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verb",
+      "prose": "A homoglyph in prefixverbSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verb",
+      "prose": "_prefix_homoglyph_suffix_ verb_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verb",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verbs",
+      "prose": "A homoglyph in the verbs must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verbs",
+      "prose": "The VERBS carries a HOMOGLYPH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verbs",
+      "prose": "(homoglyph): 'verbs'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verbs",
+      "prose": "A prefixhomoglyph in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verbs",
+      "prose": "A homoglyphSuffix in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verbs",
+      "prose": "A homoglyph in prefixverbsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verbs",
+      "prose": "_prefix_homoglyph_suffix_ verbs_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "verbs",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "identifier",
+      "prose": "A homoglyph in the identifier must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "identifier",
+      "prose": "The IDENTIFIER carries a HOMOGLYPH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "identifier",
+      "prose": "(homoglyph): 'identifier'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "identifier",
+      "prose": "A prefixhomoglyph in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "identifier",
+      "prose": "A homoglyphSuffix in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "identifier",
+      "prose": "A homoglyph in prefixidentifierSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "identifier",
+      "prose": "_prefix_homoglyph_suffix_ identifier_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "identifier",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "kind",
+      "prose": "A homoglyph in the kind must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "kind",
+      "prose": "The KIND carries a HOMOGLYPH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "kind",
+      "prose": "(homoglyph): 'kind'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "kind",
+      "prose": "A prefixhomoglyph in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "kind",
+      "prose": "A homoglyphSuffix in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "kind",
+      "prose": "A homoglyph in prefixkindSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "kind",
+      "prose": "_prefix_homoglyph_suffix_ kind_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "kind",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "type",
+      "prose": "A homoglyph in the type must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "type",
+      "prose": "The TYPE carries a HOMOGLYPH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "type",
+      "prose": "(homoglyph): 'type'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "type",
+      "prose": "A prefixhomoglyph in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "type",
+      "prose": "A homoglyphSuffix in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "type",
+      "prose": "A homoglyph in prefixtypeSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "type",
+      "prose": "_prefix_homoglyph_suffix_ type_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "homoglyph",
+      "subject": "type",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "name",
+      "prose": "A zero-width in the name must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "name",
+      "prose": "The NAME carries a ZERO-WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "name",
+      "prose": "(zero-width): 'name'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "name",
+      "prose": "A prefixzero-width in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "name",
+      "prose": "A zero-widthSuffix in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "name",
+      "prose": "A zero-width in prefixnameSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "name",
+      "prose": "_prefix_zero-width_suffix_ name_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "name",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "names",
+      "prose": "A zero-width in the names must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "names",
+      "prose": "The NAMES carries a ZERO-WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "names",
+      "prose": "(zero-width): 'names'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "names",
+      "prose": "A prefixzero-width in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "names",
+      "prose": "A zero-widthSuffix in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "names",
+      "prose": "A zero-width in prefixnamesSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "names",
+      "prose": "_prefix_zero-width_suffix_ names_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "names",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tool",
+      "prose": "A zero-width in the tool must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tool",
+      "prose": "The TOOL carries a ZERO-WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tool",
+      "prose": "(zero-width): 'tool'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tool",
+      "prose": "A prefixzero-width in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tool",
+      "prose": "A zero-widthSuffix in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tool",
+      "prose": "A zero-width in prefixtoolSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tool",
+      "prose": "_prefix_zero-width_suffix_ tool_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tool",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tools",
+      "prose": "A zero-width in the tools must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tools",
+      "prose": "The TOOLS carries a ZERO-WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tools",
+      "prose": "(zero-width): 'tools'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tools",
+      "prose": "A prefixzero-width in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tools",
+      "prose": "A zero-widthSuffix in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tools",
+      "prose": "A zero-width in prefixtoolsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tools",
+      "prose": "_prefix_zero-width_suffix_ tools_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "tools",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verb",
+      "prose": "A zero-width in the verb must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verb",
+      "prose": "The VERB carries a ZERO-WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verb",
+      "prose": "(zero-width): 'verb'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verb",
+      "prose": "A prefixzero-width in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verb",
+      "prose": "A zero-widthSuffix in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verb",
+      "prose": "A zero-width in prefixverbSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verb",
+      "prose": "_prefix_zero-width_suffix_ verb_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verb",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verbs",
+      "prose": "A zero-width in the verbs must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verbs",
+      "prose": "The VERBS carries a ZERO-WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verbs",
+      "prose": "(zero-width): 'verbs'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verbs",
+      "prose": "A prefixzero-width in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verbs",
+      "prose": "A zero-widthSuffix in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verbs",
+      "prose": "A zero-width in prefixverbsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verbs",
+      "prose": "_prefix_zero-width_suffix_ verbs_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "verbs",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "identifier",
+      "prose": "A zero-width in the identifier must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "identifier",
+      "prose": "The IDENTIFIER carries a ZERO-WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "identifier",
+      "prose": "(zero-width): 'identifier'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "identifier",
+      "prose": "A prefixzero-width in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "identifier",
+      "prose": "A zero-widthSuffix in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "identifier",
+      "prose": "A zero-width in prefixidentifierSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "identifier",
+      "prose": "_prefix_zero-width_suffix_ identifier_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "identifier",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "kind",
+      "prose": "A zero-width in the kind must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "kind",
+      "prose": "The KIND carries a ZERO-WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "kind",
+      "prose": "(zero-width): 'kind'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "kind",
+      "prose": "A prefixzero-width in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "kind",
+      "prose": "A zero-widthSuffix in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "kind",
+      "prose": "A zero-width in prefixkindSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "kind",
+      "prose": "_prefix_zero-width_suffix_ kind_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "kind",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "type",
+      "prose": "A zero-width in the type must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "type",
+      "prose": "The TYPE carries a ZERO-WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "type",
+      "prose": "(zero-width): 'type'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "type",
+      "prose": "A prefixzero-width in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "type",
+      "prose": "A zero-widthSuffix in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero-width",
+      "subject": "type",
+      "prose": "A zero-width in prefixtypeSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "type",
+      "prose": "_prefix_zero-width_suffix_ type_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero-width",
+      "subject": "type",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "name",
+      "prose": "A zero width in the name must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "name",
+      "prose": "The NAME carries a ZERO WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "name",
+      "prose": "(zero width): 'name'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "name",
+      "prose": "A prefixzero width in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "name",
+      "prose": "A zero widthSuffix in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "name",
+      "prose": "A zero width in prefixnameSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "name",
+      "prose": "_prefix_zero width_suffix_ name_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "name",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "names",
+      "prose": "A zero width in the names must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "names",
+      "prose": "The NAMES carries a ZERO WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "names",
+      "prose": "(zero width): 'names'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "names",
+      "prose": "A prefixzero width in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "names",
+      "prose": "A zero widthSuffix in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "names",
+      "prose": "A zero width in prefixnamesSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "names",
+      "prose": "_prefix_zero width_suffix_ names_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "names",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "tool",
+      "prose": "A zero width in the tool must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "tool",
+      "prose": "The TOOL carries a ZERO WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "tool",
+      "prose": "(zero width): 'tool'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "tool",
+      "prose": "A prefixzero width in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "tool",
+      "prose": "A zero widthSuffix in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "tool",
+      "prose": "A zero width in prefixtoolSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "tool",
+      "prose": "_prefix_zero width_suffix_ tool_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "tool",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "tools",
+      "prose": "A zero width in the tools must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "tools",
+      "prose": "The TOOLS carries a ZERO WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "tools",
+      "prose": "(zero width): 'tools'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "tools",
+      "prose": "A prefixzero width in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "tools",
+      "prose": "A zero widthSuffix in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "tools",
+      "prose": "A zero width in prefixtoolsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "tools",
+      "prose": "_prefix_zero width_suffix_ tools_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "tools",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "verb",
+      "prose": "A zero width in the verb must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "verb",
+      "prose": "The VERB carries a ZERO WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "verb",
+      "prose": "(zero width): 'verb'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "verb",
+      "prose": "A prefixzero width in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "verb",
+      "prose": "A zero widthSuffix in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "verb",
+      "prose": "A zero width in prefixverbSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "verb",
+      "prose": "_prefix_zero width_suffix_ verb_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "verb",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "verbs",
+      "prose": "A zero width in the verbs must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "verbs",
+      "prose": "The VERBS carries a ZERO WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "verbs",
+      "prose": "(zero width): 'verbs'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "verbs",
+      "prose": "A prefixzero width in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "verbs",
+      "prose": "A zero widthSuffix in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "verbs",
+      "prose": "A zero width in prefixverbsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "verbs",
+      "prose": "_prefix_zero width_suffix_ verbs_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "verbs",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "identifier",
+      "prose": "A zero width in the identifier must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "identifier",
+      "prose": "The IDENTIFIER carries a ZERO WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "identifier",
+      "prose": "(zero width): 'identifier'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "identifier",
+      "prose": "A prefixzero width in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "identifier",
+      "prose": "A zero widthSuffix in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "identifier",
+      "prose": "A zero width in prefixidentifierSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "identifier",
+      "prose": "_prefix_zero width_suffix_ identifier_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "identifier",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "kind",
+      "prose": "A zero width in the kind must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "kind",
+      "prose": "The KIND carries a ZERO WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "kind",
+      "prose": "(zero width): 'kind'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "kind",
+      "prose": "A prefixzero width in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "kind",
+      "prose": "A zero widthSuffix in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "kind",
+      "prose": "A zero width in prefixkindSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "kind",
+      "prose": "_prefix_zero width_suffix_ kind_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "kind",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "type",
+      "prose": "A zero width in the type must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "type",
+      "prose": "The TYPE carries a ZERO WIDTH.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "type",
+      "prose": "(zero width): 'type'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "type",
+      "prose": "A prefixzero width in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "type",
+      "prose": "A zero widthSuffix in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "zero width",
+      "subject": "type",
+      "prose": "A zero width in prefixtypeSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "type",
+      "prose": "_prefix_zero width_suffix_ type_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "zero width",
+      "subject": "type",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "name",
+      "prose": "A byte order mark in the name must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "name",
+      "prose": "The NAME carries a BYTE ORDER MARK.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "name",
+      "prose": "(byte order mark): 'name'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "name",
+      "prose": "A prefixbyte order mark in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "name",
+      "prose": "A byte order markSuffix in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "name",
+      "prose": "A byte order mark in prefixnameSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "name",
+      "prose": "_prefix_byte order mark_suffix_ name_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "name",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "names",
+      "prose": "A byte order mark in the names must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "names",
+      "prose": "The NAMES carries a BYTE ORDER MARK.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "names",
+      "prose": "(byte order mark): 'names'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "names",
+      "prose": "A prefixbyte order mark in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "names",
+      "prose": "A byte order markSuffix in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "names",
+      "prose": "A byte order mark in prefixnamesSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "names",
+      "prose": "_prefix_byte order mark_suffix_ names_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "names",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tool",
+      "prose": "A byte order mark in the tool must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tool",
+      "prose": "The TOOL carries a BYTE ORDER MARK.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tool",
+      "prose": "(byte order mark): 'tool'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tool",
+      "prose": "A prefixbyte order mark in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tool",
+      "prose": "A byte order markSuffix in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tool",
+      "prose": "A byte order mark in prefixtoolSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tool",
+      "prose": "_prefix_byte order mark_suffix_ tool_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tool",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tools",
+      "prose": "A byte order mark in the tools must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tools",
+      "prose": "The TOOLS carries a BYTE ORDER MARK.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tools",
+      "prose": "(byte order mark): 'tools'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tools",
+      "prose": "A prefixbyte order mark in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tools",
+      "prose": "A byte order markSuffix in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tools",
+      "prose": "A byte order mark in prefixtoolsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tools",
+      "prose": "_prefix_byte order mark_suffix_ tools_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "tools",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verb",
+      "prose": "A byte order mark in the verb must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verb",
+      "prose": "The VERB carries a BYTE ORDER MARK.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verb",
+      "prose": "(byte order mark): 'verb'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verb",
+      "prose": "A prefixbyte order mark in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verb",
+      "prose": "A byte order markSuffix in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verb",
+      "prose": "A byte order mark in prefixverbSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verb",
+      "prose": "_prefix_byte order mark_suffix_ verb_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verb",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verbs",
+      "prose": "A byte order mark in the verbs must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verbs",
+      "prose": "The VERBS carries a BYTE ORDER MARK.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verbs",
+      "prose": "(byte order mark): 'verbs'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verbs",
+      "prose": "A prefixbyte order mark in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verbs",
+      "prose": "A byte order markSuffix in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verbs",
+      "prose": "A byte order mark in prefixverbsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verbs",
+      "prose": "_prefix_byte order mark_suffix_ verbs_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "verbs",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "identifier",
+      "prose": "A byte order mark in the identifier must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "identifier",
+      "prose": "The IDENTIFIER carries a BYTE ORDER MARK.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "identifier",
+      "prose": "(byte order mark): 'identifier'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "identifier",
+      "prose": "A prefixbyte order mark in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "identifier",
+      "prose": "A byte order markSuffix in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "identifier",
+      "prose": "A byte order mark in prefixidentifierSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "identifier",
+      "prose": "_prefix_byte order mark_suffix_ identifier_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "identifier",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "kind",
+      "prose": "A byte order mark in the kind must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "kind",
+      "prose": "The KIND carries a BYTE ORDER MARK.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "kind",
+      "prose": "(byte order mark): 'kind'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "kind",
+      "prose": "A prefixbyte order mark in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "kind",
+      "prose": "A byte order markSuffix in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "kind",
+      "prose": "A byte order mark in prefixkindSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "kind",
+      "prose": "_prefix_byte order mark_suffix_ kind_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "kind",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "type",
+      "prose": "A byte order mark in the type must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "type",
+      "prose": "The TYPE carries a BYTE ORDER MARK.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "type",
+      "prose": "(byte order mark): 'type'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "type",
+      "prose": "A prefixbyte order mark in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "type",
+      "prose": "A byte order markSuffix in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "type",
+      "prose": "A byte order mark in prefixtypeSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "type",
+      "prose": "_prefix_byte order mark_suffix_ type_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "byte order mark",
+      "subject": "type",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "name",
+      "prose": "A non-breaking space in the name must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "name",
+      "prose": "The NAME carries a NON-BREAKING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "name",
+      "prose": "(non-breaking space): 'name'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "name",
+      "prose": "A prefixnon-breaking space in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "name",
+      "prose": "A non-breaking spaceSuffix in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "name",
+      "prose": "A non-breaking space in prefixnameSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "name",
+      "prose": "_prefix_non-breaking space_suffix_ name_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "name",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "names",
+      "prose": "A non-breaking space in the names must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "names",
+      "prose": "The NAMES carries a NON-BREAKING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "names",
+      "prose": "(non-breaking space): 'names'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "names",
+      "prose": "A prefixnon-breaking space in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "names",
+      "prose": "A non-breaking spaceSuffix in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "names",
+      "prose": "A non-breaking space in prefixnamesSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "names",
+      "prose": "_prefix_non-breaking space_suffix_ names_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "names",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tool",
+      "prose": "A non-breaking space in the tool must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tool",
+      "prose": "The TOOL carries a NON-BREAKING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tool",
+      "prose": "(non-breaking space): 'tool'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tool",
+      "prose": "A prefixnon-breaking space in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tool",
+      "prose": "A non-breaking spaceSuffix in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tool",
+      "prose": "A non-breaking space in prefixtoolSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tool",
+      "prose": "_prefix_non-breaking space_suffix_ tool_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tool",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tools",
+      "prose": "A non-breaking space in the tools must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tools",
+      "prose": "The TOOLS carries a NON-BREAKING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tools",
+      "prose": "(non-breaking space): 'tools'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tools",
+      "prose": "A prefixnon-breaking space in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tools",
+      "prose": "A non-breaking spaceSuffix in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tools",
+      "prose": "A non-breaking space in prefixtoolsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tools",
+      "prose": "_prefix_non-breaking space_suffix_ tools_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "tools",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verb",
+      "prose": "A non-breaking space in the verb must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verb",
+      "prose": "The VERB carries a NON-BREAKING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verb",
+      "prose": "(non-breaking space): 'verb'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verb",
+      "prose": "A prefixnon-breaking space in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verb",
+      "prose": "A non-breaking spaceSuffix in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verb",
+      "prose": "A non-breaking space in prefixverbSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verb",
+      "prose": "_prefix_non-breaking space_suffix_ verb_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verb",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verbs",
+      "prose": "A non-breaking space in the verbs must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verbs",
+      "prose": "The VERBS carries a NON-BREAKING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verbs",
+      "prose": "(non-breaking space): 'verbs'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verbs",
+      "prose": "A prefixnon-breaking space in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verbs",
+      "prose": "A non-breaking spaceSuffix in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verbs",
+      "prose": "A non-breaking space in prefixverbsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verbs",
+      "prose": "_prefix_non-breaking space_suffix_ verbs_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "verbs",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "identifier",
+      "prose": "A non-breaking space in the identifier must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "identifier",
+      "prose": "The IDENTIFIER carries a NON-BREAKING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "identifier",
+      "prose": "(non-breaking space): 'identifier'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "identifier",
+      "prose": "A prefixnon-breaking space in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "identifier",
+      "prose": "A non-breaking spaceSuffix in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "identifier",
+      "prose": "A non-breaking space in prefixidentifierSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "identifier",
+      "prose": "_prefix_non-breaking space_suffix_ identifier_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "identifier",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "kind",
+      "prose": "A non-breaking space in the kind must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "kind",
+      "prose": "The KIND carries a NON-BREAKING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "kind",
+      "prose": "(non-breaking space): 'kind'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "kind",
+      "prose": "A prefixnon-breaking space in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "kind",
+      "prose": "A non-breaking spaceSuffix in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "kind",
+      "prose": "A non-breaking space in prefixkindSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "kind",
+      "prose": "_prefix_non-breaking space_suffix_ kind_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "kind",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "type",
+      "prose": "A non-breaking space in the type must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "type",
+      "prose": "The TYPE carries a NON-BREAKING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "type",
+      "prose": "(non-breaking space): 'type'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "type",
+      "prose": "A prefixnon-breaking space in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "type",
+      "prose": "A non-breaking spaceSuffix in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "type",
+      "prose": "A non-breaking space in prefixtypeSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "type",
+      "prose": "_prefix_non-breaking space_suffix_ type_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "non-breaking space",
+      "subject": "type",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "name",
+      "prose": "A ideographic space in the name must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "name",
+      "prose": "The NAME carries a IDEOGRAPHIC SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "name",
+      "prose": "(ideographic space): 'name'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "name",
+      "prose": "A prefixideographic space in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "name",
+      "prose": "A ideographic spaceSuffix in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "name",
+      "prose": "A ideographic space in prefixnameSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "name",
+      "prose": "_prefix_ideographic space_suffix_ name_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "name",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "names",
+      "prose": "A ideographic space in the names must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "names",
+      "prose": "The NAMES carries a IDEOGRAPHIC SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "names",
+      "prose": "(ideographic space): 'names'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "names",
+      "prose": "A prefixideographic space in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "names",
+      "prose": "A ideographic spaceSuffix in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "names",
+      "prose": "A ideographic space in prefixnamesSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "names",
+      "prose": "_prefix_ideographic space_suffix_ names_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "names",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tool",
+      "prose": "A ideographic space in the tool must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tool",
+      "prose": "The TOOL carries a IDEOGRAPHIC SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tool",
+      "prose": "(ideographic space): 'tool'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tool",
+      "prose": "A prefixideographic space in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tool",
+      "prose": "A ideographic spaceSuffix in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tool",
+      "prose": "A ideographic space in prefixtoolSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tool",
+      "prose": "_prefix_ideographic space_suffix_ tool_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tool",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tools",
+      "prose": "A ideographic space in the tools must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tools",
+      "prose": "The TOOLS carries a IDEOGRAPHIC SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tools",
+      "prose": "(ideographic space): 'tools'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tools",
+      "prose": "A prefixideographic space in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tools",
+      "prose": "A ideographic spaceSuffix in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tools",
+      "prose": "A ideographic space in prefixtoolsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tools",
+      "prose": "_prefix_ideographic space_suffix_ tools_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "tools",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verb",
+      "prose": "A ideographic space in the verb must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verb",
+      "prose": "The VERB carries a IDEOGRAPHIC SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verb",
+      "prose": "(ideographic space): 'verb'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verb",
+      "prose": "A prefixideographic space in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verb",
+      "prose": "A ideographic spaceSuffix in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verb",
+      "prose": "A ideographic space in prefixverbSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verb",
+      "prose": "_prefix_ideographic space_suffix_ verb_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verb",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verbs",
+      "prose": "A ideographic space in the verbs must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verbs",
+      "prose": "The VERBS carries a IDEOGRAPHIC SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verbs",
+      "prose": "(ideographic space): 'verbs'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verbs",
+      "prose": "A prefixideographic space in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verbs",
+      "prose": "A ideographic spaceSuffix in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verbs",
+      "prose": "A ideographic space in prefixverbsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verbs",
+      "prose": "_prefix_ideographic space_suffix_ verbs_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "verbs",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "identifier",
+      "prose": "A ideographic space in the identifier must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "identifier",
+      "prose": "The IDENTIFIER carries a IDEOGRAPHIC SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "identifier",
+      "prose": "(ideographic space): 'identifier'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "identifier",
+      "prose": "A prefixideographic space in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "identifier",
+      "prose": "A ideographic spaceSuffix in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "identifier",
+      "prose": "A ideographic space in prefixidentifierSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "identifier",
+      "prose": "_prefix_ideographic space_suffix_ identifier_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "identifier",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "kind",
+      "prose": "A ideographic space in the kind must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "kind",
+      "prose": "The KIND carries a IDEOGRAPHIC SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "kind",
+      "prose": "(ideographic space): 'kind'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "kind",
+      "prose": "A prefixideographic space in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "kind",
+      "prose": "A ideographic spaceSuffix in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "kind",
+      "prose": "A ideographic space in prefixkindSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "kind",
+      "prose": "_prefix_ideographic space_suffix_ kind_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "kind",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "type",
+      "prose": "A ideographic space in the type must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "type",
+      "prose": "The TYPE carries a IDEOGRAPHIC SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "type",
+      "prose": "(ideographic space): 'type'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "type",
+      "prose": "A prefixideographic space in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "type",
+      "prose": "A ideographic spaceSuffix in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "type",
+      "prose": "A ideographic space in prefixtypeSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "type",
+      "prose": "_prefix_ideographic space_suffix_ type_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "ideographic space",
+      "subject": "type",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "name",
+      "prose": "A control character in the name must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "name",
+      "prose": "The NAME carries a CONTROL CHARACTER.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "name",
+      "prose": "(control character): 'name'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "name",
+      "prose": "A prefixcontrol character in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "name",
+      "prose": "A control characterSuffix in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "name",
+      "prose": "A control character in prefixnameSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "name",
+      "prose": "_prefix_control character_suffix_ name_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "name",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "names",
+      "prose": "A control character in the names must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "names",
+      "prose": "The NAMES carries a CONTROL CHARACTER.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "names",
+      "prose": "(control character): 'names'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "names",
+      "prose": "A prefixcontrol character in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "names",
+      "prose": "A control characterSuffix in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "names",
+      "prose": "A control character in prefixnamesSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "names",
+      "prose": "_prefix_control character_suffix_ names_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "names",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "tool",
+      "prose": "A control character in the tool must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "tool",
+      "prose": "The TOOL carries a CONTROL CHARACTER.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "tool",
+      "prose": "(control character): 'tool'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "tool",
+      "prose": "A prefixcontrol character in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "tool",
+      "prose": "A control characterSuffix in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "tool",
+      "prose": "A control character in prefixtoolSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "tool",
+      "prose": "_prefix_control character_suffix_ tool_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "tool",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "tools",
+      "prose": "A control character in the tools must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "tools",
+      "prose": "The TOOLS carries a CONTROL CHARACTER.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "tools",
+      "prose": "(control character): 'tools'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "tools",
+      "prose": "A prefixcontrol character in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "tools",
+      "prose": "A control characterSuffix in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "tools",
+      "prose": "A control character in prefixtoolsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "tools",
+      "prose": "_prefix_control character_suffix_ tools_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "tools",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "verb",
+      "prose": "A control character in the verb must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "verb",
+      "prose": "The VERB carries a CONTROL CHARACTER.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "verb",
+      "prose": "(control character): 'verb'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "verb",
+      "prose": "A prefixcontrol character in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "verb",
+      "prose": "A control characterSuffix in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "verb",
+      "prose": "A control character in prefixverbSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "verb",
+      "prose": "_prefix_control character_suffix_ verb_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "verb",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "verbs",
+      "prose": "A control character in the verbs must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "verbs",
+      "prose": "The VERBS carries a CONTROL CHARACTER.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "verbs",
+      "prose": "(control character): 'verbs'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "verbs",
+      "prose": "A prefixcontrol character in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "verbs",
+      "prose": "A control characterSuffix in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "verbs",
+      "prose": "A control character in prefixverbsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "verbs",
+      "prose": "_prefix_control character_suffix_ verbs_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "verbs",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "identifier",
+      "prose": "A control character in the identifier must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "identifier",
+      "prose": "The IDENTIFIER carries a CONTROL CHARACTER.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "identifier",
+      "prose": "(control character): 'identifier'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "identifier",
+      "prose": "A prefixcontrol character in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "identifier",
+      "prose": "A control characterSuffix in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "identifier",
+      "prose": "A control character in prefixidentifierSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "identifier",
+      "prose": "_prefix_control character_suffix_ identifier_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "identifier",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "kind",
+      "prose": "A control character in the kind must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "kind",
+      "prose": "The KIND carries a CONTROL CHARACTER.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "kind",
+      "prose": "(control character): 'kind'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "kind",
+      "prose": "A prefixcontrol character in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "kind",
+      "prose": "A control characterSuffix in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "kind",
+      "prose": "A control character in prefixkindSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "kind",
+      "prose": "_prefix_control character_suffix_ kind_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "kind",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "type",
+      "prose": "A control character in the type must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "type",
+      "prose": "The TYPE carries a CONTROL CHARACTER.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "type",
+      "prose": "(control character): 'type'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "type",
+      "prose": "A prefixcontrol character in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "type",
+      "prose": "A control characterSuffix in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "control character",
+      "subject": "type",
+      "prose": "A control character in prefixtypeSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "type",
+      "prose": "_prefix_control character_suffix_ type_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "control character",
+      "subject": "type",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "name",
+      "prose": "A trailing space in the name must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "name",
+      "prose": "The NAME carries a TRAILING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "name",
+      "prose": "(trailing space): 'name'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "name",
+      "prose": "A prefixtrailing space in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "name",
+      "prose": "A trailing spaceSuffix in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "name",
+      "prose": "A trailing space in prefixnameSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "name",
+      "prose": "_prefix_trailing space_suffix_ name_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "name",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "names",
+      "prose": "A trailing space in the names must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "names",
+      "prose": "The NAMES carries a TRAILING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "names",
+      "prose": "(trailing space): 'names'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "names",
+      "prose": "A prefixtrailing space in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "names",
+      "prose": "A trailing spaceSuffix in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "names",
+      "prose": "A trailing space in prefixnamesSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "names",
+      "prose": "_prefix_trailing space_suffix_ names_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "names",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tool",
+      "prose": "A trailing space in the tool must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tool",
+      "prose": "The TOOL carries a TRAILING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tool",
+      "prose": "(trailing space): 'tool'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tool",
+      "prose": "A prefixtrailing space in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tool",
+      "prose": "A trailing spaceSuffix in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tool",
+      "prose": "A trailing space in prefixtoolSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tool",
+      "prose": "_prefix_trailing space_suffix_ tool_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tool",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tools",
+      "prose": "A trailing space in the tools must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tools",
+      "prose": "The TOOLS carries a TRAILING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tools",
+      "prose": "(trailing space): 'tools'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tools",
+      "prose": "A prefixtrailing space in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tools",
+      "prose": "A trailing spaceSuffix in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tools",
+      "prose": "A trailing space in prefixtoolsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tools",
+      "prose": "_prefix_trailing space_suffix_ tools_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "tools",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verb",
+      "prose": "A trailing space in the verb must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verb",
+      "prose": "The VERB carries a TRAILING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verb",
+      "prose": "(trailing space): 'verb'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verb",
+      "prose": "A prefixtrailing space in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verb",
+      "prose": "A trailing spaceSuffix in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verb",
+      "prose": "A trailing space in prefixverbSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verb",
+      "prose": "_prefix_trailing space_suffix_ verb_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verb",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verbs",
+      "prose": "A trailing space in the verbs must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verbs",
+      "prose": "The VERBS carries a TRAILING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verbs",
+      "prose": "(trailing space): 'verbs'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verbs",
+      "prose": "A prefixtrailing space in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verbs",
+      "prose": "A trailing spaceSuffix in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verbs",
+      "prose": "A trailing space in prefixverbsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verbs",
+      "prose": "_prefix_trailing space_suffix_ verbs_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "verbs",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "identifier",
+      "prose": "A trailing space in the identifier must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "identifier",
+      "prose": "The IDENTIFIER carries a TRAILING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "identifier",
+      "prose": "(trailing space): 'identifier'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "identifier",
+      "prose": "A prefixtrailing space in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "identifier",
+      "prose": "A trailing spaceSuffix in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "identifier",
+      "prose": "A trailing space in prefixidentifierSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "identifier",
+      "prose": "_prefix_trailing space_suffix_ identifier_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "identifier",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "kind",
+      "prose": "A trailing space in the kind must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "kind",
+      "prose": "The KIND carries a TRAILING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "kind",
+      "prose": "(trailing space): 'kind'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "kind",
+      "prose": "A prefixtrailing space in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "kind",
+      "prose": "A trailing spaceSuffix in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "kind",
+      "prose": "A trailing space in prefixkindSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "kind",
+      "prose": "_prefix_trailing space_suffix_ kind_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "kind",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "type",
+      "prose": "A trailing space in the type must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "type",
+      "prose": "The TYPE carries a TRAILING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "type",
+      "prose": "(trailing space): 'type'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "type",
+      "prose": "A prefixtrailing space in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "type",
+      "prose": "A trailing spaceSuffix in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing space",
+      "subject": "type",
+      "prose": "A trailing space in prefixtypeSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "type",
+      "prose": "_prefix_trailing space_suffix_ type_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing space",
+      "subject": "type",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "name",
+      "prose": "A trailing newline in the name must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "name",
+      "prose": "The NAME carries a TRAILING NEWLINE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "name",
+      "prose": "(trailing newline): 'name'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "name",
+      "prose": "A prefixtrailing newline in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "name",
+      "prose": "A trailing newlineSuffix in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "name",
+      "prose": "A trailing newline in prefixnameSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "name",
+      "prose": "_prefix_trailing newline_suffix_ name_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "name",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "names",
+      "prose": "A trailing newline in the names must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "names",
+      "prose": "The NAMES carries a TRAILING NEWLINE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "names",
+      "prose": "(trailing newline): 'names'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "names",
+      "prose": "A prefixtrailing newline in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "names",
+      "prose": "A trailing newlineSuffix in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "names",
+      "prose": "A trailing newline in prefixnamesSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "names",
+      "prose": "_prefix_trailing newline_suffix_ names_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "names",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tool",
+      "prose": "A trailing newline in the tool must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tool",
+      "prose": "The TOOL carries a TRAILING NEWLINE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tool",
+      "prose": "(trailing newline): 'tool'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tool",
+      "prose": "A prefixtrailing newline in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tool",
+      "prose": "A trailing newlineSuffix in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tool",
+      "prose": "A trailing newline in prefixtoolSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tool",
+      "prose": "_prefix_trailing newline_suffix_ tool_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tool",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tools",
+      "prose": "A trailing newline in the tools must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tools",
+      "prose": "The TOOLS carries a TRAILING NEWLINE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tools",
+      "prose": "(trailing newline): 'tools'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tools",
+      "prose": "A prefixtrailing newline in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tools",
+      "prose": "A trailing newlineSuffix in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tools",
+      "prose": "A trailing newline in prefixtoolsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tools",
+      "prose": "_prefix_trailing newline_suffix_ tools_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "tools",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verb",
+      "prose": "A trailing newline in the verb must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verb",
+      "prose": "The VERB carries a TRAILING NEWLINE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verb",
+      "prose": "(trailing newline): 'verb'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verb",
+      "prose": "A prefixtrailing newline in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verb",
+      "prose": "A trailing newlineSuffix in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verb",
+      "prose": "A trailing newline in prefixverbSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verb",
+      "prose": "_prefix_trailing newline_suffix_ verb_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verb",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verbs",
+      "prose": "A trailing newline in the verbs must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verbs",
+      "prose": "The VERBS carries a TRAILING NEWLINE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verbs",
+      "prose": "(trailing newline): 'verbs'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verbs",
+      "prose": "A prefixtrailing newline in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verbs",
+      "prose": "A trailing newlineSuffix in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verbs",
+      "prose": "A trailing newline in prefixverbsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verbs",
+      "prose": "_prefix_trailing newline_suffix_ verbs_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "verbs",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "identifier",
+      "prose": "A trailing newline in the identifier must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "identifier",
+      "prose": "The IDENTIFIER carries a TRAILING NEWLINE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "identifier",
+      "prose": "(trailing newline): 'identifier'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "identifier",
+      "prose": "A prefixtrailing newline in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "identifier",
+      "prose": "A trailing newlineSuffix in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "identifier",
+      "prose": "A trailing newline in prefixidentifierSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "identifier",
+      "prose": "_prefix_trailing newline_suffix_ identifier_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "identifier",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "kind",
+      "prose": "A trailing newline in the kind must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "kind",
+      "prose": "The KIND carries a TRAILING NEWLINE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "kind",
+      "prose": "(trailing newline): 'kind'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "kind",
+      "prose": "A prefixtrailing newline in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "kind",
+      "prose": "A trailing newlineSuffix in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "kind",
+      "prose": "A trailing newline in prefixkindSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "kind",
+      "prose": "_prefix_trailing newline_suffix_ kind_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "kind",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "type",
+      "prose": "A trailing newline in the type must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "type",
+      "prose": "The TYPE carries a TRAILING NEWLINE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "type",
+      "prose": "(trailing newline): 'type'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "type",
+      "prose": "A prefixtrailing newline in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "type",
+      "prose": "A trailing newlineSuffix in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "type",
+      "prose": "A trailing newline in prefixtypeSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "type",
+      "prose": "_prefix_trailing newline_suffix_ type_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "trailing newline",
+      "subject": "type",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "name",
+      "prose": "A leading space in the name must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "name",
+      "prose": "The NAME carries a LEADING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "name",
+      "prose": "(leading space): 'name'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "name",
+      "prose": "A prefixleading space in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "name",
+      "prose": "A leading spaceSuffix in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "name",
+      "prose": "A leading space in prefixnameSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "name",
+      "prose": "_prefix_leading space_suffix_ name_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "name",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "names",
+      "prose": "A leading space in the names must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "names",
+      "prose": "The NAMES carries a LEADING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "names",
+      "prose": "(leading space): 'names'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "names",
+      "prose": "A prefixleading space in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "names",
+      "prose": "A leading spaceSuffix in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "names",
+      "prose": "A leading space in prefixnamesSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "names",
+      "prose": "_prefix_leading space_suffix_ names_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "names",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "tool",
+      "prose": "A leading space in the tool must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "tool",
+      "prose": "The TOOL carries a LEADING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "tool",
+      "prose": "(leading space): 'tool'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "tool",
+      "prose": "A prefixleading space in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "tool",
+      "prose": "A leading spaceSuffix in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "tool",
+      "prose": "A leading space in prefixtoolSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "tool",
+      "prose": "_prefix_leading space_suffix_ tool_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "tool",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "tools",
+      "prose": "A leading space in the tools must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "tools",
+      "prose": "The TOOLS carries a LEADING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "tools",
+      "prose": "(leading space): 'tools'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "tools",
+      "prose": "A prefixleading space in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "tools",
+      "prose": "A leading spaceSuffix in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "tools",
+      "prose": "A leading space in prefixtoolsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "tools",
+      "prose": "_prefix_leading space_suffix_ tools_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "tools",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "verb",
+      "prose": "A leading space in the verb must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "verb",
+      "prose": "The VERB carries a LEADING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "verb",
+      "prose": "(leading space): 'verb'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "verb",
+      "prose": "A prefixleading space in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "verb",
+      "prose": "A leading spaceSuffix in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "verb",
+      "prose": "A leading space in prefixverbSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "verb",
+      "prose": "_prefix_leading space_suffix_ verb_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "verb",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "verbs",
+      "prose": "A leading space in the verbs must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "verbs",
+      "prose": "The VERBS carries a LEADING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "verbs",
+      "prose": "(leading space): 'verbs'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "verbs",
+      "prose": "A prefixleading space in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "verbs",
+      "prose": "A leading spaceSuffix in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "verbs",
+      "prose": "A leading space in prefixverbsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "verbs",
+      "prose": "_prefix_leading space_suffix_ verbs_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "verbs",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "identifier",
+      "prose": "A leading space in the identifier must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "identifier",
+      "prose": "The IDENTIFIER carries a LEADING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "identifier",
+      "prose": "(leading space): 'identifier'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "identifier",
+      "prose": "A prefixleading space in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "identifier",
+      "prose": "A leading spaceSuffix in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "identifier",
+      "prose": "A leading space in prefixidentifierSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "identifier",
+      "prose": "_prefix_leading space_suffix_ identifier_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "identifier",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "kind",
+      "prose": "A leading space in the kind must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "kind",
+      "prose": "The KIND carries a LEADING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "kind",
+      "prose": "(leading space): 'kind'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "kind",
+      "prose": "A prefixleading space in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "kind",
+      "prose": "A leading spaceSuffix in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "kind",
+      "prose": "A leading space in prefixkindSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "kind",
+      "prose": "_prefix_leading space_suffix_ kind_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "kind",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "type",
+      "prose": "A leading space in the type must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "type",
+      "prose": "The TYPE carries a LEADING SPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "type",
+      "prose": "(leading space): 'type'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "type",
+      "prose": "A prefixleading space in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "type",
+      "prose": "A leading spaceSuffix in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "leading space",
+      "subject": "type",
+      "prose": "A leading space in prefixtypeSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "type",
+      "prose": "_prefix_leading space_suffix_ type_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "leading space",
+      "subject": "type",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "name",
+      "prose": "A interior whitespace in the name must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "name",
+      "prose": "The NAME carries a INTERIOR WHITESPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "name",
+      "prose": "(interior whitespace): 'name'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "name",
+      "prose": "A prefixinterior whitespace in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "name",
+      "prose": "A interior whitespaceSuffix in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "name",
+      "prose": "A interior whitespace in prefixnameSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "name",
+      "prose": "_prefix_interior whitespace_suffix_ name_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "name",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "names",
+      "prose": "A interior whitespace in the names must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "names",
+      "prose": "The NAMES carries a INTERIOR WHITESPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "names",
+      "prose": "(interior whitespace): 'names'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "names",
+      "prose": "A prefixinterior whitespace in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "names",
+      "prose": "A interior whitespaceSuffix in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "names",
+      "prose": "A interior whitespace in prefixnamesSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "names",
+      "prose": "_prefix_interior whitespace_suffix_ names_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "names",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tool",
+      "prose": "A interior whitespace in the tool must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tool",
+      "prose": "The TOOL carries a INTERIOR WHITESPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tool",
+      "prose": "(interior whitespace): 'tool'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tool",
+      "prose": "A prefixinterior whitespace in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tool",
+      "prose": "A interior whitespaceSuffix in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tool",
+      "prose": "A interior whitespace in prefixtoolSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tool",
+      "prose": "_prefix_interior whitespace_suffix_ tool_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tool",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tools",
+      "prose": "A interior whitespace in the tools must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tools",
+      "prose": "The TOOLS carries a INTERIOR WHITESPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tools",
+      "prose": "(interior whitespace): 'tools'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tools",
+      "prose": "A prefixinterior whitespace in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tools",
+      "prose": "A interior whitespaceSuffix in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tools",
+      "prose": "A interior whitespace in prefixtoolsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tools",
+      "prose": "_prefix_interior whitespace_suffix_ tools_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "tools",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verb",
+      "prose": "A interior whitespace in the verb must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verb",
+      "prose": "The VERB carries a INTERIOR WHITESPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verb",
+      "prose": "(interior whitespace): 'verb'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verb",
+      "prose": "A prefixinterior whitespace in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verb",
+      "prose": "A interior whitespaceSuffix in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verb",
+      "prose": "A interior whitespace in prefixverbSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verb",
+      "prose": "_prefix_interior whitespace_suffix_ verb_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verb",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verbs",
+      "prose": "A interior whitespace in the verbs must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verbs",
+      "prose": "The VERBS carries a INTERIOR WHITESPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verbs",
+      "prose": "(interior whitespace): 'verbs'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verbs",
+      "prose": "A prefixinterior whitespace in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verbs",
+      "prose": "A interior whitespaceSuffix in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verbs",
+      "prose": "A interior whitespace in prefixverbsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verbs",
+      "prose": "_prefix_interior whitespace_suffix_ verbs_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "verbs",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "identifier",
+      "prose": "A interior whitespace in the identifier must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "identifier",
+      "prose": "The IDENTIFIER carries a INTERIOR WHITESPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "identifier",
+      "prose": "(interior whitespace): 'identifier'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "identifier",
+      "prose": "A prefixinterior whitespace in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "identifier",
+      "prose": "A interior whitespaceSuffix in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "identifier",
+      "prose": "A interior whitespace in prefixidentifierSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "identifier",
+      "prose": "_prefix_interior whitespace_suffix_ identifier_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "identifier",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "kind",
+      "prose": "A interior whitespace in the kind must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "kind",
+      "prose": "The KIND carries a INTERIOR WHITESPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "kind",
+      "prose": "(interior whitespace): 'kind'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "kind",
+      "prose": "A prefixinterior whitespace in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "kind",
+      "prose": "A interior whitespaceSuffix in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "kind",
+      "prose": "A interior whitespace in prefixkindSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "kind",
+      "prose": "_prefix_interior whitespace_suffix_ kind_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "kind",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "type",
+      "prose": "A interior whitespace in the type must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "type",
+      "prose": "The TYPE carries a INTERIOR WHITESPACE.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "type",
+      "prose": "(interior whitespace): 'type'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "type",
+      "prose": "A prefixinterior whitespace in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "type",
+      "prose": "A interior whitespaceSuffix in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "type",
+      "prose": "A interior whitespace in prefixtypeSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "type",
+      "prose": "_prefix_interior whitespace_suffix_ type_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "interior whitespace",
+      "subject": "type",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "name",
+      "prose": "A codepoint in the name must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "name",
+      "prose": "The NAME carries a CODEPOINT.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "name",
+      "prose": "(codepoint): 'name'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "name",
+      "prose": "A prefixcodepoint in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "name",
+      "prose": "A codepointSuffix in the name is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "name",
+      "prose": "A codepoint in prefixnameSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "name",
+      "prose": "_prefix_codepoint_suffix_ name_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "name",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "names",
+      "prose": "A codepoint in the names must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "names",
+      "prose": "The NAMES carries a CODEPOINT.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "names",
+      "prose": "(codepoint): 'names'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "names",
+      "prose": "A prefixcodepoint in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "names",
+      "prose": "A codepointSuffix in the names is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "names",
+      "prose": "A codepoint in prefixnamesSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "names",
+      "prose": "_prefix_codepoint_suffix_ names_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "names",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tool",
+      "prose": "A codepoint in the tool must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tool",
+      "prose": "The TOOL carries a CODEPOINT.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tool",
+      "prose": "(codepoint): 'tool'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tool",
+      "prose": "A prefixcodepoint in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tool",
+      "prose": "A codepointSuffix in the tool is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tool",
+      "prose": "A codepoint in prefixtoolSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tool",
+      "prose": "_prefix_codepoint_suffix_ tool_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tool",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tools",
+      "prose": "A codepoint in the tools must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tools",
+      "prose": "The TOOLS carries a CODEPOINT.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tools",
+      "prose": "(codepoint): 'tools'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tools",
+      "prose": "A prefixcodepoint in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tools",
+      "prose": "A codepointSuffix in the tools is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tools",
+      "prose": "A codepoint in prefixtoolsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tools",
+      "prose": "_prefix_codepoint_suffix_ tools_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "tools",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verb",
+      "prose": "A codepoint in the verb must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verb",
+      "prose": "The VERB carries a CODEPOINT.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verb",
+      "prose": "(codepoint): 'verb'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verb",
+      "prose": "A prefixcodepoint in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verb",
+      "prose": "A codepointSuffix in the verb is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verb",
+      "prose": "A codepoint in prefixverbSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verb",
+      "prose": "_prefix_codepoint_suffix_ verb_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verb",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verbs",
+      "prose": "A codepoint in the verbs must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verbs",
+      "prose": "The VERBS carries a CODEPOINT.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verbs",
+      "prose": "(codepoint): 'verbs'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verbs",
+      "prose": "A prefixcodepoint in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verbs",
+      "prose": "A codepointSuffix in the verbs is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verbs",
+      "prose": "A codepoint in prefixverbsSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verbs",
+      "prose": "_prefix_codepoint_suffix_ verbs_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "verbs",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "identifier",
+      "prose": "A codepoint in the identifier must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "identifier",
+      "prose": "The IDENTIFIER carries a CODEPOINT.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "identifier",
+      "prose": "(codepoint): 'identifier'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "identifier",
+      "prose": "A prefixcodepoint in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "identifier",
+      "prose": "A codepointSuffix in the identifier is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "identifier",
+      "prose": "A codepoint in prefixidentifierSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "identifier",
+      "prose": "_prefix_codepoint_suffix_ identifier_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "identifier",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "kind",
+      "prose": "A codepoint in the kind must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "kind",
+      "prose": "The KIND carries a CODEPOINT.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "kind",
+      "prose": "(codepoint): 'kind'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "kind",
+      "prose": "A prefixcodepoint in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "kind",
+      "prose": "A codepointSuffix in the kind is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "kind",
+      "prose": "A codepoint in prefixkindSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "kind",
+      "prose": "_prefix_codepoint_suffix_ kind_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "kind",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "type",
+      "prose": "A codepoint in the type must be refused.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "type",
+      "prose": "The TYPE carries a CODEPOINT.",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "type",
+      "prose": "(codepoint): 'type'",
+      "claimMentioned": true,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "type",
+      "prose": "A prefixcodepoint in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "type",
+      "prose": "A codepointSuffix in the type is unrelated.",
+      "claimMentioned": false,
+      "subjectMentioned": true
+    },
+    {
+      "claim": "codepoint",
+      "subject": "type",
+      "prose": "A codepoint in prefixtypeSuffix is unrelated.",
+      "claimMentioned": true,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "type",
+      "prose": "_prefix_codepoint_suffix_ type_suffix",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    },
+    {
+      "claim": "codepoint",
+      "subject": "type",
+      "prose": "Illegal in a Windows filename; the failure is invisible at the moment it happens.",
+      "claimMentioned": false,
+      "subjectMentioned": false
+    }
+  ]
+}

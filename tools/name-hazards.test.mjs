@@ -8,13 +8,46 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
 import {
   claimsIdentifierHazard,
   hazardMarks,
   identifierValues,
   mentions,
+  HAZARD_CLAIMS,
+  HAZARD_SUBJECTS,
 } from './name-hazards.mjs';
+
+test('mentions preserves the captured behavior for every existing claim/subject pair', () => {
+  // Recorded by executing the original matcher BEFORE changing its escaping.
+  const baseline = JSON.parse(readFileSync(new URL('./fixtures/mentions-before.json', import.meta.url), 'utf8'));
+  assert.deepEqual(HAZARD_CLAIMS, baseline.claims);
+  assert.deepEqual(HAZARD_SUBJECTS, baseline.subjects);
+  const pairs = new Set();
+  for (const sample of baseline.samples) {
+    pairs.add(JSON.stringify([sample.claim, sample.subject]));
+    assert.equal(mentions(sample.prose, sample.claim), sample.claimMentioned, JSON.stringify(sample));
+    assert.equal(mentions(sample.prose, sample.subject), sample.subjectMentioned, JSON.stringify(sample));
+  }
+  assert.equal(baseline.samples.length, 864);
+  assert.equal(pairs.size, HAZARD_CLAIMS.length * HAZARD_SUBJECTS.length);
+});
+
+test('mentions treats hostile regex terms literally, without throwing', () => {
+  for (const [term, regexOnlyMatch] of [
+    ['\\', 'no backslash'], ['a|b', 'a'], ['(x)', 'x'],
+    ['a.*', 'alphabet'], ['[a-z]', 'q'], ['a\\b', 'a\bb'],
+    ['x+y', 'xxxy'], ['x?y', 'y'], ['a{2}', 'aa'], ['^x$', 'x'],
+    ['.', 'x'], ['-+.', '--+x'],
+  ]) {
+    assert.doesNotThrow(() => mentions(`Before ${term} after`, term), term);
+    assert.equal(mentions(`Before ${term} after`, term), true, term);
+    assert.equal(mentions(regexOnlyMatch, term), false, term);
+    assert.equal(mentions(`prefix${term}`, term), false, `${term}: left boundary`);
+    assert.equal(mentions(`${term}suffix`, term), false, `${term}: right boundary`);
+  }
+});
 
 test('the G-36 family is flagged, with the mark naming the hazard', () => {
   // Exactly the eleven shapes human-plus-tool-admission carries.
