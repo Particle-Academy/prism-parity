@@ -37,7 +37,9 @@ test('mentions preserves the captured behavior for every existing claim/subject 
 test('mentions treats hostile regex terms literally, without throwing', () => {
   for (const [term, regexOnlyMatch] of [
     ['\\', 'no backslash'], ['a|b', 'a'], ['(x)', 'x'],
-    ['a.*', 'alphabet'], ['[a-z]', 'q'], ['a\\b', 'a\bb'],
+    ['a.*', 'alphabet'], ['[a-z]', 'q'],
+    // Broken escaping reads a\b as a word boundary and matches a!; correct escaping matches only literal a\b (three characters).
+    ['a\\b', 'a!'],
     ['x+y', 'xxxy'], ['x?y', 'y'], ['a{2}', 'aa'], ['^x$', 'x'],
     ['.', 'x'], ['-+.', '--+x'],
   ]) {
