@@ -42,13 +42,13 @@
   },
   "repos": {
     "prism": {
-      "version": "v0.132.0",
+      "version": "v0.133.0",
       "census": {
         "decision": 1,
         "composer-script": 3,
-        "local-link": 83,
-        "php-class": 654,
-        "composer-package": 10,
+        "local-link": 97,
+        "php-class": 689,
+        "composer-package": 9,
         "artisan-command": 7,
         "npm-script": 2
       }
