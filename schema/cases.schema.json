@@ -160,6 +160,8 @@
             "media-roundtrip",
             "openai-text-request",
             "openai-text-response",
+            "openrouter-billing-response",
+            "provider-replay-request",
             "text-errors",
             "value-object-roundtrip"
           ]

@@ -1,5 +1,5 @@
 {
-  "documentation": "Discrimination probes. A conformance table that every plausible implementation passes proves nothing \u2014 it is decoration. Each probe is a deliberately WRONG implementation, and the runner requires it to fail an EXACT set of case ids, not 'at least one'. An exact set is what turns the table into a measurement: it says which rows carry which hazard, and it goes red both when the corpus stops catching a mistake AND when a row starts failing for a reason nobody intended. The control is not optional: without an implementation that passes everything, the mutants prove only that the port is broken. Expected failures are computed as must_fail MINUS the cases that language skips.",
+  "documentation": "Discrimination probes. A conformance table that every plausible implementation passes proves nothing — it is decoration. Each probe is a deliberately WRONG implementation, and the runner requires it to fail an EXACT set of case ids, not 'at least one'. An exact set is what turns the table into a measurement: it says which rows carry which hazard, and it goes red both when the corpus stops catching a mistake AND when a row starts failing for a reason nobody intended. The control is not optional: without an implementation that passes everything, the mutants prove only that the port is broken. Expected failures are computed as must_fail MINUS the cases that language skips.",
   "probes": [
     {
       "id": "faithful",
@@ -77,7 +77,7 @@
       "summary": "Emit the tools key even when the tool list is empty.",
       "hazard": "An empty array is falsy in PHP and truthy in JavaScript and Python, so this is what a direct transliteration produces. The wrong payload is still valid JSON and still gets a response, which is why nothing catches it without a fixture.",
       "scope": "request body",
-      "note": "This set was corrected after measurement. It originally declared only trq-0008, on the mistaken reading that trq-0008 is 'the row with an empty tool list'. It is not \u2014 it is the row that DECLARES one explicitly. A request that never calls withTools has an empty tool list too, so every row that does not declare tools carries the hazard: 20 rows, whose complement is exactly the 8 that declare tools, and 20 + 8 = 28 confirms the set is complete. The mutant was deliberately NOT narrowed to match the old declaration; adding a 'withTools was called' flag that exists only to make a probe narrow is precisely the tautology the exact-set design prevents.",
+      "note": "This set was corrected after measurement. It originally declared only trq-0008, on the mistaken reading that trq-0008 is 'the row with an empty tool list'. It is not — it is the row that DECLARES one explicitly. A request that never calls withTools has an empty tool list too, so every row that does not declare tools carries the hazard: 20 rows, whose complement is exactly the 8 that declare tools, and 20 + 8 = 28 confirms the set is complete. The mutant was deliberately NOT narrowed to match the old declaration; adding a 'withTools was called' flag that exists only to make a probe narrow is precisely the tautology the exact-set design prevents. G-120: every rpl row also omits tools, so all eight carry this hazard in both providers. The Python installer now patches Anthropic map_tools as well as OpenAI build_tools, preserving its declared request-body scope.",
       "languages": [
         "ts",
         "py"
@@ -104,6 +104,16 @@
           "trq-0023",
           "trq-0025",
           "trq-0028"
+        ],
+        "provider-replay-request": [
+          "rpl-0001",
+          "rpl-0002",
+          "rpl-0003",
+          "rpl-0004",
+          "rpl-0005",
+          "rpl-0006",
+          "rpl-0007",
+          "rpl-0008"
         ]
       }
     },
@@ -232,7 +242,7 @@
       "summary": "Drop null-valued fields when serializing a PARSED result, rather than when serializing a value object for storage.",
       "hazard": "The same absent-versus-null axis as omit-null-on-serialize, on the other side of the boundary. Kept as a separate probe rather than by widening that one: a probe's declared scope is part of its contract, and broadening the behaviour to match a wider intuition would make the declaration wrong rather than the probe better. Every response row carries a null cache-write counter and a null cost, so every one of them catches it.",
       "scope": "response parsing",
-      "note": "Declares all seven response rows. trs-0006 is skipped in both ports for an unrelated reason (the empty-map artefact), so the effective expectation is six in each \u2014 the loader subtracts skips, because a skipped row cannot fail. The Anthropic rows are declared too: every one of them carries a null somewhere in usage, and atr-0001 exists precisely to assert that a null thought_tokens survives as null. atr-0005 is skipped in both ports for an unrelated reason (G-50, a Length finish raises there and returns in the reference), and the loader subtracts skips because a skipped row cannot fail.",
+      "note": "Declares all seven response rows. trs-0006 is skipped in both ports for an unrelated reason (the empty-map artefact), so the effective expectation is six in each — the loader subtracts skips, because a skipped row cannot fail. The Anthropic rows are declared too: every one of them carries a null somewhere in usage, and atr-0001 exists precisely to assert that a null thought_tokens survives as null. atr-0005 is skipped in both ports for an unrelated reason (G-50, a Length finish raises there and returns in the reference), and the loader subtracts skips because a skipped row cannot fail. G-120 adds trs-0008 and atr-0009; both still require null-valued usage fields, so both must reject null omission.",
       "languages": [
         "ts",
         "py"
@@ -245,7 +255,8 @@
           "trs-0004",
           "trs-0005",
           "trs-0006",
-          "trs-0007"
+          "trs-0007",
+          "trs-0008"
         ],
         "anthropic-text-response": [
           "atr-0001",
@@ -255,7 +266,8 @@
           "atr-0005",
           "atr-0006",
           "atr-0007",
-          "atr-0008"
+          "atr-0008",
+          "atr-0009"
         ]
       }
     },
@@ -273,15 +285,17 @@
         "anthropic-text-response": [
           "atr-0006",
           "atr-0007",
-          "atr-0008"
+          "atr-0008",
+          "atr-0009"
         ]
-      }
+      },
+      "note": "G-120 atr-0009 carries a real synthetic thinking/signature pair plus redacted replay state, so losing its signature must fail alongside atr-0006..8."
     },
     {
       "id": "rehydrate-reappends-text",
       "kind": "mutant",
       "summary": "When rebuilding a user message, pass the stored content parts straight back into the constructor.",
-      "hazard": "The reference's user-message constructor appends a text part built from its own content argument, so doing this appends a second copy and the message text doubles on every save-and-load cycle. A real consumer shipped this. Nothing errors \u2014 the conversation just grows.",
+      "hazard": "The reference's user-message constructor appends a text part built from its own content argument, so doing this appends a second copy and the message text doubles on every save-and-load cycle. A real consumer shipped this. Nothing errors — the conversation just grows.",
       "scope": "value object rehydration",
       "languages": [
         "ts",

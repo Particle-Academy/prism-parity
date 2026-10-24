@@ -1,0 +1,514 @@
+{
+    "suite": "openrouter-billing-response",
+    "cases": [
+        {
+            "id": "orb-0001",
+            "title": "Zero router fee still includes BYOK upstream spend",
+            "since": "0.1.10",
+            "notes": "Unsafe under-billing control: normalized cost must be 0.004, not zero.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openrouter",
+                        "openai/conformance-fixture"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Owned billing fixture"
+                    ]
+                }
+            ],
+            "response": {
+                "id": "conformance-billing",
+                "model": "openai/conformance-fixture",
+                "choices": [
+                    {
+                        "index": 0,
+                        "finish_reason": "stop",
+                        "message": {
+                            "role": "assistant",
+                            "content": "fixture"
+                        }
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 100,
+                    "completion_tokens": 10,
+                    "total_tokens": 110,
+                    "is_byok": true,
+                    "cost": 0,
+                    "cost_details": {
+                        "upstream_inference_cost": 0.004
+                    }
+                }
+            },
+            "skip": {
+                "ts": "OpenRouter provider is unsupported in prism-ts (G-114); no mapping comparison is claimed.",
+                "py": "OpenRouter provider is unsupported in prism-py (G-114); no mapping comparison is claimed."
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":0.004},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}}],\"system_prompts\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0,\"upstream_cost\":0.004,\"complete\":true}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":true,\"cost\":0,\"cost_details\":{\"upstream_inference_cost\":0.004}}},\"tool_approval_requests\":[]}],\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":0.004},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}},{\"type\":\"assistant\",\"content\":\"fixture\",\"tool_calls\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0,\"upstream_cost\":0.004,\"complete\":true}},\"tool_approval_requests\":[]}],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0,\"upstream_cost\":0.004,\"complete\":true}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":true,\"cost\":0,\"cost_details\":{\"upstream_inference_cost\":0.004}}}}"
+            }
+        },
+        {
+            "id": "orb-0002",
+            "title": "BYOK router charge plus upstream estimate",
+            "since": "0.1.10",
+            "notes": "Normalized full cost must be 0.0042, including both reported components.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openrouter",
+                        "openai/conformance-fixture"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Owned billing fixture"
+                    ]
+                }
+            ],
+            "response": {
+                "id": "conformance-billing",
+                "model": "openai/conformance-fixture",
+                "choices": [
+                    {
+                        "index": 0,
+                        "finish_reason": "stop",
+                        "message": {
+                            "role": "assistant",
+                            "content": "fixture"
+                        }
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 100,
+                    "completion_tokens": 10,
+                    "total_tokens": 110,
+                    "is_byok": true,
+                    "cost": 0.0002,
+                    "cost_details": {
+                        "upstream_inference_cost": 0.004
+                    }
+                }
+            },
+            "skip": {
+                "ts": "OpenRouter provider is unsupported in prism-ts (G-114); no mapping comparison is claimed.",
+                "py": "OpenRouter provider is unsupported in prism-py (G-114); no mapping comparison is claimed."
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":0.0042},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}}],\"system_prompts\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0.0002,\"upstream_cost\":0.004,\"complete\":true}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":true,\"cost\":0.0002,\"cost_details\":{\"upstream_inference_cost\":0.004}}},\"tool_approval_requests\":[]}],\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":0.0042},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}},{\"type\":\"assistant\",\"content\":\"fixture\",\"tool_calls\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0.0002,\"upstream_cost\":0.004,\"complete\":true}},\"tool_approval_requests\":[]}],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0.0002,\"upstream_cost\":0.004,\"complete\":true}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":true,\"cost\":0.0002,\"cost_details\":{\"upstream_inference_cost\":0.004}}}}"
+            }
+        },
+        {
+            "id": "orb-0003",
+            "title": "Explicit free BYOK positive control",
+            "since": "0.1.10",
+            "notes": "Complete zero figures are a known free call, not unknown or a universal refusal.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openrouter",
+                        "openai/conformance-fixture"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Owned billing fixture"
+                    ]
+                }
+            ],
+            "response": {
+                "id": "conformance-billing",
+                "model": "openai/conformance-fixture",
+                "choices": [
+                    {
+                        "index": 0,
+                        "finish_reason": "stop",
+                        "message": {
+                            "role": "assistant",
+                            "content": "fixture"
+                        }
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 100,
+                    "completion_tokens": 10,
+                    "total_tokens": 110,
+                    "is_byok": true,
+                    "cost": 0,
+                    "cost_details": {
+                        "upstream_inference_cost": 0
+                    }
+                }
+            },
+            "skip": {
+                "ts": "OpenRouter provider is unsupported in prism-ts (G-114); no mapping comparison is claimed.",
+                "py": "OpenRouter provider is unsupported in prism-py (G-114); no mapping comparison is claimed."
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":0},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}}],\"system_prompts\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0,\"upstream_cost\":0,\"complete\":true}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":true,\"cost\":0,\"cost_details\":{\"upstream_inference_cost\":0}}},\"tool_approval_requests\":[]}],\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":0},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}},{\"type\":\"assistant\",\"content\":\"fixture\",\"tool_calls\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0,\"upstream_cost\":0,\"complete\":true}},\"tool_approval_requests\":[]}],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0,\"upstream_cost\":0,\"complete\":true}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":true,\"cost\":0,\"cost_details\":{\"upstream_inference_cost\":0}}}}"
+            }
+        },
+        {
+            "id": "orb-0004",
+            "title": "Non-BYOK inference must not be counted twice",
+            "since": "0.1.10",
+            "notes": "The router charge already covers non-BYOK inference; normalized cost stays 0.004.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openrouter",
+                        "openai/conformance-fixture"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Owned billing fixture"
+                    ]
+                }
+            ],
+            "response": {
+                "id": "conformance-billing",
+                "model": "openai/conformance-fixture",
+                "choices": [
+                    {
+                        "index": 0,
+                        "finish_reason": "stop",
+                        "message": {
+                            "role": "assistant",
+                            "content": "fixture"
+                        }
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 100,
+                    "completion_tokens": 10,
+                    "total_tokens": 110,
+                    "is_byok": false,
+                    "cost": 0.004,
+                    "cost_details": {
+                        "upstream_inference_cost": 0.004
+                    }
+                }
+            },
+            "skip": {
+                "ts": "OpenRouter provider is unsupported in prism-ts (G-114); no mapping comparison is claimed.",
+                "py": "OpenRouter provider is unsupported in prism-py (G-114); no mapping comparison is claimed."
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":0.004},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}}],\"system_prompts\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":false,\"router_cost\":0.004,\"upstream_cost\":0.004,\"complete\":true}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":false,\"cost\":0.004,\"cost_details\":{\"upstream_inference_cost\":0.004}}},\"tool_approval_requests\":[]}],\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":0.004},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}},{\"type\":\"assistant\",\"content\":\"fixture\",\"tool_calls\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":false,\"router_cost\":0.004,\"upstream_cost\":0.004,\"complete\":true}},\"tool_approval_requests\":[]}],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":false,\"router_cost\":0.004,\"upstream_cost\":0.004,\"complete\":true}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":false,\"cost\":0.004,\"cost_details\":{\"upstream_inference_cost\":0.004}}}}"
+            }
+        },
+        {
+            "id": "orb-0005",
+            "title": "Missing upstream figure is unknown",
+            "since": "0.1.10",
+            "notes": "Missing is not zero: null cost and incomplete provenance prevent fee-only trust.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openrouter",
+                        "openai/conformance-fixture"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Owned billing fixture"
+                    ]
+                }
+            ],
+            "response": {
+                "id": "conformance-billing",
+                "model": "openai/conformance-fixture",
+                "choices": [
+                    {
+                        "index": 0,
+                        "finish_reason": "stop",
+                        "message": {
+                            "role": "assistant",
+                            "content": "fixture"
+                        }
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 100,
+                    "completion_tokens": 10,
+                    "total_tokens": 110,
+                    "is_byok": true,
+                    "cost": 0
+                }
+            },
+            "skip": {
+                "ts": "OpenRouter provider is unsupported in prism-ts (G-114); no mapping comparison is claimed.",
+                "py": "OpenRouter provider is unsupported in prism-py (G-114); no mapping comparison is claimed."
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}}],\"system_prompts\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0,\"upstream_cost\":null,\"complete\":false}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":true,\"cost\":0}},\"tool_approval_requests\":[]}],\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}},{\"type\":\"assistant\",\"content\":\"fixture\",\"tool_calls\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0,\"upstream_cost\":null,\"complete\":false}},\"tool_approval_requests\":[]}],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0,\"upstream_cost\":null,\"complete\":false}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":true,\"cost\":0}}}"
+            }
+        },
+        {
+            "id": "orb-0006",
+            "title": "Explicit null upstream is unknown",
+            "since": "0.1.10",
+            "notes": "Explicit null is also unknown; a null-to-zero mapper under-bills.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openrouter",
+                        "openai/conformance-fixture"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Owned billing fixture"
+                    ]
+                }
+            ],
+            "response": {
+                "id": "conformance-billing",
+                "model": "openai/conformance-fixture",
+                "choices": [
+                    {
+                        "index": 0,
+                        "finish_reason": "stop",
+                        "message": {
+                            "role": "assistant",
+                            "content": "fixture"
+                        }
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 100,
+                    "completion_tokens": 10,
+                    "total_tokens": 110,
+                    "is_byok": true,
+                    "cost": 0,
+                    "cost_details": {
+                        "upstream_inference_cost": null
+                    }
+                }
+            },
+            "skip": {
+                "ts": "OpenRouter provider is unsupported in prism-ts (G-114); no mapping comparison is claimed.",
+                "py": "OpenRouter provider is unsupported in prism-py (G-114); no mapping comparison is claimed."
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}}],\"system_prompts\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0,\"upstream_cost\":null,\"complete\":false}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":true,\"cost\":0,\"cost_details\":{\"upstream_inference_cost\":null}}},\"tool_approval_requests\":[]}],\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}},{\"type\":\"assistant\",\"content\":\"fixture\",\"tool_calls\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0,\"upstream_cost\":null,\"complete\":false}},\"tool_approval_requests\":[]}],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0,\"upstream_cost\":null,\"complete\":false}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":true,\"cost\":0,\"cost_details\":{\"upstream_inference_cost\":null}}}}"
+            }
+        },
+        {
+            "id": "orb-0007",
+            "title": "Negative upstream must not reduce the charge",
+            "since": "0.1.10",
+            "notes": "Untrusted negative provider amounts cannot become a discount or a complete total.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openrouter",
+                        "openai/conformance-fixture"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Owned billing fixture"
+                    ]
+                }
+            ],
+            "response": {
+                "id": "conformance-billing",
+                "model": "openai/conformance-fixture",
+                "choices": [
+                    {
+                        "index": 0,
+                        "finish_reason": "stop",
+                        "message": {
+                            "role": "assistant",
+                            "content": "fixture"
+                        }
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 100,
+                    "completion_tokens": 10,
+                    "total_tokens": 110,
+                    "is_byok": true,
+                    "cost": 0.0002,
+                    "cost_details": {
+                        "upstream_inference_cost": -0.004
+                    }
+                }
+            },
+            "skip": {
+                "ts": "OpenRouter provider is unsupported in prism-ts (G-114); no mapping comparison is claimed.",
+                "py": "OpenRouter provider is unsupported in prism-py (G-114); no mapping comparison is claimed."
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}}],\"system_prompts\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0.0002,\"upstream_cost\":null,\"complete\":false}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":true,\"cost\":0.0002,\"cost_details\":{\"upstream_inference_cost\":-0.004}}},\"tool_approval_requests\":[]}],\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}},{\"type\":\"assistant\",\"content\":\"fixture\",\"tool_calls\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0.0002,\"upstream_cost\":null,\"complete\":false}},\"tool_approval_requests\":[]}],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":0.0002,\"upstream_cost\":null,\"complete\":false}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":true,\"cost\":0.0002,\"cost_details\":{\"upstream_inference_cost\":-0.004}}}}"
+            }
+        },
+        {
+            "id": "orb-0008",
+            "title": "Missing identity does not prove non-BYOK",
+            "since": "0.1.10",
+            "notes": "Legacy scalar compatibility remains, but completeness must be false.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openrouter",
+                        "openai/conformance-fixture"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Owned billing fixture"
+                    ]
+                }
+            ],
+            "response": {
+                "id": "conformance-billing",
+                "model": "openai/conformance-fixture",
+                "choices": [
+                    {
+                        "index": 0,
+                        "finish_reason": "stop",
+                        "message": {
+                            "role": "assistant",
+                            "content": "fixture"
+                        }
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 100,
+                    "completion_tokens": 10,
+                    "total_tokens": 110,
+                    "cost": 0.004
+                }
+            },
+            "skip": {
+                "ts": "OpenRouter provider is unsupported in prism-ts (G-114); no mapping comparison is claimed.",
+                "py": "OpenRouter provider is unsupported in prism-py (G-114); no mapping comparison is claimed."
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":0.004},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}}],\"system_prompts\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":null,\"router_cost\":0.004,\"upstream_cost\":null,\"complete\":false}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"cost\":0.004}},\"tool_approval_requests\":[]}],\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":0.004},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}},{\"type\":\"assistant\",\"content\":\"fixture\",\"tool_calls\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":null,\"router_cost\":0.004,\"upstream_cost\":null,\"complete\":false}},\"tool_approval_requests\":[]}],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":null,\"router_cost\":0.004,\"upstream_cost\":null,\"complete\":false}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"cost\":0.004}}}"
+            }
+        },
+        {
+            "id": "orb-0009",
+            "title": "Truthy identity is not a boolean",
+            "since": "0.1.10",
+            "notes": "A malformed identity cannot mark a zero charge complete.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openrouter",
+                        "openai/conformance-fixture"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Owned billing fixture"
+                    ]
+                }
+            ],
+            "response": {
+                "id": "conformance-billing",
+                "model": "openai/conformance-fixture",
+                "choices": [
+                    {
+                        "index": 0,
+                        "finish_reason": "stop",
+                        "message": {
+                            "role": "assistant",
+                            "content": "fixture"
+                        }
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 100,
+                    "completion_tokens": 10,
+                    "total_tokens": 110,
+                    "is_byok": "true",
+                    "cost": 0
+                }
+            },
+            "skip": {
+                "ts": "OpenRouter provider is unsupported in prism-ts (G-114); no mapping comparison is claimed.",
+                "py": "OpenRouter provider is unsupported in prism-py (G-114); no mapping comparison is claimed."
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":0},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}}],\"system_prompts\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":null,\"router_cost\":0,\"upstream_cost\":null,\"complete\":false}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":\"true\",\"cost\":0}},\"tool_approval_requests\":[]}],\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":0},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}},{\"type\":\"assistant\",\"content\":\"fixture\",\"tool_calls\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":null,\"router_cost\":0,\"upstream_cost\":null,\"complete\":false}},\"tool_approval_requests\":[]}],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":null,\"router_cost\":0,\"upstream_cost\":null,\"complete\":false}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":\"true\",\"cost\":0}}}"
+            }
+        },
+        {
+            "id": "orb-0010",
+            "title": "Missing router charge is unknown",
+            "since": "0.1.10",
+            "notes": "An upstream-only figure does not establish the full call cost.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openrouter",
+                        "openai/conformance-fixture"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Owned billing fixture"
+                    ]
+                }
+            ],
+            "response": {
+                "id": "conformance-billing",
+                "model": "openai/conformance-fixture",
+                "choices": [
+                    {
+                        "index": 0,
+                        "finish_reason": "stop",
+                        "message": {
+                            "role": "assistant",
+                            "content": "fixture"
+                        }
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 100,
+                    "completion_tokens": 10,
+                    "total_tokens": 110,
+                    "is_byok": true,
+                    "cost_details": {
+                        "upstream_inference_cost": 0.004
+                    }
+                }
+            },
+            "skip": {
+                "ts": "OpenRouter provider is unsupported in prism-ts (G-114); no mapping comparison is claimed.",
+                "py": "OpenRouter provider is unsupported in prism-py (G-114); no mapping comparison is claimed."
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}}],\"system_prompts\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":null,\"upstream_cost\":0.004,\"complete\":false}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":true,\"cost_details\":{\"upstream_inference_cost\":0.004}}},\"tool_approval_requests\":[]}],\"text\":\"fixture\",\"finish_reason\":\"stop\",\"tool_calls\":[],\"tool_results\":[],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null},\"meta\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Owned billing fixture\",\"additional_content\":[{\"text\":\"Owned billing fixture\"}],\"additional_attributes\":{}},{\"type\":\"assistant\",\"content\":\"fixture\",\"tool_calls\":[],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":null,\"upstream_cost\":0.004,\"complete\":false}},\"tool_approval_requests\":[]}],\"additional_content\":{\"openrouter_billing\":{\"is_byok\":true,\"router_cost\":null,\"upstream_cost\":0.004,\"complete\":false}},\"raw\":{\"id\":\"conformance-billing\",\"model\":\"openai/conformance-fixture\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"fixture\"}}],\"usage\":{\"prompt_tokens\":100,\"completion_tokens\":10,\"total_tokens\":110,\"is_byok\":true,\"cost_details\":{\"upstream_inference_cost\":0.004}}}}"
+            }
+        }
+    ]
+}

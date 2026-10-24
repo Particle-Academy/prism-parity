@@ -27,9 +27,69 @@ test('canonical suite sources are not counted as vendored copies', async () => {
   const result = await auditRemote(local, fakeApi({
     tree: async () => [{ type: 'blob', path: 'suites/example/cases.json' }, { type: 'blob', path: 'loaders/php/suites/example/cases.json' }],
     file: async (_repo, path) => path.endsWith('.php') ? Buffer.from('example') : corpus,
-  }));
+  }), { selfRef: 'c'.repeat(40) });
   assert.equal(result.ok, true);
   assert.equal(result.discoveredCopies, 1);
+});
+
+const candidateSha = 'c'.repeat(40);
+const externalMainSha = 'a'.repeat(40);
+const ownAndExternal = [{ ...suites[0], implementations: {
+  php: { status: 'full', runner: 'prism-parity:runners/test.php' },
+  ts: suites[0].implementations.ts,
+} }];
+
+function rolloutApi({ ownStale = false, externalStale = false } = {}) {
+  const stale = Buffer.from('{"suite":"example","cases":[{"id":"one","outdated":true}]}\n');
+  return fakeApi({
+    head: async (repo) => {
+      assert.notEqual(repo, 'prism-parity', 'own candidate must never fall back to main');
+      return externalMainSha;
+    },
+    tree: async (repo, ref) => {
+      assert.equal(ref, repo === 'prism-parity' ? candidateSha : externalMainSha);
+      return [{ type: 'blob', path: repo === 'prism-parity' ? 'loaders/php/suites/example/cases.json' : 'test/fixtures/example.json' }];
+    },
+    file: async (repo, path, ref) => {
+      if (path.endsWith('.php') || path.endsWith('.ts')) return Buffer.from('Corpus.open');
+      if (repo === 'prism-parity') return ref === candidateSha && !ownStale ? corpus : stale;
+      assert.equal(ref, externalMainSha);
+      return externalStale ? stale : corpus;
+    },
+  });
+}
+
+test('a consistent own candidate passes while external reads stay on immutable main', async () => {
+  const result = await auditRemote(ownAndExternal, rolloutApi(), { selfRef: candidateSha });
+  assert.equal(result.ok, true);
+  assert.equal(result.verifiedClaims, 2);
+  assert.equal(result.verifiedCopies, 2);
+  assert.deepEqual(result.snapshots, { 'prism-parity': candidateSha, 'prism-ts': externalMainSha });
+});
+
+test('a stale external copy still fails when own candidate copies are consistent', async () => {
+  const result = await auditRemote(ownAndExternal, rolloutApi({ externalStale: true }), { selfRef: candidateSha });
+  assert.equal(result.ok, false);
+  assert.equal(result.discoveredCopies, 2);
+  assert.equal(result.staleCopies, 1);
+  assert.match(result.failures.join('\n'), /STALE prism-ts:/);
+});
+
+test('a stale own loader at the candidate SHA fails even when external copies agree', async () => {
+  const result = await auditRemote(ownAndExternal, rolloutApi({ ownStale: true }), { selfRef: candidateSha });
+  assert.equal(result.ok, false);
+  assert.equal(result.discoveredCopies, 2);
+  assert.equal(result.staleCopies, 1);
+  assert.match(result.failures.join('\n'), /STALE prism-parity:loaders/);
+});
+
+test('own audit refuses missing or symbolic candidate refs without falling back to main', async () => {
+  for (const selfRef of [undefined, 'main', 'deadbeef']) {
+    const result = await auditRemote(ownAndExternal, rolloutApi(), { selfRef });
+    assert.equal(result.ok, false);
+    assert.match(result.failures.join('\n'), /exact candidate SHA is required/);
+    assert.equal(result.snapshots['prism-parity'], undefined);
+  }
 });
 
 test('a manifest pointing at a nonexistent fixture runner fails', async () => {
