@@ -304,9 +304,9 @@ if (failures.length > 0) {
   process.exit(1);
 }
 
+console.error(`${new Set(checked.traceDivergences.map(row => row.key)).size} property-verified cases retain registered native trace divergence.`);
 console.error(
   `Cross-check passed: ${checked.verified.length} cases passed in every language (${languages.join(', ')}); ` +
-    `${checked.skippedCases} cases have skips and are not counted as verified; ` +
-    `${new Set(checked.traceDivergences.map(row => row.key)).size} property-verified cases retain registered native trace divergence ` +
+    `${checked.skippedCases} cases have skips and are not counted as verified ` +
     `(corpus ${versions.get(languages[0])}, ${digests.get(languages[0])}).`,
 );
