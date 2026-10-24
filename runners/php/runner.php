@@ -125,10 +125,13 @@ foreach ($suiteIds as $suiteId) {
             continue;
         }
 
+        $traceDetails = $suite->manifest['kind'] === 'stream-parse' ? [
+            'trace_comparison' => ['status' => $expected === $actual ? 'match' : 'reference-drift', 'gap' => null, 'expected' => $expected, 'actual' => $actual],
+        ] : [];
         if (Canonical::equals($expected, $actual)) {
-            $results[] = ['id' => $case['id'], 'status' => 'pass'];
+            $results[] = ['id' => $case['id'], 'status' => 'pass', ...$traceDetails];
         } else {
-            $results[] = ['id' => $case['id'], 'status' => 'fail', 'expected' => $expected, 'actual' => $actual];
+            $results[] = ['id' => $case['id'], 'status' => 'fail', 'expected' => $expected, 'actual' => $actual, ...$traceDetails];
             $failed = true;
         }
     }
@@ -175,6 +178,10 @@ function evaluate(array $manifest, array $case): array
         'response-parse' => [
             $case['expect']['result_json'],
             Canonical::encode(Driver::parseResponse($case['builder'], $case['response'])),
+        ],
+        'stream-parse' => [
+            $case['expect']['result_json'],
+            Canonical::encode(Driver::parseStream($case['builder'], $case['stream'], $case['properties'])),
         ],
         'roundtrip' => [
             $case['expect']['serialized_json'],

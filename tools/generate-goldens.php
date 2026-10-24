@@ -84,6 +84,7 @@ foreach ($corpus->suiteIds() as $suiteId) {
         $key = match ($manifest['kind']) {
             'request-payload' => 'body_json',
             'response-parse' => 'result_json',
+            'stream-parse' => 'result_json',
             'roundtrip' => 'serialized_json',
             'error-code' => 'error_code',
             'container-identity' => 'equal_after_parse',
@@ -109,6 +110,7 @@ foreach ($corpus->suiteIds() as $suiteId) {
         $produced = match ($manifest['kind']) {
             'request-payload' => Canonical::encode(Driver::requestBody($case['builder'])),
             'response-parse' => Canonical::encode(Driver::parseResponse($case['builder'], $case['response'])),
+            'stream-parse' => Canonical::encode(Driver::parseStream($case['builder'], $case['stream'], $case['properties'])),
             'roundtrip' => Canonical::encode(Driver::serialize($case['subject'])),
             'error-code' => Driver::errorCode($case['builder']),
             'container-identity' => Driver::containerIdentity($case['left_raw'], $case['right_raw']),

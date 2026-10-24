@@ -42,7 +42,7 @@ try {
     'golden.suites': 0,
     'golden.cases': 0,
   };
-  const goldenKinds = new Set(['request-payload', 'response-parse', 'roundtrip', 'error-code', 'container-identity']);
+  const goldenKinds = new Set(['request-payload', 'response-parse', 'stream-parse', 'roundtrip', 'error-code', 'container-identity']);
   for (const id of readdirSync(join(root, 'suites'))) {
     const manifest = JSON.parse(readFileSync(join(root, 'suites', id, 'manifest.json'), 'utf8'));
     const cases = JSON.parse(readFileSync(join(root, 'suites', id, 'cases.json'), 'utf8')).cases;

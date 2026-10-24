@@ -76,6 +76,12 @@
         "right_raw": {
           "type": "string",
           "description": "For kind=container-identity: the other side of the pair, as RAW JSON TEXT."
+        },
+        "stream": {
+          "$ref": "#/$defs/streamInput"
+        },
+        "properties": {
+          "$ref": "#/$defs/streamProperties"
         }
       }
     },
@@ -163,7 +169,8 @@
             "openrouter-billing-response",
             "provider-replay-request",
             "text-errors",
-            "value-object-roundtrip"
+            "value-object-roundtrip",
+            "anthropic-text-stream"
           ]
         },
         "cases": {
@@ -173,7 +180,27 @@
             "$ref": "#/$defs/case"
           }
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "suite": {
+                "const": "anthropic-text-stream"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "cases": {
+                "items": {
+                  "$ref": "#/$defs/streamCase"
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "mediaFetchGuardCase": {
       "type": "object",
@@ -3566,6 +3593,115 @@
         }
       },
       "description": "Document for the derivation-corpus kind, separate from golden and security corpora."
+    },
+    "streamInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "encoding",
+        "chunks"
+      ],
+      "properties": {
+        "encoding": {
+          "const": "base64"
+        },
+        "chunks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 4,
+            "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+          }
+        }
+      }
+    },
+    "streamProperties": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "text",
+        "normal_completion",
+        "error_observable",
+        "terminal_events",
+        "no_completed_tools"
+      ],
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "normal_completion": {
+          "type": "boolean"
+        },
+        "error_observable": {
+          "type": "boolean"
+        },
+        "terminal_events": {
+          "const": 1
+        },
+        "no_completed_tools": {
+          "const": true
+        },
+        "usage_known": {
+          "type": "boolean"
+        },
+        "final_usage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "prompt_tokens",
+            "completion_tokens",
+            "cache_write_input_tokens",
+            "cache_read_input_tokens",
+            "thought_tokens"
+          ],
+          "properties": {
+            "prompt_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "completion_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cache_write_input_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cache_read_input_tokens": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "thought_tokens": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "error_codes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "error_nonrecoverable": {
+          "const": true
+        }
+      }
+    },
+    "streamCase": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/case"
+        }
+      ],
+      "required": [
+        "builder",
+        "stream",
+        "properties"
+      ]
     }
   },
   "oneOf": [

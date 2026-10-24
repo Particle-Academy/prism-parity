@@ -52,9 +52,9 @@ Python. `manifest/packages.json` records that package-family matrix and
 `tools/parity-check.mjs --report` prints its remaining gaps. See
 [decision 0021](docs/decisions/0021-parity-is-the-shipping-library-set.md).
 
-Corpus <!-- metric:corpus.version -->0.1.10<!-- /metric --> contains
-<!-- metric:golden.suites -->9<!-- /metric --> golden-based suites with
-<!-- metric:golden.cases -->89<!-- /metric --> stored cases.
+Corpus <!-- metric:corpus.version -->0.1.11<!-- /metric --> contains
+<!-- metric:golden.suites -->10<!-- /metric --> golden-based suites with
+<!-- metric:golden.cases -->99<!-- /metric --> stored cases.
 The rubric scores <!-- metric:security.corpora -->16<!-- /metric --> security corpora
 and identifies <!-- metric:security.adversarialRows -->193<!-- /metric --> adversarial rows.
 <!-- metric:families.withSuite -->9<!-- /metric --> of
@@ -63,11 +63,19 @@ These are corpus inventory counts, not executed coverage. The cross-check report
 verified cases separately from skipped cases, with each language's skip reason.
 `node tools/alignment.mjs` regenerates these claims and fails on a difference.
 
+`anthropic-text-stream` checks independently declared termination, accounting,
+text and partial-tool properties through all three native byte transports. It
+retains generated PHP goldens and each actual native trace. Exact stream event
+vocabulary and payload equality is registered separately as G-125; the runner
+reports that divergence instead of discarding events to manufacture equality.
+See [the stream comparison contract](docs/streaming-conformance.md).
+
 | Suite | Kind | Cases | Pins |
 |---|---|---|---|
 | `openai-text-request` | request-payload | <!-- metric:suite.openai-text-request.cases -->28<!-- /metric --> | The OpenAI Responses request body |
 | `openai-text-response` | response-parse | <!-- metric:suite.openai-text-response.cases -->8<!-- /metric --> | Parsing a response into a result |
 | `anthropic-text-response` | response-parse | <!-- metric:suite.anthropic-text-response.cases -->9<!-- /metric --> | Parsing an Anthropic Messages response |
+| `anthropic-text-stream` | stream-parse | <!-- metric:suite.anthropic-text-stream.cases -->10<!-- /metric --> | Native EOF/error/accounting/tool safety properties; exact trace divergence G-125 |
 | `openrouter-billing-response` | response-parse | <!-- metric:suite.openrouter-billing-response.cases -->10<!-- /metric --> | BYOK totals and completeness; PHP only, ports explicitly unsupported |
 | `provider-replay-request` | request-payload | <!-- metric:suite.provider-replay-request.cases -->8<!-- /metric --> | Ordered opaque OpenAI/Anthropic assistant state into the next request |
 | `value-object-roundtrip` | roundtrip | <!-- metric:suite.value-object-roundtrip.cases -->9<!-- /metric --> | Value objects through storage and back |

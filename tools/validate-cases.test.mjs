@@ -54,3 +54,25 @@ test('an empty corpus cannot produce a green gate', (t) => {
   assert.equal(result.status, 1);
   assert.match(result.stderr, /No suite documents found/);
 });
+
+for (const [name, mutate] of [
+  ['missing independent properties', doc => { delete doc.cases[0].properties; }],
+  ['empty byte chunks', doc => { doc.cases[0].stream.chunks = []; }],
+  ['unknown chunk encoding', doc => { doc.cases[0].stream.encoding = 'decoded-text'; }],
+]) {
+  test(`the stream schema rejects ${name}`, t => {
+    const scratch = mkdtempSync(join(tmpdir(), 'prism-schema-stream-'));
+    assert.equal(dirname(scratch), tmpdir());
+    t.after(() => rmSync(scratch, { recursive: true, force: true }));
+    mkdirSync(join(scratch, 'schema'));
+    mkdirSync(join(scratch, 'suites/anthropic-text-stream'), { recursive: true });
+    copyFileSync(join(root, 'schema/cases.schema.json'), join(scratch, 'schema/cases.schema.json'));
+    const doc = JSON.parse(readFileSync(join(root, 'suites/anthropic-text-stream/cases.json'), 'utf8'));
+    const path = join(scratch, 'suites/anthropic-text-stream/cases.json');
+    writeFileSync(path, JSON.stringify(doc));
+    assert.equal(spawnSync(process.execPath, [tool, scratch], { encoding: 'utf8' }).status, 0);
+    mutate(doc);
+    writeFileSync(path, JSON.stringify(doc));
+    assert.equal(spawnSync(process.execPath, [tool, scratch], { encoding: 'utf8' }).status, 1);
+  });
+}

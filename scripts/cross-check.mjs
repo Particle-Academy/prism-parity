@@ -18,7 +18,7 @@ import { join, dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { execSync } from 'node:child_process';
-import { coverage } from './cross-check-coverage.mjs';
+import { coverage, streamTraceFailures } from './cross-check-coverage.mjs';
 import { verifyCoverage } from '../tools/alignment-contracts.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
@@ -268,6 +268,9 @@ const manifests = new Map(
     .map((id) => [id, JSON.parse(readFileSync(join(root, 'suites', id, 'manifest.json'), 'utf8'))]),
 );
 failures.push(...verifyCoverage(reports, checked, manifests));
+const streamFixtures = new Map([...manifests].filter(([, manifest]) => manifest.kind === 'stream-parse')
+  .map(([id]) => [id, JSON.parse(readFileSync(join(root, 'suites', id, 'cases.json'), 'utf8'))]));
+failures.push(...streamTraceFailures(reports, manifests, streamFixtures));
 
 // Relaxing a rule must not make what it covered invisible. A suite verified
 // only by a package-specific runner contributes NO cross-language evidence,
@@ -286,6 +289,10 @@ for (const [suite, entries] of manifests) {
 for (const { key, language, reason } of checked.skips) {
   console.error(`SKIP ${key} [${language}]: ${reason}`);
 }
+for (const { key, language, gap } of checked.traceDivergences) {
+  console.error(`NATIVE TRACE DIVERGENCE ${key} [${language}]: ${gap}; independent properties passed, exact trace equality is not claimed`);
+  if (gap !== 'G-125' || !key.startsWith('anthropic-text-stream/')) failures.push(`${key}: unregistered native trace divergence`);
+}
 
 // Vacuity guard: an empty or entirely skipped set verifies no behavior.
 if (allKeys.size === 0) failures.push('no cases were compared — the cross-check asserted nothing');
@@ -299,6 +306,7 @@ if (failures.length > 0) {
 
 console.error(
   `Cross-check passed: ${checked.verified.length} cases passed in every language (${languages.join(', ')}); ` +
-    `${checked.skippedCases} cases have skips and are not counted as verified ` +
+    `${checked.skippedCases} cases have skips and are not counted as verified; ` +
+    `${new Set(checked.traceDivergences.map(row => row.key)).size} property-verified cases retain registered native trace divergence ` +
     `(corpus ${versions.get(languages[0])}, ${digests.get(languages[0])}).`,
 );

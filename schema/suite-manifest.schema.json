@@ -33,7 +33,8 @@
         "error-code",
         "container-identity",
         "security-corpus",
-        "derivation-corpus"
+        "derivation-corpus",
+        "stream-parse"
       ],
       "description": "`security-corpus` is scored by tools/trust-rubric.mjs and carries extra obligations -- adversarial rows, and a `findings` block once every row agrees. `derivation-corpus` records how declarations become derived values in package-specific runners. It carries no security-rubric obligations and does not count as adversarial coverage; generic runners retain its explicitly skipped rows."
     },
@@ -73,7 +74,15 @@
       ],
       "properties": {
         "mode": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "canonical-json-string",
+            "stream-properties"
+          ]
+        },
+        "exact_trace_gap": {
+          "type": "string",
+          "pattern": "^G-[0-9]+$"
         }
       }
     },
