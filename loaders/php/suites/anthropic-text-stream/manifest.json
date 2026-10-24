@@ -1,0 +1,32 @@
+{
+  "id": "anthropic-text-stream",
+  "title": "Anthropic native SSE termination and accounting",
+  "kind": "stream-parse",
+  "pins": "Native ordered public event traces, terminal classification, accounting completeness and partial tool-call safety through the same owned SSE bytes in PHP, TypeScript and Python.",
+  "scope": "Anthropic text, maxSteps(1), raw byte/UTF-8/SSE chunk boundaries. No inference, network, tool execution, private billing metadata or multi-turn coverage.",
+  "pattern_doc": "docs/streaming-conformance.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "stream-properties",
+    "exact_trace_gap": "G-125"
+  },
+  "discrimination": {
+    "status": "probed",
+    "note": "Twenty actual native source defects (ten per port: EOF-as-stop, start-only final usage, absent usage as zero, erased Error, dropped partial text, omitted/duplicate terminal end, broken incremental UTF8, Unknown instead of Error finish and unclosed text) each fail the intended independent property; every byte-restored ten-case control passes. Raw trace divergence remains explicitly G-125."
+  },
+  "findings": "G-115 semantic properties are required in every language. G-125 separately records native stream event vocabulary, payload shape and finish-literal divergence; raw traces are retained without hiding step events or reshaping payloads.",
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-parity:runners/php/runner.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-ts:conformance/runner.mjs"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-py:conformance/runner.py"
+    }
+  }
+}

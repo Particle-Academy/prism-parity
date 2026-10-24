@@ -14,11 +14,14 @@ use Prism\Prism\Enums\ToolChoice;
 use Prism\Prism\Prism;
 use Prism\Prism\PrismManager;
 use Prism\Prism\Providers\Anthropic\Handlers\Text as AnthropicTextHandler;
+use Prism\Prism\Providers\OpenAI\Concerns\BuildsRequestBody;
 use Prism\Prism\Providers\OpenAI\Handlers\Text as OpenAITextHandler;
 use Prism\Prism\Providers\OpenRouter\Handlers\Text as OpenRouterTextHandler;
 use Prism\Prism\Schema\BooleanSchema;
 use Prism\Prism\Schema\NumberSchema;
 use Prism\Prism\Schema\StringSchema;
+use Prism\Prism\Text\PendingRequest;
+use Prism\Prism\Text\Request;
 use Prism\Prism\Tool;
 use Prism\Prism\ValueObjects\Media\Audio;
 use Prism\Prism\ValueObjects\Media\Document;
@@ -29,9 +32,11 @@ use Prism\Prism\ValueObjects\Messages\AssistantMessage;
 use Prism\Prism\ValueObjects\Messages\SystemMessage;
 use Prism\Prism\ValueObjects\Messages\ToolResultMessage;
 use Prism\Prism\ValueObjects\Messages\UserMessage;
+use Prism\Prism\ValueObjects\Meta;
 use Prism\Prism\ValueObjects\ProviderTool;
 use Prism\Prism\ValueObjects\ToolCall;
 use Prism\Prism\ValueObjects\ToolResult;
+use Prism\Prism\ValueObjects\Usage;
 use RuntimeException;
 
 /**
@@ -93,7 +98,7 @@ final class Driver
     /**
      * @param  array<int, array<string, mixed>>  $script
      */
-    public static function pending(array $script): \Prism\Prism\Text\PendingRequest
+    public static function pending(array $script): PendingRequest
     {
         self::boot();
 
@@ -127,10 +132,10 @@ final class Driver
 
         $builder = new class
         {
-            use \Prism\Prism\Providers\OpenAI\Concerns\BuildsRequestBody;
+            use BuildsRequestBody;
 
             /** @return array<string, mixed> */
-            public function build(\Prism\Prism\Text\Request $request): array
+            public function build(Request $request): array
             {
                 return $this->buildRequestBody($request);
             }
@@ -183,6 +188,19 @@ final class Driver
                 sprintf('No response-parse handler wired for provider %s.', $provider)
             ),
         };
+    }
+
+    /** Execute the native stream and enforce properties before golden equality. */
+    public static function parseStream(array $script, array $stream, array $properties): array
+    {
+        require_once __DIR__.'/StreamDriver.php';
+        $trace = StreamDriver::parse($script, $stream);
+        $violations = StreamDriver::violations($trace, $properties);
+        if ($violations !== []) {
+            throw new RuntimeException('Independent stream properties failed: '.implode(', ', $violations));
+        }
+
+        return $trace;
     }
 
     /**
@@ -309,7 +327,7 @@ final class Driver
                 result: $value['result'],
                 toolCallResultId: $value['toolCallResultId'] ?? null,
             ),
-            'Usage' => new \Prism\Prism\ValueObjects\Usage(
+            'Usage' => new Usage(
                 promptTokens: $value['promptTokens'],
                 completionTokens: $value['completionTokens'],
                 cacheWriteInputTokens: $value['cacheWriteInputTokens'] ?? null,
@@ -317,7 +335,7 @@ final class Driver
                 thoughtTokens: $value['thoughtTokens'] ?? null,
                 cost: $value['cost'] ?? null,
             ),
-            'Meta' => new \Prism\Prism\ValueObjects\Meta(
+            'Meta' => new Meta(
                 id: $value['id'],
                 model: $value['model'],
                 rateLimits: $value['rateLimits'] ?? [],

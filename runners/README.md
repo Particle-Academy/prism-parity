@@ -92,6 +92,13 @@ and let `scripts/cross-check.mjs` and the port's own probe test do the judging.
    invent a comparison rule: a loader can assert something the reference
    language cannot express, and no amount of green ticks will surface it.
 
+   The explicit `stream-parse` kind uses the maintainer-adjudicated
+   [stream-properties contract](../docs/streaming-conformance.md). It checks
+   independent properties and reports `trace_comparison` with the untouched
+   native payload, PHP golden, equality status and registered G-125 divergence.
+   Cross-check rechecks the properties from those actual traces. Other kinds
+   retain their existing golden comparison.
+
 5. **Map builder-script method names to your idiom, not the other way round.**
    The corpus names calls in the canonical (PHP) spelling. `withPrompt` is
    `with_prompt` in Python. The call *sequence* is the contract; the spelling is

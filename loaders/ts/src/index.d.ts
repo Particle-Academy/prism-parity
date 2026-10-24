@@ -29,6 +29,18 @@ export interface ConformanceCase {
   notes: string;
   builder?: BuilderStep[];
   response?: unknown;
+  stream?: { encoding: 'base64'; chunks: string[] };
+  properties?: {
+    text: string;
+    normal_completion: boolean;
+    error_observable: boolean;
+    terminal_events: 1;
+    no_completed_tools: true;
+    usage_known?: boolean;
+    final_usage?: Record<string, number>;
+    error_codes?: string[];
+    error_nonrecoverable?: true;
+  };
   subject?: Record<string, unknown>;
   expect: Expectation;
   /**
@@ -63,6 +75,7 @@ export interface SuiteManifest {
   kind:
     | 'request-payload'
     | 'response-parse'
+    | 'stream-parse'
     | 'roundtrip'
     | 'error-code'
     | 'container-identity'
@@ -70,7 +83,7 @@ export interface SuiteManifest {
   pins: string;
   pattern_doc?: string;
   reference: Language;
-  comparison: { mode: 'canonical-json-string' };
+  comparison: { mode: 'canonical-json-string' | 'stream-properties'; exact_trace_gap?: string };
   discrimination?: { status: 'probed' | 'unprobed'; gap?: string };
   implementations: Record<string, { status: 'full' | 'partial' | 'absent'; gap?: string; runner?: string }>;
 }

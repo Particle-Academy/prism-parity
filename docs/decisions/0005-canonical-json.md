@@ -2,6 +2,18 @@
 
 **Status:** accepted, 2026-08-25
 
+**Amendment, 2026-10-24:** the new `stream-parse` kind may declare
+`stream-properties` comparison while the native event-vocabulary contract is
+unresolved (G-125). The ten-case measurement found six semantic failures in each
+port as well as independent event/payload differences. The maintainer authorized
+fixing those safety semantics before deciding event-vocabulary adoption. Actual
+reference goldens and native traces remain canonical strings; equality is
+reported explicitly and divergence is never normalized away. Cross-check also
+rechecks the independent properties from each actual trace. This exception is
+declared on the suite and applies to this new kind; existing golden assertions
+keep byte equality and per-row tolerance rules. The full contract lives in
+[streaming conformance](../streaming-conformance.md).
+
 ## Canonical form
 
 Every golden in this corpus, and every value compared against one, is a **JSON

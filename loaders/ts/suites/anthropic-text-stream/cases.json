@@ -1,0 +1,536 @@
+{
+  "suite": "anthropic-text-stream",
+  "cases": [
+    {
+      "id": "ats-0001",
+      "title": "Complete accounting preserves cache buckets and zero reasoning",
+      "since": "0.1.11",
+      "notes": "Complete accounting preserves cache buckets and zero reasoning. Independently declared properties precede execution of the published reference; fixture bytes are owned and no tool or provider network call is allowed.",
+      "builder": [
+        {
+          "call": "using",
+          "args": [
+            "anthropic",
+            "claude-owned-fixture"
+          ]
+        },
+        {
+          "call": "withPrompt",
+          "args": [
+            "Owned stream fixture."
+          ]
+        },
+        {
+          "call": "withMaxSteps",
+          "args": [
+            1
+          ]
+        }
+      ],
+      "stream": {
+        "encoding": "base64",
+        "chunks": [
+          "ZXZlbnQ6IG1lc3NhZ2Vfc3RhcnQKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9zdGFydCIsIm1lc3NhZ2UiOnsiaWQiOiJtc2dfZzExNV9vd25lZCIsInR5cGUiOiJtZXNzYWdlIiwicm9sZSI6ImFzc2lzdGFudCIsIm1vZGVsIjoiY2xhdWRlLW93bmVkLWZpeHR1cmUiLCJjb250ZW50IjpbXSwidXNhZ2UiOnsiaW5wdXRfdG9rZW5zIjoxMSwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVfY3JlYXRpb25faW5wdXRfdG9rZW5zIjozLCJjYWNoZV9yZWFkX2lucHV0X3Rva2VucyI6NSwib3V0cHV0X3Rva2Vuc19kZXRhaWxzIjp7InRoaW5raW5nX3Rva2VucyI6NH19fX0KCg==",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RhcnQKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19zdGFydCIsImluZGV4IjowLCJjb250ZW50X2Jsb2NrIjp7InR5cGUiOiJ0ZXh0IiwidGV4dCI6IiJ9fQoK",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJIw6kifX0KCg==",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJsbG8g8J+MjSJ9fQoK",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RvcApkYXRhOiB7InR5cGUiOiJjb250ZW50X2Jsb2NrX3N0b3AiLCJpbmRleCI6MH0KCg==",
+          "ZXZlbnQ6IG1lc3NhZ2VfZGVsdGEKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9kZWx0YSIsImRlbHRhIjp7InN0b3BfcmVhc29uIjoiZW5kX3R1cm4iLCJzdG9wX3NlcXVlbmNlIjpudWxsfSwidXNhZ2UiOnsib3V0cHV0X3Rva2VucyI6Nywib3V0cHV0X3Rva2Vuc19kZXRhaWxzIjp7InRoaW5raW5nX3Rva2VucyI6MH19fQoK",
+          "ZXZlbnQ6IG1lc3NhZ2Vfc3RvcApkYXRhOiB7InR5cGUiOiJtZXNzYWdlX3N0b3AifQoK"
+        ]
+      },
+      "properties": {
+        "text": "Héllo 🌍",
+        "normal_completion": true,
+        "error_observable": false,
+        "terminal_events": 1,
+        "no_completed_tools": true,
+        "usage_known": true,
+        "final_usage": {
+          "prompt_tokens": 11,
+          "completion_tokens": 7,
+          "cache_write_input_tokens": 3,
+          "cache_read_input_tokens": 5,
+          "thought_tokens": 0
+        }
+      },
+      "expect": {
+        "result_json": "{\"events\":[{\"type\":\"stream_start\",\"payload\":{\"id\":\"event-1\",\"timestamp\":0,\"model\":\"claude-owned-fixture\",\"provider\":\"anthropic\",\"metadata\":null}},{\"type\":\"step_start\",\"payload\":{\"id\":\"event-2\",\"timestamp\":0}},{\"type\":\"text_start\",\"payload\":{\"id\":\"event-3\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-4\",\"timestamp\":0,\"delta\":\"Hé\",\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-5\",\"timestamp\":0,\"delta\":\"llo 🌍\",\"message_id\":\"opaque-1\"}},{\"type\":\"text_complete\",\"payload\":{\"id\":\"event-6\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"step_finish\",\"payload\":{\"id\":\"event-7\",\"timestamp\":0,\"finish_reason\":\"Stop\",\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":7,\"cache_write_input_tokens\":3,\"cache_read_input_tokens\":5,\"thought_tokens\":0}}},{\"type\":\"stream_end\",\"payload\":{\"thinking\":null,\"thinking_signature\":null,\"stop_reason\":\"end_turn\",\"id\":\"event-8\",\"timestamp\":0,\"finish_reason\":\"Stop\",\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":7,\"cache_write_input_tokens\":3,\"cache_read_input_tokens\":5,\"thought_tokens\":0,\"cost\":null},\"citations\":null}}],\"terminal\":{\"status\":\"returned\"},\"requests\":1}"
+      }
+    },
+    {
+      "id": "ats-0002",
+      "title": "EOF before final usage and message stop",
+      "since": "0.1.11",
+      "notes": "EOF before final usage and message stop. Independently declared properties precede execution of the published reference; fixture bytes are owned and no tool or provider network call is allowed.",
+      "builder": [
+        {
+          "call": "using",
+          "args": [
+            "anthropic",
+            "claude-owned-fixture"
+          ]
+        },
+        {
+          "call": "withPrompt",
+          "args": [
+            "Owned stream fixture."
+          ]
+        },
+        {
+          "call": "withMaxSteps",
+          "args": [
+            1
+          ]
+        }
+      ],
+      "stream": {
+        "encoding": "base64",
+        "chunks": [
+          "ZXZlbnQ6IG1lc3NhZ2Vfc3RhcnQKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9zdGFydCIsIm1lc3NhZ2UiOnsiaWQiOiJtc2dfZzExNV9vd25lZCIsInR5cGUiOiJtZXNzYWdlIiwicm9sZSI6ImFzc2lzdGFudCIsIm1vZGVsIjoiY2xhdWRlLW93bmVkLWZpeHR1cmUiLCJjb250ZW50IjpbXSwidXNhZ2UiOnsiaW5wdXRfdG9rZW5zIjoxMSwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVfY3JlYXRpb25faW5wdXRfdG9rZW5zIjozLCJjYWNoZV9yZWFkX2lucHV0X3Rva2VucyI6NSwib3V0cHV0X3Rva2Vuc19kZXRhaWxzIjp7InRoaW5raW5nX3Rva2VucyI6NH19fX0KCg==",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RhcnQKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19zdGFydCIsImluZGV4IjowLCJjb250ZW50X2Jsb2NrIjp7InR5cGUiOiJ0ZXh0IiwidGV4dCI6IiJ9fQoK",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJIw6kifX0KCg==",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJsbG8g8J+MjSJ9fQoK",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RvcApkYXRhOiB7InR5cGUiOiJjb250ZW50X2Jsb2NrX3N0b3AiLCJpbmRleCI6MH0KCg=="
+        ]
+      },
+      "properties": {
+        "text": "Héllo 🌍",
+        "normal_completion": false,
+        "error_observable": true,
+        "terminal_events": 1,
+        "no_completed_tools": true,
+        "usage_known": false,
+        "error_nonrecoverable": true,
+        "error_codes": [
+          "incomplete_stream"
+        ]
+      },
+      "expect": {
+        "result_json": "{\"events\":[{\"type\":\"stream_start\",\"payload\":{\"id\":\"event-1\",\"timestamp\":0,\"model\":\"claude-owned-fixture\",\"provider\":\"anthropic\",\"metadata\":null}},{\"type\":\"step_start\",\"payload\":{\"id\":\"event-2\",\"timestamp\":0}},{\"type\":\"text_start\",\"payload\":{\"id\":\"event-3\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-4\",\"timestamp\":0,\"delta\":\"Hé\",\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-5\",\"timestamp\":0,\"delta\":\"llo 🌍\",\"message_id\":\"opaque-1\"}},{\"type\":\"text_complete\",\"payload\":{\"id\":\"event-6\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"error\",\"payload\":{\"id\":\"event-7\",\"timestamp\":0,\"error_type\":\"incomplete_stream\",\"message\":\"The stream ended before Anthropic finished the message.\",\"recoverable\":false,\"metadata\":null}},{\"type\":\"step_finish\",\"payload\":{\"id\":\"event-8\",\"timestamp\":0,\"finish_reason\":\"Error\",\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":0,\"cache_write_input_tokens\":3,\"cache_read_input_tokens\":5,\"thought_tokens\":4}}},{\"type\":\"stream_end\",\"payload\":{\"thinking\":null,\"thinking_signature\":null,\"id\":\"event-9\",\"timestamp\":0,\"finish_reason\":\"Error\",\"usage\":null,\"citations\":null}}],\"terminal\":{\"status\":\"returned\"},\"requests\":1}"
+      }
+    },
+    {
+      "id": "ats-0003",
+      "title": "Reported final counters followed by EOF without stop",
+      "since": "0.1.11",
+      "notes": "Reported final counters followed by EOF without stop. Independently declared properties precede execution of the published reference; fixture bytes are owned and no tool or provider network call is allowed.",
+      "builder": [
+        {
+          "call": "using",
+          "args": [
+            "anthropic",
+            "claude-owned-fixture"
+          ]
+        },
+        {
+          "call": "withPrompt",
+          "args": [
+            "Owned stream fixture."
+          ]
+        },
+        {
+          "call": "withMaxSteps",
+          "args": [
+            1
+          ]
+        }
+      ],
+      "stream": {
+        "encoding": "base64",
+        "chunks": [
+          "ZXZlbnQ6IG1lc3NhZ2Vfc3RhcnQKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9zdGFydCIsIm1lc3NhZ2UiOnsiaWQiOiJtc2dfZzExNV9vd25lZCIsInR5cGUiOiJtZXNzYWdlIiwicm9sZSI6ImFzc2lzdGFudCIsIm1vZGVsIjoiY2xhdWRlLW93bmVkLWZpeHR1cmUiLCJjb250ZW50IjpbXSwidXNhZ2UiOnsiaW5wdXRfdG9rZW5zIjoxMSwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVfY3JlYXRpb25faW5wdXRfdG9rZW5zIjozLCJjYWNoZV9yZWFkX2lucHV0X3Rva2VucyI6NSwib3V0cHV0X3Rva2Vuc19kZXRhaWxzIjp7InRoaW5raW5nX3Rva2VucyI6NH19fX0KCg==",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RhcnQKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19zdGFydCIsImluZGV4IjowLCJjb250ZW50X2Jsb2NrIjp7InR5cGUiOiJ0ZXh0IiwidGV4dCI6IiJ9fQoK",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJIw6kifX0KCg==",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJsbG8g8J+MjSJ9fQoK",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RvcApkYXRhOiB7InR5cGUiOiJjb250ZW50X2Jsb2NrX3N0b3AiLCJpbmRleCI6MH0KCg==",
+          "ZXZlbnQ6IG1lc3NhZ2VfZGVsdGEKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9kZWx0YSIsImRlbHRhIjp7InN0b3BfcmVhc29uIjoiZW5kX3R1cm4iLCJzdG9wX3NlcXVlbmNlIjpudWxsfSwidXNhZ2UiOnsib3V0cHV0X3Rva2VucyI6Nywib3V0cHV0X3Rva2Vuc19kZXRhaWxzIjp7InRoaW5raW5nX3Rva2VucyI6MH19fQoK"
+        ]
+      },
+      "properties": {
+        "text": "Héllo 🌍",
+        "normal_completion": false,
+        "error_observable": true,
+        "terminal_events": 1,
+        "no_completed_tools": true,
+        "error_nonrecoverable": true,
+        "error_codes": [
+          "incomplete_stream"
+        ]
+      },
+      "expect": {
+        "result_json": "{\"events\":[{\"type\":\"stream_start\",\"payload\":{\"id\":\"event-1\",\"timestamp\":0,\"model\":\"claude-owned-fixture\",\"provider\":\"anthropic\",\"metadata\":null}},{\"type\":\"step_start\",\"payload\":{\"id\":\"event-2\",\"timestamp\":0}},{\"type\":\"text_start\",\"payload\":{\"id\":\"event-3\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-4\",\"timestamp\":0,\"delta\":\"Hé\",\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-5\",\"timestamp\":0,\"delta\":\"llo 🌍\",\"message_id\":\"opaque-1\"}},{\"type\":\"text_complete\",\"payload\":{\"id\":\"event-6\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"error\",\"payload\":{\"id\":\"event-7\",\"timestamp\":0,\"error_type\":\"incomplete_stream\",\"message\":\"The stream ended before Anthropic finished the message.\",\"recoverable\":false,\"metadata\":null}},{\"type\":\"step_finish\",\"payload\":{\"id\":\"event-8\",\"timestamp\":0,\"finish_reason\":\"Error\",\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":7,\"cache_write_input_tokens\":3,\"cache_read_input_tokens\":5,\"thought_tokens\":0}}},{\"type\":\"stream_end\",\"payload\":{\"thinking\":null,\"thinking_signature\":null,\"stop_reason\":\"end_turn\",\"id\":\"event-9\",\"timestamp\":0,\"finish_reason\":\"Error\",\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":7,\"cache_write_input_tokens\":3,\"cache_read_input_tokens\":5,\"thought_tokens\":0,\"cost\":null},\"citations\":null}}],\"terminal\":{\"status\":\"returned\"},\"requests\":1}"
+      }
+    },
+    {
+      "id": "ats-0004",
+      "title": "Message stop without a final usage delta",
+      "since": "0.1.11",
+      "notes": "Message stop without a final usage delta. Independently declared properties precede execution of the published reference; fixture bytes are owned and no tool or provider network call is allowed.",
+      "builder": [
+        {
+          "call": "using",
+          "args": [
+            "anthropic",
+            "claude-owned-fixture"
+          ]
+        },
+        {
+          "call": "withPrompt",
+          "args": [
+            "Owned stream fixture."
+          ]
+        },
+        {
+          "call": "withMaxSteps",
+          "args": [
+            1
+          ]
+        }
+      ],
+      "stream": {
+        "encoding": "base64",
+        "chunks": [
+          "ZXZlbnQ6IG1lc3NhZ2Vfc3RhcnQKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9zdGFydCIsIm1lc3NhZ2UiOnsiaWQiOiJtc2dfZzExNV9vd25lZCIsInR5cGUiOiJtZXNzYWdlIiwicm9sZSI6ImFzc2lzdGFudCIsIm1vZGVsIjoiY2xhdWRlLW93bmVkLWZpeHR1cmUiLCJjb250ZW50IjpbXSwidXNhZ2UiOnsiaW5wdXRfdG9rZW5zIjoxMSwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVfY3JlYXRpb25faW5wdXRfdG9rZW5zIjozLCJjYWNoZV9yZWFkX2lucHV0X3Rva2VucyI6NSwib3V0cHV0X3Rva2Vuc19kZXRhaWxzIjp7InRoaW5raW5nX3Rva2VucyI6NH19fX0KCg==",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RhcnQKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19zdGFydCIsImluZGV4IjowLCJjb250ZW50X2Jsb2NrIjp7InR5cGUiOiJ0ZXh0IiwidGV4dCI6IiJ9fQoK",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJIw6kifX0KCg==",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJsbG8g8J+MjSJ9fQoK",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RvcApkYXRhOiB7InR5cGUiOiJjb250ZW50X2Jsb2NrX3N0b3AiLCJpbmRleCI6MH0KCg==",
+          "ZXZlbnQ6IG1lc3NhZ2Vfc3RvcApkYXRhOiB7InR5cGUiOiJtZXNzYWdlX3N0b3AifQoK"
+        ]
+      },
+      "properties": {
+        "text": "Héllo 🌍",
+        "normal_completion": true,
+        "error_observable": false,
+        "terminal_events": 1,
+        "no_completed_tools": true,
+        "usage_known": false
+      },
+      "expect": {
+        "result_json": "{\"events\":[{\"type\":\"stream_start\",\"payload\":{\"id\":\"event-1\",\"timestamp\":0,\"model\":\"claude-owned-fixture\",\"provider\":\"anthropic\",\"metadata\":null}},{\"type\":\"step_start\",\"payload\":{\"id\":\"event-2\",\"timestamp\":0}},{\"type\":\"text_start\",\"payload\":{\"id\":\"event-3\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-4\",\"timestamp\":0,\"delta\":\"Hé\",\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-5\",\"timestamp\":0,\"delta\":\"llo 🌍\",\"message_id\":\"opaque-1\"}},{\"type\":\"text_complete\",\"payload\":{\"id\":\"event-6\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"step_finish\",\"payload\":{\"id\":\"event-7\",\"timestamp\":0,\"finish_reason\":\"Stop\",\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":0,\"cache_write_input_tokens\":3,\"cache_read_input_tokens\":5,\"thought_tokens\":4}}},{\"type\":\"stream_end\",\"payload\":{\"thinking\":null,\"thinking_signature\":null,\"id\":\"event-8\",\"timestamp\":0,\"finish_reason\":\"Stop\",\"usage\":null,\"citations\":null}}],\"terminal\":{\"status\":\"returned\"},\"requests\":1}"
+      }
+    },
+    {
+      "id": "ats-0005",
+      "title": "Normal framing without any usage fields",
+      "since": "0.1.11",
+      "notes": "Normal framing without any usage fields. Independently declared properties precede execution of the published reference; fixture bytes are owned and no tool or provider network call is allowed.",
+      "builder": [
+        {
+          "call": "using",
+          "args": [
+            "anthropic",
+            "claude-owned-fixture"
+          ]
+        },
+        {
+          "call": "withPrompt",
+          "args": [
+            "Owned stream fixture."
+          ]
+        },
+        {
+          "call": "withMaxSteps",
+          "args": [
+            1
+          ]
+        }
+      ],
+      "stream": {
+        "encoding": "base64",
+        "chunks": [
+          "ZXZlbnQ6IG1lc3NhZ2Vfc3RhcnQKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9zdGFydCIsIm1lc3NhZ2UiOnsiaWQiOiJtc2dfZzExNV9vd25lZCIsInR5cGUiOiJtZXNzYWdlIiwicm9sZSI6ImFzc2lzdGFudCIsIm1vZGVsIjoiY2xhdWRlLW93bmVkLWZpeHR1cmUiLCJjb250ZW50IjpbXX19Cgo=",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RhcnQKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19zdGFydCIsImluZGV4IjowLCJjb250ZW50X2Jsb2NrIjp7InR5cGUiOiJ0ZXh0IiwidGV4dCI6IiJ9fQoK",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJIw6kifX0KCg==",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJsbG8g8J+MjSJ9fQoK",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RvcApkYXRhOiB7InR5cGUiOiJjb250ZW50X2Jsb2NrX3N0b3AiLCJpbmRleCI6MH0KCg==",
+          "ZXZlbnQ6IG1lc3NhZ2VfZGVsdGEKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9kZWx0YSIsImRlbHRhIjp7InN0b3BfcmVhc29uIjoiZW5kX3R1cm4iLCJzdG9wX3NlcXVlbmNlIjpudWxsfX0KCg==",
+          "ZXZlbnQ6IG1lc3NhZ2Vfc3RvcApkYXRhOiB7InR5cGUiOiJtZXNzYWdlX3N0b3AifQoK"
+        ]
+      },
+      "properties": {
+        "text": "Héllo 🌍",
+        "normal_completion": true,
+        "error_observable": false,
+        "terminal_events": 1,
+        "no_completed_tools": true,
+        "usage_known": false
+      },
+      "expect": {
+        "result_json": "{\"events\":[{\"type\":\"stream_start\",\"payload\":{\"id\":\"event-1\",\"timestamp\":0,\"model\":\"claude-owned-fixture\",\"provider\":\"anthropic\",\"metadata\":null}},{\"type\":\"step_start\",\"payload\":{\"id\":\"event-2\",\"timestamp\":0}},{\"type\":\"text_start\",\"payload\":{\"id\":\"event-3\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-4\",\"timestamp\":0,\"delta\":\"Hé\",\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-5\",\"timestamp\":0,\"delta\":\"llo 🌍\",\"message_id\":\"opaque-1\"}},{\"type\":\"text_complete\",\"payload\":{\"id\":\"event-6\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"step_finish\",\"payload\":{\"id\":\"event-7\",\"timestamp\":0,\"finish_reason\":\"Stop\",\"usage\":null}},{\"type\":\"stream_end\",\"payload\":{\"thinking\":null,\"thinking_signature\":null,\"stop_reason\":\"end_turn\",\"id\":\"event-8\",\"timestamp\":0,\"finish_reason\":\"Stop\",\"usage\":null,\"citations\":null}}],\"terminal\":{\"status\":\"returned\"},\"requests\":1}"
+      }
+    },
+    {
+      "id": "ats-0006",
+      "title": "Provider error inside a text block followed by EOF",
+      "since": "0.1.11",
+      "notes": "Provider error inside a text block followed by EOF. Independently declared properties precede execution of the published reference; fixture bytes are owned and no tool or provider network call is allowed.",
+      "builder": [
+        {
+          "call": "using",
+          "args": [
+            "anthropic",
+            "claude-owned-fixture"
+          ]
+        },
+        {
+          "call": "withPrompt",
+          "args": [
+            "Owned stream fixture."
+          ]
+        },
+        {
+          "call": "withMaxSteps",
+          "args": [
+            1
+          ]
+        }
+      ],
+      "stream": {
+        "encoding": "base64",
+        "chunks": [
+          "ZXZlbnQ6IG1lc3NhZ2Vfc3RhcnQKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9zdGFydCIsIm1lc3NhZ2UiOnsiaWQiOiJtc2dfZzExNV9vd25lZCIsInR5cGUiOiJtZXNzYWdlIiwicm9sZSI6ImFzc2lzdGFudCIsIm1vZGVsIjoiY2xhdWRlLW93bmVkLWZpeHR1cmUiLCJjb250ZW50IjpbXSwidXNhZ2UiOnsiaW5wdXRfdG9rZW5zIjoxMSwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVfY3JlYXRpb25faW5wdXRfdG9rZW5zIjozLCJjYWNoZV9yZWFkX2lucHV0X3Rva2VucyI6NSwib3V0cHV0X3Rva2Vuc19kZXRhaWxzIjp7InRoaW5raW5nX3Rva2VucyI6NH19fX0KCg==",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RhcnQKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19zdGFydCIsImluZGV4IjowLCJjb250ZW50X2Jsb2NrIjp7InR5cGUiOiJ0ZXh0IiwidGV4dCI6IiJ9fQoK",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJIw6kifX0KCg==",
+          "ZXZlbnQ6IGVycm9yCmRhdGE6IHsidHlwZSI6ImVycm9yIiwiZXJyb3IiOnsidHlwZSI6Im92ZXJsb2FkZWRfZXJyb3IiLCJtZXNzYWdlIjoiT3duZWQgc3RyZWFtaW5nIGZhaWx1cmUuIn19Cgo="
+        ]
+      },
+      "properties": {
+        "text": "Hé",
+        "normal_completion": false,
+        "error_observable": true,
+        "terminal_events": 1,
+        "no_completed_tools": true,
+        "usage_known": false,
+        "error_nonrecoverable": true,
+        "error_codes": [
+          "overloaded_error"
+        ]
+      },
+      "expect": {
+        "result_json": "{\"events\":[{\"type\":\"stream_start\",\"payload\":{\"id\":\"event-1\",\"timestamp\":0,\"model\":\"claude-owned-fixture\",\"provider\":\"anthropic\",\"metadata\":null}},{\"type\":\"step_start\",\"payload\":{\"id\":\"event-2\",\"timestamp\":0}},{\"type\":\"text_start\",\"payload\":{\"id\":\"event-3\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-4\",\"timestamp\":0,\"delta\":\"Hé\",\"message_id\":\"opaque-1\"}},{\"type\":\"error\",\"payload\":{\"id\":\"event-5\",\"timestamp\":0,\"error_type\":\"overloaded_error\",\"message\":\"Owned streaming failure.\",\"recoverable\":false,\"metadata\":null}},{\"type\":\"text_complete\",\"payload\":{\"id\":\"event-6\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"step_finish\",\"payload\":{\"id\":\"event-7\",\"timestamp\":0,\"finish_reason\":\"Error\",\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":0,\"cache_write_input_tokens\":3,\"cache_read_input_tokens\":5,\"thought_tokens\":4}}},{\"type\":\"stream_end\",\"payload\":{\"thinking\":null,\"thinking_signature\":null,\"id\":\"event-8\",\"timestamp\":0,\"finish_reason\":\"Error\",\"usage\":null,\"citations\":null}}],\"terminal\":{\"status\":\"returned\"},\"requests\":1}"
+      }
+    },
+    {
+      "id": "ats-0007",
+      "title": "A later final delta and stop cannot erase an earlier error",
+      "since": "0.1.11",
+      "notes": "A later final delta and stop cannot erase an earlier error. Independently declared properties precede execution of the published reference; fixture bytes are owned and no tool or provider network call is allowed.",
+      "builder": [
+        {
+          "call": "using",
+          "args": [
+            "anthropic",
+            "claude-owned-fixture"
+          ]
+        },
+        {
+          "call": "withPrompt",
+          "args": [
+            "Owned stream fixture."
+          ]
+        },
+        {
+          "call": "withMaxSteps",
+          "args": [
+            1
+          ]
+        }
+      ],
+      "stream": {
+        "encoding": "base64",
+        "chunks": [
+          "ZXZlbnQ6IG1lc3NhZ2Vfc3RhcnQKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9zdGFydCIsIm1lc3NhZ2UiOnsiaWQiOiJtc2dfZzExNV9vd25lZCIsInR5cGUiOiJtZXNzYWdlIiwicm9sZSI6ImFzc2lzdGFudCIsIm1vZGVsIjoiY2xhdWRlLW93bmVkLWZpeHR1cmUiLCJjb250ZW50IjpbXSwidXNhZ2UiOnsiaW5wdXRfdG9rZW5zIjoxMSwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVfY3JlYXRpb25faW5wdXRfdG9rZW5zIjozLCJjYWNoZV9yZWFkX2lucHV0X3Rva2VucyI6NSwib3V0cHV0X3Rva2Vuc19kZXRhaWxzIjp7InRoaW5raW5nX3Rva2VucyI6NH19fX0KCg==",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RhcnQKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19zdGFydCIsImluZGV4IjowLCJjb250ZW50X2Jsb2NrIjp7InR5cGUiOiJ0ZXh0IiwidGV4dCI6IiJ9fQoK",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJIw6kifX0KCg==",
+          "ZXZlbnQ6IGVycm9yCmRhdGE6IHsidHlwZSI6ImVycm9yIiwiZXJyb3IiOnsidHlwZSI6Im92ZXJsb2FkZWRfZXJyb3IiLCJtZXNzYWdlIjoiT3duZWQgc3RyZWFtaW5nIGZhaWx1cmUuIn19Cgo=",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RvcApkYXRhOiB7InR5cGUiOiJjb250ZW50X2Jsb2NrX3N0b3AiLCJpbmRleCI6MH0KCg==",
+          "ZXZlbnQ6IG1lc3NhZ2VfZGVsdGEKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9kZWx0YSIsImRlbHRhIjp7InN0b3BfcmVhc29uIjoiZW5kX3R1cm4iLCJzdG9wX3NlcXVlbmNlIjpudWxsfSwidXNhZ2UiOnsib3V0cHV0X3Rva2VucyI6Nywib3V0cHV0X3Rva2Vuc19kZXRhaWxzIjp7InRoaW5raW5nX3Rva2VucyI6MH19fQoK",
+          "ZXZlbnQ6IG1lc3NhZ2Vfc3RvcApkYXRhOiB7InR5cGUiOiJtZXNzYWdlX3N0b3AifQoK"
+        ]
+      },
+      "properties": {
+        "text": "Hé",
+        "normal_completion": false,
+        "error_observable": true,
+        "terminal_events": 1,
+        "no_completed_tools": true,
+        "error_nonrecoverable": true,
+        "error_codes": [
+          "overloaded_error"
+        ]
+      },
+      "expect": {
+        "result_json": "{\"events\":[{\"type\":\"stream_start\",\"payload\":{\"id\":\"event-1\",\"timestamp\":0,\"model\":\"claude-owned-fixture\",\"provider\":\"anthropic\",\"metadata\":null}},{\"type\":\"step_start\",\"payload\":{\"id\":\"event-2\",\"timestamp\":0}},{\"type\":\"text_start\",\"payload\":{\"id\":\"event-3\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-4\",\"timestamp\":0,\"delta\":\"Hé\",\"message_id\":\"opaque-1\"}},{\"type\":\"error\",\"payload\":{\"id\":\"event-5\",\"timestamp\":0,\"error_type\":\"overloaded_error\",\"message\":\"Owned streaming failure.\",\"recoverable\":false,\"metadata\":null}},{\"type\":\"text_complete\",\"payload\":{\"id\":\"event-6\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"step_finish\",\"payload\":{\"id\":\"event-7\",\"timestamp\":0,\"finish_reason\":\"Error\",\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":7,\"cache_write_input_tokens\":3,\"cache_read_input_tokens\":5,\"thought_tokens\":0}}},{\"type\":\"stream_end\",\"payload\":{\"thinking\":null,\"thinking_signature\":null,\"stop_reason\":\"end_turn\",\"id\":\"event-8\",\"timestamp\":0,\"finish_reason\":\"Error\",\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":7,\"cache_write_input_tokens\":3,\"cache_read_input_tokens\":5,\"thought_tokens\":0,\"cost\":null},\"citations\":null}}],\"terminal\":{\"status\":\"returned\"},\"requests\":1}"
+      }
+    },
+    {
+      "id": "ats-0008",
+      "title": "Complete stream split inside UTF-8 and SSE frames",
+      "since": "0.1.11",
+      "notes": "Complete stream split inside UTF-8 and SSE frames. Independently declared properties precede execution of the published reference; fixture bytes are owned and no tool or provider network call is allowed.",
+      "builder": [
+        {
+          "call": "using",
+          "args": [
+            "anthropic",
+            "claude-owned-fixture"
+          ]
+        },
+        {
+          "call": "withPrompt",
+          "args": [
+            "Owned stream fixture."
+          ]
+        },
+        {
+          "call": "withMaxSteps",
+          "args": [
+            1
+          ]
+        }
+      ],
+      "stream": {
+        "encoding": "base64",
+        "chunks": [
+          "ZQ==",
+          "dmVudDo=",
+          "IG1lc3NhZ2Vfc3RhcnQKZGF0YTogeyJ0eXBlIjoibWVzc2E=",
+          "Z2Vfc3RhcnQiLCJtZXNzYWdlIjp7ImlkIjoibXNnX2cxMTVfb3duZWQiLCJ0eXBlIjoibWVzc2FnZSIsInJvbGUiOiJhc3Npc3RhbnQiLCJtb2RlbCI6ImNsYXVkZS1vd25lZC1maXh0dXJlIiwiY29udGVudCI6W10sInVzYWdlIjp7ImlucHV0X3Rva2VucyI6MTEsIm91dHB1dF90b2tlbnMiOjAsImNhY2hlX2NyZWF0aW9uX2lucHV0X3Rva2VucyI6MywiY2FjaGVfcmVhZF9pbnB1dF90b2tlbnMiOjUsIm91dHB1dF90b2tlbnNfZGV0YWlscyI6eyJ0aGlua2luZ190b2tlbnMiOjR9fX19CgpldmVudDogY29udGVudF9ibG9ja19zdGFydApkYXRhOiB7InR5cGUiOiJjb250ZW50X2Jsb2NrX3N0YXJ0IiwiaW5kZXgiOjAsImNvbnRlbnRfYmxvY2siOnsidHlwZSI6InRleHQiLCJ0ZXh0IjoiIn19CgpldmVudDogY29udGVudF9ibG9ja19kZWx0YQpkYXRhOiB7InR5cGUiOiJjb250ZW50X2Jsb2NrX2RlbHRhIiwiaW5kZXgiOjAsImRlbHRhIjp7InR5cGUiOiJ0ZXh0X2RlbHRhIiwidGV4dCI6IkjD",
+          "qSJ9fQoKZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJsbG8g8J8=",
+          "jI0ifX0KCmV2ZW50OiBjb250ZW50X2Jsb2NrX3N0b3AKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19zdG9wIiwiaW5kZXgiOjB9CgpldmVudDogbWVzc2FnZV9kZWx0YQpkYXRhOiB7InR5cGUiOiJtZXNzYWdlX2RlbHRhIiwiZGVsdGEiOnsic3RvcF9yZWFzb24iOiJlbmRfdHVybiIsInN0b3Bfc2VxdWVuY2UiOm51bGx9LCJ1c2FnZSI6eyJvdXRwdXRfdG9rZW5zIjo3LCJvdXRwdXRfdG9rZW5zX2RldGFpbHMiOnsidGhpbmtpbmdfdG9rZW5zIjowfX19CgpldmVudDogbWVzc2FnZV9zdG9wCmRhdGE6IHsidHlwZSI6Im1lc3NhZ2Vfc3RvcCJ9",
+          "Cgo="
+        ]
+      },
+      "properties": {
+        "text": "Héllo 🌍",
+        "normal_completion": true,
+        "error_observable": false,
+        "terminal_events": 1,
+        "no_completed_tools": true,
+        "usage_known": true,
+        "final_usage": {
+          "prompt_tokens": 11,
+          "completion_tokens": 7,
+          "cache_write_input_tokens": 3,
+          "cache_read_input_tokens": 5,
+          "thought_tokens": 0
+        }
+      },
+      "expect": {
+        "result_json": "{\"events\":[{\"type\":\"stream_start\",\"payload\":{\"id\":\"event-1\",\"timestamp\":0,\"model\":\"claude-owned-fixture\",\"provider\":\"anthropic\",\"metadata\":null}},{\"type\":\"step_start\",\"payload\":{\"id\":\"event-2\",\"timestamp\":0}},{\"type\":\"text_start\",\"payload\":{\"id\":\"event-3\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-4\",\"timestamp\":0,\"delta\":\"Hé\",\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-5\",\"timestamp\":0,\"delta\":\"llo 🌍\",\"message_id\":\"opaque-1\"}},{\"type\":\"text_complete\",\"payload\":{\"id\":\"event-6\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"step_finish\",\"payload\":{\"id\":\"event-7\",\"timestamp\":0,\"finish_reason\":\"Stop\",\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":7,\"cache_write_input_tokens\":3,\"cache_read_input_tokens\":5,\"thought_tokens\":0}}},{\"type\":\"stream_end\",\"payload\":{\"thinking\":null,\"thinking_signature\":null,\"stop_reason\":\"end_turn\",\"id\":\"event-8\",\"timestamp\":0,\"finish_reason\":\"Stop\",\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":7,\"cache_write_input_tokens\":3,\"cache_read_input_tokens\":5,\"thought_tokens\":0,\"cost\":null},\"citations\":null}}],\"terminal\":{\"status\":\"returned\"},\"requests\":1}"
+      }
+    },
+    {
+      "id": "ats-0009",
+      "title": "EOF inside partial tool JSON never reports an executable call",
+      "since": "0.1.11",
+      "notes": "EOF inside partial tool JSON never reports an executable call. Independently declared properties precede execution of the published reference; fixture bytes are owned and no tool or provider network call is allowed.",
+      "builder": [
+        {
+          "call": "using",
+          "args": [
+            "anthropic",
+            "claude-owned-fixture"
+          ]
+        },
+        {
+          "call": "withPrompt",
+          "args": [
+            "Owned stream fixture."
+          ]
+        },
+        {
+          "call": "withMaxSteps",
+          "args": [
+            1
+          ]
+        }
+      ],
+      "stream": {
+        "encoding": "base64",
+        "chunks": [
+          "ZXZlbnQ6IG1lc3NhZ2Vfc3RhcnQKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9zdGFydCIsIm1lc3NhZ2UiOnsiaWQiOiJtc2dfZzExNV9vd25lZCIsInR5cGUiOiJtZXNzYWdlIiwicm9sZSI6ImFzc2lzdGFudCIsIm1vZGVsIjoiY2xhdWRlLW93bmVkLWZpeHR1cmUiLCJjb250ZW50IjpbXSwidXNhZ2UiOnsiaW5wdXRfdG9rZW5zIjoxMSwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVfY3JlYXRpb25faW5wdXRfdG9rZW5zIjozLCJjYWNoZV9yZWFkX2lucHV0X3Rva2VucyI6NSwib3V0cHV0X3Rva2Vuc19kZXRhaWxzIjp7InRoaW5raW5nX3Rva2VucyI6NH19fX0KCg==",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RhcnQKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19zdGFydCIsImluZGV4IjowLCJjb250ZW50X2Jsb2NrIjp7InR5cGUiOiJ0b29sX3VzZSIsImlkIjoidG9vbF9nMTE1X293bmVkIiwibmFtZSI6Im93bmVkX25vX2V4ZWN1dGlvbiIsImlucHV0Ijp7fX19Cgo=",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoiaW5wdXRfanNvbl9kZWx0YSIsInBhcnRpYWxfanNvbiI6IntcInNlY3JldFwiOiJ9fQoK"
+        ]
+      },
+      "properties": {
+        "text": "",
+        "normal_completion": false,
+        "error_observable": true,
+        "terminal_events": 1,
+        "no_completed_tools": true,
+        "usage_known": false,
+        "error_nonrecoverable": true,
+        "error_codes": [
+          "incomplete_stream"
+        ]
+      },
+      "expect": {
+        "result_json": "{\"events\":[{\"type\":\"stream_start\",\"payload\":{\"id\":\"event-1\",\"timestamp\":0,\"model\":\"claude-owned-fixture\",\"provider\":\"anthropic\",\"metadata\":null}},{\"type\":\"step_start\",\"payload\":{\"id\":\"event-2\",\"timestamp\":0}},{\"type\":\"tool_call_delta\",\"payload\":{\"id\":\"event-3\",\"timestamp\":0,\"tool_id\":\"tool_g115_owned\",\"tool_name\":\"owned_no_execution\",\"delta\":\"{\\\"secret\\\":\",\"message_id\":\"opaque-1\"}},{\"type\":\"error\",\"payload\":{\"id\":\"event-4\",\"timestamp\":0,\"error_type\":\"incomplete_stream\",\"message\":\"The stream ended before Anthropic finished the message.\",\"recoverable\":false,\"metadata\":null}},{\"type\":\"step_finish\",\"payload\":{\"id\":\"event-5\",\"timestamp\":0,\"finish_reason\":\"Error\",\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":0,\"cache_write_input_tokens\":3,\"cache_read_input_tokens\":5,\"thought_tokens\":4}}},{\"type\":\"stream_end\",\"payload\":{\"thinking\":null,\"thinking_signature\":null,\"id\":\"event-6\",\"timestamp\":0,\"finish_reason\":\"Error\",\"usage\":null,\"citations\":null}}],\"terminal\":{\"status\":\"returned\"},\"requests\":1}"
+      }
+    },
+    {
+      "id": "ats-0010",
+      "title": "Ping unknown event and keepalive comment are harmless",
+      "since": "0.1.11",
+      "notes": "Ping unknown event and keepalive comment are harmless. Independently declared properties precede execution of the published reference; fixture bytes are owned and no tool or provider network call is allowed.",
+      "builder": [
+        {
+          "call": "using",
+          "args": [
+            "anthropic",
+            "claude-owned-fixture"
+          ]
+        },
+        {
+          "call": "withPrompt",
+          "args": [
+            "Owned stream fixture."
+          ]
+        },
+        {
+          "call": "withMaxSteps",
+          "args": [
+            1
+          ]
+        }
+      ],
+      "stream": {
+        "encoding": "base64",
+        "chunks": [
+          "ZXZlbnQ6IG1lc3NhZ2Vfc3RhcnQKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9zdGFydCIsIm1lc3NhZ2UiOnsiaWQiOiJtc2dfZzExNV9vd25lZCIsInR5cGUiOiJtZXNzYWdlIiwicm9sZSI6ImFzc2lzdGFudCIsIm1vZGVsIjoiY2xhdWRlLW93bmVkLWZpeHR1cmUiLCJjb250ZW50IjpbXSwidXNhZ2UiOnsiaW5wdXRfdG9rZW5zIjoxMSwib3V0cHV0X3Rva2VucyI6MCwiY2FjaGVfY3JlYXRpb25faW5wdXRfdG9rZW5zIjozLCJjYWNoZV9yZWFkX2lucHV0X3Rva2VucyI6NSwib3V0cHV0X3Rva2Vuc19kZXRhaWxzIjp7InRoaW5raW5nX3Rva2VucyI6NH19fX0KCg==",
+          "ZXZlbnQ6IHBpbmcKZGF0YTogeyJ0eXBlIjoicGluZyJ9Cgo=",
+          "OiBrZWVwYWxpdmUKCg==",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RhcnQKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19zdGFydCIsImluZGV4IjowLCJjb250ZW50X2Jsb2NrIjp7InR5cGUiOiJ0ZXh0IiwidGV4dCI6IiJ9fQoK",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJIw6kifX0KCg==",
+          "ZXZlbnQ6IG93bmVkX2Z1dHVyZV9ub3RpY2UKZGF0YTogeyJ0eXBlIjoib3duZWRfZnV0dXJlX25vdGljZSIsIm5vdGUiOiJpZ25vcmVkIGFkZGl0aXZlIGV2ZW50In0KCg==",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfZGVsdGEKZGF0YTogeyJ0eXBlIjoiY29udGVudF9ibG9ja19kZWx0YSIsImluZGV4IjowLCJkZWx0YSI6eyJ0eXBlIjoidGV4dF9kZWx0YSIsInRleHQiOiJsbG8g8J+MjSJ9fQoK",
+          "ZXZlbnQ6IGNvbnRlbnRfYmxvY2tfc3RvcApkYXRhOiB7InR5cGUiOiJjb250ZW50X2Jsb2NrX3N0b3AiLCJpbmRleCI6MH0KCg==",
+          "ZXZlbnQ6IG1lc3NhZ2VfZGVsdGEKZGF0YTogeyJ0eXBlIjoibWVzc2FnZV9kZWx0YSIsImRlbHRhIjp7InN0b3BfcmVhc29uIjoiZW5kX3R1cm4iLCJzdG9wX3NlcXVlbmNlIjpudWxsfSwidXNhZ2UiOnsib3V0cHV0X3Rva2VucyI6Nywib3V0cHV0X3Rva2Vuc19kZXRhaWxzIjp7InRoaW5raW5nX3Rva2VucyI6MH19fQoK",
+          "ZXZlbnQ6IG1lc3NhZ2Vfc3RvcApkYXRhOiB7InR5cGUiOiJtZXNzYWdlX3N0b3AifQoK"
+        ]
+      },
+      "properties": {
+        "text": "Héllo 🌍",
+        "normal_completion": true,
+        "error_observable": false,
+        "terminal_events": 1,
+        "no_completed_tools": true,
+        "usage_known": true,
+        "final_usage": {
+          "prompt_tokens": 11,
+          "completion_tokens": 7,
+          "cache_write_input_tokens": 3,
+          "cache_read_input_tokens": 5,
+          "thought_tokens": 0
+        }
+      },
+      "expect": {
+        "result_json": "{\"events\":[{\"type\":\"stream_start\",\"payload\":{\"id\":\"event-1\",\"timestamp\":0,\"model\":\"claude-owned-fixture\",\"provider\":\"anthropic\",\"metadata\":null}},{\"type\":\"step_start\",\"payload\":{\"id\":\"event-2\",\"timestamp\":0}},{\"type\":\"text_start\",\"payload\":{\"id\":\"event-3\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-4\",\"timestamp\":0,\"delta\":\"Hé\",\"message_id\":\"opaque-1\"}},{\"type\":\"text_delta\",\"payload\":{\"id\":\"event-5\",\"timestamp\":0,\"delta\":\"llo 🌍\",\"message_id\":\"opaque-1\"}},{\"type\":\"text_complete\",\"payload\":{\"id\":\"event-6\",\"timestamp\":0,\"message_id\":\"opaque-1\"}},{\"type\":\"step_finish\",\"payload\":{\"id\":\"event-7\",\"timestamp\":0,\"finish_reason\":\"Stop\",\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":7,\"cache_write_input_tokens\":3,\"cache_read_input_tokens\":5,\"thought_tokens\":0}}},{\"type\":\"stream_end\",\"payload\":{\"thinking\":null,\"thinking_signature\":null,\"stop_reason\":\"end_turn\",\"id\":\"event-8\",\"timestamp\":0,\"finish_reason\":\"Stop\",\"usage\":{\"prompt_tokens\":11,\"completion_tokens\":7,\"cache_write_input_tokens\":3,\"cache_read_input_tokens\":5,\"thought_tokens\":0,\"cost\":null},\"citations\":null}}],\"terminal\":{\"status\":\"returned\"},\"requests\":1}"
+      }
+    }
+  ]
+}
