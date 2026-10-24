@@ -1,0 +1,17 @@
+{
+  "id": "openrouter-billing-response",
+  "title": "OpenRouter BYOK reported cost and billing completeness",
+  "kind": "response-parse",
+  "pins": "Whether OpenRouter's router charge and separately reported BYOK upstream estimate become one call cost, without treating zero router fees as free inference, double-counting non-BYOK inference, or claiming missing billing evidence is complete. PHP executes the real HTTP-faked text handler. TypeScript and Python do not implement OpenRouter; their explicit skips are coverage debt, not agreement.",
+  "scope": "One non-stream response and its response/step billing provenance. Streaming termination, harness admission/reservations and live provider invoices are separate controls. Upstream cost is OpenRouter's reported estimate.",
+  "pattern_doc": "docs/patterns/06-response-parsing.md",
+  "reference": "php",
+  "comparison": { "mode": "canonical-json-string" },
+  "discrimination": { "status": "probed", "note": "Core real-handler regressions catch omitted upstream cost, null-as-zero, double-counted non-BYOK cost, missing identity accepted as complete and lost multi-step completeness; successful complete/free/non-BYOK controls prevent universal refusal passing. Corpus goldens have been executed and verified against Packagist core0.135.0 / 0ff1197." },
+  "findings": "G-114: documented BYOK zero router charge can still represent upstream spend. Core 0.135.0 normalizes complete explicit BYOK totals and carries completeness facts for capped consumers. No TS/Python OpenRouter implementation exists, so those columns are explicitly unsupported; no cross-language correctness or live billing claim is made.",
+  "implementations": {
+    "php": { "status": "full", "runner": "prism-parity:runners/php/runner.php" },
+    "ts": { "status": "partial", "cause": "no-runner", "gap": "OpenRouter provider is unsupported in prism-ts; all cases are explicit skips (G-114)." },
+    "py": { "status": "partial", "cause": "no-runner", "gap": "OpenRouter provider is unsupported in prism-py; the enum declaration is not an implementation. All cases are explicit skips (G-114)." }
+  }
+}

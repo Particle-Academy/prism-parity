@@ -65,17 +65,23 @@ reusable only: the remote audit runs once, rather than repeating the same API
 reads in each workflow. The daily event still enables factcheck's strict currency
 check and runs the cross-check against the moving ports.
 
-The audit resolves each claimed repository's `main` to a commit, prints that SHA,
-and uses it for all contents requests in that repository. Shared runner files
+The audit resolves each external repository's `main` to a commit. For parity's
+own sources and loader copies, it uses the exact checked-out candidate commit,
+which must be publicly readable after pushing. It prints each SHA and uses it
+for every contents request in that repository. Own copies must match canonical
+cases in the same commit; checking the previous main instead would prevent any
+fixture-changing contribution from passing and would not verify its candidate.
+External copies retain strict comparison against their immutable main snapshot.
+Shared runner files
 are fetched once but assessed separately for each suite claim. A confirmed 404
 counts as missing. Authentication, rate-limit, network and decoding failures are
 unresolved and fail the job; they never count as verified or missing files.
 
-Every full runner must mention its suite identifier or a discovered vendored
-fixture filename. This is evidence of a reference, not proof of execution: a
-comment can mention a suite, and a generic runner may read it through a loader
-without a literal identifier. Such a generic runner fails this lexical check
-rather than receiving an inferred exemption. Review a failure against the
+Every full runner must mention its suite identifier, a discovered vendored
+fixture filename, or a recognized published-corpus loader entry point. This is
+textual evidence of a reference, not proof of execution: a comment can mention a
+suite, and a generic runner can enumerate its loader without literal suite IDs.
+A runner with none of these references fails. Review a failure against its
 reported source file before changing a claim.
 
 A recursive tree listing discovers `cases.json`, suite-named and corpus-named

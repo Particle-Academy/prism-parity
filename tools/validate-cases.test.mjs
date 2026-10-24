@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, copyFileSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, copyFileSync, readFileSync, readdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,7 +12,9 @@ const tool = join(root, 'tools/validate-cases.mjs');
 test('the shipped gate accepts the corpus', () => {
   const result = spawnSync(process.execPath, [tool], { encoding: 'utf8' });
   assert.equal(result.status, 0, result.stderr);
-  assert.match(result.stdout, /Cases schema: 24\/24 documents valid/);
+  const count = readdirSync(join(root, 'suites'), { withFileTypes: true }).filter((entry) => entry.isDirectory()).length;
+  assert.ok(count > 0, 'a shipped gate must validate at least one document');
+  assert.ok(result.stdout.includes(`Cases schema: ${count}/${count} documents valid`));
 });
 
 for (const [name, mutate] of [

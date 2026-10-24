@@ -15,6 +15,7 @@ use Prism\Prism\Prism;
 use Prism\Prism\PrismManager;
 use Prism\Prism\Providers\Anthropic\Handlers\Text as AnthropicTextHandler;
 use Prism\Prism\Providers\OpenAI\Handlers\Text as OpenAITextHandler;
+use Prism\Prism\Providers\OpenRouter\Handlers\Text as OpenRouterTextHandler;
 use Prism\Prism\Schema\BooleanSchema;
 use Prism\Prism\Schema\NumberSchema;
 use Prism\Prism\Schema\StringSchema;
@@ -56,6 +57,10 @@ final class Driver
         $app->instance('config', new Repository([
             'prism' => [
                 'providers' => [
+                    'openrouter' => [
+                        'url' => 'https://openrouter.ai/api/v1',
+                        'api_key' => 'conformance-only',
+                    ],
                     'openai' => [
                         // Fixed on purpose: the corpus pins the request BODY, and
                         // a body must not vary with whoever's environment ran it.
@@ -116,6 +121,10 @@ final class Driver
     {
         $request = self::pending($script)->toRequest();
 
+        if ($request->provider() === 'anthropic') {
+            return AnthropicTextHandler::buildHttpRequestPayload($request);
+        }
+
         $builder = new class
         {
             use \Prism\Prism\Providers\OpenAI\Concerns\BuildsRequestBody;
@@ -166,6 +175,9 @@ final class Driver
                 ->toArray(),
             'anthropic' => (new AnthropicTextHandler($factory->baseUrl('https://api.anthropic.com/v1'), $request))
                 ->handle()
+                ->toArray(),
+            'openrouter' => (new OpenRouterTextHandler($factory->baseUrl('https://openrouter.ai/api/v1')))
+                ->handle($request)
                 ->toArray(),
             default => throw new RuntimeException(
                 sprintf('No response-parse handler wired for provider %s.', $provider)

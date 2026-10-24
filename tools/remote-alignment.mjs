@@ -120,7 +120,7 @@ export function ghRequest(endpoint) {
   return JSON.parse(output.slice(split + 2));
 }
 
-export async function auditRemote(suites, api) {
+export async function auditRemote(suites, api, { selfRef } = {}) {
   const result = {
     ok: false, claimedRunners: 0, checkedClaims: 0, verifiedClaims: 0,
     missingFiles: 0, missingClaims: 0, unreferencedFullRunners: 0, unresolvedClaims: 0,
@@ -169,7 +169,12 @@ export async function auditRemote(suites, api) {
     const repoClaims = claims.filter((claim) => claim.repo === repo);
     let ref;
     try {
-      ref = await api.head(repo);
+      if (repo === 'prism-parity') {
+        if (!/^[a-f0-9]{40}$/.test(selfRef ?? '')) throw new Error('prism-parity: an exact candidate SHA is required; main is not the candidate');
+        ref = selfRef;
+      } else {
+        ref = await api.head(repo);
+      }
       result.snapshots[repo] = ref;
     } catch (error) {
       result.unresolvedClaims += repoClaims.length;
@@ -314,8 +319,14 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     ...JSON.parse(readFileSync(join(root, 'suites', id, 'manifest.json'), 'utf8')),
     bytes: readFileSync(join(root, 'suites', id, 'cases.json')),
   }));
-  const result = await auditRemote(suites, contentsClient(ghRequest));
-  for (const [repo, ref] of Object.entries(result.snapshots)) console.log(`SNAPSHOT ${repo}/main ${ref}`);
+  const candidate = spawnSync('git', ['-C', root, 'rev-parse', '--verify', 'HEAD^{commit}'], { encoding: 'utf8' });
+  const selfRef = candidate.stdout?.trim();
+  if (candidate.status !== 0 || !/^[a-f0-9]{40}$/.test(selfRef ?? '')) {
+    console.error('Remote alignment failed: the checked-out candidate SHA could not be verified.');
+    process.exit(1);
+  }
+  const result = await auditRemote(suites, contentsClient(ghRequest), { selfRef });
+  for (const [repo, ref] of Object.entries(result.snapshots)) console.log(`SNAPSHOT ${repo}/${repo === 'prism-parity' ? 'candidate' : 'main'} ${ref}`);
   for (const evidence of result.evidence) console.log(`VERIFIED ${evidence}`);
   for (const failure of result.failures) console.error(failure);
   console.log(summary(result));

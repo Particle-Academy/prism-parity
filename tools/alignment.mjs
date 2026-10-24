@@ -70,7 +70,7 @@ try {
   }
   if (failures.length) throw new Error(failures.join('\n'));
   console.log(`Alignment passed: ${claims} published metric claims regenerated and compared.`);
-  console.log('Local alignment only. CI also runs tools/remote-alignment.mjs against public main snapshots. Package execution, gap-register entries, handoffs and release-version claims remain separate checks.');
+  console.log('Local alignment only. CI also runs tools/remote-alignment.mjs against the public candidate and external main snapshots. Package execution, gap-register entries, handoffs and release-version claims remain separate checks.');
 } catch (error) {
   console.error(`Alignment failed:\n${error.message}`);
   process.exit(1);

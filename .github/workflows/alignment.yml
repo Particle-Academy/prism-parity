@@ -23,7 +23,7 @@ jobs:
           node-version: 22
       - name: Alignment assertions and regression tests
         run: node tools/alignment.mjs
-      - name: Public runner claims and corpus copies at main
+      - name: Candidate copies and external public main claims
         env:
           GH_TOKEN: ${{ github.token }}
         run: node tools/run-gate.mjs remote -- node tools/remote-alignment.mjs

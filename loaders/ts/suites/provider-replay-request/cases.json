@@ -1,0 +1,471 @@
+{
+    "suite": "provider-replay-request",
+    "cases": [
+        {
+            "id": "rpl-0001",
+            "title": "OpenAI ordered opaque reasoning and message replay",
+            "since": "0.1.10",
+            "notes": "Metadata replaces legacy text without duplicate assistant items. Opaque encrypted content remains byte-identical.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMaxTokens",
+                    "args": [
+                        64
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Owned replay fixture"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "Legacy fallback must not duplicate replay",
+                                "additionalContent": {
+                                    "output_items": [
+                                        {
+                                            "id": "rs_owned_replay",
+                                            "type": "reasoning",
+                                            "summary": [],
+                                            "encrypted_content": "synthetic-owned-encrypted-β+/="
+                                        },
+                                        {
+                                            "id": "msg_owned_replay",
+                                            "type": "message",
+                                            "role": "assistant",
+                                            "status": "completed",
+                                            "content": [
+                                                {
+                                                    "type": "output_text",
+                                                    "text": "Owned answer",
+                                                    "annotations": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Owned replay fixture\"}]},{\"id\":\"rs_owned_replay\",\"type\":\"reasoning\",\"summary\":[],\"encrypted_content\":\"synthetic-owned-encrypted-β+/=\"},{\"id\":\"msg_owned_replay\",\"type\":\"message\",\"role\":\"assistant\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"text\":\"Owned answer\",\"annotations\":[]}]}],\"max_output_tokens\":64}"
+            }
+        },
+        {
+            "id": "rpl-0002",
+            "title": "OpenAI normalizes absent reasoning summary and drops non-replayable hosted items",
+            "since": "0.1.10",
+            "notes": "Only message/reasoning/function_call are replayable; absent summary becomes an empty list, while opaque fields survive.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMaxTokens",
+                    "args": [
+                        64
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Owned replay fixture"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "Legacy fallback must not duplicate replay",
+                                "additionalContent": {
+                                    "output_items": [
+                                        {
+                                            "type": "reasoning",
+                                            "id": "rs_owned_missing",
+                                            "encrypted_content": "synthetic-owned-cipher"
+                                        },
+                                        {
+                                            "type": "web_search_call",
+                                            "id": "ws_owned"
+                                        },
+                                        {
+                                            "id": "msg_owned_replay",
+                                            "type": "message",
+                                            "role": "assistant",
+                                            "status": "completed",
+                                            "content": [
+                                                {
+                                                    "type": "output_text",
+                                                    "text": "Owned answer",
+                                                    "annotations": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Owned replay fixture\"}]},{\"type\":\"reasoning\",\"id\":\"rs_owned_missing\",\"encrypted_content\":\"synthetic-owned-cipher\",\"summary\":[]},{\"id\":\"msg_owned_replay\",\"type\":\"message\",\"role\":\"assistant\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"text\":\"Owned answer\",\"annotations\":[]}]}],\"max_output_tokens\":64}"
+            }
+        },
+        {
+            "id": "rpl-0003",
+            "title": "OpenAI empty replay list retains legacy assistant fallback",
+            "since": "0.1.10",
+            "notes": "Empty output_items is not an authoritative replacement; prevents a universal suppression implementation passing.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMaxTokens",
+                    "args": [
+                        64
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Owned replay fixture"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "Legacy fallback must not duplicate replay",
+                                "additionalContent": {
+                                    "output_items": []
+                                }
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Owned replay fixture\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"Legacy fallback must not duplicate replay\"}]}],\"max_output_tokens\":64}"
+            }
+        },
+        {
+            "id": "rpl-0004",
+            "title": "Anthropic ordered content blocks override legacy metadata",
+            "since": "0.1.10",
+            "notes": "Verbatim ordered thinking/signature, redacted and text blocks override convenience text/thinking. No concatenation or duplicated fallback.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "anthropic",
+                        "claude-sonnet-4-5"
+                    ]
+                },
+                {
+                    "call": "withMaxTokens",
+                    "args": [
+                        64
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Owned replay fixture"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "Legacy fallback must not duplicate replay",
+                                "additionalContent": {
+                                    "content_blocks": [
+                                        {
+                                            "type": "thinking",
+                                            "thinking": "Owned thought",
+                                            "signature": "synthetic-owned-opaque-α+/="
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": "First text"
+                                        },
+                                        {
+                                            "type": "redacted_thinking",
+                                            "data": "synthetic-owned-redacted-+/="
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": "Second text"
+                                        }
+                                    ],
+                                    "thinking": "legacy ignored",
+                                    "thinking_signature": "synthetic-legacy-ignored"
+                                }
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"claude-sonnet-4-5\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Owned replay fixture\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Owned thought\",\"signature\":\"synthetic-owned-opaque-α+/=\"},{\"type\":\"text\",\"text\":\"First text\"},{\"type\":\"redacted_thinking\",\"data\":\"synthetic-owned-redacted-+/=\"},{\"type\":\"text\",\"text\":\"Second text\"}]}],\"max_tokens\":64}"
+            }
+        },
+        {
+            "id": "rpl-0005",
+            "title": "Anthropic thinking blocks override the legacy thinking pair",
+            "since": "0.1.10",
+            "notes": "Without content_blocks the full ordered thinking_blocks list precedes ordinary assistant text.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "anthropic",
+                        "claude-sonnet-4-5"
+                    ]
+                },
+                {
+                    "call": "withMaxTokens",
+                    "args": [
+                        64
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Owned replay fixture"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "Legacy fallback must not duplicate replay",
+                                "additionalContent": {
+                                    "thinking_blocks": [
+                                        {
+                                            "type": "thinking",
+                                            "thinking": "Owned thought",
+                                            "signature": "synthetic-owned-opaque-α+/="
+                                        },
+                                        {
+                                            "type": "redacted_thinking",
+                                            "data": "synthetic-owned-redacted-+/="
+                                        }
+                                    ],
+                                    "thinking": "legacy ignored",
+                                    "thinking_signature": "synthetic-legacy-ignored"
+                                }
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"claude-sonnet-4-5\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Owned replay fixture\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Owned thought\",\"signature\":\"synthetic-owned-opaque-α+/=\"},{\"type\":\"redacted_thinking\",\"data\":\"synthetic-owned-redacted-+/=\"},{\"type\":\"text\",\"text\":\"Legacy fallback must not duplicate replay\"}]}],\"max_tokens\":64}"
+            }
+        },
+        {
+            "id": "rpl-0006",
+            "title": "Anthropic explicit empty content blocks suppress legacy fallback",
+            "since": "0.1.10",
+            "notes": "An authoritative empty replay list must not regenerate rejected assistant content.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "anthropic",
+                        "claude-sonnet-4-5"
+                    ]
+                },
+                {
+                    "call": "withMaxTokens",
+                    "args": [
+                        64
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Owned replay fixture"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "Legacy fallback must not duplicate replay",
+                                "additionalContent": {
+                                    "content_blocks": []
+                                }
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"claude-sonnet-4-5\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Owned replay fixture\"}]}],\"max_tokens\":64}"
+            }
+        },
+        {
+            "id": "rpl-0007",
+            "title": "Anthropic fallback echo drops superseded signed content",
+            "since": "0.1.10",
+            "notes": "Reference fallback projection retains text/fallback and serving blocks, removing superseded thinking without reordering opaque surviving content.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "anthropic",
+                        "claude-sonnet-4-5"
+                    ]
+                },
+                {
+                    "call": "withMaxTokens",
+                    "args": [
+                        64
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Owned replay fixture"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "Legacy fallback must not duplicate replay",
+                                "additionalContent": {
+                                    "content_blocks": [
+                                        {
+                                            "type": "thinking",
+                                            "thinking": "Owned thought",
+                                            "signature": "synthetic-owned-opaque-α+/="
+                                        },
+                                        {
+                                            "type": "connector_text",
+                                            "text": "superseded"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": "Kept prior text"
+                                        },
+                                        {
+                                            "type": "fallback",
+                                            "from": {
+                                                "model": "owned-a"
+                                            },
+                                            "to": {
+                                                "model": "owned-b"
+                                            }
+                                        },
+                                        {
+                                            "type": "redacted_thinking",
+                                            "data": "synthetic-owned-redacted-+/="
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": "Serving answer"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"claude-sonnet-4-5\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Owned replay fixture\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"Kept prior text\"},{\"type\":\"fallback\",\"from\":{\"model\":\"owned-a\"},\"to\":{\"model\":\"owned-b\"}},{\"type\":\"redacted_thinking\",\"data\":\"synthetic-owned-redacted-+/=\"},{\"type\":\"text\",\"text\":\"Serving answer\"}]}],\"max_tokens\":64}"
+            }
+        },
+        {
+            "id": "rpl-0008",
+            "title": "Anthropic replay normalizes empty tool input as an object",
+            "since": "0.1.10",
+            "notes": "Stored tool_use retains its call id and object input instead of becoming a JSON list.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "anthropic",
+                        "claude-sonnet-4-5"
+                    ]
+                },
+                {
+                    "call": "withMaxTokens",
+                    "args": [
+                        64
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Owned replay fixture"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "Legacy fallback must not duplicate replay",
+                                "additionalContent": {
+                                    "content_blocks": [
+                                        {
+                                            "type": "thinking",
+                                            "thinking": "Owned thought",
+                                            "signature": "synthetic-owned-opaque-α+/="
+                                        },
+                                        {
+                                            "type": "tool_use",
+                                            "id": "call_owned_replay",
+                                            "name": "lookup",
+                                            "input": {}
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "$": "ToolResultMessage",
+                                "toolResults": [
+                                    {
+                                        "$": "ToolResult",
+                                        "toolCallId": "call_owned_replay",
+                                        "toolName": "lookup",
+                                        "args": {},
+                                        "result": "owned result"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "body_json": "{\"model\":\"claude-sonnet-4-5\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Owned replay fixture\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Owned thought\",\"signature\":\"synthetic-owned-opaque-α+/=\"},{\"type\":\"tool_use\",\"id\":\"call_owned_replay\",\"name\":\"lookup\",\"input\":{}}]},{\"role\":\"user\",\"content\":[{\"type\":\"tool_result\",\"tool_use_id\":\"call_owned_replay\",\"content\":\"owned result\"}]}],\"max_tokens\":64}"
+            }
+        }
+    ]
+}

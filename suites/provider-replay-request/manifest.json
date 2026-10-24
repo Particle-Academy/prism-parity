@@ -1,0 +1,31 @@
+{
+  "id": "provider-replay-request",
+  "title": "Stored OpenAI and Anthropic assistant replay",
+  "kind": "request-payload",
+  "pins": "Provider-native ordered replay state must survive a stored assistant message into the next request in PHP, TypeScript and Python. Opaque encrypted reasoning, thinking signatures and redacted blocks are never reconstructed from convenience text.",
+  "scope": "Non-stream request mapping, replay precedence, order and opaque values. No tool execution, network, live credentials or stream termination is exercised.",
+  "pattern_doc": "docs/patterns/05-request-mapping.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed",
+    "note": "Both native stored-message round trips reject bypassing either provider's replay and corrupting encrypted reasoning or thinking signatures (eight deliberate source defects total); restored controls pass. The generic keep-empty-tools probe also rejects every request row. Goldens execute Packagist core0.135.0."
+  },
+  "findings": "G-120: existing OpenAI request corpus has no output_items replay; no Anthropic request suite exists. Goldens execute published core0.135.0 native payload builders, never authored expectations.",
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-parity:runners/php/runner.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-ts:conformance/runner.mjs"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-py:conformance/runner.py"
+    }
+  }
+}
