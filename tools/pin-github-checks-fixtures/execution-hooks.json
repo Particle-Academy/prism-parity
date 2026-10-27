@@ -1,0 +1,7 @@
+{
+  "environmentKeys": ["NODE_OPTIONS", "NODE_PATH", "PATH", "BASH_ENV", "ENV", "LD_PRELOAD"],
+  "scopes": ["workflow", "job"],
+  "defaults": ["workflow-shell", "job-shell"],
+  "inline": ["workflow-env", "job-env"],
+  "fileWrites": ["GITHUB_ENV", "GITHUB_PATH"]
+}

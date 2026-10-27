@@ -24,4 +24,6 @@ export const gates = {
   factcheck: { verdict: /^PASS \(\d+ warning\(s\)\)$/m },
   allowlist: { verdict: /\b[1-9]\d* direct dependencies, all approved\b/m },
   remote: { verdict: /^Remote alignment passed\.$/m },
+  pins: { verdict: /^Visited [1-9]\d* repos, [1-9]\d* workflow files; [1-9]\d* reference Particle-Academy\/\.github\.\nExpected pin: Particle-Academy\/\.github@[0-9a-f]{40}\n0 offending workflow file\(s\)\.$/m },
+  pinInventory: { verdict: /^Shared-check inventory: [1-9]\d* repos, [1-9]\d* workflows, [1-9]\d* shared check workflows; 0 failures, 0 unchecked\.\nShared-check inventory passed\.$/m },
 };

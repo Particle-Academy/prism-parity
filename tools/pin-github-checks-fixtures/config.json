@@ -1,0 +1,10 @@
+{
+  "repository": "Example-Org/.github",
+  "files": [
+    "third-party/check.mjs",
+    "third-party/gate-graph.mjs",
+    "third-party/allowlist.json"
+  ],
+  "guardJob": "guard",
+  "defaultPermissions": "read"
+}
