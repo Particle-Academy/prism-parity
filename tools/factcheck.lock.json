@@ -233,14 +233,14 @@
       }
     },
     "prism-provider-watch": {
-      "version": "2ad96fe",
+      "version": "336a7f6",
       "census": {
         "composer-script": 7,
         "local-link": 4
       }
     },
     "prism-py": {
-      "version": "v0.1.0",
+      "version": "v0.5.0",
       "census": {
         "decision": 1,
         "local-link": 3
@@ -258,7 +258,7 @@
       }
     },
     "prism-ts": {
-      "version": "v0.2.1",
+      "version": "v0.5.0",
       "census": {
         "npm-script": 12,
         "decision": 1,
@@ -266,7 +266,7 @@
       }
     },
     "prism-workspace": {
-      "version": "v0.2.0",
+      "version": "v0.3.0",
       "census": {
         "composer-script": 3,
         "local-link": 2,
