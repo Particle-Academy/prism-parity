@@ -1,0 +1,890 @@
+{
+  "suite": "harness-failed-step",
+  "schema_version": 1,
+  "corpus_version": "0.1.12",
+  "generated_by": "Inputs authored before execution; result/native columns recorded by tools/failed-step-corpus.mjs from published PHP, TypeScript, and Python harness packages.",
+  "cases": [
+    {
+      "id": "sfs-0001",
+      "title": "error/send/chat/no tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "error",
+        "api": "send",
+        "guarded": false,
+        "tools": false,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0002",
+      "title": "error/send/chat/tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "error",
+        "api": "send",
+        "guarded": false,
+        "tools": true,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0003",
+      "title": "error/send/guarded/no tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "error",
+        "api": "send",
+        "guarded": true,
+        "tools": false,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0004",
+      "title": "error/send/guarded/tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "error",
+        "api": "send",
+        "guarded": true,
+        "tools": true,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0005",
+      "title": "error/structured/chat/no tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "error",
+        "api": "structured",
+        "guarded": false,
+        "tools": false,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0006",
+      "title": "error/structured/chat/tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "error",
+        "api": "structured",
+        "guarded": false,
+        "tools": true,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0007",
+      "title": "error/structured/guarded/no tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "error",
+        "api": "structured",
+        "guarded": true,
+        "tools": false,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0008",
+      "title": "error/structured/guarded/tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "error",
+        "api": "structured",
+        "guarded": true,
+        "tools": true,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0009",
+      "title": "unknown/send/chat/no tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "unknown",
+        "api": "send",
+        "guarded": false,
+        "tools": false,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0010",
+      "title": "unknown/send/chat/tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "unknown",
+        "api": "send",
+        "guarded": false,
+        "tools": true,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0011",
+      "title": "unknown/send/guarded/no tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "unknown",
+        "api": "send",
+        "guarded": true,
+        "tools": false,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0012",
+      "title": "unknown/send/guarded/tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "unknown",
+        "api": "send",
+        "guarded": true,
+        "tools": true,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0013",
+      "title": "unknown/structured/chat/no tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "unknown",
+        "api": "structured",
+        "guarded": false,
+        "tools": false,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0014",
+      "title": "unknown/structured/chat/tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "unknown",
+        "api": "structured",
+        "guarded": false,
+        "tools": true,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0015",
+      "title": "unknown/structured/guarded/no tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "unknown",
+        "api": "structured",
+        "guarded": true,
+        "tools": false,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0016",
+      "title": "unknown/structured/guarded/tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "unknown",
+        "api": "structured",
+        "guarded": true,
+        "tools": true,
+        "php_stream": null
+      },
+      "notes": "A failed model step must never execute its calls or spend another step. Even an explicit later approval and empty-prompt resume cannot revive failed tool authority. The step and native cost remain recorded.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0017",
+      "title": "stop/send/chat/no tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "stop",
+        "api": "send",
+        "guarded": false,
+        "tools": false,
+        "php_stream": null
+      },
+      "notes": "Positive control: a successful Stop response remains completed, with one recorded step and its original cost. A refusal rule that makes every turn fail must not pass.",
+      "result": {
+        "php": "{\"error_code\":null,\"finish_reason\":\"stop\",\"run_status\":\"completed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":null,\"finish_reason\":\"stop\",\"run_status\":\"completed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":null,\"finish_reason\":\"stop\",\"run_status\":\"completed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": null,
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": null,
+          "reason": null,
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": null,
+          "reason": null,
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0018",
+      "title": "stop/structured/chat/no tools",
+      "since": "0.1.12",
+      "input": {
+        "finish": "stop",
+        "api": "structured",
+        "guarded": false,
+        "tools": false,
+        "php_stream": null
+      },
+      "notes": "Positive control: a successful Stop response remains completed, with one recorded step and its original cost. A refusal rule that makes every turn fail must not pass.",
+      "result": {
+        "php": "{\"error_code\":null,\"finish_reason\":\"stop\",\"run_status\":\"completed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":null,\"finish_reason\":\"stop\",\"run_status\":\"completed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":null,\"finish_reason\":\"stop\",\"run_status\":\"completed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": null,
+          "cost_usd": 0.04,
+          "settlement_outcome": "completed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": null,
+          "reason": null,
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": null,
+          "reason": null,
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0019",
+      "title": "error/send/guarded/tools/legacy_error",
+      "since": "0.1.12",
+      "input": {
+        "finish": "error",
+        "api": "send",
+        "guarded": true,
+        "tools": true,
+        "php_stream": "legacy_error"
+      },
+      "notes": "PHP old-core recoverable ErrorEvent then Stop must revoke a pending approval. Ports receive the equivalent error finish at their client seam. Resume cannot invoke the failed call. Raw stream frame equality is outside this semantic projection.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "error",
+          "cost_usd": 0.1,
+          "settlement_outcome": "failed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0020",
+      "title": "unknown/send/guarded/tools/missing_usage",
+      "since": "0.1.12",
+      "input": {
+        "finish": "unknown",
+        "api": "send",
+        "guarded": true,
+        "tools": true,
+        "php_stream": "missing_usage"
+      },
+      "notes": "PHP Stop without final usage must fail as Unknown and refuse pending authority. Ports receive the equivalent unknown finish. Their native reported cost and PHP reserved-maximum charge are retained separately, never forced equal.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"unknown\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "unknown",
+          "cost_usd": 0.1,
+          "settlement_outcome": "failed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "unknown",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "sfs-0021",
+      "title": "Recoverable stream error after answered tools cannot buy another step",
+      "since": "0.1.12",
+      "input": {
+        "finish": "error",
+        "api": "send",
+        "guarded": false,
+        "tools": true,
+        "php_stream": "legacy_answered"
+      },
+      "notes": "The original hostile seam: a PHP provider stream emits answered tool results, a recoverable ErrorEvent, then legacy Stop. Answered calls are not proof of success; no second paid model call may be admitted. Already reported results are retained, not rolled back. Ports receive the equivalent failed client finish and cannot dispatch or continue.",
+      "result": {
+        "php": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "ts": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}",
+        "py": "{\"error_code\":\"model_step_failed\",\"finish_reason\":\"error\",\"run_status\":\"failed\",\"model_calls\":1,\"tool_calls\":0,\"steps\":1,\"cost_retained\":true,\"pending_approvals\":0,\"resumed_tools\":0}"
+      },
+      "native": {
+        "php": {
+          "error_code": null,
+          "reason": "error",
+          "cost_usd": 0.1,
+          "settlement_outcome": "failed",
+          "package_version": "0.18.0"
+        },
+        "ts": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.8.0"
+        },
+        "py": {
+          "error_code": "model_step_failed",
+          "reason": "error",
+          "cost_usd": 0.04,
+          "settlement_outcome": null,
+          "package_version": "0.3.0"
+        }
+      },
+      "agrees": true
+    }
+  ]
+}

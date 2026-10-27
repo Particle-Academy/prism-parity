@@ -27,7 +27,7 @@ function markdown(dir) {
   });
 }
 try {
-  gate('nodeTests', ['--test', '--test-reporter=tap', 'tools/alignment.test.mjs', 'tools/remote-alignment.test.mjs', 'tools/name-hazards.test.mjs', 'scripts/cross-check-coverage.test.mjs', 'tools/pin-github-checks.test.mjs', 'tools/pin-github-checks-hijacks.test.mjs', 'tools/scan-github-checks.test.mjs']);
+  gate('nodeTests', ['--test', '--test-reporter=tap', 'tools/alignment.test.mjs', 'tools/remote-alignment.test.mjs', 'tools/name-hazards.test.mjs', 'scripts/cross-check-coverage.test.mjs', 'tools/pin-github-checks.test.mjs', 'tools/pin-github-checks-hijacks.test.mjs', 'tools/scan-github-checks.test.mjs', 'tools/failed-step-contract.test.mjs']);
   gate('guards', ['tools/guard-corpus.mjs']);
   gate('copies', ['tools/sync-corpus.mjs', '--check']);
   const rubric = gate('rubric', ['tools/trust-rubric.mjs', '--json']);

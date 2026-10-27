@@ -52,11 +52,11 @@ Python. `manifest/packages.json` records that package-family matrix and
 `tools/parity-check.mjs --report` prints its remaining gaps. See
 [decision 0021](docs/decisions/0021-parity-is-the-shipping-library-set.md).
 
-Corpus <!-- metric:corpus.version -->0.1.11<!-- /metric --> contains
+Corpus <!-- metric:corpus.version -->0.1.12<!-- /metric --> contains
 <!-- metric:golden.suites -->10<!-- /metric --> golden-based suites with
 <!-- metric:golden.cases -->99<!-- /metric --> stored cases.
-The rubric scores <!-- metric:security.corpora -->16<!-- /metric --> security corpora
-and identifies <!-- metric:security.adversarialRows -->197<!-- /metric --> adversarial rows.
+The rubric scores <!-- metric:security.corpora -->17<!-- /metric --> security corpora
+and identifies <!-- metric:security.adversarialRows -->218<!-- /metric --> adversarial rows.
 <!-- metric:families.withSuite -->9<!-- /metric --> of
 <!-- metric:families.total -->9<!-- /metric --> declared package families have a suite.
 These are corpus inventory counts, not executed coverage. The cross-check reports

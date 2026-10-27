@@ -3702,6 +3702,208 @@
         "stream",
         "properties"
       ]
+    },
+    "harnessFailedStepNative": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "error_code",
+        "reason",
+        "cost_usd",
+        "settlement_outcome",
+        "package_version"
+      ],
+      "properties": {
+        "error_code": {
+          "oneOf": [
+            {
+              "const": "model_step_failed"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "oneOf": [
+            {
+              "enum": [
+                "error",
+                "unknown"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "settlement_outcome": {
+          "oneOf": [
+            {
+              "enum": [
+                "completed",
+                "failed"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "package_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        }
+      }
+    },
+    "harnessFailedStepCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ],
+      "required": [
+        "title",
+        "input",
+        "result",
+        "native",
+        "agrees"
+      ],
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "agrees": {},
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "finish",
+            "api",
+            "guarded",
+            "tools",
+            "php_stream"
+          ],
+          "properties": {
+            "finish": {
+              "enum": [
+                "error",
+                "unknown",
+                "stop"
+              ]
+            },
+            "api": {
+              "enum": [
+                "send",
+                "structured"
+              ]
+            },
+            "guarded": {
+              "type": "boolean"
+            },
+            "tools": {
+              "type": "boolean"
+            },
+            "php_stream": {
+              "oneOf": [
+                {
+                  "enum": [
+                    "legacy_error",
+                    "missing_usage",
+                    "legacy_answered"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "result": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "type": "string",
+              "minLength": 1
+            },
+            "ts": {
+              "type": "string",
+              "minLength": 1
+            },
+            "py": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "native": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "$ref": "#/$defs/harnessFailedStepNative"
+            },
+            "ts": {
+              "$ref": "#/$defs/harnessFailedStepNative"
+            },
+            "py": {
+              "$ref": "#/$defs/harnessFailedStepNative"
+            }
+          }
+        }
+      }
+    },
+    "harnessFailedStepDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "generated_by",
+        "cases"
+      ],
+      "properties": {
+        "suite": {
+          "const": "harness-failed-step"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "const": "0.1.12"
+        },
+        "generated_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/harnessFailedStepCase"
+          }
+        }
+      }
     }
   },
   "oneOf": [
@@ -3758,6 +3960,9 @@
     },
     {
       "$ref": "#/$defs/derivationDocument"
+    },
+    {
+      "$ref": "#/$defs/harnessFailedStepDocument"
     }
   ]
 }

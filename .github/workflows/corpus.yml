@@ -126,6 +126,7 @@ jobs:
       - name: Third-party dependency allowlist
         run: |
           node tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo runners/php
+          node tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo tools/harness-failed-step
           node -e "require('node:fs').rmSync('.third-party-allowlist',{recursive:true,force:true})"
 
       - name: Setup PHP
@@ -150,3 +151,19 @@ jobs:
 
       - name: Reference runner
         run: node tools/run-gate.mjs reference -- php runners/php/runner.php
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install published harness ports
+        run: |
+          npm install --prefix tools/harness-failed-step --ignore-scripts --package-lock=false
+          python -m pip install --no-deps prism-ai-harness==0.3.0
+
+      - name: Failed steps are terminal in all three published harness packages
+        run: node tools/run-gate.mjs failedSteps -- node tools/failed-step-corpus.mjs
