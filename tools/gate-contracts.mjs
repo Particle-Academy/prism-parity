@@ -1,6 +1,7 @@
 // Verdicts come from each tool, not from the wrapper. Positive work counts
 // prevent an empty discovery from looking like a successful invocation.
 export const gates = {
+  catalog: { verdict: /^Catalog currency passed: [1-9]\d* repositories, [1-9]\d* published distributions, \d+ planned distributions, \d+ reviewed exclusions; 0 unclassified, 0 unchecked\.$/m },
   failedSteps: { verdict: /^Failed-step corpus passed: [1-9]\d* cases executed in all 3 languages; 0 skipped; published artifacts\.$/m },
   guards: { verdict: /^Corpus guards passed \([1-9]\d* files scanned\)\.$/m },
   parity: { verdict: /^Parity check passed: [1-9]\d* languages, [1-9]\d* mirrors enforced\.$/m },
