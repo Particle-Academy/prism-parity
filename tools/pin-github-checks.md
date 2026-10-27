@@ -11,23 +11,30 @@ The tool and independent structural checker were adapted from Fancy's
 also checks that the verifier's executable body matches its generated form;
 matching hash declarations with a no-op or conditional verifier are refused.
 
-The verifier clears Node and shell startup hooks and starts in
+The verifier clears the ordered joint Prism/Fancy set of eleven Node, shell
+and dynamic-loader variables and starts in
 `github.workspace` under an explicit bash shell. It uses the existing `node`
 runtime; it adds no setup-node step and assumes no tool-cache layout. Existing
 Node selections and matrix inputs are preserved. The checker refuses
-workflow/job execution-hook variables and inherited shell defaults. It also
-refuses earlier run bodies mentioning `GITHUB_ENV` or `GITHUB_PATH`, and known
-environment-writing setup actions (checkout and setup-node are the explicit
-trusted exceptions). The rewriter moves the shared check block before such
+workflow/job/step execution-hook variables case-insensitively, inherited shell
+defaults, job containers, YAML merges and environment maps it cannot read
+statically. PATH is protected statically rather than blanked. Every earlier run
+step and every earlier action except checkout/setup-node is refused, even when
+its text does not name an environment file. The block's own exact verifier is
+the sole trusted run exception. The rewriter moves the shared check block before such
 writers while preserving every ordinary step and its inputs. The gate uses
-the verified checkout immediately after its verifier in the same job. Fetched
+the verified checkout immediately after its verifier in the same job; gate-step
+env/shell overrides and paths redirected by working-directory or a preceding
+command are refused. Only the existing literal `tools/run-gate.mjs` and
+`prism-parity/tools/run-gate.mjs` allowlist metric wrappers are accepted; cleanup after the
+final gate retain their behavior. Fetched
 code cannot run in an artifact producer whose output a write-capable job consumes.
 
 For a local repository:
 
 ```sh
 node tools/pin-github-checks.mjs --check --repo .
-node --test tools/pin-github-checks.test.mjs tools/scan-github-checks.test.mjs
+node --test tools/pin-github-checks.test.mjs tools/pin-github-checks-hijacks.test.mjs tools/scan-github-checks.test.mjs
 ```
 
 For a sibling checkout tree, use `--root /path/to/repos`. Without `--check`,

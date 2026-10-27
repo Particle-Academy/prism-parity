@@ -174,7 +174,8 @@ export function checkStructure({ before, after, repository, fetchPath, verifyNam
       assert(v?.shell === 'bash' && /^node -e '/.test(v?.run || ''), `${where}: verify runs under bash with the existing Node runtime`);
       assert(!JSON.stringify(v).includes('tool_cache') && !JSON.stringify(v).includes('PIN_NODE_'), `${where}: verifier never constructs a tool-cache path`);
       assert(v?.['working-directory'] === '${{ github.workspace }}', `${where}: verifier starts at the workspace root`);
-      assert(['NODE_OPTIONS', 'NODE_PATH', 'BASH_ENV', 'ENV'].every((key) => v?.env?.[key] === ''), `${where}: verifier clears inherited runtime hooks`);
+      assert(['NODE_OPTIONS', 'NODE_PATH', 'BASH_ENV', 'ENV', 'SHELLOPTS', 'BASHOPTS', 'LD_PRELOAD', 'LD_LIBRARY_PATH', 'LD_AUDIT', 'DYLD_INSERT_LIBRARIES', 'DYLD_LIBRARY_PATH'].every((key) => v?.env?.[key] === ''), `${where}: verifier clears all eleven joint runtime hooks`);
+      assert(v?.env?.PATH === undefined, `${where}: PATH is protected statically, never blanked`);
       assert(!jobWrites(A, jn), `${where}: job ${jn} holds no write permission`);
       assert(!feedsWriter(A, jn), `${where}: job ${jn} never feeds a write job's artifact`);
     });

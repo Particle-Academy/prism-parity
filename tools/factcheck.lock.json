@@ -233,7 +233,7 @@
       }
     },
     "prism-provider-watch": {
-      "version": "336a7f6",
+      "version": "956f736",
       "census": {
         "composer-script": 7,
         "local-link": 4
@@ -247,7 +247,7 @@
       }
     },
     "prism-sandbox": {
-      "version": "10de201",
+      "version": "aa30f32",
       "census": {
         "composer-script": 2,
         "npm-script": 5,
