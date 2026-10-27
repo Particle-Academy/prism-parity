@@ -1,0 +1,51 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+
+      # Release gate: changelog first.
+      - name: Changelog entry for this tag
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          grep -q "$VERSION" CHANGELOG.md
+
+      # Release gate: third-party dependencies. FETCHED, never vendored.
+      - name: Fetch the third-party allowlist
+        uses: actions/checkout@v7
+        with:
+          repository: Example-Org/.github
+          path: .third-party-allowlist
+          persist-credentials: false
+
+      - name: Third-party dependency allowlist
+        run: |
+          node .third-party-allowlist/third-party/check.mjs --repo .
+          node -e "require('node:fs').rmSync('.third-party-allowlist',{recursive:true,force:true})"
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install
+        run: npm install --legacy-peer-deps
+
+      - name: Publish
+        run: npx -y npm@11.18.0 publish --provenance --access public
+
+      - name: Publish the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --notes-file notes.md

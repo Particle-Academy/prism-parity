@@ -1,0 +1,184 @@
+{
+  "repository": "Particle-Academy/.github",
+  "files": [
+    "third-party/check.mjs",
+    "third-party/gate-graph.mjs",
+    "third-party/allowlist.json"
+  ],
+  "pin": {
+    "sha": "b3b5e499c78467bd1e98d80af23a6b4861489ac5",
+    "hashes": {
+      "third-party/check.mjs": "4b94acfac87136b0942123b9f227919d7e2e3d67863bcdceba32c9a73f765db0",
+      "third-party/gate-graph.mjs": "1547306d567749d7410040cae2bfb9a648902de95c3378f6c5af54245c896e11",
+      "third-party/allowlist.json": "b9423fcbc59c06b38862841f7111817cf586a3f5e7bcaf34349f26f7515b782d"
+    }
+  },
+  "roots": [
+    "../.."
+  ],
+  "repos": [],
+  "exclusions": [
+    {
+      "name": "prism.agi",
+      "reason": "Workspace envelope; it has no CI of its own and drives CI in its repositories."
+    }
+  ],
+  "guardJob": "guard",
+  "defaultPermissions": "read",
+  "repositories": [
+    {
+      "name": "prism",
+      "private": false
+    },
+    {
+      "name": "prism-sandbox",
+      "private": false
+    },
+    {
+      "name": "prism-opentelemetry",
+      "private": false
+    },
+    {
+      "name": "prism.agi",
+      "private": true
+    },
+    {
+      "name": "prism-provider-watch",
+      "private": false
+    },
+    {
+      "name": "prism-harness",
+      "private": false
+    },
+    {
+      "name": "prism-perplexity",
+      "private": false
+    },
+    {
+      "name": "prism-parity",
+      "private": false
+    },
+    {
+      "name": "prism-ts",
+      "private": false
+    },
+    {
+      "name": "prism-py",
+      "private": false
+    },
+    {
+      "name": "prism-workspace",
+      "private": false
+    },
+    {
+      "name": "prism-memory",
+      "private": false
+    },
+    {
+      "name": "prism-mcp",
+      "private": false
+    },
+    {
+      "name": "prism-labs",
+      "private": false
+    },
+    {
+      "name": "prism-browser",
+      "private": false
+    },
+    {
+      "name": "prism-human-plus",
+      "private": false
+    },
+    {
+      "name": "prism-workspace-ts",
+      "private": false
+    },
+    {
+      "name": "prism-workspace-py",
+      "private": false
+    },
+    {
+      "name": "prism-harness-ts",
+      "private": false
+    },
+    {
+      "name": "prism-harness-py",
+      "private": false
+    },
+    {
+      "name": "prism-perplexity-py",
+      "private": false
+    },
+    {
+      "name": "prism-perplexity-ts",
+      "private": false
+    },
+    {
+      "name": "prism-opentelemetry-py",
+      "private": false
+    },
+    {
+      "name": "prism-opentelemetry-ts",
+      "private": false
+    },
+    {
+      "name": "prism-memory-py",
+      "private": false
+    },
+    {
+      "name": "prism-memory-ts",
+      "private": false
+    },
+    {
+      "name": "prism-mcp-py",
+      "private": false
+    },
+    {
+      "name": "prism-mcp-ts",
+      "private": false
+    },
+    {
+      "name": "prism-browser-ts",
+      "private": false
+    },
+    {
+      "name": "prism-browser-py",
+      "private": false
+    },
+    {
+      "name": "prism-human-plus-ts",
+      "private": false
+    },
+    {
+      "name": "prism-human-plus-py",
+      "private": false
+    },
+    {
+      "name": "prism-acp-ts",
+      "private": false
+    },
+    {
+      "name": "prism-consensus",
+      "private": false
+    },
+    {
+      "name": "prism-mcp-server-ts",
+      "private": false
+    },
+    {
+      "name": "prism-mcp-server-py",
+      "private": false
+    },
+    {
+      "name": "prism-acp",
+      "private": false
+    }
+  ],
+  "_notes": {
+    "provenance": "Adapted from Fancy .ai/tools/pin-github-checks on 2026-10-27; no runtime dependencies. Prism additionally verifies the complete generated verifier and scans live organization inventory.",
+    "files": "Executable input closure: check.mjs imports gate-graph.mjs and reads its sibling allowlist.json. Review this closure before re-pinning.",
+    "defaultPermissions": "Particle-Academy org default_workflow_permissions=read, verified via API 2026-10-27; explicit write scopes still refuse.",
+    "repositories": "Known names detect invisible/private scope. Live discovery checks new prism* repositories too; this is not an allowlist."
+  }
+}

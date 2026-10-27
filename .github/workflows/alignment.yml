@@ -23,6 +23,12 @@ jobs:
           node-version: 22
       - name: Alignment assertions and regression tests
         run: node tools/alignment.mjs
+      - name: This checkout pins the shared checks
+        run: node tools/run-gate.mjs pins -- node tools/pin-github-checks.mjs --check --repo .
+      - name: Live organization shared-check inventory
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node tools/run-gate.mjs pinInventory -- node tools/scan-github-checks.mjs --check
       - name: Candidate copies and external public main claims
         env:
           GH_TOKEN: ${{ github.token }}

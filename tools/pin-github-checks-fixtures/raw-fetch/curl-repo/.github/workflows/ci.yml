@@ -1,0 +1,16 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      # A fetch that is not an actions/checkout: the tool cannot pin it, so it
+      # must fail --check rather than be silently ignored.
+      - name: Fetch the checker some other way
+        run: curl -sSLO https://raw.githubusercontent.com/Example-Org/.github/main/third-party/check.mjs
+      - run: node check.mjs --repo .
