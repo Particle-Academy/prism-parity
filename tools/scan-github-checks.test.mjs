@@ -122,3 +122,101 @@ test('inventory verdicts require positive work and zero unchecked repositories',
     assert.throws(() => requireVerdict('pinInventory', { status: 0, stdout }, gates.pinInventory));
   }
 });
+
+const newer = 'b'.repeat(40);
+const policyMain = 'c'.repeat(40);
+const newerPin = { sha: newer, hashes: { ...config.pin.hashes, 'third-party/allowlist.json': '2'.repeat(64) } };
+const scopedConfig = { ...config, repositories: [{ name: 'prism' }, { name: 'prism-human-plus' }], pinOverrides: { 'prism-human-plus': newerPin } };
+
+function scopedTransport({ pin = newerPin, listed = true, relation = 'ahead', onMain = true, main = policyMain, badMergeBase = false, apiError = false } = {}) {
+  const paths = [];
+  const request = async (endpoint) => {
+    paths.push(endpoint);
+    if (endpoint === 'repos/Particle-Academy/.github/commits/main') return { sha: main };
+    if (endpoint.startsWith('repos/Particle-Academy/.github/compare/')) {
+      if (apiError) throw new Error('GitHub 403: ancestry is UNCHECKED');
+      const [base, head] = endpoint.split('/compare/')[1].split('...');
+      const status = base === sha ? relation : !onMain ? 'diverged' : base === head ? 'identical' : 'ahead';
+      return { status, ahead_by: status === 'ahead' ? 1 : 0, behind_by: ['ahead', 'identical'].includes(status) ? 0 : 1, base_commit: { sha: base }, merge_base_commit: { sha: badMergeBase ? 'd'.repeat(40) : base } };
+    }
+    if (endpoint.startsWith('orgs/')) return [repo('prism'), repo('prism-human-plus')];
+    if (endpoint.includes('/commits/')) return { sha };
+    const human = endpoint.includes('/prism-human-plus/');
+    const workflow = rewriteWorkflow(original, config, { ...(human ? pin : config.pin), files }).text;
+    if (endpoint.includes('/git/trees/')) return { truncated: false, tree: [{ path: '.github/workflows/ci.yml', type: 'blob', mode: '100644', sha, size: Buffer.byteLength(workflow) }] };
+    if (endpoint.includes('/git/blobs/')) return { encoding: 'base64', content: Buffer.from(workflow).toString('base64'), size: Buffer.byteLength(workflow) };
+    throw new Error(`Unexpected scoped API path: ${endpoint}`);
+  };
+  return { config: listed ? scopedConfig : { ...scopedConfig, pinOverrides: {} }, request, paths };
+}
+
+test('global-equal pins pass and every repository reports its effective pin', async () => {
+  const result = await auditInventory({ config, ...transport() });
+  assert.deepEqual(result.repositories.map((row) => row.pin), [sha, sha]);
+});
+
+test('only the listed newer descendant gets its exact pin and hashes', async () => {
+  const api = scopedTransport();
+  const result = await auditInventory(api);
+  assert.deepEqual(result.failures, []);
+  assert.deepEqual(result.repositories.map((row) => [row.name, row.pin]), [['prism', sha], ['prism-human-plus', newer]]);
+  assert.equal(result.policyMain, policyMain);
+  assert.ok(api.paths.includes(`repos/Particle-Academy/.github/compare/${sha}...${newer}`));
+  assert.ok(api.paths.includes(`repos/Particle-Academy/.github/compare/${newer}...${policyMain}`));
+});
+
+test('an unlisted different pin refuses instead of accepting its self-declared verifier', async () => {
+  const result = await auditInventory(scopedTransport({ listed: false }));
+  assert.ok(result.failures.some((failure) => failure.includes('prism-human-plus/') && failure.includes('[ref-drift]')));
+});
+
+test('a listed newer pin can be the exact current main snapshot', async () => {
+  const result = await auditInventory(scopedTransport({ main: newer }));
+  assert.deepEqual(result.failures, []);
+  assert.equal(result.policyMain, newer);
+});
+
+test('an equal-SHA override must retain the exact global hashes', async () => {
+  const api = scopedTransport({ pin: config.pin });
+  const result = await auditInventory({ ...api, config: { ...scopedConfig, pinOverrides: { 'prism-human-plus': config.pin } } });
+  assert.deepEqual(result.failures, []);
+  assert.ok(api.paths.every((endpoint) => !endpoint.includes('/.github/')));
+  await assert.rejects(auditInventory({ ...api, config: { ...scopedConfig, pinOverrides: { 'prism-human-plus': { ...newerPin, sha } } } }), /equal-SHA.*different hashes/);
+});
+
+test('listed older, diverged or unproven descendants fail closed', async () => {
+  for (const relation of ['behind', 'diverged', 'identical']) {
+    await assert.rejects(auditInventory(scopedTransport({ relation })), /newer descendant/);
+  }
+  await assert.rejects(auditInventory(scopedTransport({ badMergeBase: true })), /newer descendant/);
+  await assert.rejects(auditInventory(scopedTransport({ apiError: true })), /UNCHECKED/);
+});
+
+test('a listed newer commit absent from main refuses', async () => {
+  await assert.rejects(auditInventory(scopedTransport({ onMain: false })), /on.*main/);
+});
+
+test('a listed newer pin cannot substitute different input hashes', async () => {
+  const pin = { ...newerPin, hashes: { ...newerPin.hashes, 'third-party/check.mjs': '9'.repeat(64) } };
+  const result = await auditInventory(scopedTransport({ pin }));
+  assert.ok(result.failures.some((failure) => failure.includes('[hash-drift]')));
+});
+
+test('malformed or unknown repository overrides refuse before scanning', async () => {
+  for (const pinOverrides of [[], { 'prism-other': newerPin }, { 'prism-human-plus': { sha: newer, hashes: {} } }]) {
+    const api = scopedTransport();
+    await assert.rejects(auditInventory({ ...api, config: { ...scopedConfig, pinOverrides } }), /override|pin must/);
+  }
+});
+
+test('policy ancestry APIs stay on the fixed .github main and exact-SHA compare paths', async () => {
+  const calls = [];
+  const request = apiClient('scoped-token', async (url, options) => { calls.push({ url, options }); return new Response('{}'); });
+  await request('repos/Particle-Academy/.github/commits/main');
+  await request(`repos/Particle-Academy/.github/compare/${sha}...${newer}`);
+  assert.equal(calls.length, 2);
+  assert.ok(calls.every((call) => call.url.startsWith('https://api.github.com/repos/Particle-Academy/.github/') && call.options.redirect === 'error'));
+  for (const endpoint of ['repos/Particle-Academy/.github/contents/secret', 'repos/Particle-Academy/.github/commits/topic', 'repos/Particle-Academy/.github/compare/main...topic']) {
+    await assert.rejects(request(endpoint), /outside/);
+  }
+});

@@ -52,6 +52,18 @@ inventory are `UNCHECKED` and fail; API failures, truncated trees and an empty
 inventory also fail. Remote workflows are parsed as data and never executed.
 The config's repository list is a visibility floor, not a discovery allowlist.
 
+Each repository must use the global pin unless `pinOverrides` lists an exact
+repository name with its reviewed commit and complete input hashes. Before
+accepting a different pin, the live scan resolves `.github` main and uses the
+GitHub compare API to verify that the override is a newer descendant of the
+global pin and is on that main snapshot. Older, diverged, unlisted and non-main
+pins refuse; an API failure leaves the scan UNCHECKED. An old pin could retain
+a revoked dependency approval. Output records every repository's effective pin.
+Human+ alone temporarily uses the approved PSR-7 grant at `1a1fad0`; the global
+pin and all other repositories remain at `b3b5e49`. Remove the override at the
+next deliberate global repin. Local rewriter/check commands use one explicit
+source pin; they do not select an override from workflow content.
+
 The standing scan runs on every alignment invocation, using the ordinary
 read-only workflow token. Every package and app repository in scope is public.
 `prism.agi` is the explicitly excluded workspace envelope: it drives CI and has

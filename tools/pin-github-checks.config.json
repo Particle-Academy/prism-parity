@@ -13,6 +13,16 @@
       "third-party/allowlist.json": "b9423fcbc59c06b38862841f7111817cf586a3f5e7bcaf34349f26f7515b782d"
     }
   },
+  "pinOverrides": {
+    "prism-human-plus": {
+      "sha": "1a1fad08a5fa685d5aca89e4bfa0b6afac7fa949",
+      "hashes": {
+        "third-party/check.mjs": "4b94acfac87136b0942123b9f227919d7e2e3d67863bcdceba32c9a73f765db0",
+        "third-party/gate-graph.mjs": "1547306d567749d7410040cae2bfb9a648902de95c3378f6c5af54245c896e11",
+        "third-party/allowlist.json": "e5c6f925b2d5cab9e7bca220e8ad4d6bed809f5e2ab73cbefa9bb16d60bd2a86"
+      }
+    }
+  },
   "roots": [
     "../.."
   ],
