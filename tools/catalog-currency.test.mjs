@@ -22,7 +22,7 @@ function refused(title, mutate, message) {
   test(title,()=>{const f=fixture();mutate(f);assert.match(verdict(f).failures.join('\n'),message);});
 }
 
-test('published packages and explicitly absent planned loader form a complete catalog',()=>assert.deepEqual(verdict(fixture()),{failures:[],repositories:4,published:3,planned:1,excluded:0}));
+test('published packages and explicitly absent planned loader form a complete catalog',()=>assert.deepEqual(verdict(fixture()),{failures:[],repositories:4,published:3,planned:1,excluded:0,privateEnvelopes:0}));
 refused('an uncataloged repository fails even when all packages are current',f=>f.inventory.repositories.push({name:'prism-new'}),/UNCLASSIFIED repository prism-new/);
 refused('a package pointing at a missing repository fails',f=>f.inventory.repositories.pop(),/Repository lookup missing prism-parity/);
 refused('a new first-party distribution fails',f=>{f.inventory.names.pypi.push('prism-ai-new');f.inventory.releases.push({registry:'pypi',name:'prism-ai-new',http:200,ownership:{author:'Particle Academy'}});},/UNCLASSIFIED first-party distribution/);
@@ -52,6 +52,17 @@ function exclude(f) {
   f.manifest.registry_exclusions=[{registry:'pypi',name:'prism-ai-stranger',reviewed_on:'2026-10-27',reason:'Maintainer reviewed third party.',ownership:structuredClone(ownership)}];
 }
 test('a reviewed foreign identity is excluded with positive accounting',()=>{const f=fixture();exclude(f);assert.equal(verdict(f).failures.length,0);assert.equal(verdict(f).excluded,1);});
+function privateEnvelope(f) {
+  f.manifest.projects['prism.agi']={repository:repo('prism.agi'),kind:'envelope',catalog:'hidden',catalog_reason:'Private workspace.',repository_inventory:'private-envelope',inventory_reason:'Declared private envelope; ordinary public CI cannot verify it.'};
+}
+test('only the declared private envelope may be invisible to public CI, and it is reported separately',()=>{
+  const f=fixture();privateEnvelope(f);assert.equal(verdict(f).failures.length,0);assert.equal(verdict(f).privateEnvelopes,1);
+  f.inventory.repositories.push({name:'prism.agi'});assert.equal(verdict(f).failures.length,0);assert.equal(verdict(f).repositories,5);
+});
+refused('private-envelope classification cannot hide another project',f=>{privateEnvelope(f);f.manifest.projects['prism-hidden']={...f.manifest.projects['prism.agi'],repository:repo('prism-hidden')};},/only the documented private workspace envelope|Repository lookup missing prism-hidden/);
+refused('a hidden public app still requires inventory presence',f=>{f.manifest.projects['prism-app']={repository:repo('prism-app'),kind:'application',catalog:'hidden',catalog_reason:'App.'};},/Repository lookup missing prism-app/);
+refused('the private envelope requires an explicit visibility reason',f=>{privateEnvelope(f);delete f.manifest.projects['prism.agi'].inventory_reason;},/only the documented private workspace envelope/);
+refused('the private envelope cannot become a package repository',f=>{privateEnvelope(f);f.manifest.packages.prism.repository=repo('prism.agi');},/workspace envelope cannot be a distribution repository/);
 refused('an exclusion cannot hide a change of ownership',f=>{exclude(f);f.inventory.releases.at(-1).ownership.author='Particle Academy';},/reviewed exclusion identity changed/);
 refused('an exclusion needs dated review and reason',f=>{exclude(f);delete f.manifest.registry_exclusions[0].reviewed_on;},/Invalid reviewed registry exclusion/);
 test('drift is measured against the same family and unknown surfaces are unverified',()=>{

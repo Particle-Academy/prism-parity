@@ -1343,7 +1343,9 @@
       "repository": "https://github.com/Particle-Academy/prism.agi",
       "kind": "envelope",
       "catalog": "hidden",
-      "catalog_reason": "Workspace envelope and repository pins, not an installable package."
+      "catalog_reason": "Workspace envelope and repository pins, not an installable package.",
+      "repository_inventory": "private-envelope",
+      "inventory_reason": "Private workspace envelope is not visible to the ordinary public-repository workflow token. Its identity is declared here, not verified by public CI; only this non-package envelope may use this classification."
     }
   },
   "registry_exclusions": [

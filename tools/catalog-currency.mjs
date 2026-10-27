@@ -20,7 +20,7 @@ try {
   const manifest = JSON.parse(readFileSync(fileURLToPath(new URL('../manifest/packages.json',import.meta.url)),'utf8'));
   const result = validateCatalog(manifest,await collectCatalog(manifest,request));
   if (result.failures.length) throw Error(result.failures.join('\n'));
-  console.log(`Catalog currency passed: ${result.repositories} repositories, ${result.published} published distributions, ${result.planned} planned distributions, ${result.excluded} reviewed exclusions; 0 unclassified, 0 unchecked.`);
+  console.log(`Catalog currency passed: ${result.repositories} visible repositories, ${result.published} published distributions, ${result.planned} planned distributions, ${result.excluded} reviewed exclusions, ${result.privateEnvelopes} declared private envelopes; 0 unclassified, 0 unchecked public repositories.`);
 } catch (error) {
   console.error(`Catalog currency failed:\n${error.message}`);
   process.exitCode = 1;

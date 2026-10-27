@@ -29,7 +29,7 @@ export function validateCatalog(manifest, inventory) {
   const failures = [];
   const packages = Object.entries(manifest.packages ?? {});
   if (!packages.length) failures.push('No canonical packages; catalog would assert nothing');
-  const identities = new Map(), represented = new Set(), runtimes = new Map();
+  const identities = new Map(), represented = new Set(), runtimes = new Map(), privateEnvelopes = new Set();
   for (const [key, pkg] of packages) {
     const id = identity(pkg);
     if (identities.has(id)) failures.push(`Duplicate distribution ${id}`);
@@ -43,6 +43,7 @@ export function validateCatalog(manifest, inventory) {
     if ({ php: 'packagist', ts: 'npm', py: 'pypi' }[pkg.language] !== pkg.registry) failures.push(`${key}: language/registry mismatch`);
     if (!nonempty(pkg.name) || !({npm:/^@particle-academy\/prism[a-z0-9-]*$/,packagist:/^particle-academy\/prism[a-z0-9-]*$/,pypi:/^prism(?:-ai)?-[a-z0-9-]+$/}[pkg.registry]?.test(pkg.name))) failures.push(`${key}: invalid registry name`);
     const repo = repositoryName(pkg.repository);
+    if (repo === 'prism.agi') failures.push(`${key}: workspace envelope cannot be a distribution repository`);
     if (repo) represented.add(repo);
     else if (pkg.status !== 'planned' || pkg.repository !== null) failures.push(`${key}: invalid first-party repository`);
     if (pkg.kind === 'runtime') {
@@ -57,11 +58,15 @@ export function validateCatalog(manifest, inventory) {
     if (!repo || key !== repo || !['application','tooling','envelope'].includes(project.kind)) failures.push(`${key}: invalid project record`);
     else represented.add(repo);
     if (project.catalog !== 'hidden' || !nonempty(project.catalog_reason)) failures.push(`${key}: non-package project requires hidden reason`);
+    if (project.repository_inventory !== undefined) {
+      if (key !== 'prism.agi' || project.kind !== 'envelope' || project.repository_inventory !== 'private-envelope' || !nonempty(project.inventory_reason)) failures.push(`${key}: only the documented private workspace envelope may be absent from public inventory`);
+      else privateEnvelopes.add(key);
+    }
   }
   const liveRepos = new Set((inventory.repositories ?? []).map((row) => row.name));
   if (!liveRepos.size) failures.push('Empty live repository census');
   for (const name of liveRepos) if (!represented.has(name)) failures.push(`UNCLASSIFIED repository ${name}`);
-  for (const name of represented) if (!liveRepos.has(name)) failures.push(`Repository lookup missing ${name}`);
+  for (const name of represented) if (!liveRepos.has(name) && !privateEnvelopes.has(name)) failures.push(`Repository lookup missing ${name}`);
   const families = manifest.family_references ?? {};
   for (const pkg of runtimes.values()) {
     const referenceKey = families[pkg.family];
@@ -125,7 +130,7 @@ export function validateCatalog(manifest, inventory) {
     const current = releases.get(id);
     if (!current || current.http !== 200 || !matchesExclusion(current, row)) failures.push(`${id}: reviewed exclusion identity changed or lookup failed`);
   }
-  return { failures, repositories: liveRepos.size, published, planned, excluded };
+  return { failures, repositories: liveRepos.size, published, planned, excluded, privateEnvelopes:privateEnvelopes.size };
 }
 
 export function familyDrift(pkg, manifest) {

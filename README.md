@@ -95,6 +95,10 @@ classifies applications, tooling and the workspace envelope without inventing
 registry packages. `satellites` remains a checked compatibility view. The historical
 `kit` snapshot and `parity_target` conformance claims are separate from current
 registry versions; being published does not establish conformance.
+The private `prism.agi` workspace envelope is declared with a reason and reported
+separately: the ordinary workflow token cannot verify its existence. Only that
+non-package envelope may be absent from the public repository inventory. A hidden
+catalog entry is otherwise still required to appear in the live census.
 
 `family_references` selects the reference per runtime family. ACP and MCP server
 use TypeScript. A family with no audited surface declaration reports UNVERIFIED.
