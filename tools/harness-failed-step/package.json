@@ -1,0 +1,8 @@
+{
+  "name": "prism-harness-failed-step-runner",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@particle-academy/prism-harness": "0.8.0"
+  }
+}

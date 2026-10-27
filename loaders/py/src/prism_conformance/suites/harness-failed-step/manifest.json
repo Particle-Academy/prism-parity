@@ -1,0 +1,31 @@
+{
+  "id": "harness-failed-step",
+  "title": "Failed model steps cannot continue or retain tool authority",
+  "kind": "security-corpus",
+  "pins": "A consumer moving a durable agent between PHP, TypeScript, and Python must keep failed provider steps terminal: no extra model call, no requested tool execution, and no approval that can revive those calls after a worker resumes. The two ports expose the same model_step_failed code and bounded reason; PHP preserves its existing failed outcome and FinishReason vocabulary.",
+  "scope": "One model step through each real harness runtime and a later explicit approval/resume. Native provider/client responses are controlled, not paid network calls. PHP stream-only wire faults project to the corresponding bounded client finish in the ports; this is not raw stream trace parity, rollback of previously executed tools, provider protocol conformance, or billing-policy equality. G125 trace divergence is unaffected.",
+  "construction": "The common result maps only PHP status=failed plus an Error/Unknown reason to model_step_failed. Native code remains null for PHP and is recorded independently for all languages. Native cost/settlement differences are retained. Results are execution output, never hand-authored goldens.",
+  "findings": "All normalized results agree after execution against published PHP0.18.0, TypeScript0.8.0, and Python0.3.0, and independently satisfy the one-step/no-tool/no-pending-authority contract. Successful Stop controls remain completed. Original native regressions proved extra model calls, PHP stale approval execution, and false completed status before the fixes. PHP still has no native model_step_failed code; its existing failure state is mapped explicitly, while native cost and settlement differences remain recorded. Agreement establishes this bounded runtime contract, not rollback or native stream-trace equality.",
+  "pattern_doc": "docs/patterns/07-errors.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-parity:tools/harness-failed-step/HarnessFailedStepTest.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-parity:tools/harness-failed-step/runner.mjs"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-parity:tools/harness-failed-step/runner.py"
+    }
+  }
+}

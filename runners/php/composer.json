@@ -15,7 +15,8 @@
     "require": {
         "php": "^8.2",
         "particle-academy/prism": ">=0.135.0 <1.0",
-        "particle-academy/prism-conformance": "dev-main|*"
+        "particle-academy/prism-conformance": "dev-main|*",
+        "particle-academy/prism-harness": "0.18.0"
     },
     "minimum-stability": "dev",
     "config": {
@@ -23,5 +24,8 @@
             "php-http/discovery": true
         }
     },
-    "prefer-stable": true
+    "prefer-stable": true,
+    "require-dev": {
+        "orchestra/testbench": "^10.0|^11.0"
+    }
 }
