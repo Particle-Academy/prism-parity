@@ -101,7 +101,9 @@ test('the standing CI gate cannot be removed, skipped or elevated to a private i
   for (const mutant of [
     workflow.replace('pin-github-checks.mjs --check --repo .', 'pin-github-checks.mjs --inventory --repo .'),
     workflow.replace('name: Live organization shared-check inventory', 'name: Live organization shared-check inventory\n        if: false'),
-    workflow.replace('github.token', 'secrets.PRIVATE_TOKEN'),
+    // Each live read gate has its own token binding. Mutate every occurrence
+    // so this still targets the inventory gate when another gate precedes it.
+    workflow.replaceAll('github.token', 'secrets.PRIVATE_TOKEN'),
     workflow.replace('scan-github-checks.mjs --check', 'scan-github-checks.mjs --inventory'),
   ]) assert.ok(checkInventoryWorkflow(mutant).length > 0);
 });

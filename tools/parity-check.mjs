@@ -12,6 +12,7 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { familyDrift } from './catalog-contracts.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const manifest = JSON.parse(readFileSync(join(root, 'manifest', 'packages.json'), 'utf8'));
@@ -63,7 +64,7 @@ if (discovered.size < 3) {
 // A package with no `family` is core, which is what the three original entries
 // are.
 const declared = new Map(
-  Object.entries(manifest.packages).map(([name, pkg]) => [
+  Object.entries(manifest.packages).filter(([, pkg]) => pkg.kind !== 'tooling' && pkg.status !== 'planned').map(([name, pkg]) => [
     `${pkg.family ?? 'core'}:${pkg.language}`,
     { name, family: pkg.family ?? 'core', ...pkg },
   ]),
@@ -175,7 +176,7 @@ for (const mirror of manifest.mirrors ?? []) {
 // Informational, not enforced. What separates a decision from an oversight is
 // the `deferred` list — a listed absence is the plan, an unlisted one is drift.
 // ---------------------------------------------------------------------------
-const reference = [...declared.values()].find((pkg) => pkg.role === 'reference' && pkg.family === 'core');
+const reference = manifest.packages[manifest.family_references?.core];
 
 // ---------------------------------------------------------------------------
 // IS THE MANIFEST TRUE?
@@ -319,23 +320,20 @@ for (const pkg of declared.values()) {
 
 if (!reference) failures.push('no package is marked as the reference — the drift report has nothing to measure against');
 
-const deferred = new Set((manifest.deferred ?? []).map((entry) => entry.unit));
+const deferred = new Set((manifest.deferred ?? []).map((entry) => `${entry.family ?? 'core'}:${entry.unit}`));
 const lines = [];
 
 if (reference) {
   for (const pkg of declared.values()) {
     if (pkg.role === 'reference') continue;
 
-    const missing = [];
-
-    for (const kind of ['capabilities', 'providers', 'features']) {
-      const singular = { capabilities: 'capability', providers: 'provider', features: 'feature' }[kind];
-
-      for (const unit of reference.surface[kind] ?? []) {
-        if ((pkg.surface?.[kind] ?? []).includes(unit)) continue;
-        missing.push({ unit: `${singular}:${unit}`, deferred: deferred.has(`${singular}:${unit}`) });
-      }
+    const drift = familyDrift(pkg, manifest);
+    if (!drift.verified) {
+      lines.push('', `## ${pkg.name} (${pkg.language}) v${pkg.version}`, '',
+        `UNVERIFIED surface: family ${pkg.family} reference ${drift.reference?.name ?? 'missing'} or port has no audited surface declaration. Publication is not conformance.`);
+      continue;
     }
+    const missing = drift.missing.map((unit) => ({unit, deferred: deferred.has(`${pkg.family}:${unit}`)}));
 
     const undeclared = missing.filter((entry) => !entry.deferred);
     const planned = missing.filter((entry) => entry.deferred);
@@ -344,7 +342,7 @@ if (reference) {
       '',
       `## ${pkg.name} (${pkg.language}) v${pkg.version}`,
       '',
-      `Behind the reference on ${missing.length} unit(s): ${planned.length} deferred by decision, ${undeclared.length} undeclared.`,
+      `Against family reference ${drift.reference.name}: behind on ${missing.length} unit(s): ${planned.length} deferred by decision, ${undeclared.length} undeclared.`,
       '',
       ...(undeclared.length
         ? ['Undeclared — drift:', ...undeclared.map((entry) => `  - ${entry.unit}`)]
@@ -357,7 +355,7 @@ if (reference) {
 }
 
 if (report) {
-  console.log(`# Drift report\n\nKit ${manifest.kit_version}. Reference: ${reference?.name} v${reference?.version}.`);
+  console.log(`# Drift report\n\nHistorical tested kit ${manifest.kit_version}. References are selected per family by family_references.`);
   console.log(lines.join('\n'));
   console.log(
     `\n# Coordinated launch target\n\n${Object.keys(targetFamilies).length} package families; ` +

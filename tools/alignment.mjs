@@ -6,6 +6,7 @@ import { spawnSync } from 'node:child_process';
 import { compareClaims, unmarkedCounts, requireVerdict, checkWorkflowDependencies, COORDINATOR_EXEMPT } from './alignment-contracts.mjs';
 import { gates } from './gate-contracts.mjs';
 import { checkInventoryWorkflow } from './scan-github-checks.mjs';
+import { checkCatalogWorkflow } from './catalog-contracts.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const write = process.argv.includes('--write');
@@ -27,7 +28,7 @@ function markdown(dir) {
   });
 }
 try {
-  gate('nodeTests', ['--test', '--test-reporter=tap', 'tools/alignment.test.mjs', 'tools/remote-alignment.test.mjs', 'tools/name-hazards.test.mjs', 'scripts/cross-check-coverage.test.mjs', 'tools/pin-github-checks.test.mjs', 'tools/pin-github-checks-hijacks.test.mjs', 'tools/scan-github-checks.test.mjs', 'tools/failed-step-contract.test.mjs']);
+  gate('nodeTests', ['--test', '--test-reporter=tap', 'tools/alignment.test.mjs', 'tools/remote-alignment.test.mjs', 'tools/name-hazards.test.mjs', 'scripts/cross-check-coverage.test.mjs', 'tools/pin-github-checks.test.mjs', 'tools/pin-github-checks-hijacks.test.mjs', 'tools/scan-github-checks.test.mjs', 'tools/failed-step-contract.test.mjs', 'tools/catalog-currency.test.mjs']);
   gate('guards', ['tools/guard-corpus.mjs']);
   gate('copies', ['tools/sync-corpus.mjs', '--check']);
   const rubric = gate('rubric', ['tools/trust-rubric.mjs', '--json']);
@@ -65,6 +66,7 @@ try {
   if (claims === 0) failures.push('No published metrics found; removing the assertions is not agreement.');
   const coordinator = readFileSync(join(root, '.github/workflows/alignment.yml'), 'utf8');
   failures.push(...checkInventoryWorkflow(coordinator));
+  failures.push(...checkCatalogWorkflow(coordinator));
   for (const name of readdirSync(join(root, '.github/workflows')).filter((name) => /\.ya?ml$/.test(name))) {
     const file = `.github/workflows/${name}`;
     failures.push(...checkWorkflowDependencies(file, readFileSync(join(root, file), 'utf8')));
