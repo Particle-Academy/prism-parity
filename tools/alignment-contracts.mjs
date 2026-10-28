@@ -124,7 +124,7 @@ export function checkWorkflowDependencies(file, text) {
   }
   // Existing gate entrypoints must keep their evidence wrapper. Install/build
   // commands are not verdict producers and are intentionally outside this list.
-  const gateInvocation = /(?:tools\/(?:guard-corpus|parity-check|sync-corpus|trust-rubric|factcheck|generate-goldens)\.|scripts\/cross-check\.mjs|runners\/php\/runner\.php|third-party\/check\.mjs|php tests\/run\.php|node --test|python -m (?:pytest|mypy|ruff))/;
+  const gateInvocation = /(?:tools\/(?:guard-corpus|parity-check|sync-corpus|trust-rubric|factcheck|generate-goldens)\.|tools\/lock-owner-review\/(?:primitives|published-coexistence)\.mjs|scripts\/cross-check\.mjs|runners\/php\/runner\.php|third-party\/check\.mjs|php tests\/run\.php|node --test|python -m (?:pytest|mypy|ruff))/;
   for (const [index, line] of text.split('\n').entries()) {
     const code = line.trim().replace(/^-\s+/, '');
     if (!code.startsWith('#') && /^(?:run:\s*)?(?:node|php|python)\s/.test(code) && gateInvocation.test(code) && !code.includes('tools/run-gate.mjs')) {

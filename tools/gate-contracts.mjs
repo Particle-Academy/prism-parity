@@ -1,6 +1,8 @@
 // Verdicts come from each tool, not from the wrapper. Positive work counts
 // prevent an empty discovery from looking like a successful invocation.
 export const gates = {
+  lockPrimitives: { verdict: /^Lock directory primitives passed: 3 required rows on (?:linux|darwin|win32)\.$/m },
+  publishedLockCoexistence: { verdict: /^Published lock coexistence passed: 6 new-directory rows; 0 callbacks; 0 unlink\/rename attempts; 3 active reclaim controls\.$/m },
   catalog: { verdict: /^Catalog currency passed: [1-9]\d* visible repositories, [1-9]\d* published distributions, \d+ planned distributions, \d+ reviewed exclusions, \d+ declared private envelopes; 0 unclassified, 0 unchecked public repositories\.$/m },
   failedSteps: { verdict: /^Failed-step corpus passed: [1-9]\d* cases executed in all 3 languages; 0 skipped; published artifacts\.$/m },
   guards: { verdict: /^Corpus guards passed \([1-9]\d* files scanned\)\.$/m },

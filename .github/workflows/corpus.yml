@@ -167,3 +167,16 @@ jobs:
 
       - name: Failed steps are terminal in all three published harness packages
         run: node tools/run-gate.mjs failedSteps -- node tools/failed-step-corpus.mjs
+
+      - name: Published workers cannot enter or mutate an owner-proof lock
+        env:
+          PRISM_LOCK_WORK_PARENT: lock-owner-review-artifacts
+        run: node tools/run-gate.mjs publishedLockCoexistence -- node tools/lock-owner-review/published-coexistence.mjs
+
+      - name: Preserve published-worker filesystem evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: published-lock-coexistence
+          path: lock-owner-review-artifacts
+          if-no-files-found: error
+          retention-days: 7

@@ -7,6 +7,25 @@ import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { compareClaims, checkRunner, requireVerdict, verifyCoverage, unmarkedCounts, checkWorkflowDependencies } from './alignment-contracts.mjs';
 import { coverage } from '../scripts/cross-check-coverage.mjs';
+import { gates } from './gate-contracts.mjs';
+
+test('lock primitive evidence requires native work and rejects empty or unsupported reports', () => {
+  for (const platform of ['linux', 'darwin', 'win32']) {
+    assert.doesNotThrow(() => requireVerdict('lockPrimitives', { status: 0, stdout: 'Lock directory primitives passed: 3 required rows on ' + platform + '.' }, gates.lockPrimitives));
+  }
+  for (const stdout of ['', 'Lock directory primitives passed: 0 required rows on win32.', 'Lock directory primitives passed: 3 required rows on unknown.']) {
+    assert.throws(() => requireVerdict('lockPrimitives', { status: 0, stdout }, gates.lockPrimitives), /missing.*verdict/);
+  }
+});
+
+test('published lock evidence refuses callbacks, missing observation controls and vacuous rows', () => {
+  const valid = 'Published lock coexistence passed: 6 new-directory rows; 0 callbacks; 0 unlink/rename attempts; 3 active reclaim controls.';
+  assert.doesNotThrow(() => requireVerdict('publishedLockCoexistence', { status: 0, stdout: valid }, gates.publishedLockCoexistence));
+  for (const stdout of ['', valid.replace('6 new-directory', '0 new-directory'), valid.replace('0 callbacks', '1 callbacks'), valid.replace('0 unlink', '1 unlink'), valid.replace('3 active', '0 active')]) {
+    assert.throws(() => requireVerdict('publishedLockCoexistence', { status: 0, stdout }, gates.publishedLockCoexistence), /missing.*verdict/);
+  }
+  assert.throws(() => requireVerdict('publishedLockCoexistence', { status: 1, stdout: valid }, gates.publishedLockCoexistence), /exit/);
+});
 
 test('a deliberately misstated published number fails with its file, line and diff', () => {
   assert.deepEqual(compareClaims('README.md', 'Title\n<!-- metric:security.corpora -->15<!-- /metric --> corpora', { 'security.corpora': 16 }), [

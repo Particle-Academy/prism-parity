@@ -1,0 +1,29 @@
+{
+  "format": "local-file-lock-ownership-v2-review-vectors",
+  "status": "proposed; execution against the future port implementations is required",
+  "identity": [
+    {"id": "same-identity-live", "identity": "same", "pid": "alive", "released": false, "expected": "held"},
+    {"id": "same-identity-dead", "identity": "same", "pid": "dead", "released": false, "expected": "nonce-bound-reclaim"},
+    {"id": "same-identity-released", "identity": "same", "pid": "alive", "released": true, "expected": "nonce-bound-reclaim"},
+    {"id": "different-boot", "identity": "different-boot", "pid": "dead", "released": false, "expected": "held-unknown"},
+    {"id": "different-pid-namespace", "identity": "different-pid-namespace", "pid": "dead", "released": false, "expected": "held-unknown"},
+    {"id": "different-platform", "identity": "different-platform", "pid": "dead", "released": false, "expected": "held-unknown"},
+    {"id": "foreign-released", "identity": "different-pid-namespace", "pid": "dead", "released": true, "expected": "held-unknown"},
+    {"id": "missing-identity", "identity": "unknown", "pid": "dead", "released": false, "expected": "held-unknown"},
+    {"id": "both-unknown", "identity": "both-unknown", "pid": "dead", "released": true, "expected": "held-unknown"}
+  ],
+  "rename": [
+    {"id": "populated-target", "platform": "all", "expected": "refused-original-intact"},
+    {"id": "empty-target-posix", "platform": "linux-or-darwin", "expected": "acquired-populated-replacement"},
+    {"id": "empty-target-windows", "platform": "win32", "expected": "refused-original-intact"},
+    {"id": "stale-remover", "platform": "all", "expected": "replacement-survives"}
+  ],
+  "published_workers": {
+    "ts": "0.8.0",
+    "py": "0.3.0",
+    "new_directories": ["populated", "old-expiry-and-old-mtime", "partial-owner-record"],
+    "expected": {"callbacks": 0, "unlink_attempts": 0, "rename_attempts": 0, "directory_unchanged": true},
+    "controls": ["legacy-expired-file", "legacy-torn-stamp"]
+  },
+  "legacy_refusal": {"code": "session_locked", "detail": "legacy_lock_requires_maintenance", "path": "canonical legacy lock path", "action": "stop_old_workers_then_inspect_and_archive"}
+}
