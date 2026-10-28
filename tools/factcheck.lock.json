@@ -247,7 +247,7 @@
       }
     },
     "prism-sandbox": {
-      "version": "aa30f32",
+      "version": "c8d3ba6",
       "census": {
         "composer-script": 2,
         "npm-script": 5,
