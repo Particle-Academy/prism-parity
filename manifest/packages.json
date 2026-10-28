@@ -703,7 +703,8 @@
       "status": "planned",
       "published": false,
       "version": null,
-      "catalog": "public"
+      "catalog": "hidden",
+      "catalog_reason": "Python MCP server implementation exists, but prism-ai-mcp-server has no published PyPI release."
     },
     "prism-mcp-server-ts": {
       "language": "ts",

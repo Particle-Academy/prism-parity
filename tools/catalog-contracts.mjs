@@ -37,6 +37,7 @@ export function validateCatalog(manifest, inventory) {
     if (!['published', 'planned', 'deprecated'].includes(pkg.status)) failures.push(`${key}: invalid status`);
     if (pkg.published !== (pkg.status !== 'planned')) failures.push(`${key}: legacy published flag contradicts status`);
     if (!['public', 'hidden'].includes(pkg.catalog) || pkg.catalog === 'hidden' && !nonempty(pkg.catalog_reason)) failures.push(`${key}: catalog visibility requires a hidden reason`);
+    if (pkg.status === 'planned' && pkg.catalog !== 'hidden') failures.push(`${key}: planned distribution must be hidden until published`);
     if (pkg.status === 'planned' ? pkg.version !== null : !nonempty(pkg.version)) failures.push(`${key}: version contradicts publication status`);
     if (!['runtime', 'tooling'].includes(pkg.kind)) failures.push(`${key}: invalid package kind`);
     if (!['php', 'ts', 'py'].includes(pkg.language) || !['packagist', 'npm', 'pypi'].includes(pkg.registry)) failures.push(`${key}: invalid language/registry`);
