@@ -1,0 +1,44 @@
+{
+  "format": "local-file-lock-ownership-v2-review-vectors",
+  "status": "proposed; execution against the future port implementations is required",
+  "native_platform_identities": [
+    {"platform": "linux", "boot_id": "lowercase /proc/sys/kernel/random/boot_id UUID", "pid_namespace": "pid:[decimal-inode] from /proc/self/ns/pid"},
+    {"platform": "darwin", "boot_id": "lowercase kern.bootsessionuuid UUID", "pid_namespace": "darwin:kernel"},
+    {"platform": "win32", "boot_id": "cim-utc-ticks:<exact decimal UTC ticks of LastBootUpTime>", "pid_namespace": "win32:kernel only when 64-bit ContainerType value query returns ERROR_FILE_NOT_FOUND"}
+  ],
+  "native_recovery": {
+    "platforms": ["win32", "darwin", "linux"],
+    "required_rows": ["independent-child-same-identity-live-held", "independent-child-same-identity-dead-nonce-bound-recovery", "foreign-realm-held-without-pid-probe", "foreign-realm-released-held-without-pid-probe", "both-unknown-held-without-pid-probe"],
+    "windows_contexts": ["no-job", "ordinary-job", "nested-job", "inherited-supervisor-job-with-one-owned-job"],
+    "windows_no_job": {"if_verified_absent": "must execute recovery and pass", "if_membership_retained": "unmeasured", "unmeasured_reason": "ambient supervisor Job cannot be left on this host (CREATE_BREAKAWAY_FROM_JOB accepted, membership retained)", "required_evidence": "actual checked membership retained after accepted breakaway; suspended child never ran and was disposed", "coverage_claimed_when_unmeasured": false},
+    "windows_substitute_guarantee": "source/import/native-symbol guard: identity reads only ContainerType and canonical boot identity; adding Job/silo API fails; fake no-Job pass without verified nonmembership fails",
+    "windows_container_value_present": {"pid_namespace": null, "expected": "held-unknown", "execution": "unmeasured; no container created"},
+    "unavailable_conditions": ["linux proc boot or namespace unreadable", "darwin boot sysctl unavailable or restricted", "Windows CIM boot unavailable", "Windows registry key-open failure or value query error other than ERROR_FILE_NOT_FOUND", "unsupported platform"],
+    "positive_native_setup_failure": "gate-failure; never counted as recovery or a skipped pass"
+  },
+  "identity": [
+    {"id": "same-identity-live", "identity": "same", "pid": "alive", "released": false, "expected": "held"},
+    {"id": "same-identity-dead", "identity": "same", "pid": "dead", "released": false, "expected": "nonce-bound-reclaim"},
+    {"id": "same-identity-released", "identity": "same", "pid": "alive", "released": true, "expected": "nonce-bound-reclaim"},
+    {"id": "different-boot", "identity": "different-boot", "pid": "dead", "released": false, "expected": "held-unknown"},
+    {"id": "different-pid-namespace", "identity": "different-pid-namespace", "pid": "dead", "released": false, "expected": "held-unknown"},
+    {"id": "different-platform", "identity": "different-platform", "pid": "dead", "released": false, "expected": "held-unknown"},
+    {"id": "foreign-released", "identity": "different-pid-namespace", "pid": "dead", "released": true, "expected": "held-unknown"},
+    {"id": "missing-identity", "identity": "unknown", "pid": "dead", "released": false, "expected": "held-unknown"},
+    {"id": "both-unknown", "identity": "both-unknown", "pid": "dead", "released": true, "expected": "held-unknown"}
+  ],
+  "rename": [
+    {"id": "populated-target", "platform": "all", "expected": "refused-original-intact"},
+    {"id": "empty-target-posix", "platform": "linux-or-darwin", "expected": "acquired-populated-replacement"},
+    {"id": "empty-target-windows", "platform": "win32", "expected": "refused-original-intact"},
+    {"id": "stale-remover", "platform": "all", "expected": "replacement-survives"}
+  ],
+  "published_workers": {
+    "ts": "0.8.0",
+    "py": "0.3.0",
+    "new_directories": ["populated", "old-expiry-and-old-mtime", "partial-owner-record"],
+    "expected": {"callbacks": 0, "unlink_attempts": 0, "rename_attempts": 0, "directory_unchanged": true},
+    "controls": ["legacy-expired-file", "legacy-torn-stamp"]
+  },
+  "legacy_refusal": {"code": "session_locked", "detail": "legacy_lock_requires_maintenance", "path": "canonical legacy lock path", "action": "stop_old_workers_then_inspect_and_archive"}
+}

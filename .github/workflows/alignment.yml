@@ -38,6 +38,25 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: node tools/run-gate.mjs remote -- node tools/remote-alignment.mjs
 
+  lock-platform-primitives:
+    name: Lock directory primitives / ${{ matrix.os }}
+    needs: alignment
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Native empty-directory rename and stale-remover controls
+        run: node tools/run-gate.mjs lockPrimitives -- node tools/lock-owner-review/primitives.mjs
+      - name: Native boot identity and dead-owner recovery including Windows Job contexts
+        run: node tools/run-gate.mjs lockIdentityRecovery -- node tools/lock-owner-review/identity-recovery.mjs
+
   corpus:
     needs: alignment
     uses: ./.github/workflows/corpus.yml
