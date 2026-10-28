@@ -31,7 +31,9 @@
     {"id": "populated-target", "platform": "all", "expected": "refused-original-intact"},
     {"id": "empty-target-posix", "platform": "linux-or-darwin", "expected": "acquired-populated-replacement"},
     {"id": "empty-target-windows", "platform": "win32", "expected": "refused-original-intact"},
-    {"id": "stale-remover", "platform": "all", "expected": "replacement-survives"}
+    {"id": "stale-remover", "platform": "all", "expected": "replacement-survives"},
+    {"id": "node-regular-file-target", "platform": "all", "expected": "win32 replaces the regular file; linux/darwin refuse; production preflight refuses stale legacy before rename"},
+    {"id": "python-regular-file-target", "platform": "all", "expected": "native os.rename refuses and preserves regular file without production preflight"}
   ],
   "published_workers": {
     "ts": "0.8.0",

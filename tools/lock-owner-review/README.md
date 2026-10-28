@@ -8,6 +8,12 @@ on each native platform. POSIX must atomically replace an empty target
 directory, Windows must refuse it, and a populated target/replacement must
 survive both a contender and a stale nonrecursive remover.
 
+Five required primitive rows now include directory-to-regular-file rename in
+Node and Python. Node/Windows replaces the file; POSIX Node and native Python
+on every supported OS refuse and preserve it. This measured residual explains
+the mandatory stale-legacy preflight and hard stop in decision0022. Python must
+be available (or set PRISM_LOCK_PYTHON); a missing interpreter fails the gate.
+
 Run `node tools/run-gate.mjs lockIdentityRecovery -- node tools/lock-owner-review/identity-recovery.mjs`
 on each native platform. A separate holder independently reads its boot/realm,
 publishes an unreleased owner and stays alive until an IPC barrier. A live

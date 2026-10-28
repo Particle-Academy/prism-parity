@@ -64,9 +64,9 @@ test('Windows no-Job claims require measured membership and cannot replace manda
 
 test('lock primitive evidence requires native work and rejects empty or unsupported reports', () => {
   for (const platform of ['linux', 'darwin', 'win32']) {
-    assert.doesNotThrow(() => requireVerdict('lockPrimitives', { status: 0, stdout: 'Lock directory primitives passed: 3 required rows on ' + platform + '.' }, gates.lockPrimitives));
+    assert.doesNotThrow(() => requireVerdict('lockPrimitives', { status: 0, stdout: 'Lock directory primitives passed: 5 required rows on ' + platform + '.' }, gates.lockPrimitives));
   }
-  for (const stdout of ['', 'Lock directory primitives passed: 0 required rows on win32.', 'Lock directory primitives passed: 3 required rows on unknown.']) {
+  for (const stdout of ['', 'Lock directory primitives passed: 0 required rows on win32.', 'Lock directory primitives passed: 3 required rows on win32.', 'Lock directory primitives passed: 5 required rows on unknown.']) {
     assert.throws(() => requireVerdict('lockPrimitives', { status: 0, stdout }, gates.lockPrimitives), /missing.*verdict/);
   }
 });
