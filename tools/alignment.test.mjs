@@ -8,17 +8,58 @@ import test from 'node:test';
 import { compareClaims, checkRunner, requireVerdict, verifyCoverage, unmarkedCounts, checkWorkflowDependencies } from './alignment-contracts.mjs';
 import { coverage } from '../scripts/cross-check-coverage.mjs';
 import { gates } from './gate-contracts.mjs';
+import { validateWindowsContexts, NO_JOB_UNMEASURED } from './lock-owner-review/windows-context-contract.mjs';
 
-test('native recovery evidence requires dead-owner work and all four Windows Job contexts', () => {
-  const verdict = (platform, count) => 'Lock identity recovery passed: 1 live owner held; 1 dead owner recovered; 3 foreign/unknown rows held; 0 foreign PID probes; ' + count + ' native contexts on ' + platform + '.';
-  for (const [platform, count] of [['linux', 1], ['darwin', 1], ['win32', 4]]) {
-    assert.doesNotThrow(() => requireVerdict('lockIdentityRecovery', { status: 0, stdout: verdict(platform, count) }, gates.lockIdentityRecovery));
+test('native recovery evidence requires actual work and explicit verified or unmeasured Windows baseline', () => {
+  const prefix = 'Lock identity recovery passed: 1 live owner held; 1 dead owner recovered; 3 foreign/unknown rows held; 0 foreign PID probes; ';
+  const suffixes = ['1 native contexts on linux.', '1 native contexts on darwin.', '3 measured Windows contexts; no-job unmeasured-with-membership-evidence on win32.', '4 measured Windows contexts; no-job verified-absent on win32.'];
+  for (const suffix of suffixes) {
+    assert.doesNotThrow(() => requireVerdict('lockIdentityRecovery', { status: 0, stdout: prefix + suffix }, gates.lockIdentityRecovery));
   }
-  const valid = verdict('win32', 4);
-  for (const stdout of ['', verdict('win32', 0), verdict('win32', 1), verdict('win32', 2), verdict('win32', 3), verdict('unknown', 4), valid.replace('1 dead owner', '0 dead owner'), valid.replace('3 foreign/unknown', '0 foreign/unknown'), valid.replace('0 foreign PID', '1 foreign PID')]) {
+  const valid = prefix + suffixes[2];
+  for (const stdout of ['', valid.replace('3 measured', '0 measured'), valid.replace('3 measured', '2 measured'), valid.replace('3 measured', '4 measured'), valid.replace('unmeasured-with-membership-evidence', 'passed'), valid.replace('1 dead owner', '0 dead owner'), valid.replace('3 foreign/unknown', '0 foreign/unknown'), valid.replace('0 foreign PID', '1 foreign PID')]) {
     assert.throws(() => requireVerdict('lockIdentityRecovery', { status: 0, stdout }, gates.lockIdentityRecovery), /missing.*verdict/);
   }
   assert.throws(() => requireVerdict('lockIdentityRecovery', { status: 1, stdout: valid }, gates.lockIdentityRecovery), /exit/);
+});
+
+test('Windows realm identity boundary cannot import or invoke Job or silo APIs', () => {
+  const js = readFileSync(new URL('./lock-owner-review/windows-identity.mjs', import.meta.url), 'utf8');
+  const cs = readFileSync(new URL('./lock-owner-review/windows-identity.cs', import.meta.url), 'utf8');
+  const validate = (javascript, native) => {
+    assert.doesNotMatch(javascript + native, /\b(?:\w*Job\w*|\w*Silo\w*|ProcessMembershipInformation)\b/i, 'Identity must ignore Job/silo APIs');
+    assert.deepEqual([...javascript.matchAll(/^import\s+(?:[^'"\n]*from\s+)?['"]([^'"]+)['"];?$/gm)].map(match => match[1]).sort(), ['node:assert/strict', 'node:child_process', 'node:fs']);
+    const imports = [...native.matchAll(/\[DllImport\("([^"]+)"[^\]]*\)\]\s*static extern \w+ (\w+)\(/g)].map(match => [match[1], match[2]]);
+    assert.deepEqual(imports, [['advapi32.dll', 'RegOpenKeyEx'], ['advapi32.dll', 'RegQueryValueEx'], ['advapi32.dll', 'RegCloseKey']]);
+    assert.match(javascript, /Get-CimInstance -ClassName Win32_OperatingSystem/);
+    assert.match(native, /"ContainerType"/);
+  };
+  validate(js, cs);
+  assert.throws(() => validate(js + '\nIsProcessInJob();', cs), /Identity must ignore/);
+  assert.throws(() => validate(js, cs + '\nQueryInformationJobObject();'), /Identity must ignore/);
+  assert.throws(() => validate(js + "\nimport './windows-review.mjs';", cs));
+  assert.throws(() => validate(js + "\nimport x from 'another-native-boundary';", cs));
+  assert.doesNotMatch(readFileSync(new URL('./lock-owner-review/identity.mjs', import.meta.url), 'utf8'), /windows-review|Job|Silo/);
+});
+
+test('Windows no-Job claims require measured membership and cannot replace mandatory recovery rows', () => {
+  const identity = { platform: 'win32', boot_id: 'cim-utc-ticks:123', pid_namespace: 'win32:kernel' };
+  const proof = { identity, holder_identity: identity, live: { result: 'held', probes: 1 }, dead: { result: 'nonce-bound-reclaimed', probes: 1 }, held: ['foreign-realm', 'foreign-realm-released', 'both-unknown'].map(id => ({ id, result: 'held-unknown', probes: 0, directory_unchanged: true })) };
+  const report = { failures: [], rows: [{ name: 'no-job', status: 'unmeasured', reason: NO_JOB_UNMEASURED, native: { status: 'unmeasured', membership_checked: true, initial_no_job: false, breakaway_requested: true, child_ran: false } }, ...['ordinary-job', 'nested-job', 'inherited-supervisor-job'].map(name => ({ name, status: 'passed', native: { status: 'passed', membership_checked: true, exit: 0, initial_no_job: false, breakaway_requested: false, verified_owned_job_depth: name === 'nested-job' ? 2 : 1 }, proof }))] };
+  assert.deepEqual(validateWindowsContexts(report), { measured_contexts: 3, no_job: 'unmeasured-with-membership-evidence' });
+  const measured = structuredClone(report);
+  measured.rows[0] = { name: 'no-job', status: 'passed', native: { status: 'passed', membership_checked: true, initial_no_job: true, breakaway_requested: true, exit: 0, verified_owned_job_depth: 0 }, proof };
+  assert.deepEqual(validateWindowsContexts(measured), { measured_contexts: 4, no_job: 'verified-absent' });
+  for (const mutate of [
+    copy => { copy.rows[0].native.initial_no_job = false; },
+    copy => { copy.rows[0].native.membership_checked = false; },
+    copy => { copy.rows.pop(); },
+    copy => { copy.rows[1].status = 'unmeasured'; },
+    copy => { copy.rows[2].proof.dead.result = 'held'; },
+    copy => { copy.rows[3].proof.held[0].probes = 1; },
+  ]) { const copy = structuredClone(measured); mutate(copy); assert.throws(() => validateWindowsContexts(copy)); }
+  const fabricated = structuredClone(report); fabricated.rows[0].reason = 'a generic setup error';
+  assert.throws(() => validateWindowsContexts(fabricated));
 });
 
 test('lock primitive evidence requires native work and rejects empty or unsupported reports', () => {

@@ -7,6 +7,7 @@ import { randomBytes } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { nativeIdentity } from './identity.mjs';
 import { windowsJobCases, inheritedJobCase } from './windows-review.mjs';
+import { validateWindowsContexts } from './windows-context-contract.mjs';
 
 // Deliberately a small review experiment, not a port lock implementation.
 // All records and paths are generated inside this experiment's owned root.
@@ -111,8 +112,7 @@ if (process.argv[1]?.endsWith('identity-recovery.mjs')) {
   }
   const proof = process.platform === 'win32' ? windowsJobCases() : await identityRecovery();
   console.log(JSON.stringify(proof));
-  if (process.platform === 'win32') assert.deepEqual(proof.failures, [], 'Every native Job setup/recovery must execute successfully; inherited rows are retained when breakaway fails');
-  const contexts = process.platform === 'win32' ? proof.rows.length : 1;
-  assert.equal(contexts, process.platform === 'win32' ? 4 : 1);
-  console.log('Lock identity recovery passed: 1 live owner held; 1 dead owner recovered; 3 foreign/unknown rows held; 0 foreign PID probes; ' + contexts + ' native contexts on ' + proof.platform + '.');
+  const context = process.platform === 'win32' ? validateWindowsContexts(proof) : null;
+  const suffix = context ? context.measured_contexts + ' measured Windows contexts; no-job ' + context.no_job + ' on win32.' : '1 native contexts on ' + proof.platform + '.';
+  console.log('Lock identity recovery passed: 1 live owner held; 1 dead owner recovered; 3 foreign/unknown rows held; 0 foreign PID probes; ' + suffix);
 }

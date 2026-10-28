@@ -129,11 +129,26 @@ these review experiments; no container is created.
 Null is reserved for these named unavailable/restricted/container conditions,
 not the absence of a Linux namespace API on Windows or macOS. Native review
 rows must establish a nonnull identity and recover a same-identity dead owner
-on all three supported operating systems. Windows additionally measures no
-Job, an ordinary Job and nested Jobs, each with independently matching holder
-and prober identity. A fourth child inherits the ambient supervisor chain
-without breakaway and adds one owned Job. A supervisor that prevents the no-Job setup is an
-unmeasured/failed setup, never a passing substitute for that row.
+on all three supported operating systems. Windows measures an ordinary owned
+Job, nested owned Jobs and an inherited supervisor Job plus one owned Job,
+without leaving the ambient chain. Each requires matching holder/prober
+identity and actual recovery. The no-Job baseline is separately attempted and
+checked. If free of Job membership, it must run and pass the same controls.
+If membership is retained after an accepted breakaway request, record status
+unmeasured with native checked membership and the exact reason:
+ambient supervisor Job cannot be left on this host
+(CREATE_BREAKAWAY_FROM_JOB accepted, membership retained).
+The suspended child never runs and must be disposed. No recovery coverage is
+claimed for this row; any other setup failure still fails the gate.
+
+This named unmeasured baseline is acceptable because identity never consults
+Job state. Its substitute guarantee is a structural test of the isolated
+identity source/import/native-symbol boundary: only the ContainerType registry
+read and boot-identity read are allowed; adding a Job/silo API must fail. The
+review tooling executes that guard with deliberate Job-call mutations; both
+future ports must carry it too. A separate report guard must fail if a no-Job
+row ever claims pass without verified absent membership. The three measurable
+Job contexts always remain required, with nonzero work and successful recovery.
 
 Before any PID probe, compare the entire owner identity with the prober's own
 established identity. Different boot ids, PID namespaces or platforms are
@@ -251,8 +266,13 @@ recovery vector. A primitive experiment is not proof of the complete lock.
   preserve directory bytes and perform zero PID probes on each OS. Windows
   executes those controls under no Job, an ordinary Job, nested Jobs and an
   inherited supervisor Job with one additional owned Job and no breakaway.
-  A missing native row or a setup failure must fail its gate. Actual container
-  detection/visibility remains an explicitly unmeasured row in this proposal.
+  All three measurable Windows Job contexts must pass. The no-Job baseline
+  either verifies nonmembership and passes, or records the exact retained-
+  membership unmeasured condition above, with no coverage claimed. A structural
+  import/symbol guard proves the identity boundary ignores Job APIs, including
+  deliberate negative controls; a report guard rejects fake no-Job passes.
+  Missing rows or other setup errors fail. Actual container detection/visibility
+  also remains explicitly unmeasured in this proposal.
 - POSIX empty-directory rename acquisition and Windows existing-directory
   refusal are executed on their native operating systems. A stale remover must
   fail to remove the populated replacement.

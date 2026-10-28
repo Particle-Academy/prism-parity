@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { windowsIdentity } from './windows-review.mjs';
+import { windowsIdentity } from './windows-identity.mjs';
 
 function query(command, args) {
   const result = spawnSync(command, args, { encoding: 'utf8', timeout: 15000, maxBuffer: 65536, windowsHide: true });

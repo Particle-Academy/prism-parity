@@ -17,12 +17,6 @@ function powershell(command, input, timeout = 30000) {
   return JSON.parse(child.stdout.trim());
 }
 
-export function windowsIdentity() {
-  const output = powershell("$realm = [PrismLockNativeReview]::HostRealm()\n$boot = (CimCmdlets\\Get-CimInstance -ClassName Win32_OperatingSystem).LastBootUpTime\nif ($null -eq $boot) { throw 'Missing LastBootUpTime' }\n@{ realm = $realm; boot_ticks = $boot.ToUniversalTime().Ticks.ToString([Globalization.CultureInfo]::InvariantCulture) } | ConvertTo-Json -Compress", null);
-  assert.match(output.boot_ticks, /^[1-9][0-9]{0,18}$/);
-  return { platform: 'win32', boot_id: 'cim-utc-ticks:' + output.boot_ticks, pid_namespace: output.realm === 'win32:kernel' ? output.realm : null };
-}
-
 function launch(args, depth, requireNoJob, breakaway) {
   return powershell("$inputData = [Console]::In.ReadToEnd() | ConvertFrom-Json\n[PrismLockNativeReview]::Launch($inputData.exe, [string[]]$inputData.args, $inputData.cwd, [int]$inputData.depth, [bool]$inputData.require_no_job, [bool]$inputData.breakaway)", { exe: process.execPath, args, cwd: process.cwd(), depth, require_no_job: requireNoJob, breakaway }, 75000);
 }
@@ -40,25 +34,26 @@ export function inheritedJobCase() {
   const proof = JSON.parse(fs.readFileSync(report, 'utf8'));
   assert.equal(proof.identity.pid_namespace, 'win32:kernel');
   assert.equal(proof.dead.result, 'nonce-bound-reclaimed');
-  return { name: 'inherited-supervisor-job', native, proof };
+  return { name: 'inherited-supervisor-job', status: 'passed', native, proof };
 }
 
-export function windowsJobCases(ambientDiagnostic = false) {
+export function windowsJobCases() {
   const root = fs.mkdtempSync(join(os.tmpdir(), 'prism-lock-jobs-'));
   const script = fileURLToPath(new URL('./identity-recovery.mjs', import.meta.url));
   const rows = [], failures = [];
   for (const [name, depth] of [['no-job', 0], ['ordinary-job', 1], ['nested-job', 2]]) {
-    if (ambientDiagnostic && depth === 0) continue;
     try {
       const report = join(root, name + '.json');
-      const native = launch([script, '--native-job-child', report], depth, !ambientDiagnostic, true);
-      if (!ambientDiagnostic) assert.equal(native.initial_no_job, true);
+      const requireNoJob = depth === 0;
+      const native = launch([script, '--native-job-child', report], depth, requireNoJob, depth === 0);
+      if (native.status === 'unmeasured') { rows.push({ name, status: 'unmeasured', reason: native.reason, native }); continue; }
+      if (requireNoJob) assert.equal(native.initial_no_job, true);
       assert.equal(native.verified_owned_job_depth, depth); assert.equal(native.exit, 0);
       const proof = JSON.parse(fs.readFileSync(report, 'utf8'));
       assert.equal(proof.identity.pid_namespace, 'win32:kernel');
       assert.equal(proof.dead.result, 'nonce-bound-reclaimed');
       assert.equal(proof.held.length, 3);
-      rows.push({ name, native, proof });
+      rows.push({ name, status: 'passed', native, proof });
     } catch (error) { failures.push({ name, error: error.message }); }
   }
   // The fourth configuration always has an actual inherited supervisor Job,
@@ -70,5 +65,5 @@ export function windowsJobCases(ambientDiagnostic = false) {
     const inherited = JSON.parse(fs.readFileSync(report, 'utf8'));
     rows.push({ ...inherited, supervisor });
   } catch (error) { failures.push({ name: 'inherited-supervisor-job', error: error.message }); }
-  return { platform: 'win32', rows, failures, no_job: ambientDiagnostic ? 'unmeasured under ambient supervisor Job; diagnostic cannot pass required gate' : (rows.some(row => row.name === 'no-job') ? 'measured' : 'setup-failed'), container_path: 'unmeasured; no container created', fixture: root };
+  return { platform: 'win32', rows, failures, container_path: 'unmeasured; no container created', fixture: root };
 }

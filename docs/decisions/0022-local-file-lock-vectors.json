@@ -10,6 +10,8 @@
     "platforms": ["win32", "darwin", "linux"],
     "required_rows": ["independent-child-same-identity-live-held", "independent-child-same-identity-dead-nonce-bound-recovery", "foreign-realm-held-without-pid-probe", "foreign-realm-released-held-without-pid-probe", "both-unknown-held-without-pid-probe"],
     "windows_contexts": ["no-job", "ordinary-job", "nested-job", "inherited-supervisor-job-with-one-owned-job"],
+    "windows_no_job": {"if_verified_absent": "must execute recovery and pass", "if_membership_retained": "unmeasured", "unmeasured_reason": "ambient supervisor Job cannot be left on this host (CREATE_BREAKAWAY_FROM_JOB accepted, membership retained)", "required_evidence": "actual checked membership retained after accepted breakaway; suspended child never ran and was disposed", "coverage_claimed_when_unmeasured": false},
+    "windows_substitute_guarantee": "source/import/native-symbol guard: identity reads only ContainerType and canonical boot identity; adding Job/silo API fails; fake no-Job pass without verified nonmembership fails",
     "windows_container_value_present": {"pid_namespace": null, "expected": "held-unknown", "execution": "unmeasured; no container created"},
     "unavailable_conditions": ["linux proc boot or namespace unreadable", "darwin boot sysctl unavailable or restricted", "Windows CIM boot unavailable", "Windows registry key-open failure or value query error other than ERROR_FILE_NOT_FOUND", "unsupported platform"],
     "positive_native_setup_failure": "gate-failure; never counted as recovery or a skipped pass"

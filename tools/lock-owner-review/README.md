@@ -23,19 +23,26 @@ read-only, 64-bit-view ContainerType query specified in decision 0022. An absent
 value establishes win32:kernel; a present value or query error is unknown.
 No ordinary/nested Job membership shortcut is used for identity.
 
-The Windows CLI executes four actual process configurations: no Job, one
-ordinary Job, two nested Jobs and an inherited supervisor Job with one
-additional owned Job. It launches only owned suspended children
-using CREATE_BREAKAWAY_FROM_JOB, verifies initial no-Job membership, assigns
-its own bounded-lifetime Jobs, verifies each membership, then resumes. The
-fourth child does not request breakaway and retains the ambient chain. An
-owned supervisor ensures an inherited Job also exists on an otherwise free
-hosted runner. All four must establish host identity and pass recovery/foreign controls. A
-supervisor that prevents breakaway makes setup fail; inherited rows still run.
-The gate does not
-relabel an ambient Job as the no-Job row. The exported diagnostic option
-windowsJobCases(true) can measure extra ordinary/nested Jobs under such a
-supervisor, but emits no gate verdict and explicitly leaves no-Job unmeasured.
+The Windows CLI records four configurations: no Job, one ordinary owned Job,
+two nested owned Jobs and an inherited supervisor Job with one additional
+owned Job. The three Job cases retain the ambient chain without breakaway,
+verify membership and must pass recovery/foreign controls. An owned supervisor
+ensures actual inheritance also exists on an otherwise free hosted runner.
+
+For no-Job only, an owned suspended child requests CREATE_BREAKAWAY_FROM_JOB,
+then undergoes an actual membership query. If it is free, it must run all
+recovery controls and pass. If membership is retained, it never runs and is
+disposed; the row is unmeasured with native checked membership and this exact
+reason: ambient supervisor Job cannot be left on this host
+(CREATE_BREAKAWAY_FROM_JOB accepted, membership retained). This is no recovery
+coverage. Any other setup error fails. A report validator rejects a no-Job pass
+without verified nonmembership and refuses missing mandatory contexts.
+
+The substitute guarantee is structural: identity lives separately in
+windows-identity.mjs/.cs and may use only the ContainerType registry read and
+CIM boot read. The source/import/native-symbol guard fails on Job/silo API
+calls or new native imports; deliberate Job-call and fake-report mutations
+prove those refusals. Future port implementations need the same guard.
 No container is created; actual container-path execution remains unmeasured.
 
 Run `node tools/run-gate.mjs publishedLockCoexistence -- node tools/lock-owner-review/published-coexistence.mjs`.

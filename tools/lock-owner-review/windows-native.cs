@@ -6,9 +6,6 @@ using System.Text;
 // Review tooling only. Never creates a container, changes an existing Job,
 // writes the registry, or obtains a handle to an unrelated process.
 public static class PrismLockNativeReview {
-  [DllImport("advapi32.dll", CharSet=CharSet.Unicode)] static extern int RegOpenKeyEx(IntPtr key, string name, uint options, uint access, out IntPtr opened);
-  [DllImport("advapi32.dll", CharSet=CharSet.Unicode)] static extern int RegQueryValueEx(IntPtr key, string name, IntPtr reserved, out uint type, IntPtr data, ref uint length);
-  [DllImport("advapi32.dll")] static extern int RegCloseKey(IntPtr key);
   [DllImport("kernel32.dll", SetLastError=true)] static extern IntPtr CreateJobObject(IntPtr attributes, string name);
   [DllImport("kernel32.dll", SetLastError=true)] static extern bool SetInformationJobObject(IntPtr job, int cls, ref ExtendedLimits limits, uint size);
   [DllImport("kernel32.dll", SetLastError=true)] static extern bool AssignProcessToJobObject(IntPtr job, IntPtr process);
@@ -34,20 +31,6 @@ public static class PrismLockNativeReview {
   }
   [StructLayout(LayoutKind.Sequential)] struct ProcessInfo { public IntPtr Process, Thread; public uint Pid, Tid; }
 
-  public static string HostRealm() {
-    IntPtr key;
-    // KEY_QUERY_VALUE | KEY_WOW64_64KEY. An absent key is not an absent value.
-    int opened = RegOpenKeyEx(new IntPtr(unchecked((int)0x80000002)), @"SYSTEM\CurrentControlSet\Control", 0, 0x0101, out key);
-    if (opened != 0) return "unknown:open-error-" + opened;
-    try {
-      uint type, length = 0;
-      int queried = RegQueryValueEx(key, "ContainerType", IntPtr.Zero, out type, IntPtr.Zero, ref length);
-      if (queried == 2) return "win32:kernel"; // ERROR_FILE_NOT_FOUND, value only.
-      if (queried == 0 || queried == 234) return "unknown:container-value-present";
-      return "unknown:query-error-" + queried;
-    } finally { RegCloseKey(key); }
-  }
-
   static string Quote(string value) {
     var result = new StringBuilder("\""); int slashes = 0;
     foreach (char character in value) {
@@ -61,6 +44,7 @@ public static class PrismLockNativeReview {
 
   public static string Launch(string exe, string[] args, string cwd, int depth, bool requireNoJob, bool breakaway) {
     if (depth < 0 || depth > 2) throw new ArgumentOutOfRangeException("depth");
+    if (requireNoJob && !breakaway) throw new ArgumentException("No-Job observation requires a breakaway request");
     var command = new StringBuilder(Quote(exe));
     foreach (string arg in args) command.Append(' ').Append(Quote(arg));
     var startup = new StartupInfo(); startup.Size = (uint)Marshal.SizeOf(startup);
@@ -73,7 +57,7 @@ public static class PrismLockNativeReview {
       bool inJob;
       if (!IsProcessInJob(process.Process, IntPtr.Zero, out inJob)) throw NativeError("Query initial child Job membership");
       bool initialNoJob = !inJob;
-      if (requireNoJob && inJob) throw new Exception("No-job control is still in an ambient Job");
+      if (requireNoJob && inJob) return "{\"pid\":" + process.Pid + ",\"status\":\"unmeasured\",\"reason\":\"ambient supervisor Job cannot be left on this host (CREATE_BREAKAWAY_FROM_JOB accepted, membership retained)\",\"membership_checked\":true,\"breakaway_requested\":true,\"initial_no_job\":false,\"child_ran\":false}";
       for (int index = 0; index < depth; index++) {
         jobs[index] = CreateJobObject(IntPtr.Zero, null);
         if (jobs[index] == IntPtr.Zero) throw NativeError("Create owned ordinary Job");
@@ -91,11 +75,13 @@ public static class PrismLockNativeReview {
       uint code;
       if (!GetExitCodeProcess(process.Process, out code)) throw NativeError("Read owned child exit");
       if (code != 0) throw new Exception("Owned child failed: " + code);
-      return "{\"pid\":" + process.Pid + ",\"breakaway_requested\":" + (breakaway ? "true" : "false") + ",\"initial_no_job\":" + (initialNoJob ? "true" : "false") + ",\"verified_owned_job_depth\":" + depth + ",\"exit\":0}";
+      return "{\"pid\":" + process.Pid + ",\"status\":\"passed\",\"membership_checked\":true,\"breakaway_requested\":" + (breakaway ? "true" : "false") + ",\"initial_no_job\":" + (initialNoJob ? "true" : "false") + ",\"verified_owned_job_depth\":" + depth + ",\"exit\":0}";
     } finally {
-      if (!exited) { TerminateProcess(process.Process, 2); WaitForSingleObject(process.Process, 5000); }
+      bool cleanupFailed = false;
+      if (!exited) { TerminateProcess(process.Process, 2); cleanupFailed = WaitForSingleObject(process.Process, 5000) != 0; }
       CloseHandle(process.Thread); CloseHandle(process.Process);
       for (int index = depth - 1; index >= 0; index--) if (jobs[index] != IntPtr.Zero) CloseHandle(jobs[index]);
+      if (cleanupFailed) throw new Exception("Owned review child cleanup did not complete");
     }
   }
 }
