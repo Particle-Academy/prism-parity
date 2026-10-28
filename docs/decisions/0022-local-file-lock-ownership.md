@@ -2,8 +2,8 @@
 
 Date: 2026-10-28
 
-Status: Proposed, revised after maintainer review 2026-10-28. Acceptance is
-required before either port changes its lock protocol. This decision amends the file-lock ruling in
+Status: Accepted by the maintainer 2026-10-28, after review revisions. Both
+ports implement this protocol before changing their lock format. This decision amends the file-lock ruling in
 [agent task lists](../../specs/agent-task-lists.md#the-references-rulings).
 
 ## Why

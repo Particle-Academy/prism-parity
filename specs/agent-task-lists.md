@@ -416,11 +416,11 @@ live lock. Failing safe here means waiting, never reclaiming.
 
 ### The lockfile format is SHARED SURFACE
 
-Proposed amendment: [decision 0022](../docs/decisions/0022-local-file-lock-ownership.md)
+Accepted amendment: [decision 0022](../docs/decisions/0022-local-file-lock-ownership.md)
 adds owner proof for local TS/Python file locks. A terminated timestamp prevents
 a torn-write steal but does not prevent taking a still-live holder's expired
-lock. The amendment requires maintainer acceptance before implementation; the
-historical ruling below remains recorded rather than silently replaced.
+lock. Accepted 2026-10-28; the historical ruling below remains recorded rather
+than silently replaced.
 
 If a PHP, TypeScript or Python worker ever runs against the same store
 directory, they must agree on the byte format. Python now requires a trailing
@@ -462,7 +462,7 @@ binding.
 | Absent `outcome` on the completion tool | **Refused**, same `task_outcome_invalid` code as a malformed one. Python had it recording `done`. |
 | A lease of `<= 0` | **Refused**, not clamped. TypeScript clamped to 1s. |
 | Lease extension | Must check the ledger's **exhaustion**, not only `remainingSeconds`. A cancelled or step-exhausted run must not extend. |
-| Lockfile expiry format | **Terminated.** Nothing else distinguishes a complete expiry from the first half of one. Owner-proof amendment proposed in [0022](../docs/decisions/0022-local-file-lock-ownership.md); do not infer holder death from expiry. |
+| Lockfile expiry format | **Terminated.** Nothing else distinguishes a complete expiry from the first half of one. Owner-proof amendment accepted in [0022](../docs/decisions/0022-local-file-lock-ownership.md); do not infer holder death from expiry. |
 | `extendLease` on the contract | **No** — concrete source only. All three agreed. |
 | `pending()` | Counts `todo` plus expired-claimed, and never writes. |
 | A corrupt stored entry | **Refused**, not filtered out. A silently dropped task is work nobody will ever do. |
