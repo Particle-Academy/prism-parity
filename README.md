@@ -95,6 +95,7 @@ classifies applications, tooling and the workspace envelope without inventing
 registry packages. `satellites` remains a checked compatibility view. The historical
 `kit` snapshot and `parity_target` conformance claims are separate from current
 registry versions; being published does not establish conformance.
+Planned distributions stay hidden until a registry release is published.
 The private `prism.agi` workspace envelope is declared with a reason and reported
 separately: the ordinary workflow token cannot verify its existence. Only that
 non-package envelope may be absent from the public repository inventory. A hidden

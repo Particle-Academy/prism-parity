@@ -32,6 +32,15 @@ refused('published metadata 404 is a failure',f=>f.inventory.releases[0].http=40
 refused('missing release lookup is a failure',f=>f.inventory.releases.shift(),/Lookup failed/);
 refused('planned record cannot hide a new release',f=>f.inventory.releases.at(-1).http=200,/planned package is now published/);
 refused('planned record does not forgive HTTP500',f=>f.inventory.releases.at(-1).http=500,/Lookup failed/);
+test('planned distributions cannot be public',()=>{
+  for(const kind of ['runtime','tooling']) {
+    const f=fixture();
+    if(kind==='runtime') Object.assign(f.manifest.packages.loader,{kind,role:'port',family:'acp'});
+    assert.deepEqual(verdict(f).failures,[],`${kind}: hidden planned control must be valid`);
+    f.manifest.packages.loader.catalog='public';
+    assert.match(verdict(f).failures.join('\n'),/planned distribution must be hidden/,kind);
+  }
+});
 refused('a hidden package must explain why',f=>delete f.manifest.packages.loader.catalog_reason,/hidden reason/);
 refused('duplicate distribution identities fail',f=>f.manifest.packages.alias=structuredClone(f.manifest.packages.prism),/Duplicate distribution/);
 refused('duplicate family-language runtime slots fail',f=>{f.manifest.packages.alias={...f.manifest.packages.prism,name:'particle-academy/prism-other'};},/Duplicate runtime core:php/);
