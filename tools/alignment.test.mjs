@@ -9,6 +9,18 @@ import { compareClaims, checkRunner, requireVerdict, verifyCoverage, unmarkedCou
 import { coverage } from '../scripts/cross-check-coverage.mjs';
 import { gates } from './gate-contracts.mjs';
 
+test('native recovery evidence requires dead-owner work and all four Windows Job contexts', () => {
+  const verdict = (platform, count) => 'Lock identity recovery passed: 1 live owner held; 1 dead owner recovered; 3 foreign/unknown rows held; 0 foreign PID probes; ' + count + ' native contexts on ' + platform + '.';
+  for (const [platform, count] of [['linux', 1], ['darwin', 1], ['win32', 4]]) {
+    assert.doesNotThrow(() => requireVerdict('lockIdentityRecovery', { status: 0, stdout: verdict(platform, count) }, gates.lockIdentityRecovery));
+  }
+  const valid = verdict('win32', 4);
+  for (const stdout of ['', verdict('win32', 0), verdict('win32', 1), verdict('win32', 2), verdict('win32', 3), verdict('unknown', 4), valid.replace('1 dead owner', '0 dead owner'), valid.replace('3 foreign/unknown', '0 foreign/unknown'), valid.replace('0 foreign PID', '1 foreign PID')]) {
+    assert.throws(() => requireVerdict('lockIdentityRecovery', { status: 0, stdout }, gates.lockIdentityRecovery), /missing.*verdict/);
+  }
+  assert.throws(() => requireVerdict('lockIdentityRecovery', { status: 1, stdout: valid }, gates.lockIdentityRecovery), /exit/);
+});
+
 test('lock primitive evidence requires native work and rejects empty or unsupported reports', () => {
   for (const platform of ['linux', 'darwin', 'win32']) {
     assert.doesNotThrow(() => requireVerdict('lockPrimitives', { status: 0, stdout: 'Lock directory primitives passed: 3 required rows on ' + platform + '.' }, gates.lockPrimitives));

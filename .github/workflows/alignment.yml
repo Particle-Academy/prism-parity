@@ -54,6 +54,8 @@ jobs:
           node-version: 22
       - name: Native empty-directory rename and stale-remover controls
         run: node tools/run-gate.mjs lockPrimitives -- node tools/lock-owner-review/primitives.mjs
+      - name: Native boot identity and dead-owner recovery including Windows Job contexts
+        run: node tools/run-gate.mjs lockIdentityRecovery -- node tools/lock-owner-review/identity-recovery.mjs
 
   corpus:
     needs: alignment

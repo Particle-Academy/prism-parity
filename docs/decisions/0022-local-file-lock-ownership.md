@@ -65,17 +65,75 @@ namespace is a bounded nonempty string or null when it cannot be established.
 Unknown or unavailable identity is not evidence of death.
 
 A bare PID is meaningful only in its operating-system instance, boot and PID
-realm. Linux reads its boot identity from
-[/proc/sys/kernel/random/boot_id](https://www.kernel.org/doc/html/v6.6/admin-guide/sysctl/kernel.html#random)
-and its PID namespace from
-[/proc/self/ns/pid](https://man7.org/linux/man-pages/man7/namespaces.7.html).
+realm. Establish that identity as follows; macOS and ordinary Windows hosts do
+not require a Linux namespace interface to recover their crashed workers.
+
+| platform | canonical boot_id | canonical pid_namespace |
+|---|---|---|
+| linux | lowercase UUID from /proc/sys/kernel/random/boot_id | /proc/self/ns/pid readlink value, pid:[decimal-inode] |
+| darwin | lowercase UUID from sysctl -n kern.bootsessionuuid | darwin:kernel |
+| win32 host | cim-utc-ticks: followed by canonical decimal UTC ticks of Win32_OperatingSystem.LastBootUpTime | win32:kernel, only after the host/container query below establishes host |
+| win32 container, unavailable identity, unsupported platform | no established boot proof if boot query fails | null; never matching proof |
+
+Linux's [boot_id](https://www.kernel.org/doc/html/v6.6/admin-guide/sysctl/kernel.html#random)
+and [namespace inode/link](https://man7.org/linux/man-pages/man7/namespaces.7.html)
+identify its boot and PID realm.
 [PID namespaces](https://man7.org/linux/man-pages/man7/pid_namespaces.7.html)
-allow distinct processes to use the same PID. Windows needs an OS boot-session
-identity or canonical system boot time, plus an established PID realm where
-isolated realms exist; for example the OS exposes
-[LastBootUpTime](https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-operatingsystem).
-Canonical serialization and equal identity across both ports are required
-vectors before implementation is accepted; an uptime estimate is insufficient.
+can reuse numeric PIDs. macOS uses one PID space per kernel boot;
+Apple's [XNU sysctl registration](https://github.com/apple-oss-distributions/xnu/blob/main/bsd/kern/kern_sysctl.c)
+exposes kern.bootsessionuuid. An unavailable or restricted sysctl is unknown;
+do not substitute estimated uptime or a process-local random value.
+
+Windows exposes [LastBootUpTime](https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-operatingsystem).
+Convert its CIM datetime to UTC, then serialize the integer count of
+100-nanosecond intervals since 0001-01-01T00:00:00Z, as defined by
+[DateTime.Ticks](https://learn.microsoft.com/en-us/dotnet/api/system.datetime.ticks).
+Use the exact decimal integer string without leading zeroes after
+`cim-utc-ticks:`. No locale date, timezone-dependent rendering, floating-point
+conversion, truncation to milliseconds, or current-time-minus-uptime estimate
+is interchangeable. Both ports must produce identical bytes.
+
+Microsoft states that a [process identifier is unique throughout the system](https://learn.microsoft.com/en-us/windows/win32/procthread/process-handles-and-identifiers);
+its [process-isolation example](https://learn.microsoft.com/en-us/virtualization/windowscontainers/manage-containers/hyperv-container#isolation-examples)
+shows the same process with the same PID inside the container and on its host.
+This is evidence for kernel-wide identifiers, not unrestricted lookup
+visibility: that page also describes process namespace isolation. A prober
+inside a container must not turn an invisible host process into proof of death.
+Hyper-V containers and WSL2 use another kernel or platform; they must also
+establish their own identity before any PID lookup can authorize recovery.
+
+Use a read-only 64-bit registry query for
+HKLM\SYSTEM\CurrentControlSet\Control, value ContainerType. Open the existing
+key with RegOpenKeyEx using KEY_QUERY_VALUE | KEY_WOW64_64KEY, then query the
+value without reading its payload. Never write or create a key/value.
+
+- Value absent, and only ERROR_FILE_NOT_FOUND from the value query: host realm
+  win32:kernel.
+- Value present, of any type or data: container/unknown realm, null and held.
+- Key-open failure, any other query error, missing API, or access denial:
+  unknown realm, null and held.
+
+The signal's provenance is Microsoft's executable
+[.NET PlatformDetection.GetIsInContainer](https://github.com/dotnet/runtime/blob/main/src/libraries/Common/tests/TestUtilities/System/PlatformDetection.cs)
+and [PerfView container detection](https://github.com/microsoft/perfview/blob/main/src/TraceEvent/TraceEventSession.cs).
+It is **not a documented Win32 silo API**. A documented formal replacement
+requires review when available. Ordinary or nested Job membership is not
+container identity; IsProcessInJob must not gate the host realm. Querying only
+an immediate ordinary Job also does not prove its parent chain lacks a silo.
+An unknown container owner records no established realm, so a host prober
+holds it; an unknown container prober also holds a host owner's record.
+The registry signal and its direction of failure avoid inferring death from
+restricted container visibility. Actual container execution is unmeasured in
+these review experiments; no container is created.
+
+Null is reserved for these named unavailable/restricted/container conditions,
+not the absence of a Linux namespace API on Windows or macOS. Native review
+rows must establish a nonnull identity and recover a same-identity dead owner
+on all three supported operating systems. Windows additionally measures no
+Job, an ordinary Job and nested Jobs, each with independently matching holder
+and prober identity. A fourth child inherits the ambient supervisor chain
+without breakaway and adds one owned Job. A supervisor that prevents the no-Job setup is an
+unmeasured/failed setup, never a passing substitute for that row.
 
 Before any PID probe, compare the entire owner identity with the prober's own
 established identity. Different boot ids, PID namespaces or platforms are
@@ -187,6 +245,14 @@ recovery vector. A primitive experiment is not proof of the complete lock.
 - Different boot identities, platforms, or PID namespaces, missing identity and
   unavailable identity probes stay held without consulting an unrelated PID
   space. Same-identity live/dead controls are required in both ports.
+- Native Linux, macOS and Windows establish their platform boot/realm identity,
+  hold a live child and reclaim its nonce-bound record after that child exits
+  without releasing. Foreign-realm, foreign-released and both-unknown rows
+  preserve directory bytes and perform zero PID probes on each OS. Windows
+  executes those controls under no Job, an ordinary Job, nested Jobs and an
+  inherited supervisor Job with one additional owned Job and no breakaway.
+  A missing native row or a setup failure must fail its gate. Actual container
+  detection/visibility remains an explicitly unmeasured row in this proposal.
 - POSIX empty-directory rename acquisition and Windows existing-directory
   refusal are executed on their native operating systems. A stale remover must
   fail to remove the populated replacement.
