@@ -52,7 +52,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Native empty-directory rename and stale-remover controls
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Native empty-directory, stale-remover and regular-file rename controls
         run: node tools/run-gate.mjs lockPrimitives -- node tools/lock-owner-review/primitives.mjs
       - name: Native boot identity and dead-owner recovery including Windows Job contexts
         run: node tools/run-gate.mjs lockIdentityRecovery -- node tools/lock-owner-review/identity-recovery.mjs

@@ -221,6 +221,26 @@ separate required rows, rather than making one platform's behavior accidental.
 
 ## Migration
 
+### Windows/Node residual
+
+Node/libuv uses MoveFileExW with MOVEFILE_REPLACE_EXISTING on Windows. Renaming
+a populated candidate directory onto an existing regular file can therefore
+replace that file. POSIX Node and Python's native os.rename on Windows refuse
+the same operation. Native review primitives must record these outcomes on
+all three supported operating systems, rather than assuming directory-target
+behavior also applies to a regular-file target.
+
+Both ports must lstat the canonical path before attempting publication. An
+existing regular file is a legacy lock and must yield session_locked plus the
+stable legacy maintenance detail below, without a rename. This preflight closes
+the stale-legacy case. It does not atomically protect a live legacy worker that
+creates a regular file between the check and Node's Windows rename. Concurrent
+legacy workers are forbidden during this upgrade. **Stopping all old workers is
+a correctness requirement, not advice.** No rolling-upgrade protection is claimed
+for that Windows/Node race; no per-acquisition shell bridge or new native rename
+primitive is required. The TS/Python minor release notes must state this risk in
+their BREAKING CHANGE line.
+
 Timestamp-only legacy lockfiles have no owner proof. New workers must not steal
 them merely because their TTL elapsed. Keep session_locked as the refusal, with
 stable operator detail legacy_lock_requires_maintenance naming the canonical

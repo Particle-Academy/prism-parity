@@ -2,7 +2,7 @@
 // prevent an empty discovery from looking like a successful invocation.
 export const gates = {
   lockIdentityRecovery: { verdict: /^Lock identity recovery passed: 1 live owner held; 1 dead owner recovered; 3 foreign\/unknown rows held; 0 foreign PID probes; (?:1 native contexts on (?:linux|darwin)|3 measured Windows contexts; no-job unmeasured-with-membership-evidence on win32|4 measured Windows contexts; no-job verified-absent on win32)\.$/m },
-  lockPrimitives: { verdict: /^Lock directory primitives passed: 3 required rows on (?:linux|darwin|win32)\.$/m },
+  lockPrimitives: { verdict: /^Lock directory primitives passed: 5 required rows on (?:linux|darwin|win32)\.$/m },
   publishedLockCoexistence: { verdict: /^Published lock coexistence passed: 6 new-directory rows; 0 callbacks; 0 unlink\/rename attempts; 3 active reclaim controls\.$/m },
   catalog: { verdict: /^Catalog currency passed: [1-9]\d* visible repositories, [1-9]\d* published distributions, \d+ planned distributions, \d+ reviewed exclusions, \d+ declared private envelopes; 0 unclassified, 0 unchecked public repositories\.$/m },
   failedSteps: { verdict: /^Failed-step corpus passed: [1-9]\d* cases executed in all 3 languages; 0 skipped; published artifacts\.$/m },
