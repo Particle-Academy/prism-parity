@@ -119,7 +119,7 @@ test('PyPI normalization is namespace discovery, not proof of ownership',async()
 });
 test('Packagist prefers highest stable, or highest prerelease when no stable exists',()=>{
   const releases=[{version:'v1.2.0',version_normalized:'1.2.0.0'},{version:'1.3.0-alpha.5',version_normalized:'1.3.0.0-alpha5'},{version:'1.1.0',version_normalized:'1.1.0.0'}];
-  const data=versions=>response({package:{name:'particle-academy/prism',repository:repo('prism'),versions}});
+  const data=versions=>response({packages:{'particle-academy/prism':versions.map(row=>({name:'particle-academy/prism',source:{url:repo('prism')},...row}))}});
   assert.equal(parseRelease('packagist','particle-academy/prism',data(releases)).version,'1.2.0');
   assert.equal(parseRelease('packagist','particle-academy/prism',data(releases.slice(1,2))).version,'1.3.0-alpha.5');
   assert.throws(()=>parseRelease('packagist','particle-academy/prism',data([{version:'dev-main',version_normalized:'dev-main'}])),/No released/);
@@ -152,4 +152,74 @@ test('HTTP failure details cannot disclose native or supplied credentials',async
 });
 test('HTTP response size bound stops an oversized registry body',async()=>{
   await assert.rejects(requestJson('https://registry.npmjs.org/example',{fetchImpl:async()=>new Response(new Uint8Array(17*1024*1024))}),/Invalid or oversized/);
+});
+
+test('Packagist p2 expands Composer deltas before selection, including inherited ownership and unset deprecation',()=>{
+  const name='particle-academy/prism';
+  const data=response({minified:'composer/2.0',packages:{[name]:[
+    {name,version:'2.0.0-alpha.1',version_normalized:'2.0.0.0-alpha1',source:{url:repo('prism')},abandoned:true},
+    {version:'1.5.0',version_normalized:'1.5.0.0',abandoned:'__unset'},
+    {version:'1.4.0',version_normalized:'1.4.0.0'},
+  ]}});
+  const result=parseRelease('packagist',name,data);
+  assert.equal(result.version,'1.5.0');assert.equal(result.deprecated,false);
+  assert.deepEqual(result.ownership.repositories,[repo('prism')]);
+  assert.throws(()=>parseRelease('packagist',name,response({minified:'unknown',packages:{[name]:[]}})),/Malformed/);
+  assert.throws(()=>parseRelease('packagist',name,response({packages:{wrong:[]}})),/Malformed/);
+  assert.throws(()=>parseRelease('packagist',name,response({packages:{[name]:[{name:'wrong',version:'1.0.0',version_normalized:'1.0.0.0'}]}})),/identity/);
+});
+
+function registryFixture({actual='1.0.0',cached='0.0.1',exactHttp=200,exactVersion=actual}={}) {
+  const seen=[];
+  const request=async(value)=>{
+    seen.push(value);const url=new URL(value);
+    if(url.hostname==='api.github.com')return response(['prism','prism-acp-ts','prism-py','prism-parity'].map(name=>({name,full_name:`Particle-Academy/${name}`,default_branch:'main'})));
+    if(url.hostname==='replicate.npmjs.com')return response({rows:[{id:'@particle-academy/prism-acp',version:cached}]});
+    if(url.href==='https://packagist.org/packages/list.json?vendor=particle-academy')return response({packageNames:['particle-academy/prism'],version:cached});
+    // A plausible but stale old API must never be consulted for a version.
+    if(url.href==='https://packagist.org/packages/particle-academy/prism.json')return response({package:{name:'particle-academy/prism',version:cached}});
+    if(url.href==='https://repo.packagist.org/p2/particle-academy/prism.json')return response({packages:{'particle-academy/prism':[{name:'particle-academy/prism',version:actual,version_normalized:actual+'.0',source:{url:repo('prism')}}]}});
+    if(url.hostname==='registry.npmjs.org')return response({name:'@particle-academy/prism-acp','dist-tags':{latest:actual},versions:{[actual]:{name:'@particle-academy/prism-acp',version:actual,repository:repo('prism-acp-ts')}}});
+    if(url.href==='https://pypi.org/simple/')return {...response({meta:{'_last-serial':7},projects:[{name:'prism-ai-core',version:cached}]}),serial:'7'};
+    if(url.pathname==='/pypi/prism-conformance/json')return {http:404};
+    const python=(version)=>response({info:{name:'prism-ai-core',version,author:'Particle Academy',project_urls:{}},urls:[{yanked:false}]});
+    if(url.pathname==='/pypi/prism-ai-core/json')return python(actual);
+    if(url.pathname===`/pypi/prism-ai-core/${actual}/json`)return exactHttp===200?python(exactVersion):{http:exactHttp};
+    throw Error('Unexpected fixture endpoint '+value);
+  };
+  return {request,seen};
+}
+
+test('stale discovery listings can neither mask a current primary version nor invent one',async()=>{
+  for(const cached of ['0.0.1','9.0.0']) {
+    const {manifest}=fixture(),fake=registryFixture({cached});
+    const inventory=await collectCatalog(manifest,fake.request);
+    assert.deepEqual(validateCatalog(manifest,inventory).failures,[]);
+    assert(!fake.seen.some(url=>url.startsWith('https://packagist.org/packages/particle-academy/')));
+    assert(fake.seen.includes('https://repo.packagist.org/p2/particle-academy/prism.json'));
+    assert(fake.seen.includes('https://registry.npmjs.org/%40particle-academy%2Fprism-acp'));
+    assert(fake.seen.includes('https://pypi.org/pypi/prism-ai-core/1.0.0/json'));
+    assert(!fake.seen.some(url=>url.includes('~dev')));
+  }
+});
+
+test('genuine primary version lag remains a failure naming each authoritative endpoint',async()=>{
+  const {manifest}=fixture(),fake=registryFixture({actual:'0.9.0',cached:'1.0.0'});
+  const inventory=await collectCatalog(manifest,fake.request),failures=validateCatalog(manifest,inventory).failures;
+  for(const endpoint of ['https://repo.packagist.org/p2/particle-academy/prism.json','https://registry.npmjs.org/%40particle-academy%2Fprism-acp','https://pypi.org/pypi/prism-ai-core/0.9.0/json'])assert(failures.some(message=>message.includes('version 1.0.0 != published 0.9.0')&&message.includes(endpoint)),endpoint);
+});
+
+test('a PyPI latest hint cannot invent an absent or mismatched exact release',async()=>{
+  for(const options of [{exactHttp:404},{exactVersion:'0.9.0'}]) {
+    const fake=registryFixture(options);
+    await assert.rejects(collectCatalog(fixture().manifest,fake.request),/https:\/\/pypi.org\/pypi\/prism-ai-core\/1.0.0\/json: PyPI exact release identity/);
+  }
+});
+
+test('the new Packagist origin remains read-only and never receives GitHub credentials',async()=>{
+  let options;
+  await requestJson('https://repo.packagist.org/p2/particle-academy/prism.json',{githubToken:'synthetic-token',fetchImpl:async(url,opts)=>{options=opts;return new Response('{}');}});
+  assert.equal(Object.hasOwn(options.headers,'Authorization'),false);
+  assert.equal(options.redirect,'error');
+  for(const url of ['https://repo.packagist.org.evil.test/','https://user:pass@repo.packagist.org/p2/x.json','https://repo.packagist.org:444/p2/x.json'])await assert.rejects(requestJson(url),/Unapproved/);
 });
