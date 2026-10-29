@@ -98,20 +98,21 @@ export function validateCatalog(manifest, inventory) {
   let published = 0, planned = 0, excluded = 0;
   for (const [id, pkg] of identities) {
     const release = releases.get(id);
-    if (!release || ![200,404].includes(release.http)) { failures.push(`Lookup failed ${id}`); continue; }
+    const endpoint = release?.endpoint ? ` [${release.endpoint}]` : '';
+    if (!release || ![200,404].includes(release.http)) { failures.push(`Lookup failed ${id}${endpoint}`); continue; }
     if (pkg.status === 'planned') {
       planned++;
-      if (release.http !== 404) failures.push(`${id}: planned package is now published; classify its release`);
+      if (release.http !== 404) failures.push(`${id}: planned package is now published; classify its release${endpoint}`);
       continue;
     }
     published++;
-    if (release.http !== 200) { failures.push(`${id}: published package lookup failed`); continue; }
+    if (release.http !== 200) { failures.push(`${id}: published package lookup failed${endpoint}`); continue; }
     if (!ownsRelease(release)) failures.push(`UNCLASSIFIED ownership ${id}`);
     const repo = repositoryName(pkg.repository);
     const reported = release.ownership?.repositories ?? [];
     if (pkg.registry !== 'pypi' && !reported.some((url) => repositoryName(url) === repo) ||
         pkg.registry === 'pypi' && reported.some((url) => /github\.com/i.test(url) && repositoryName(url) !== repo)) failures.push(`${id}: registry repository identity mismatch`);
-    if (pkg.version !== release.version) failures.push(`${id}: version ${pkg.version} != published ${release.version}`);
+    if (pkg.version !== release.version) failures.push(`${id}: version ${pkg.version} != published ${release.version}${endpoint}`);
     if (Boolean(release.deprecated) !== (pkg.status === 'deprecated')) failures.push(`${id}: deprecation status mismatch`);
     const withinCensus = pkg.registry !== 'pypi' || pkg.name.startsWith('prism-ai-');
     if (withinCensus && !inventory.names?.[pkg.registry]?.includes(pkg.name)) failures.push(`${id}: published distribution missing from registry census`);
