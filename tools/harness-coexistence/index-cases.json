@@ -1,0 +1,9 @@
+{
+  "format": "harness-address-index-v1",
+  "status": "development; no published conformance claim",
+  "cases": [
+    {"id":"index-page-boundary","addresses":101,"max_addresses_per_participant":null,"expected":{"indexed":101,"page_sizes":[100,1],"next_cursors":[100,null],"quota_refusals":0,"error_code":null,"refused_state_present":false,"positions_dense":true,"existing_writable":true}},
+    {"id":"index-configured-limit","addresses":3,"max_addresses_per_participant":2,"expected":{"indexed":2,"page_sizes":[2],"next_cursors":[null],"quota_refusals":1,"error_code":"address_limit_exceeded","refused_state_present":false,"positions_dense":true,"existing_writable":true}},
+    {"id":"index-unlimited-crosses-old-cap","addresses":1001,"max_addresses_per_participant":null,"expected":{"indexed":1001,"page_sizes":[100,100,100,100,100,100,100,100,100,100,1],"next_cursors":[100,200,300,400,500,600,700,800,900,1000,null],"quota_refusals":0,"error_code":null,"refused_state_present":false,"positions_dense":true,"existing_writable":true}}
+  ]
+}

@@ -63,6 +63,9 @@ jobs:
   corpus:
     needs: alignment
     uses: ./.github/workflows/corpus.yml
+  harness-runtime:
+    needs: alignment
+    uses: ./.github/workflows/harness-runtime.yml
   cross-check:
     needs: alignment
     uses: ./.github/workflows/cross-check.yml

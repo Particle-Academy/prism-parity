@@ -1,0 +1,44 @@
+{
+  "format": "harness-coexistence-v1",
+  "agents": ["charlotte", "support", "acp"],
+  "boot_orders": [
+    ["charlotte", "support", "acp"], ["charlotte", "acp", "support"],
+    ["support", "charlotte", "acp"], ["support", "acp", "charlotte"],
+    ["acp", "charlotte", "support"], ["acp", "support", "charlotte"]
+  ],
+  "mode": "reply",
+  "expected_tools": [
+    {"name": "lookup", "owner": "$agent", "source": "static"},
+    {"name": "context", "owner": "$agent", "source": "factory"},
+    {"name": "remote_$agent", "owner": "$agent", "source": "provider"}
+  ],
+  "omitted_tool": "internal_notes",
+  "legacy_tool": "legacy_secret",
+  "hostile_requests": ["internal_notes", "legacy_secret", "remote_$foreign"],
+  "positive_tool": "lookup",
+  "approval": {"source": "support", "foreign": "charlotte", "mode": "approval", "scope": "approval-scope", "tool": "lookup"},
+  "child_request": {"task": "bounded child task", "actor": "different-host-principal"},
+  "legacy_child": {
+    "gap": "Existing PHP0.18/TS0.8/Py0.3 extra-actor input divergence; retained in tranches1-2",
+    "request": {"task": "bounded child task", "actor": "different-host-principal"},
+    "expected": {
+      "php": {"refused": true, "requests": 0, "child_started": false, "actor_matches_parent": null},
+      "ts": {"refused": false, "requests": 1, "child_started": true, "actor_matches_parent": true},
+      "py": {"refused": false, "requests": 1, "child_started": true, "actor_matches_parent": true}
+    }
+  },
+  "child_policy_cases": [
+    {"phase": "offer_revoked", "offered": [], "handlers": 0, "call_policy_checked": false},
+    {"phase": "call_revoked", "offered": ["lookup"], "handlers": 0, "call_policy_checked": true},
+    {"phase": "allowed", "offered": ["lookup"], "handlers": 1, "call_policy_checked": true}
+  ],
+  "collision_cases": [
+    {"id": "same-owner-static", "first": "static", "second": "static", "owners": ["first", "first"]},
+    {"id": "static-factory", "first": "static", "second": "factory", "owners": ["first", "second"]},
+    {"id": "factory-provider", "first": "factory", "second": "provider", "owners": ["first", "second"]},
+    {"id": "provider-provider", "first": "provider", "second": "provider", "owners": ["first", "second"]},
+    {"id": "same-provider", "first": "none", "second": "duplicate-provider", "owners": ["second", "second"]}
+  ],
+  "participant": {"type": "coexistence-owner", "id": "1"},
+  "scope": "shared-scope"
+}

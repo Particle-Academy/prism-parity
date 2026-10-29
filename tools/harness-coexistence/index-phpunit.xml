@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="index-bootstrap.php" colors="false" cacheResult="false">
+    <testsuites><testsuite name="harness-address-index"><file>IndexCorpusTest.php</file></testsuite></testsuites>
+    <php><env name="APP_ENV" value="testing" force="true"/><env name="DB_DATABASE" value=":memory:" force="true"/></php>
+</phpunit>
