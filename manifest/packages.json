@@ -437,7 +437,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism-harness",
       "repository": "https://github.com/Particle-Academy/prism-harness",
-      "version": "0.18.0",
+      "version": "0.20.1",
       "carries": "durable agent sessions - threads, session state, store drivers",
       "family": "harness",
       "kind": "runtime",
@@ -452,7 +452,7 @@
       "registry": "pypi",
       "name": "prism-ai-harness",
       "repository": "https://github.com/Particle-Academy/prism-harness-py",
-      "version": "0.3.0",
+      "version": "0.4.1",
       "published": true,
       "family": "harness",
       "surface": {
@@ -490,7 +490,7 @@
       "registry": "npm",
       "name": "@particle-academy/prism-harness",
       "repository": "https://github.com/Particle-Academy/prism-harness-ts",
-      "version": "0.8.0",
+      "version": "0.9.1",
       "published": true,
       "family": "harness",
       "surface": {
