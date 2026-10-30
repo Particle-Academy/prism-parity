@@ -46,6 +46,11 @@ for executed coverage. Canonical columns are generated from actual observations,
 never edited to make agreement green. Publication acceptance separately binds
 the exact released archives to the reviewed runtime files and repeats all rows.
 
+The PHP package keeps a byte-identical fixture mirror. Its generator updates the
+executed PHP observations, preserves measured port columns, and clears agreement
+when PHP changes. Land that mirror before canonical remote validation; the copy
+audit must continue to reject stale or independently rewritten observations.
+
 The generic core runner still delegates security corpora to package-specific
 tests. No cache-hint declaration, OpenRouter capability, request option, provider
 quality, dimension selection, quantized format or live provider call is claimed.
