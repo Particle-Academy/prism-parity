@@ -4,7 +4,7 @@
   "engines": { "node": ">=22" },
   "scripts": {
     "validate:cases": "node tools/validate-cases.mjs",
-    "test:schema": "node --test tools/validate-cases.test.mjs tools/failed-step-schema.test.mjs"
+    "test:schema": "node --test tools/validate-cases.test.mjs tools/failed-step-schema.test.mjs tools/embedding-decoding-schema.test.mjs"
   },
   "devDependencies": {
     "@particle-academy/fancy-schema": "github:Particle-Academy/fancy-schema#v0.2.1"

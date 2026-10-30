@@ -966,7 +966,7 @@
       "registry": "pypi",
       "name": "prism-ai-core",
       "repository": "https://github.com/Particle-Academy/prism-py",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "published": true,
       "surface": {
         "capabilities": [
@@ -1027,7 +1027,7 @@
       "registry": "npm",
       "name": "@particle-academy/prism",
       "repository": "https://github.com/Particle-Academy/prism-ts",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "published": true,
       "surface": {
         "capabilities": [

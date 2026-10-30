@@ -442,6 +442,25 @@
         }
       ]
     },
+    "embeddingDecodingNativeOutcome": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["embedding"],
+          "properties": {"embedding": {"type": "array", "items": {"type": "number"}}}
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["exception", "code"],
+          "properties": {
+            "exception": {"const": "PrismError"},
+            "code": {"const": "invalid_embedding"}
+          }
+        }
+      ]
+    },
     "embeddingDecodingCase": {
       "type": "object",
       "additionalProperties": false,
@@ -495,7 +514,7 @@
             "ts": {
               "oneOf": [
                 {
-                  "$ref": "#/$defs/embeddingDecodingOutcome"
+                  "$ref": "#/$defs/embeddingDecodingNativeOutcome"
                 },
                 {
                   "type": "null"
@@ -505,7 +524,7 @@
             "py": {
               "oneOf": [
                 {
-                  "$ref": "#/$defs/embeddingDecodingOutcome"
+                  "$ref": "#/$defs/embeddingDecodingNativeOutcome"
                 },
                 {
                   "type": "null"

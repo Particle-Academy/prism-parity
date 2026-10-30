@@ -11,6 +11,7 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkRunner } from './alignment-contracts.mjs';
+import { embeddingDecodingFailures, isEmbeddingComparison } from './embedding-decoding.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const failures = [];
@@ -180,7 +181,7 @@ const allFiles = walk(root);
 
     if (manifest.id !== id) fail('suite-manifests', `suites/${id}/manifest.json declares id ${manifest.id}`);
     if (!manifest.reference) fail('suite-manifests', `suites/${id} does not name a reference implementation`);
-    if (manifest.comparison?.mode !== 'canonical-json-string' && !(manifest.kind === 'stream-parse' && manifest.comparison?.mode === 'stream-properties' && manifest.comparison?.exact_trace_gap === 'G-125')) {
+    if (manifest.comparison?.mode !== 'canonical-json-string' && !isEmbeddingComparison(manifest) && !(manifest.kind === 'stream-parse' && manifest.comparison?.mode === 'stream-properties' && manifest.comparison?.exact_trace_gap === 'G-125')) {
       fail('suite-manifests', `suites/${id} declares an unknown comparison mode`);
     }
 
@@ -329,8 +330,14 @@ for (const suiteId of readdirSync(join(root, 'suites'))) {
   if (manifest.kind === 'stream-parse' && (manifest.comparison?.mode !== 'stream-properties' || manifest.comparison?.exact_trace_gap !== 'G-125')) {
     fail('stream-comparison', `${suiteId} needs independent properties and the explicit G-125 native-trace divergence`);
   }
-  if (manifest.kind !== 'stream-parse' && manifest.comparison?.mode !== 'canonical-json-string') {
+  if (manifest.kind !== 'stream-parse' && !isEmbeddingComparison(manifest) && manifest.comparison?.mode !== 'canonical-json-string') {
     fail('stream-comparison', `${suiteId} cannot substitute property checks for its existing golden comparison`);
+  }
+
+  if (suiteId === 'embedding-decoding') {
+    const document = JSON.parse(readFileSync(join(root, 'suites', suiteId, 'cases.json'), 'utf8'));
+    const allowUnrecorded = ['ts', 'py'].filter(language => manifest.implementations?.[language]?.status !== 'full');
+    for (const problem of embeddingDecodingFailures(document, { allowUnrecorded })) fail('embedding-refusal', problem);
   }
 
   // A `partial` that does not say WHOSE gap it is reads as no gap at all. This
