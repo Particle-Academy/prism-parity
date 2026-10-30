@@ -452,7 +452,7 @@
       "registry": "pypi",
       "name": "prism-ai-harness",
       "repository": "https://github.com/Particle-Academy/prism-harness-py",
-      "version": "0.4.1",
+      "version": "0.4.2",
       "published": true,
       "family": "harness",
       "surface": {
@@ -490,7 +490,7 @@
       "registry": "npm",
       "name": "@particle-academy/prism-harness",
       "repository": "https://github.com/Particle-Academy/prism-harness-ts",
-      "version": "0.9.1",
+      "version": "0.9.2",
       "published": true,
       "family": "harness",
       "surface": {

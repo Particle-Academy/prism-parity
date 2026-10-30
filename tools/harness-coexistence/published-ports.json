@@ -1,0 +1,15 @@
+{
+  "ts": {
+    "version": "0.9.2",
+    "head": "a981210b60b0e2c6415eb7be20e7771610158b21",
+    "url": "https://registry.npmjs.org/@particle-academy/prism-harness/-/prism-harness-0.9.2.tgz",
+    "sha256": "b278c78cfe433a7fc2432a364528d6b2c332ac160eb43d53c2052beaa6a96752",
+    "integrity": "sha512-d2UPIEAbJ1NvoMo5DVB6xRHDJHuZcozQkbDmTlwvQYO4yoPIDgDK+kqMwNsVJGQ//6AUkiX1a+f04Uz0VVKn3w=="
+  },
+  "py": {
+    "version": "0.4.2",
+    "head": "9acb9303109016321035fca106930485481f9a20",
+    "url": "https://files.pythonhosted.org/packages/44/90/4ca65bd1a904f94aca5221bef0546bd7dea788141ec6ef793aa6975b6466/prism_ai_harness-0.4.2-py3-none-any.whl",
+    "sha256": "317fde78d8602aadfd60ca179c7b1c1bfa780a726e99bca7881c109bcbc757ac"
+  }
+}

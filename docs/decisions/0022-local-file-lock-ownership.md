@@ -102,16 +102,60 @@ inside a container must not turn an invisible host process into proof of death.
 Hyper-V containers and WSL2 use another kernel or platform; they must also
 establish their own identity before any PID lookup can authorize recovery.
 
-Use a read-only 64-bit registry query for
-HKLM\SYSTEM\CurrentControlSet\Control, value ContainerType. Open the existing
-key with RegOpenKeyEx using KEY_QUERY_VALUE | KEY_WOW64_64KEY, then query the
-value without reading its payload. Never write or create a key/value.
+Use a read-only 64-bit metadata query for
+HKLM\SYSTEM\CurrentControlSet\Control, value ContainerType. Never write or create
+a key/value, or read the value's payload. Either open the existing key with
+RegOpenKeyEx using KEY_QUERY_VALUE | KEY_WOW64_64KEY and query with a null data
+buffer, or open RegistryKey.OpenBaseKey(LocalMachine, Registry64), open the
+existing subkey, and enumerate GetValueNames(). A null key or failed enumeration
+does not prove absence.
 
-- Value absent, and only ERROR_FILE_NOT_FOUND from the value query: host realm
+- Value absent: only ERROR_FILE_NOT_FOUND from a successful native value query,
+  or a successful name enumeration without ContainerType, proves host realm
   win32:kernel.
 - Value present, of any type or data: container/unknown realm, null and held.
 - Key-open failure, any other query error, missing API, or access denial:
   unknown realm, null and held.
+
+### Production Windows metadata boundary
+
+Both ports may use a fixed PowerShell metadata query for the canonical CIM boot
+ticks and the 64-bit registry name enumeration. Established identity and positive
+container detection are definitive and cached for the process lifetime.
+Timeout, spawn failure, nonzero exit and malformed output are transient: cache
+these for a bounded interval of 60 seconds, then permit one serialized re-sample
+per interval. Never sample per acquisition or run concurrent metadata queries.
+Python must discard the cache and its inherited synchronization lock after fork.
+
+Resolve the executable from the constructed environment's SystemRoot as the
+absolute local path System32\WindowsPowerShell\v1.0\powershell.exe. Invoke argv
+only, with no shell, using -NoProfile -NonInteractive -NoLogo -Command and a
+constant script. Pass only SystemRoot, windir and optional TEMP/TMP. Inherited
+PATH, PSModulePath and other parent environment entries are excluded. Disable
+module autoload and load only the fixed first-party Utility and CimCmdlets
+manifests beneath PSHOME; invoke the CIM cmdlet through its module-qualified
+name. No Add-Type, runtime compilation, native addon or package dependency is
+introduced. Vendored C# belongs exclusively to test tooling and is excluded
+from the published package.
+
+Successful stdout consists of exactly two lines: boot=<decimal UTC ticks>, then
+container=present or container=absent. Extra output, stderr, malformed values,
+nonzero exit, or the fifteen-second timeout yields unknown identity.
+The child is hidden on Windows. No caller input enters the script.
+
+Unknown local identity prevents recovery, not exclusive publication of a free
+lock. A worker may publish and release its own nonce-bound owner with unknown
+identity, and must exclude contenders normally. Unknown owners and unknown
+probers never authorize reclaim or PID probes; a crashed unknown owner stays
+held for explicit maintenance. Emit file_lock_identity_unavailable as a warning
+when locking proceeds without recovery identity and expose the diagnostic on
+the store without performing I/O. This preserves availability when CIM is slow
+or unavailable while retaining the conservative recovery boundary.
+
+Measure the production getter across fresh processes in both ports over several
+minutes. Different identity bytes in one boot block release pending investigation.
+Record clock-adjustment and sleep/resume coverage honestly; do not change host
+settings for the measurement or infer that an unmeasured adjustment was tested.
 
 The signal's provenance is Microsoft's executable
 [.NET PlatformDetection.GetIsInContainer](https://github.com/dotnet/runtime/blob/main/src/libraries/Common/tests/TestUtilities/System/PlatformDetection.cs)
@@ -240,6 +284,34 @@ a correctness requirement, not advice.** No rolling-upgrade protection is claime
 for that Windows/Node race; no per-acquisition shell bridge or new native rename
 primitive is required. The TS/Python minor release notes must state this risk in
 their BREAKING CHANGE line.
+
+### Windows release delay
+
+An open destination owner record can delay Windows atomic replacement even when
+the reader grants FILE_SHARE_DELETE. Both ports read the complete bounded record
+in one call, close in finally, and parse after the handle closes. Delete sharing
+does not imply that MoveFileEx can replace an open destination.
+
+Release is retried for a bounded interval. Exhaustion raises an observable
+failure and retains the nonce-bound pending release in the owning process.
+Completion is retried at its next FileSessionStore lock operation; the callback
+is never replayed and the failed release is never reported as success. A known
+release temporary is completed only for that exact owner. A recorded successful
+owner unlink permits a later nonrecursive empty-directory cleanup; merely
+finding an old filename missing never grants removal authority.
+
+Emit file_lock_release_pending with only key_digest and nonce when release is
+left pending. FileSessionStore.pendingReleases() and pending_releases() expose
+store-directory-scoped digest/nonce snapshots; their length is the count. These
+queries perform no filesystem work and do not flush pending releases. Hosts can
+observe every pending entry even when warning output is filtered.
+
+Native evidence must hold a reader open across release while the owner remains
+alive. After the reader closes and the owner performs its next lock operation,
+an independent contender must acquire without the owner exiting. Record
+closed, source-open and destination-open controls with ordinary and delete-sharing
+readers. Preserve the measured Windows denial; Linux/macOS execute their native
+behavior. No new per-acquisition native rename bridge is required.
 
 Timestamp-only legacy lockfiles have no owner proof. New workers must not steal
 them merely because their TTL elapsed. Keep session_locked as the refusal, with

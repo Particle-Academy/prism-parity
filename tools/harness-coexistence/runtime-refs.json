@@ -1,0 +1,17 @@
+{
+  "php": {
+    "repository": "Particle-Academy/prism-harness",
+    "head": "4208acc064ade94209f8f365638484b3dc79b29e",
+    "path": ".harness-runtimes/php"
+  },
+  "ts": {
+    "repository": "Particle-Academy/prism-harness-ts",
+    "head": "a981210b60b0e2c6415eb7be20e7771610158b21",
+    "path": ".harness-runtimes/ts"
+  },
+  "py": {
+    "repository": "Particle-Academy/prism-harness-py",
+    "head": "9acb9303109016321035fca106930485481f9a20",
+    "path": ".harness-runtimes/py"
+  }
+}

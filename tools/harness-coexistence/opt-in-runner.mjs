@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';
+import {pathToFileURL} from 'node:url';
+const p=await import(pathToFileURL(process.env.PRISM_HARNESS_TS+'/dist/index.js'));
+const store=new p.FileSessionStore(process.argv[2]),h=new p.PrismHarness({drivers:{owned:()=>store},stores:{ephemeral:'owned',durable:'owned'}}),participant={type:'test',id:'opt-in'};
+const session=h.for(participant).session('legacy'),named=h.forAgent('support').for(participant).session('named');
+let handlers=0;const tool=name=>({name,handle:()=>{handlers++;throw Error('No handler expected');}});
+const strict=new p.ToolRegistry({refuseDuplicates:true}).register(tool('inside'));
+assert.throws(()=>strict.register(tool('inside')),p.RegistrationCollision);
+assert.throws(()=>strict.registerFactory('inside',()=>tool('inside')),p.RegistrationCollision);
+const modes=new p.ModeRegistry({refuseDuplicates:true}).register('chat',{tools:['inside']});
+assert.throws(()=>modes.register('chat',{tools:['outside']}),p.RegistrationCollision);
+assert.deepEqual(modes.resolve('chat').tools,['inside']);
+const registry=new p.ToolRegistry().register(tool('inside')).register(tool('outside'));
+registry.forAgent('support').register(tool('inside'),'support').register(tool('outside'),'support');
+modes.forAgent('support').register('chat',{tools:['inside']},'support');
+const requests=[],runtime=new p.AgentRuntime({tools:registry,modes,narrowRequestedTools:true,config:{default_mode:'chat'},client:async r=>{requests.push(r.tools.map(t=>t.name));return{text:'done',finishReason:'stop',costUsd:0};}});
+await session.usingMode('chat');await named.usingMode('chat');
+let outsideError;try{await runtime.send(session,'outside',['outside']);}catch(error){outsideError=error;}
+if(!outsideError)console.error(JSON.stringify({optIn:true,agent:null,modeTools:['inside'],requested:['outside'],nativeRequests:requests,handlers}));
+assert.equal(outsideError?.code,'tool_not_available','The explicit legacy opt-in must refuse widening before a model request');assert.equal(requests.length,0);
+await runtime.send(session,'wildcard',['*']);await runtime.send(session,'empty',[]);
+assert.deepEqual(requests,[['inside'],[]]);
+const native=new p.AgentRuntime({tools:registry,modes,client:async r=>{requests.push(r.tools.map(t=>t.name));return{text:'done',finishReason:'stop',costUsd:0};}});
+await assert.rejects(native.send(named,'outside',['outside']),{code:'tool_not_available'});assert.equal(requests.length,2);assert.equal(handlers,0);
+console.log(JSON.stringify({language:'ts',checks:8,collisions:3,outsideRefusals:2,requests,handlers}));
