@@ -77,12 +77,17 @@
           "type": "string",
           "enum": [
             "canonical-json-string",
-            "stream-properties"
+            "stream-properties",
+            "embedding-behavior"
           ]
         },
         "exact_trace_gap": {
           "type": "string",
           "pattern": "^G-[0-9]+$"
+        },
+        "decision": {
+          "type": "string",
+          "enum": ["docs/decisions/0023-embedding-refusal-identity.md"]
         }
       }
     },

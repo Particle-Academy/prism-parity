@@ -4,14 +4,29 @@
   "kind": "security-corpus",
   "pins": "Whether OpenAI and Mistral embedding payloads become the intended numeric vector or a deliberate library exception. Silently truncating corrupt bytes or admitting non-finite floats poisons downstream similarity calculations; a TypeError denies consumers their normal PrismException recovery path.",
   "scope": "Numeric array passthrough and canonical base64 little-endian float32 decoding. Does not cover model quality, dimension selection, index sorting, quantized Mistral output types or live provider behavior.",
-  "findings": "Recorded from the PHP reference fixing Particle-Academy/prism#71. The TS/Python columns have no runner for this corpus and remain unverified; their null columns do not claim agreement. The PHP runner exercises both provider handlers against vendored cases.",
+  "findings": "G65 published0.5.0 baseline returned empty vectors for valid base64 and all seven hostile inputs in both ports. Actual0.5.1 archives now pass all9 rows through both OpenAI/Mistral handlers. PHP0.140.0 reference was executed independently. Error identity is language-native; PHP carries no stable code (known reference gap); refusal behaviour is identical. Independent controls reject any empty/partial vector on every hostile row, even if all three languages return it. No live provider or broader provider capability is claimed.",
   "pattern_doc": "docs/patterns/06-response-parsing.md",
   "reference": "php",
-  "comparison": {"mode": "canonical-json-string"},
-  "discrimination": {"status": "probed", "note": "Numeric and fixed-byte controls reject a decoder that always throws; partial floats, NaN, infinity and malformed base64 reject permissive decoders. Independent PHP tests assert the fixed-byte expected vector before recording goldens."},
+  "comparison": {
+    "mode": "embedding-behavior",
+    "decision": "docs/decisions/0023-embedding-refusal-identity.md"
+  },
+  "discrimination": {
+    "status": "probed",
+    "note": "Numeric and fixed-byte controls reject a decoder that always throws; partial floats, NaN, infinity and malformed base64 reject permissive decoders. Independent PHP tests assert the fixed-byte expected vector before recording goldens."
+  },
   "implementations": {
-    "php": {"status": "full", "runner": "prism:tests/Providers/Base64EmbeddingsTest.php"},
-    "ts": {"status": "partial", "cause": "no-runner", "gap": "Embedding decoder corpus runner not implemented; no cross-language agreement is claimed."},
-    "py": {"status": "partial", "cause": "no-runner", "gap": "Embedding decoder corpus runner not implemented; no cross-language agreement is claimed."}
+    "php": {
+      "status": "full",
+      "runner": "prism:tests/Providers/Base64EmbeddingsTest.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-ts:tests/embedding-decoding.test.ts"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-py:tests/test_embedding_decoding.py"
+    }
   }
 }

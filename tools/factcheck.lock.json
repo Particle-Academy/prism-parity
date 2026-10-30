@@ -240,7 +240,7 @@
       }
     },
     "prism-py": {
-      "version": "v0.5.0",
+      "version": "v0.5.1",
       "census": {
         "decision": 1,
         "local-link": 3
@@ -258,7 +258,7 @@
       }
     },
     "prism-ts": {
-      "version": "v0.5.0",
+      "version": "v0.5.1",
       "census": {
         "npm-script": 12,
         "decision": 1,

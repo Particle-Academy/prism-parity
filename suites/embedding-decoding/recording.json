@@ -1,0 +1,61 @@
+{
+  "decision": "0023",
+  "acceptanceSha256": "a8dc61a655ab3865a046cd068864bd03a115a2b3d47b93dad4573be7b810d792",
+  "versions": {
+    "ts": "0.5.1",
+    "py": "0.5.1",
+    "php": "0.140.0"
+  },
+  "archives": {
+    "ts": {
+      "sha256": "cb6a03bf99fc26833bfe964dc9f18ae9c736a7d7854b3051b908a2e5b94ae0f3",
+      "integrity": "sha512-5AhmAD1BBvDuOx7XYAP8xYZuicnofPjnlX10nr76D4nGlCvUtFE3fQmr/hcjfVSHDE8k/cyXFj55MZKqTWVYAg==",
+      "release": "ca9e9f57566c23b864aeb7c24221f09f9c613f9f"
+    },
+    "py": {
+      "sha256": "f52dac4140304939b815dc631d86ddb2b69db0d7520c706f410d393eb67b967f",
+      "release": "ebfa4044f624c4aff457a7ba0d27a6abe2451f44"
+    },
+    "php": {
+      "release": "19b2d7746d6c3d84019e8c9c7c80b43f995d0d9f",
+      "verifiedRuntimeFiles": 563
+    }
+  },
+  "executed": [
+    {
+      "language": "ts",
+      "provider": "openai",
+      "cases": 9,
+      "matches": 9,
+      "mismatches": 0
+    },
+    {
+      "language": "ts",
+      "provider": "mistral",
+      "cases": 9,
+      "matches": 9,
+      "mismatches": 0
+    },
+    {
+      "language": "py",
+      "provider": "openai",
+      "cases": 9,
+      "matches": 9,
+      "mismatches": 0
+    },
+    {
+      "language": "py",
+      "provider": "mistral",
+      "cases": 9,
+      "matches": 9,
+      "mismatches": 0
+    }
+  ],
+  "runtimeFiles": {
+    "sourceReceiptSha256": "5b72f9b24a3d081b937c54cc1cb8e5da834732ec94c6992be412b35ee39846cd",
+    "typescriptFiles": 464,
+    "pythonFiles": 109,
+    "pythonOnlyChange": "__version__0.5.0 to0.5.1"
+  },
+  "networkCalls": 0
+}

@@ -83,7 +83,7 @@ export interface SuiteManifest {
   pins: string;
   pattern_doc?: string;
   reference: Language;
-  comparison: { mode: 'canonical-json-string' | 'stream-properties'; exact_trace_gap?: string };
+  comparison: { mode: 'canonical-json-string' | 'stream-properties' | 'embedding-behavior'; exact_trace_gap?: string; decision?: string };
   discrimination?: { status: 'probed' | 'unprobed'; gap?: string };
   implementations: Record<string, { status: 'full' | 'partial' | 'absent'; gap?: string; runner?: string }>;
 }
