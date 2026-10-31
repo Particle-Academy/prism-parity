@@ -76,7 +76,7 @@
       }
     },
     "prism-harness": {
-      "version": "v0.21.0",
+      "version": "v0.21.1",
       "census": {
         "test-name": 1,
         "decision": 1,
