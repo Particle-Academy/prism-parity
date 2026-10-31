@@ -42,7 +42,7 @@
   },
   "repos": {
     "prism": {
-      "version": "v0.141.0",
+      "version": "v0.143.0",
       "census": {
         "decision": 1,
         "composer-script": 3,
@@ -76,7 +76,7 @@
       }
     },
     "prism-harness": {
-      "version": "v0.20.1",
+      "version": "v0.21.0",
       "census": {
         "test-name": 1,
         "decision": 1,
