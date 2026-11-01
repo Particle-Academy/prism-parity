@@ -1,0 +1,28 @@
+{
+  "id": "structured-response",
+  "title": "Native structured conversation serialization",
+  "kind": "response-parse",
+  "pins": "Native OpenAI and Anthropic structured handlers retain parsed output, complete assistant conversation, structured steps, tool carrier fields and raw payload. Anthropic uses native output_config.format by default and explicit false. Goldens execute the normal published particle-academy/prism 0.144.2 artifact without projections.",
+  "pattern_doc": "docs/patterns/06-response-parsing.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-parity:runners/php/runner.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-ts:conformance/runner.mjs"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-py:conformance/runner.py"
+    }
+  }
+}

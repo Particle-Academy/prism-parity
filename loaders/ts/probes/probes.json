@@ -242,7 +242,7 @@
       "summary": "Drop null-valued fields when serializing a PARSED result, rather than when serializing a value object for storage.",
       "hazard": "The same absent-versus-null axis as omit-null-on-serialize, on the other side of the boundary. Kept as a separate probe rather than by widening that one: a probe's declared scope is part of its contract, and broadening the behaviour to match a wider intuition would make the declaration wrong rather than the probe better. Every response row carries a null cache-write counter and a null cost, so every one of them catches it.",
       "scope": "response parsing",
-      "note": "Declares all seven response rows. trs-0006 is skipped in both ports for an unrelated reason (the empty-map artefact), so the effective expectation is six in each — the loader subtracts skips, because a skipped row cannot fail. The Anthropic rows are declared too: every one of them carries a null somewhere in usage, and atr-0001 exists precisely to assert that a null thought_tokens survives as null. atr-0005 is skipped in both ports for an unrelated reason (G-50, a Length finish raises there and returns in the reference), and the loader subtracts skips because a skipped row cannot fail. G-120 adds trs-0008 and atr-0009; both still require null-valued usage fields, so both must reject null omission.",
+      "note": "Declares all seven response rows. trs-0006 is skipped in both ports for an unrelated reason (the empty-map artefact), so the effective expectation is six in each — the loader subtracts skips, because a skipped row cannot fail. The Anthropic rows are declared too: every one of them carries a null somewhere in usage, and atr-0001 exists precisely to assert that a null thought_tokens survives as null. atr-0005 is skipped in both ports for an unrelated reason (G-50, a Length finish raises there and returns in the reference), and the loader subtracts skips because a skipped row cannot fail. G-120 adds trs-0008 and atr-0009; both still require null-valued usage fields, so both must reject null omission. G-187 adds the two Mistral structured results generated from published PHP0.144.2: response and step usage retain null cache-write/cache-read/thought/cost, and meta retains null service_tier. Dropping nulls must fail these rows too; no prior expectation is removed.",
       "languages": [
         "ts",
         "py"
@@ -268,6 +268,17 @@
           "atr-0007",
           "atr-0008",
           "atr-0009"
+        ],
+        "structured-response": [
+          "str-0001",
+          "str-0002",
+          "str-0003",
+          "str-0004",
+          "str-0005"
+        ],
+        "mistral-structured-response": [
+          "msr-0001",
+          "msr-0002"
         ]
       }
     },
@@ -287,6 +298,9 @@
           "atr-0007",
           "atr-0008",
           "atr-0009"
+        ],
+        "structured-response": [
+          "str-0004"
         ]
       },
       "note": "G-120 atr-0009 carries a real synthetic thinking/signature pair plus redacted replay state, so losing its signature must fail alongside atr-0006..8."

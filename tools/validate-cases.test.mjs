@@ -17,6 +17,33 @@ test('the shipped gate accepts the corpus', () => {
   assert.ok(result.stdout.includes(`Cases schema: ${count}/${count} documents valid`));
 });
 
+for (const suite of ['structured-response', 'mistral-structured-response']) {
+  for (const invalid of ['two-letter id', 'unknown suite']) {
+    test(`${suite} rejects ${invalid} after its first-publication registration`, (t) => {
+      const scratch = mkdtempSync(join(tmpdir(), 'prism-schema-structured-'));
+      assert.equal(dirname(scratch), tmpdir());
+      t.after(() => {
+        assert.equal(dirname(scratch), tmpdir());
+        rmSync(scratch, { recursive: true, force: true });
+      });
+      mkdirSync(join(scratch, 'schema'));
+      mkdirSync(join(scratch, 'suites', suite), { recursive: true });
+      copyFileSync(join(root, 'schema/cases.schema.json'), join(scratch, 'schema/cases.schema.json'));
+      const document = JSON.parse(readFileSync(join(root, 'suites', suite, 'cases.json'), 'utf8'));
+      const fixture = join(scratch, 'suites', suite, 'cases.json');
+      writeFileSync(fixture, JSON.stringify(document));
+      const control = spawnSync(process.execPath, [tool, scratch], { encoding: 'utf8' });
+      assert.equal(control.status, 0, control.stderr);
+      if (invalid === 'two-letter id') document.cases[0].id = 'sr-0001';
+      else document.suite = 'unregistered-structured-response';
+      writeFileSync(fixture, JSON.stringify(document));
+      const result = spawnSync(process.execPath, [tool, scratch], { encoding: 'utf8' });
+      assert.equal(result.status, 1, result.stderr);
+      assert.match(result.stderr, new RegExp(`FAIL — ${suite} /: matched 0`));
+    });
+  }
+}
+
 for (const [name, mutate] of [
   ['scalar skip', (doc) => { doc.cases[0].skip = 'not a language map'; }],
   ['empty skip map', (doc) => { doc.cases[0].skip = {}; }],

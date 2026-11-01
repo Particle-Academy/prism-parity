@@ -1,0 +1,15 @@
+{
+  "id": "mistral-structured-response",
+  "title": "Mistral structured response content and reasoning",
+  "kind": "response-parse",
+  "pins": "Native structured response serialization for legacy string content and JSON text parts surrounding a thinking block. Reasoning remains separate from JSON text and the assistant message. Goldens execute the normal published particle-academy/prism 0.144.2 artifact. An absent quota header set produces no bucket. The existing fixed fixture clock remains unchanged; all native fields are serialized without projection.",
+  "pattern_doc": "docs/patterns/06-response-parsing.md",
+  "reference": "php",
+  "comparison": { "mode": "canonical-json-string" },
+  "discrimination": { "status": "probed" },
+  "implementations": {
+    "php": { "status": "full", "runner": "prism-parity:runners/php/runner.php" },
+    "ts": { "status": "full", "runner": "prism-ts:conformance/runner.mjs" },
+    "py": { "status": "full", "runner": "prism-py:conformance/runner.py" }
+  }
+}
