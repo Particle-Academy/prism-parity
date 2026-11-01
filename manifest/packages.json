@@ -229,7 +229,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism",
       "repository": "https://github.com/Particle-Academy/prism",
-      "version": "0.144.1",
+      "version": "0.144.2",
       "surface": {
         "capabilities": [
           "text",
