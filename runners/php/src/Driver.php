@@ -10,16 +10,23 @@ use Illuminate\Events\Dispatcher;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Client\Factory;
 use Illuminate\Support\Facades\Facade;
+use Illuminate\Support\Carbon;
 use Prism\Prism\Enums\ToolChoice;
 use Prism\Prism\Prism;
 use Prism\Prism\PrismManager;
 use Prism\Prism\Providers\Anthropic\Handlers\Text as AnthropicTextHandler;
+use Prism\Prism\Providers\Anthropic\Handlers\Structured as AnthropicStructuredHandler;
+use Prism\Prism\Providers\Mistral\Handlers\Structured as MistralStructuredHandler;
 use Prism\Prism\Providers\OpenAI\Concerns\BuildsRequestBody;
 use Prism\Prism\Providers\OpenAI\Handlers\Text as OpenAITextHandler;
+use Prism\Prism\Providers\OpenAI\Handlers\Structured as OpenAIStructuredHandler;
 use Prism\Prism\Providers\OpenRouter\Handlers\Text as OpenRouterTextHandler;
 use Prism\Prism\Schema\BooleanSchema;
 use Prism\Prism\Schema\NumberSchema;
+use Prism\Prism\Schema\ObjectSchema;
 use Prism\Prism\Schema\StringSchema;
+use Prism\Prism\Structured\PendingRequest as StructuredPendingRequest;
+use Prism\Prism\Structured\Request as StructuredRequest;
 use Prism\Prism\Text\PendingRequest;
 use Prism\Prism\Text\Request;
 use Prism\Prism\Tool;
@@ -62,6 +69,10 @@ final class Driver
         $app->instance('config', new Repository([
             'prism' => [
                 'providers' => [
+                    'mistral' => [
+                        'url' => 'https://conformance.invalid/v1',
+                        'api_key' => 'conformance-only',
+                    ],
                     'openrouter' => [
                         'url' => 'https://openrouter.ai/api/v1',
                         'api_key' => 'conformance-only',
@@ -98,11 +109,18 @@ final class Driver
     /**
      * @param  array<int, array<string, mixed>>  $script
      */
-    public static function pending(array $script): PendingRequest
+    public static function pending(array $script): PendingRequest|StructuredPendingRequest
     {
         self::boot();
 
-        $pending = (new Prism)->text();
+        $structured = ($script[0]['call'] ?? null) === 'structured';
+        if ($structured && ($script[0]['args'] ?? []) !== []) {
+            throw new RuntimeException('The structured factory takes no arguments.');
+        }
+        $pending = $structured ? (new Prism)->structured() : (new Prism)->text();
+        if ($structured) {
+            array_shift($script);
+        }
 
         foreach ($script as $step) {
             $call = $step['call'];
@@ -174,20 +192,46 @@ final class Driver
         // would have to become a global facade fake for every response-parse
         // suite at once. That is a change to the green OpenAI path in service of
         // a new one, which is the wrong trade.
-        return match ($provider = self::providerFrom($script)) {
-            'openai' => (new OpenAITextHandler($factory->baseUrl('https://api.openai.com/v1')))
-                ->handle($request)
-                ->toArray(),
-            'anthropic' => (new AnthropicTextHandler($factory->baseUrl('https://api.anthropic.com/v1'), $request))
-                ->handle()
-                ->toArray(),
+        $parsed = match ($provider = self::providerFrom($script)) {
+            'openai' => $request instanceof StructuredRequest
+                ? (new OpenAIStructuredHandler($factory->baseUrl('https://conformance.invalid/v1')))->handle($request)->toArray()
+                : (new OpenAITextHandler($factory->baseUrl('https://api.openai.com/v1')))->handle($request)->toArray(),
+            'anthropic' => $request instanceof StructuredRequest
+                ? (new AnthropicStructuredHandler($factory->baseUrl('https://conformance.invalid/v1'), $request))->handle()->toArray()
+                : (new AnthropicTextHandler($factory->baseUrl('https://api.anthropic.com/v1'), $request))->handle()->toArray(),
             'openrouter' => (new OpenRouterTextHandler($factory->baseUrl('https://openrouter.ai/api/v1')))
                 ->handle($request)
                 ->toArray(),
+            'mistral' => $request instanceof StructuredRequest
+                ? self::parseMistralStructured($factory, $request)
+                : throw new RuntimeException('No Mistral text response-parse handler is wired.'),
             default => throw new RuntimeException(
                 sprintf('No response-parse handler wired for provider %s.', $provider)
             ),
         };
+
+        if ($request instanceof StructuredRequest && $factory->recorded()->count() !== 1) {
+            throw new RuntimeException('The structured fixture must make exactly one request.');
+        }
+
+        return $parsed;
+    }
+
+    /** @return array<string, mixed> */
+    private static function parseMistralStructured(Factory $factory, StructuredRequest $request): array
+    {
+        // Keep rate-limit metadata on the documented fixture clock and restore
+        // the caller's clock. Since 0.144.2, absent headers yield no bucket.
+        $previous = Carbon::getTestNow();
+        try {
+            Carbon::setTestNow('2026-01-01T00:00:00+00:00');
+
+            return (new MistralStructuredHandler($factory->baseUrl('https://conformance.invalid/v1')))
+                ->handle($request)
+                ->toArray();
+        } finally {
+            Carbon::setTestNow($previous);
+        }
     }
 
     /** Execute the native stream and enforce properties before golden equality. */
@@ -298,6 +342,13 @@ final class Driver
         }
 
         return match ($value['$']) {
+            'StringSchema' => new StringSchema($value['name'], $value['description']),
+            'ObjectSchema' => new ObjectSchema(
+                $value['name'],
+                $value['description'],
+                array_map(self::hydrate(...), $value['properties'] ?? []),
+                $value['requiredFields'] ?? [],
+            ),
             'UserMessage' => new UserMessage(
                 content: $value['content'],
                 additionalContent: array_map(self::hydrate(...), $value['additionalContent'] ?? []),

@@ -1,0 +1,401 @@
+{
+    "suite": "structured-response",
+    "cases": [
+        {
+            "id": "str-0001",
+            "title": "OpenAI native structured conversation",
+            "notes": "A native schema-constrained response must retain parsed result, parsed structured step, final assistant turn, all tool carrier fields, usage and the original raw payload.",
+            "since": "0.1.14",
+            "builder": [
+                {
+                    "call": "structured"
+                },
+                {
+                    "call": "withSchema",
+                    "args": [
+                        {
+                            "$": "ObjectSchema",
+                            "name": "output",
+                            "description": "The output",
+                            "properties": [
+                                {
+                                    "$": "StringSchema",
+                                    "name": "result",
+                                    "description": "The result"
+                                }
+                            ],
+                            "requiredFields": [
+                                "result"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4.1"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Return the result as JSON."
+                    ]
+                }
+            ],
+            "response": {
+                "id": "response_structured_scope",
+                "object": "response",
+                "model": "gpt-4.1",
+                "status": "completed",
+                "output": [
+                    {
+                        "id": "msg_structured_scope",
+                        "type": "message",
+                        "status": "completed",
+                        "role": "assistant",
+                        "content": [
+                            {
+                                "type": "output_text",
+                                "text": "{\"result\":\"hello\"}",
+                                "annotations": []
+                            }
+                        ]
+                    }
+                ],
+                "usage": {
+                    "input_tokens": 12,
+                    "output_tokens": 7,
+                    "total_tokens": 19,
+                    "input_tokens_details": {
+                        "cached_tokens": 0
+                    },
+                    "output_tokens_details": {
+                        "reasoning_tokens": 0
+                    }
+                }
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"{\\\"result\\\":\\\"hello\\\"}\",\"finish_reason\":\"stop\",\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":7,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"response_structured_scope\",\"model\":\"gpt-4.1\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Return the result as JSON.\",\"additional_content\":[{\"text\":\"Return the result as JSON.\"}],\"additional_attributes\":{}},{\"type\":\"assistant\",\"content\":\"{\\\"result\\\":\\\"hello\\\"}\",\"tool_calls\":[],\"additional_content\":{\"output_items\":[{\"id\":\"msg_structured_scope\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"result\\\":\\\"hello\\\"}\",\"annotations\":[]}]}]},\"tool_approval_requests\":[]}],\"system_prompts\":[],\"additional_content\":{\"output_items\":[{\"id\":\"msg_structured_scope\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"result\\\":\\\"hello\\\"}\",\"annotations\":[]}]}]},\"structured\":{\"result\":\"hello\"},\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"raw\":{\"id\":\"response_structured_scope\",\"object\":\"response\",\"model\":\"gpt-4.1\",\"status\":\"completed\",\"output\":[{\"id\":\"msg_structured_scope\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"result\\\":\\\"hello\\\"}\",\"annotations\":[]}]}],\"usage\":{\"input_tokens\":12,\"output_tokens\":7,\"total_tokens\":19,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens_details\":{\"reasoning_tokens\":0}}}}],\"text\":\"{\\\"result\\\":\\\"hello\\\"}\",\"structured\":{\"result\":\"hello\"},\"finish_reason\":\"stop\",\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":7,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"response_structured_scope\",\"model\":\"gpt-4.1\",\"rate_limits\":[],\"service_tier\":null},\"tool_calls\":[],\"provider_tool_calls\":[],\"tool_results\":[],\"additional_content\":{\"output_items\":[{\"id\":\"msg_structured_scope\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"result\\\":\\\"hello\\\"}\",\"annotations\":[]}]}]},\"raw\":{\"id\":\"response_structured_scope\",\"object\":\"response\",\"model\":\"gpt-4.1\",\"status\":\"completed\",\"output\":[{\"id\":\"msg_structured_scope\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"result\\\":\\\"hello\\\"}\",\"annotations\":[]}]}],\"usage\":{\"input_tokens\":12,\"output_tokens\":7,\"total_tokens\":19,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens_details\":{\"reasoning_tokens\":0}}}}"
+            }
+        },
+        {
+            "id": "str-0002",
+            "title": "OpenAI UTF-8 JSON remains in the assistant turn",
+            "notes": "UTF-8 JSON content must survive the completed assistant conversation and both parsed structured values without escaping, truncation or a missing step field.",
+            "since": "0.1.14",
+            "builder": [
+                {
+                    "call": "structured"
+                },
+                {
+                    "call": "withSchema",
+                    "args": [
+                        {
+                            "$": "ObjectSchema",
+                            "name": "output",
+                            "description": "The output",
+                            "properties": [
+                                {
+                                    "$": "StringSchema",
+                                    "name": "result",
+                                    "description": "The result"
+                                }
+                            ],
+                            "requiredFields": [
+                                "result"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4.1"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Return the result as JSON."
+                    ]
+                }
+            ],
+            "response": {
+                "id": "response_structured_scope",
+                "object": "response",
+                "model": "gpt-4.1",
+                "status": "completed",
+                "output": [
+                    {
+                        "id": "msg_structured_scope",
+                        "type": "message",
+                        "status": "completed",
+                        "role": "assistant",
+                        "content": [
+                            {
+                                "type": "output_text",
+                                "text": "{\"result\":\"héllo\"}",
+                                "annotations": []
+                            }
+                        ]
+                    }
+                ],
+                "usage": {
+                    "input_tokens": 12,
+                    "output_tokens": 7,
+                    "total_tokens": 19,
+                    "input_tokens_details": {
+                        "cached_tokens": 0
+                    },
+                    "output_tokens_details": {
+                        "reasoning_tokens": 0
+                    }
+                }
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"{\\\"result\\\":\\\"héllo\\\"}\",\"finish_reason\":\"stop\",\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":7,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"response_structured_scope\",\"model\":\"gpt-4.1\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Return the result as JSON.\",\"additional_content\":[{\"text\":\"Return the result as JSON.\"}],\"additional_attributes\":{}},{\"type\":\"assistant\",\"content\":\"{\\\"result\\\":\\\"héllo\\\"}\",\"tool_calls\":[],\"additional_content\":{\"output_items\":[{\"id\":\"msg_structured_scope\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"result\\\":\\\"héllo\\\"}\",\"annotations\":[]}]}]},\"tool_approval_requests\":[]}],\"system_prompts\":[],\"additional_content\":{\"output_items\":[{\"id\":\"msg_structured_scope\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"result\\\":\\\"héllo\\\"}\",\"annotations\":[]}]}]},\"structured\":{\"result\":\"héllo\"},\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"raw\":{\"id\":\"response_structured_scope\",\"object\":\"response\",\"model\":\"gpt-4.1\",\"status\":\"completed\",\"output\":[{\"id\":\"msg_structured_scope\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"result\\\":\\\"héllo\\\"}\",\"annotations\":[]}]}],\"usage\":{\"input_tokens\":12,\"output_tokens\":7,\"total_tokens\":19,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens_details\":{\"reasoning_tokens\":0}}}}],\"text\":\"{\\\"result\\\":\\\"héllo\\\"}\",\"structured\":{\"result\":\"héllo\"},\"finish_reason\":\"stop\",\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":7,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"response_structured_scope\",\"model\":\"gpt-4.1\",\"rate_limits\":[],\"service_tier\":null},\"tool_calls\":[],\"provider_tool_calls\":[],\"tool_results\":[],\"additional_content\":{\"output_items\":[{\"id\":\"msg_structured_scope\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"result\\\":\\\"héllo\\\"}\",\"annotations\":[]}]}]},\"raw\":{\"id\":\"response_structured_scope\",\"object\":\"response\",\"model\":\"gpt-4.1\",\"status\":\"completed\",\"output\":[{\"id\":\"msg_structured_scope\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"result\\\":\\\"héllo\\\"}\",\"annotations\":[]}]}],\"usage\":{\"input_tokens\":12,\"output_tokens\":7,\"total_tokens\":19,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens_details\":{\"reasoning_tokens\":0}}}}"
+            }
+        },
+        {
+            "id": "str-0003",
+            "title": "Anthropic defaults to native schema output",
+            "notes": "With no mode option, use native output_config.format: public text is empty, both structured values contain the result and the assistant retains original JSON.",
+            "since": "0.1.14",
+            "builder": [
+                {
+                    "call": "structured"
+                },
+                {
+                    "call": "withSchema",
+                    "args": [
+                        {
+                            "$": "ObjectSchema",
+                            "name": "output",
+                            "description": "The output",
+                            "properties": [
+                                {
+                                    "$": "StringSchema",
+                                    "name": "result",
+                                    "description": "The result"
+                                }
+                            ],
+                            "requiredFields": [
+                                "result"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "call": "using",
+                    "args": [
+                        "anthropic",
+                        "claude-sonnet-4-5"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Return the result as JSON."
+                    ]
+                }
+            ],
+            "response": {
+                "id": "message_structured_scope",
+                "type": "message",
+                "role": "assistant",
+                "model": "claude-sonnet-4-5",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "{\"result\":\"hello\"}"
+                    }
+                ],
+                "stop_reason": "end_turn",
+                "stop_sequence": null,
+                "usage": {
+                    "input_tokens": 12,
+                    "output_tokens": 7
+                }
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"\",\"finish_reason\":\"stop\",\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":7,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null},\"meta\":{\"id\":\"message_structured_scope\",\"model\":\"claude-sonnet-4-5\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Return the result as JSON.\",\"additional_content\":[{\"text\":\"Return the result as JSON.\"}],\"additional_attributes\":{}},{\"type\":\"assistant\",\"content\":\"{\\\"result\\\":\\\"hello\\\"}\",\"tool_calls\":[],\"additional_content\":{\"content_blocks\":[{\"type\":\"text\",\"text\":\"{\\\"result\\\":\\\"hello\\\"}\"}],\"stop_reason\":\"end_turn\"},\"tool_approval_requests\":[]}],\"system_prompts\":[],\"additional_content\":{\"content_blocks\":[{\"type\":\"text\",\"text\":\"{\\\"result\\\":\\\"hello\\\"}\"}],\"stop_reason\":\"end_turn\"},\"structured\":{\"result\":\"hello\"},\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"raw\":{\"id\":\"message_structured_scope\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-sonnet-4-5\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"result\\\":\\\"hello\\\"}\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":12,\"output_tokens\":7}}}],\"text\":\"\",\"structured\":{\"result\":\"hello\"},\"finish_reason\":\"stop\",\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":7,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null},\"meta\":{\"id\":\"message_structured_scope\",\"model\":\"claude-sonnet-4-5\",\"rate_limits\":[],\"service_tier\":null},\"tool_calls\":[],\"provider_tool_calls\":[],\"tool_results\":[],\"additional_content\":{\"content_blocks\":[{\"type\":\"text\",\"text\":\"{\\\"result\\\":\\\"hello\\\"}\"}],\"stop_reason\":\"end_turn\"},\"raw\":{\"id\":\"message_structured_scope\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-sonnet-4-5\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"result\\\":\\\"hello\\\"}\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":12,\"output_tokens\":7}}}"
+            }
+        },
+        {
+            "id": "str-0004",
+            "title": "Anthropic explicit native mode separates thinking and JSON",
+            "notes": "Explicit use_tool_calling=false retains native schema mode and effort, joins text blocks around separate signed thinking, and preserves the complete assistant conversation and raw payload.",
+            "since": "0.1.14",
+            "builder": [
+                {
+                    "call": "structured"
+                },
+                {
+                    "call": "withSchema",
+                    "args": [
+                        {
+                            "$": "ObjectSchema",
+                            "name": "output",
+                            "description": "The output",
+                            "properties": [
+                                {
+                                    "$": "StringSchema",
+                                    "name": "result",
+                                    "description": "The result"
+                                }
+                            ],
+                            "requiredFields": [
+                                "result"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "call": "using",
+                    "args": [
+                        "anthropic",
+                        "claude-sonnet-4-5"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Return the result as JSON."
+                    ]
+                },
+                {
+                    "call": "withProviderOptions",
+                    "args": [
+                        {
+                            "use_tool_calling": false,
+                            "effort": "high"
+                        }
+                    ]
+                }
+            ],
+            "response": {
+                "id": "message_structured_scope",
+                "type": "message",
+                "role": "assistant",
+                "model": "claude-sonnet-4-5",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "{\"result\":"
+                    },
+                    {
+                        "type": "thinking",
+                        "thinking": "Reasoning remains separate.",
+                        "signature": "fixture-signature-not-a-credential"
+                    },
+                    {
+                        "type": "text",
+                        "text": "\"hello\"}"
+                    }
+                ],
+                "stop_reason": "end_turn",
+                "stop_sequence": null,
+                "usage": {
+                    "input_tokens": 12,
+                    "output_tokens": 7
+                }
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"\",\"finish_reason\":\"stop\",\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":7,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null},\"meta\":{\"id\":\"message_structured_scope\",\"model\":\"claude-sonnet-4-5\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Return the result as JSON.\",\"additional_content\":[{\"text\":\"Return the result as JSON.\"}],\"additional_attributes\":{}},{\"type\":\"assistant\",\"content\":\"{\\\"result\\\":\\\"hello\\\"}\",\"tool_calls\":[],\"additional_content\":{\"thinking_blocks\":[{\"type\":\"thinking\",\"thinking\":\"Reasoning remains separate.\",\"signature\":\"fixture-signature-not-a-credential\"}],\"thinking\":\"Reasoning remains separate.\",\"thinking_signature\":\"fixture-signature-not-a-credential\",\"content_blocks\":[{\"type\":\"text\",\"text\":\"{\\\"result\\\":\"},{\"type\":\"thinking\",\"thinking\":\"Reasoning remains separate.\",\"signature\":\"fixture-signature-not-a-credential\"},{\"type\":\"text\",\"text\":\"\\\"hello\\\"}\"}],\"stop_reason\":\"end_turn\"},\"tool_approval_requests\":[]}],\"system_prompts\":[],\"additional_content\":{\"thinking_blocks\":[{\"type\":\"thinking\",\"thinking\":\"Reasoning remains separate.\",\"signature\":\"fixture-signature-not-a-credential\"}],\"thinking\":\"Reasoning remains separate.\",\"thinking_signature\":\"fixture-signature-not-a-credential\",\"content_blocks\":[{\"type\":\"text\",\"text\":\"{\\\"result\\\":\"},{\"type\":\"thinking\",\"thinking\":\"Reasoning remains separate.\",\"signature\":\"fixture-signature-not-a-credential\"},{\"type\":\"text\",\"text\":\"\\\"hello\\\"}\"}],\"stop_reason\":\"end_turn\"},\"structured\":{\"result\":\"hello\"},\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"raw\":{\"id\":\"message_structured_scope\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-sonnet-4-5\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"result\\\":\"},{\"type\":\"thinking\",\"thinking\":\"Reasoning remains separate.\",\"signature\":\"fixture-signature-not-a-credential\"},{\"type\":\"text\",\"text\":\"\\\"hello\\\"}\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":12,\"output_tokens\":7}}}],\"text\":\"\",\"structured\":{\"result\":\"hello\"},\"finish_reason\":\"stop\",\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":7,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null},\"meta\":{\"id\":\"message_structured_scope\",\"model\":\"claude-sonnet-4-5\",\"rate_limits\":[],\"service_tier\":null},\"tool_calls\":[],\"provider_tool_calls\":[],\"tool_results\":[],\"additional_content\":{\"thinking_blocks\":[{\"type\":\"thinking\",\"thinking\":\"Reasoning remains separate.\",\"signature\":\"fixture-signature-not-a-credential\"}],\"thinking\":\"Reasoning remains separate.\",\"thinking_signature\":\"fixture-signature-not-a-credential\",\"content_blocks\":[{\"type\":\"text\",\"text\":\"{\\\"result\\\":\"},{\"type\":\"thinking\",\"thinking\":\"Reasoning remains separate.\",\"signature\":\"fixture-signature-not-a-credential\"},{\"type\":\"text\",\"text\":\"\\\"hello\\\"}\"}],\"stop_reason\":\"end_turn\"},\"raw\":{\"id\":\"message_structured_scope\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-sonnet-4-5\",\"content\":[{\"type\":\"text\",\"text\":\"{\\\"result\\\":\"},{\"type\":\"thinking\",\"thinking\":\"Reasoning remains separate.\",\"signature\":\"fixture-signature-not-a-credential\"},{\"type\":\"text\",\"text\":\"\\\"hello\\\"}\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":12,\"output_tokens\":7}}}"
+            }
+        },
+        {
+            "id": "str-0005",
+            "title": "OpenAI structured reasoning remains replayable",
+            "notes": "Structured serialization retains original reasoning and message replay items without importing text-mode convenience summaries. The parsed result, assistant JSON and usage remain complete.",
+            "since": "0.1.14",
+            "builder": [
+                {
+                    "call": "structured"
+                },
+                {
+                    "call": "withSchema",
+                    "args": [
+                        {
+                            "$": "ObjectSchema",
+                            "name": "output",
+                            "description": "The output",
+                            "properties": [
+                                {
+                                    "$": "StringSchema",
+                                    "name": "result",
+                                    "description": "The result"
+                                }
+                            ],
+                            "requiredFields": [
+                                "result"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4.1"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Return the result as JSON."
+                    ]
+                }
+            ],
+            "response": {
+                "id": "response_structured_scope",
+                "object": "response",
+                "model": "gpt-4.1",
+                "status": "completed",
+                "output": [
+                    {
+                        "type": "reasoning",
+                        "id": "reasoning-structured-fixture",
+                        "encrypted_content": "fixture-only",
+                        "summary": [
+                            {
+                                "type": "summary_text",
+                                "text": "Separate reasoning summary."
+                            }
+                        ]
+                    },
+                    {
+                        "id": "msg_structured_scope",
+                        "type": "message",
+                        "status": "completed",
+                        "role": "assistant",
+                        "content": [
+                            {
+                                "type": "output_text",
+                                "text": "{\"result\":\"hello\"}",
+                                "annotations": []
+                            }
+                        ]
+                    }
+                ],
+                "usage": {
+                    "input_tokens": 12,
+                    "output_tokens": 7,
+                    "total_tokens": 19,
+                    "input_tokens_details": {
+                        "cached_tokens": 0
+                    },
+                    "output_tokens_details": {
+                        "reasoning_tokens": 0
+                    }
+                }
+            },
+            "expect": {
+                "result_json": "{\"steps\":[{\"text\":\"{\\\"result\\\":\\\"hello\\\"}\",\"finish_reason\":\"stop\",\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":7,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"response_structured_scope\",\"model\":\"gpt-4.1\",\"rate_limits\":[],\"service_tier\":null},\"messages\":[{\"type\":\"user\",\"content\":\"Return the result as JSON.\",\"additional_content\":[{\"text\":\"Return the result as JSON.\"}],\"additional_attributes\":{}},{\"type\":\"assistant\",\"content\":\"{\\\"result\\\":\\\"hello\\\"}\",\"tool_calls\":[],\"additional_content\":{\"output_items\":[{\"type\":\"reasoning\",\"id\":\"reasoning-structured-fixture\",\"encrypted_content\":\"fixture-only\",\"summary\":[{\"type\":\"summary_text\",\"text\":\"Separate reasoning summary.\"}]},{\"id\":\"msg_structured_scope\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"result\\\":\\\"hello\\\"}\",\"annotations\":[]}]}]},\"tool_approval_requests\":[]}],\"system_prompts\":[],\"additional_content\":{\"output_items\":[{\"type\":\"reasoning\",\"id\":\"reasoning-structured-fixture\",\"encrypted_content\":\"fixture-only\",\"summary\":[{\"type\":\"summary_text\",\"text\":\"Separate reasoning summary.\"}]},{\"id\":\"msg_structured_scope\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"result\\\":\\\"hello\\\"}\",\"annotations\":[]}]}]},\"structured\":{\"result\":\"hello\"},\"tool_calls\":[],\"tool_results\":[],\"provider_tool_calls\":[],\"raw\":{\"id\":\"response_structured_scope\",\"object\":\"response\",\"model\":\"gpt-4.1\",\"status\":\"completed\",\"output\":[{\"type\":\"reasoning\",\"id\":\"reasoning-structured-fixture\",\"encrypted_content\":\"fixture-only\",\"summary\":[{\"type\":\"summary_text\",\"text\":\"Separate reasoning summary.\"}]},{\"id\":\"msg_structured_scope\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"result\\\":\\\"hello\\\"}\",\"annotations\":[]}]}],\"usage\":{\"input_tokens\":12,\"output_tokens\":7,\"total_tokens\":19,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens_details\":{\"reasoning_tokens\":0}}}}],\"text\":\"{\\\"result\\\":\\\"hello\\\"}\",\"structured\":{\"result\":\"hello\"},\"finish_reason\":\"stop\",\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":7,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":0,\"thought_tokens\":0,\"cost\":null},\"meta\":{\"id\":\"response_structured_scope\",\"model\":\"gpt-4.1\",\"rate_limits\":[],\"service_tier\":null},\"tool_calls\":[],\"provider_tool_calls\":[],\"tool_results\":[],\"additional_content\":{\"output_items\":[{\"type\":\"reasoning\",\"id\":\"reasoning-structured-fixture\",\"encrypted_content\":\"fixture-only\",\"summary\":[{\"type\":\"summary_text\",\"text\":\"Separate reasoning summary.\"}]},{\"id\":\"msg_structured_scope\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"result\\\":\\\"hello\\\"}\",\"annotations\":[]}]}]},\"raw\":{\"id\":\"response_structured_scope\",\"object\":\"response\",\"model\":\"gpt-4.1\",\"status\":\"completed\",\"output\":[{\"type\":\"reasoning\",\"id\":\"reasoning-structured-fixture\",\"encrypted_content\":\"fixture-only\",\"summary\":[{\"type\":\"summary_text\",\"text\":\"Separate reasoning summary.\"}]},{\"id\":\"msg_structured_scope\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"{\\\"result\\\":\\\"hello\\\"}\",\"annotations\":[]}]}],\"usage\":{\"input_tokens\":12,\"output_tokens\":7,\"total_tokens\":19,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens_details\":{\"reasoning_tokens\":0}}}}"
+            }
+        }
+    ]
+}
