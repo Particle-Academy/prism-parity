@@ -3694,7 +3694,15 @@
               "minimum": 0
             },
             "thought_tokens": {
-              "type": "integer",
+              "type": ["integer", "null"],
+              "minimum": 0
+            },
+            "cache_write_5m_input_tokens": {
+              "type": ["integer", "null"],
+              "minimum": 0
+            },
+            "cache_write_1h_input_tokens": {
+              "type": ["integer", "null"],
               "minimum": 0
             }
           }

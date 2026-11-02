@@ -22,6 +22,18 @@ function fail(check, message) {
   failures.push(`${check}: ${message}`);
 }
 
+// A new core release must not change the implementation behind stored goldens.
+// Update this exact version deliberately in the same contribution as the corpus.
+try {
+  const reference = JSON.parse(readFileSync(join(root, 'runners/php/composer.json'), 'utf8'))
+    .require?.['particle-academy/prism'];
+  if (typeof reference !== 'string' || !/^\d+\.\d+\.\d+(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?$/.test(reference)) {
+    fail('reference-version', 'runners/php must require one exact core version; ranges and branch aliases would make a new release invalidate stored goldens.');
+  }
+} catch {
+  fail('reference-version', 'could not read the exact core version from runners/php/composer.json.');
+}
+
 function walk(dir) {
   return readdirSync(dir).flatMap((entry) => {
     if (SKIP_DIRS.has(entry)) return [];

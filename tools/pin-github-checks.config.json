@@ -14,6 +14,15 @@
     }
   },
   "pinOverrides": {
+    "prism-acp": {
+      "sha": "cb221e7936f8a01f2ab047a6488b253bc435d7f9",
+      "hashes": {
+        "third-party/check.mjs": "b6ce9746345825e37beb9655e1b124c706cf5451e960b7ee3e548fa3a086f706",
+        "third-party/gate-graph.mjs": "1547306d567749d7410040cae2bfb9a648902de95c3378f6c5af54245c896e11",
+        "third-party/allowlist.json": "720d6d7393e943c599dab248511b8e89f29d51993c31cfaf7bda9292638b74e3"
+      },
+      "reason": "Reviewed .github #9 (any-depth inheritance through recorded dependency paths, approved by the owner 2026-11-01). Retire this override in the deliberate global repin to cb221e79."
+    },
     "prism-human-plus": {
       "sha": "1a1fad08a5fa685d5aca89e4bfa0b6afac7fa949",
       "hashes": {
@@ -23,13 +32,13 @@
       }
     },
     "prism-labs": {
-      "sha": "03de033984603690b9d1ef142899179775d28b22",
+      "sha": "cb221e7936f8a01f2ab047a6488b253bc435d7f9",
       "hashes": {
-        "third-party/check.mjs": "4000858467c20cda5ab9af2a9cc3b7eff92a9633ed27a87e2e11837556b3f847",
+        "third-party/check.mjs": "b6ce9746345825e37beb9655e1b124c706cf5451e960b7ee3e548fa3a086f706",
         "third-party/gate-graph.mjs": "1547306d567749d7410040cae2bfb9a648902de95c3378f6c5af54245c896e11",
         "third-party/allowlist.json": "720d6d7393e943c599dab248511b8e89f29d51993c31cfaf7bda9292638b74e3"
       },
-      "reason": "G-166 temporary: merged rule B plus scoped Vite grants from .github PR7. Retire this override in the deliberate global repin after the Pest PRs."
+      "reason": "Reviewed .github #9 (any-depth inheritance through recorded dependency paths, approved by the owner 2026-11-01). Retire this override in the deliberate global repin to cb221e79."
     },
     "prism-sandbox": {
       "sha": "03de033984603690b9d1ef142899179775d28b22",
