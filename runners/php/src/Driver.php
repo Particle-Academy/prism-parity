@@ -331,6 +331,38 @@ final class Driver
         return 'no_error';
     }
 
+    /** Execute the public response builder and independently check billing facts. */
+    private static function aggregateCacheWriteUsage(array $value): Usage
+    {
+        $builder = new \Prism\Prism\Text\ResponseBuilder;
+        foreach ($value['steps'] as $subject) {
+            $usage = self::hydrate($subject);
+            self::assertCacheWriteConserved($usage);
+            $builder->addStep(new \Prism\Prism\Text\Step(
+                text: '{}', finishReason: \Prism\Prism\Enums\FinishReason::Stop,
+                toolCalls: [], toolResults: [], providerToolCalls: [], usage: $usage,
+                meta: new Meta('', ''), messages: [], systemPrompts: [],
+            ));
+        }
+        $usage = $builder->toResponse()->usage;
+        self::assertCacheWriteConserved($usage);
+        foreach ($value['expected'] as $key => $expected) {
+            if ($usage->toArray()[$key] !== $expected) {
+                throw new RuntimeException('Independent cache-write aggregate failed: '.$key);
+            }
+        }
+
+        return $usage;
+    }
+
+    private static function assertCacheWriteConserved(Usage $usage): void
+    {
+        if ($usage->cacheWrite5mInputTokens !== null && $usage->cacheWrite1hInputTokens !== null
+            && $usage->cacheWriteInputTokens !== $usage->cacheWrite5mInputTokens + $usage->cacheWrite1hInputTokens) {
+            throw new RuntimeException('Reported cache-write total disagrees with lifetime split.');
+        }
+    }
+
     private static function hydrate(mixed $value): mixed
     {
         if (is_array($value) && array_is_list($value)) {
@@ -342,6 +374,7 @@ final class Driver
         }
 
         return match ($value['$']) {
+            'UsageAggregate' => self::aggregateCacheWriteUsage($value),
             'StringSchema' => new StringSchema($value['name'], $value['description']),
             'ObjectSchema' => new ObjectSchema(
                 $value['name'],
@@ -385,6 +418,8 @@ final class Driver
                 cacheReadInputTokens: $value['cacheReadInputTokens'] ?? null,
                 thoughtTokens: $value['thoughtTokens'] ?? null,
                 cost: $value['cost'] ?? null,
+                cacheWrite5mInputTokens: $value['cacheWrite5mInputTokens'] ?? null,
+                cacheWrite1hInputTokens: $value['cacheWrite1hInputTokens'] ?? null,
             ),
             'Meta' => new Meta(
                 id: $value['id'],

@@ -76,7 +76,7 @@
                 "completionTokens": 56
             },
             "expect": {
-                "serialized_json": "{\"prompt_tokens\":11,\"completion_tokens\":56,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null}",
+                "serialized_json": "{\"prompt_tokens\":11,\"completion_tokens\":56,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null,\"cache_write_5m_input_tokens\":null,\"cache_write_1h_input_tokens\":null}",
                 "rehydrates": true
             }
         },
@@ -95,7 +95,7 @@
                 "cost": 0.00125
             },
             "expect": {
-                "serialized_json": "{\"prompt_tokens\":128,\"completion_tokens\":12,\"cache_write_input_tokens\":64,\"cache_read_input_tokens\":896,\"thought_tokens\":4,\"cost\":0.00125}",
+                "serialized_json": "{\"prompt_tokens\":128,\"completion_tokens\":12,\"cache_write_input_tokens\":64,\"cache_read_input_tokens\":896,\"thought_tokens\":4,\"cost\":0.00125,\"cache_write_5m_input_tokens\":null,\"cache_write_1h_input_tokens\":null}",
                 "rehydrates": true
             }
         },
@@ -166,6 +166,255 @@
             "expect": {
                 "serialized_json": "{\"type\":\"assistant\",\"content\":\"Done.\",\"tool_calls\":[],\"additional_content\":{},\"tool_approval_requests\":[]}",
                 "rehydrates": true
+            }
+        },
+        {
+            "id": "rtp-0010",
+            "title": "Cache-write TTL breakdown survives Usage serialization",
+            "since": "0.1.15",
+            "notes": "The six original constructor positions remain intact. Two nullable counters are additive breakdowns of the reported total.",
+            "subject": {
+                "$": "Usage",
+                "promptTokens": 2048,
+                "completionTokens": 503,
+                "cacheWriteInputTokens": 248,
+                "cacheReadInputTokens": 1800,
+                "thoughtTokens": null,
+                "cost": null,
+                "cacheWrite5mInputTokens": 148,
+                "cacheWrite1hInputTokens": 100
+            },
+            "expect": {
+                "serialized_json": "{\"prompt_tokens\":2048,\"completion_tokens\":503,\"cache_write_input_tokens\":248,\"cache_read_input_tokens\":1800,\"thought_tokens\":null,\"cost\":null,\"cache_write_5m_input_tokens\":148,\"cache_write_1h_input_tokens\":100}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "rtp-0011",
+            "title": "Cache-write accounting: complete split across two steps",
+            "since": "0.1.15",
+            "notes": "Public response builder executes real Usage steps. Before golden comparison, each step and aggregate must conserve the existing total whenever both TTL buckets are known; independently declared aggregate counters are mandatory. Nonzero unknown writes poison the relevant TTL bucket; no-write steps contribute zero. Existing totals are never corrected.",
+            "subject": {
+                "$": "UsageAggregate",
+                "steps": [
+                    {
+                        "$": "Usage",
+                        "promptTokens": 11,
+                        "completionTokens": 23,
+                        "cacheWriteInputTokens": 248,
+                        "cacheWrite5mInputTokens": 148,
+                        "cacheWrite1hInputTokens": 100
+                    },
+                    {
+                        "$": "Usage",
+                        "promptTokens": 11,
+                        "completionTokens": 23,
+                        "cacheWriteInputTokens": 200,
+                        "cacheWrite5mInputTokens": 120,
+                        "cacheWrite1hInputTokens": 80
+                    }
+                ],
+                "expected": {
+                    "cache_write_input_tokens": 448,
+                    "cache_write_5m_input_tokens": 268,
+                    "cache_write_1h_input_tokens": 180
+                }
+            },
+            "expect": {
+                "serialized_json": "{\"prompt_tokens\":22,\"completion_tokens\":46,\"cache_write_input_tokens\":448,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null,\"cache_write_5m_input_tokens\":268,\"cache_write_1h_input_tokens\":180}",
+                "rehydrates": false
+            }
+        },
+        {
+            "id": "rtp-0012",
+            "title": "Cache-write accounting: nonzero unsplit step makes aggregate unknown",
+            "since": "0.1.15",
+            "notes": "Public response builder executes real Usage steps. Before golden comparison, each step and aggregate must conserve the existing total whenever both TTL buckets are known; independently declared aggregate counters are mandatory. Nonzero unknown writes poison the relevant TTL bucket; no-write steps contribute zero. Existing totals are never corrected.",
+            "subject": {
+                "$": "UsageAggregate",
+                "steps": [
+                    {
+                        "$": "Usage",
+                        "promptTokens": 11,
+                        "completionTokens": 23,
+                        "cacheWriteInputTokens": 248,
+                        "cacheWrite5mInputTokens": 148,
+                        "cacheWrite1hInputTokens": 100
+                    },
+                    {
+                        "$": "Usage",
+                        "promptTokens": 11,
+                        "completionTokens": 23,
+                        "cacheWriteInputTokens": 100,
+                        "cacheWrite5mInputTokens": null,
+                        "cacheWrite1hInputTokens": null
+                    }
+                ],
+                "expected": {
+                    "cache_write_input_tokens": 348,
+                    "cache_write_5m_input_tokens": null,
+                    "cache_write_1h_input_tokens": null
+                }
+            },
+            "expect": {
+                "serialized_json": "{\"prompt_tokens\":22,\"completion_tokens\":46,\"cache_write_input_tokens\":348,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null,\"cache_write_5m_input_tokens\":null,\"cache_write_1h_input_tokens\":null}",
+                "rehydrates": false
+            }
+        },
+        {
+            "id": "rtp-0013",
+            "title": "Cache-write accounting: zero-write step preserves known split",
+            "since": "0.1.15",
+            "notes": "Public response builder executes real Usage steps. Before golden comparison, each step and aggregate must conserve the existing total whenever both TTL buckets are known; independently declared aggregate counters are mandatory. Nonzero unknown writes poison the relevant TTL bucket; no-write steps contribute zero. Existing totals are never corrected.",
+            "subject": {
+                "$": "UsageAggregate",
+                "steps": [
+                    {
+                        "$": "Usage",
+                        "promptTokens": 11,
+                        "completionTokens": 23,
+                        "cacheWriteInputTokens": 248,
+                        "cacheWrite5mInputTokens": 148,
+                        "cacheWrite1hInputTokens": 100
+                    },
+                    {
+                        "$": "Usage",
+                        "promptTokens": 11,
+                        "completionTokens": 23,
+                        "cacheWriteInputTokens": 0,
+                        "cacheWrite5mInputTokens": null,
+                        "cacheWrite1hInputTokens": null
+                    }
+                ],
+                "expected": {
+                    "cache_write_input_tokens": 248,
+                    "cache_write_5m_input_tokens": 148,
+                    "cache_write_1h_input_tokens": 100
+                }
+            },
+            "expect": {
+                "serialized_json": "{\"prompt_tokens\":22,\"completion_tokens\":46,\"cache_write_input_tokens\":248,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null,\"cache_write_5m_input_tokens\":148,\"cache_write_1h_input_tokens\":100}",
+                "rehydrates": false
+            }
+        },
+        {
+            "id": "rtp-0014",
+            "title": "Cache-write accounting: null-write step preserves known split",
+            "since": "0.1.15",
+            "notes": "Public response builder executes real Usage steps. Before golden comparison, each step and aggregate must conserve the existing total whenever both TTL buckets are known; independently declared aggregate counters are mandatory. Nonzero unknown writes poison the relevant TTL bucket; no-write steps contribute zero. Existing totals are never corrected.",
+            "subject": {
+                "$": "UsageAggregate",
+                "steps": [
+                    {
+                        "$": "Usage",
+                        "promptTokens": 11,
+                        "completionTokens": 23,
+                        "cacheWriteInputTokens": 248,
+                        "cacheWrite5mInputTokens": 148,
+                        "cacheWrite1hInputTokens": 100
+                    },
+                    {
+                        "$": "Usage",
+                        "promptTokens": 11,
+                        "completionTokens": 23,
+                        "cacheWriteInputTokens": null,
+                        "cacheWrite5mInputTokens": null,
+                        "cacheWrite1hInputTokens": null
+                    }
+                ],
+                "expected": {
+                    "cache_write_input_tokens": 248,
+                    "cache_write_5m_input_tokens": 148,
+                    "cache_write_1h_input_tokens": 100
+                }
+            },
+            "expect": {
+                "serialized_json": "{\"prompt_tokens\":22,\"completion_tokens\":46,\"cache_write_input_tokens\":248,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null,\"cache_write_5m_input_tokens\":148,\"cache_write_1h_input_tokens\":100}",
+                "rehydrates": false
+            }
+        },
+        {
+            "id": "rtp-0015",
+            "title": "Cache-write accounting: reported zero write total",
+            "since": "0.1.15",
+            "notes": "Public response builder executes real Usage steps. Before golden comparison, each step and aggregate must conserve the existing total whenever both TTL buckets are known; independently declared aggregate counters are mandatory. Nonzero unknown writes poison the relevant TTL bucket; no-write steps contribute zero. Existing totals are never corrected.",
+            "subject": {
+                "$": "UsageAggregate",
+                "steps": [
+                    {
+                        "$": "Usage",
+                        "promptTokens": 11,
+                        "completionTokens": 23,
+                        "cacheWriteInputTokens": 0,
+                        "cacheWrite5mInputTokens": null,
+                        "cacheWrite1hInputTokens": null
+                    }
+                ],
+                "expected": {
+                    "cache_write_input_tokens": 0,
+                    "cache_write_5m_input_tokens": 0,
+                    "cache_write_1h_input_tokens": 0
+                }
+            },
+            "expect": {
+                "serialized_json": "{\"prompt_tokens\":11,\"completion_tokens\":23,\"cache_write_input_tokens\":0,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null,\"cache_write_5m_input_tokens\":0,\"cache_write_1h_input_tokens\":0}",
+                "rehydrates": false
+            }
+        },
+        {
+            "id": "rtp-0016",
+            "title": "Cache-write accounting: all write totals unreported",
+            "since": "0.1.15",
+            "notes": "Public response builder executes real Usage steps. Before golden comparison, each step and aggregate must conserve the existing total whenever both TTL buckets are known; independently declared aggregate counters are mandatory. Nonzero unknown writes poison the relevant TTL bucket; no-write steps contribute zero. Existing totals are never corrected.",
+            "subject": {
+                "$": "UsageAggregate",
+                "steps": [
+                    {
+                        "$": "Usage",
+                        "promptTokens": 11,
+                        "completionTokens": 23,
+                        "cacheWriteInputTokens": null,
+                        "cacheWrite5mInputTokens": null,
+                        "cacheWrite1hInputTokens": null
+                    }
+                ],
+                "expected": {
+                    "cache_write_input_tokens": null,
+                    "cache_write_5m_input_tokens": null,
+                    "cache_write_1h_input_tokens": null
+                }
+            },
+            "expect": {
+                "serialized_json": "{\"prompt_tokens\":11,\"completion_tokens\":23,\"cache_write_input_tokens\":null,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null,\"cache_write_5m_input_tokens\":null,\"cache_write_1h_input_tokens\":null}",
+                "rehydrates": false
+            }
+        },
+        {
+            "id": "rtp-0017",
+            "title": "Cache-write accounting: partially reported lifetime remains independently nullable",
+            "since": "0.1.15",
+            "notes": "Public response builder executes real Usage steps. Before golden comparison, each step and aggregate must conserve the existing total whenever both TTL buckets are known; independently declared aggregate counters are mandatory. Nonzero unknown writes poison the relevant TTL bucket; no-write steps contribute zero. Existing totals are never corrected.",
+            "subject": {
+                "$": "UsageAggregate",
+                "steps": [
+                    {
+                        "$": "Usage",
+                        "promptTokens": 11,
+                        "completionTokens": 23,
+                        "cacheWriteInputTokens": 10,
+                        "cacheWrite5mInputTokens": 10,
+                        "cacheWrite1hInputTokens": null
+                    }
+                ],
+                "expected": {
+                    "cache_write_input_tokens": 10,
+                    "cache_write_5m_input_tokens": 10,
+                    "cache_write_1h_input_tokens": null
+                }
+            },
+            "expect": {
+                "serialized_json": "{\"prompt_tokens\":11,\"completion_tokens\":23,\"cache_write_input_tokens\":10,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null,\"cache_write_5m_input_tokens\":10,\"cache_write_1h_input_tokens\":null}",
+                "rehydrates": false
             }
         }
     ]

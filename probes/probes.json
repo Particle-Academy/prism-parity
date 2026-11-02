@@ -198,7 +198,19 @@
           "trs-0002"
         ],
         "anthropic-text-response": [
-          "atr-0004"
+          "atr-0004",
+          "atr-0010",
+          "atr-0011",
+          "atr-0012",
+          "atr-0013",
+          "atr-0014"
+        ],
+        "structured-response": [
+          "str-0006",
+          "str-0007",
+          "str-0008",
+          "str-0009",
+          "str-0010"
         ]
       },
       "note": " atr-0004 is the Anthropic counterpart and the only Anthropic row with a non-zero cached count. It discriminates for the OPPOSITE reason to the OpenAI rows: Anthropic reports cache tokens BESIDE input_tokens rather than inside them, so the correct behaviour there is to subtract NOTHING. A mutant that subtracts breaks it, and a mutant that fails to subtract breaks the OpenAI row -- the two providers pin the two directions of the same mistake."
@@ -232,7 +244,16 @@
           "rtp-0002",
           "rtp-0003",
           "rtp-0004",
-          "rtp-0008"
+          "rtp-0005",
+          "rtp-0008",
+          "rtp-0010",
+          "rtp-0011",
+          "rtp-0012",
+          "rtp-0013",
+          "rtp-0014",
+          "rtp-0015",
+          "rtp-0016",
+          "rtp-0017"
         ]
       }
     },
@@ -267,14 +288,24 @@
           "atr-0006",
           "atr-0007",
           "atr-0008",
-          "atr-0009"
+          "atr-0009",
+          "atr-0010",
+          "atr-0011",
+          "atr-0012",
+          "atr-0013",
+          "atr-0014"
         ],
         "structured-response": [
           "str-0001",
           "str-0002",
           "str-0003",
           "str-0004",
-          "str-0005"
+          "str-0005",
+          "str-0006",
+          "str-0007",
+          "str-0008",
+          "str-0009",
+          "str-0010"
         ],
         "mistral-structured-response": [
           "msr-0001",
