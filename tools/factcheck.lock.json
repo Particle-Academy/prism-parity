@@ -42,7 +42,7 @@
   },
   "repos": {
     "prism": {
-      "version": "v0.145.1",
+      "version": "v0.146.0",
       "census": {
         "decision": 1,
         "composer-script": 3,
@@ -76,7 +76,7 @@
       }
     },
     "prism-harness": {
-      "version": "v0.22.1",
+      "version": "v0.22.2",
       "census": {
         "test-name": 1,
         "decision": 1,
@@ -179,7 +179,7 @@
       }
     },
     "prism-opentelemetry": {
-      "version": "v0.5.2",
+      "version": "v0.6.0",
       "census": {
         "composer-script": 1,
         "local-link": 2,
