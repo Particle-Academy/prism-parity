@@ -291,7 +291,11 @@ for (const { key, language, reason } of checked.skips) {
 }
 for (const { key, language, gap } of checked.traceDivergences) {
   console.error(`NATIVE TRACE DIVERGENCE ${key} [${language}]: ${gap}; independent properties passed, exact trace equality is not claimed`);
-  if (gap !== 'G-125' || !key.startsWith('anthropic-text-stream/')) failures.push(`${key}: unregistered native trace divergence`);
+  if (gap !== 'G-125' || !['anthropic-text-stream/','stream-failure-usage/'].some(prefix=>key.startsWith(prefix))) failures.push(`${key}: unregistered native trace divergence`);
+}
+for(const {key,language,gap}of checked.knownDifferences){
+  console.error(`KNOWN NATIVE DIFFERENCE ${key} [${language}]: ${gap}; excluded from verified agreement`);
+  if(language!=='php'||gap!=='G-214'||!['stream-failure-usage/fau-0004','stream-failure-usage/fau-0009'].includes(key)) failures.push(`${key}: unregistered known native difference`);
 }
 
 // Vacuity guard: an empty or entirely skipped set verifies no behavior.

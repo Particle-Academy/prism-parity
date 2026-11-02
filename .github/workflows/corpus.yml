@@ -156,6 +156,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Failure accounting predicates reject actual-output defects
+        run: node tools/failure-usage-discrimination.mjs --php php
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

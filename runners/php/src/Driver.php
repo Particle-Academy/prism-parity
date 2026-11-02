@@ -247,6 +247,19 @@ final class Driver
         return $trace;
     }
 
+    public static function parseFailureStream(array $script, array $input, array $properties): array
+    {
+        require_once __DIR__.'/FailureUsageStreamDriver.php';
+        require_once __DIR__.'/FailureUsageProperties.php';
+        $trace = FailureUsageStreamDriver::parse($script, $input);
+        $violations = FailureUsageProperties::violations($trace, $properties);
+        if ($violations !== []) {
+            throw new RuntimeException('Independent failure-usage properties failed: '.implode(', ', $violations));
+        }
+
+        return $trace;
+    }
+
     /**
      * The provider a case's builder selects, read from its `using` call.
      *

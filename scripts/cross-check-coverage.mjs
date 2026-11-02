@@ -12,12 +12,14 @@ export function coverage(reports) {
   const verified = [];
   const skips = [];
   const traceDivergences = [];
+  const knownDifferences = [];
 
   for (const key of [...keys].sort()) {
-    if (byLanguage.every(([, rows]) => rows.get(key)?.status === 'pass')) verified.push(key);
+    if (byLanguage.every(([, rows]) => rows.get(key)?.status === 'pass' && !rows.get(key)?.trace_comparison?.known_difference)) verified.push(key);
 
     for (const [language, rows] of byLanguage) {
       const result = rows.get(key);
+      if(result?.trace_comparison?.known_difference) knownDifferences.push({key,language,...result.trace_comparison.known_difference});
       if (result?.status === 'pass' && result.trace_comparison?.status === 'known-divergence') {
         traceDivergences.push({ key, language, gap: result.trace_comparison.gap });
       }
@@ -27,7 +29,7 @@ export function coverage(reports) {
     }
   }
 
-  return { verified, skips, skippedCases: new Set(skips.map(({ key }) => key)).size, traceDivergences };
+  return { verified, skips, skippedCases: new Set(skips.map(({ key }) => key)).size, traceDivergences, knownDifferences };
 }
 
 /** Recheck properties from the actual trace; a pass claim is not evidence. */
@@ -46,12 +48,14 @@ export function streamTraceFailures(reports, manifests, fixtures) {
           continue;
         }
         const match = comparison.actual === comparison.expected;
+        const declared=testCase.properties?.native_differences?.[language];
+        if(JSON.stringify(comparison.known_difference??null)!==JSON.stringify(declared??null)) failures.push(`${key}: missing, wrong or undeclared known native difference`);
         if (comparison.status !== (match ? 'match' : 'known-divergence') || comparison.gap !== (match ? null : 'G-125') || (!match && language === 'php')) {
           failures.push(`${key}: unregistered or false trace equality claim`);
         }
         try {
           // PHP's public completion event has message_id, not a text field.
-          const failed = violations(JSON.parse(comparison.actual), testCase.properties, { completionTextRequired: language !== 'php' });
+          const failed = violations(JSON.parse(comparison.actual), testCase.properties, { completionTextRequired: language !== 'php', language });
           if (failed.length > 0) failures.push(`${key}: native trace violates ${failed.join(', ')}`);
         } catch {
           failures.push(`${key}: invalid native trace`);

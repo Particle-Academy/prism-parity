@@ -1,0 +1,37 @@
+{
+  "id": "stream-failure-usage",
+  "title": "Native failed-stream provisional attempt accounting",
+  "kind": "stream-parse",
+  "pins": "Reported-versus-absent failure metadata, native failure channels, field masks, reset and isolation, without changing raw event vocabulary.",
+  "scope": "Owned Anthropic/OpenAI Responses/Mistral bytes and native read/decode faults. Synthetic early-usage controls are not live protocol or invoice observations.",
+  "pattern_doc": "docs/streaming-conformance.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "stream-properties",
+    "exact_trace_gap": "G-125"
+  },
+  "discrimination": {
+    "status": "unprobed",
+    "gap": "Both PHP/JavaScript predicates test actual-output defects; native port production mutations await implementation through the reviewed canonical pin."
+  },
+  "implementations": {
+    "php": {
+      "status": "partial",
+      "runner": "prism-parity:runners/php/runner.php",
+      "gap": "G-214: two malformed Anthropic count rows retain a known raw TypeError and are excluded from verified agreement.",
+      "cause": "reference-limit"
+    },
+    "ts": {
+      "status": "partial",
+      "runner": "prism-ts:conformance/runner.mjs",
+      "gap": "New failure-usage driver and typed metadata implementation in progress.",
+      "cause": "no-runner"
+    },
+    "py": {
+      "status": "partial",
+      "runner": "prism-py:conformance/runner.py",
+      "gap": "New failure-usage driver and typed metadata implementation in progress.",
+      "cause": "no-runner"
+    }
+  }
+}

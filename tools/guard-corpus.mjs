@@ -12,6 +12,7 @@ import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkRunner } from './alignment-contracts.mjs';
 import { embeddingDecodingFailures, isEmbeddingComparison } from './embedding-decoding.mjs';
+import { failureUsageCaseFailures } from './streaming/failure-usage.mjs';
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const failures = [];
@@ -350,6 +351,11 @@ for (const suiteId of readdirSync(join(root, 'suites'))) {
     const document = JSON.parse(readFileSync(join(root, 'suites', suiteId, 'cases.json'), 'utf8'));
     const allowUnrecorded = ['ts', 'py'].filter(language => manifest.implementations?.[language]?.status !== 'full');
     for (const problem of embeddingDecodingFailures(document, { allowUnrecorded })) fail('embedding-refusal', problem);
+  }
+
+  if (suiteId === 'stream-failure-usage') {
+    const document = JSON.parse(readFileSync(join(root, 'suites', suiteId, 'cases.json'), 'utf8'));
+    for (const problem of failureUsageCaseFailures(document)) fail('failure-usage', problem);
   }
 
   // A `partial` that does not say WHOSE gap it is reads as no gap at all. This
