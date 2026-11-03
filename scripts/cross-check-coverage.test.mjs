@@ -1,8 +1,44 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import {readFileSync} from 'node:fs';
 import { coverage, streamTraceFailures } from './cross-check-coverage.mjs';
 
 const report = (results) => [{ suite: 'example', results }];
+
+const failureDocument=JSON.parse(readFileSync(new URL('../suites/stream-failure-usage/cases.json',import.meta.url),'utf8'));
+const failureReport=row=>[{suite:failureDocument.suite,results:[row]}];
+const failureManifests=new Map([[failureDocument.suite,{kind:'stream-parse'}]]);
+const failureFixtures=new Map([[failureDocument.suite,failureDocument]]);
+function failureResult(id){
+  const fixture=failureDocument.cases.find(row=>row.id===id);
+  return {id,status:'pass',trace_comparison:{status:'match',gap:null,
+    expected:fixture.expect.result_json,actual:fixture.expect.result_json,
+    ...(fixture.properties.native_differences?.php?{known_difference:fixture.properties.native_differences.php}:{})}};
+}
+
+test('known PHP hostile-count failures remain visible and are not verified agreement',()=>{
+  const row=failureResult('fau-0004');
+  const result=coverage(new Map([['php',failureReport(row)],['ts',failureReport({...row,trace_comparison:{...row.trace_comparison,known_difference:undefined}})]]));
+  assert.deepEqual(result.verified,[]);
+  assert.equal(result.knownDifferences.length,1);
+  assert.equal(result.knownDifferences[0].gap,'G-214');
+  assert.deepEqual(streamTraceFailures(new Map([['php',failureReport(row)]]),failureManifests,failureFixtures),[]);
+  delete row.trace_comparison.known_difference;
+  assert.match(streamTraceFailures(new Map([['php',failureReport(row)]]),failureManifests,failureFixtures).join(),/known native difference/);
+});
+
+test('declared native channels are independently checked for the actual language',()=>{
+  const row=failureResult('fau-0007');
+  assert.deepEqual(streamTraceFailures(new Map([['php',failureReport(row)]]),failureManifests,failureFixtures),[]);
+  assert.match(streamTraceFailures(new Map([['ts',failureReport(row)]]),failureManifests,failureFixtures).join(),/native trace violates/);
+});
+
+test('registered trace shape differences cannot excuse lost failure accounting',()=>{
+  const row=failureResult('fau-0006'),trace=JSON.parse(row.trace_comparison.actual);
+  delete trace.attempts[0].events.find(event=>event.type==='error').payload.failure_usage;
+  Object.assign(row.trace_comparison,{actual:JSON.stringify(trace),status:'known-divergence',gap:'G-125'});
+  assert.match(streamTraceFailures(new Map([['ts',failureReport(row)]]),failureManifests,failureFixtures).join(),/native trace violates/);
+});
 
 test('only cases passed in every language count as verified', () => {
   const result = coverage(new Map([

@@ -1,7 +1,7 @@
 {
   "$comment": "The release-parity ledger. It records which runners are actually compared against each other, and — just as importantly — which are NOT, so three green ticks in CI are never mistaken for a three-way comparison. scripts/cross-check.mjs reads cross_checked and FAILS when a runner declared here is missing on disk: a runner it quietly skipped would let the remaining ones agree with each other and call that parity.",
   "kit_version": "2026.08.1",
-  "corpus_version": "0.1.14",
+  "corpus_version": "0.1.16",
   "cross_checked": [
     {
       "language": "php",
@@ -28,8 +28,11 @@
   "gaps": [
     {
       "id": "G-125",
-      "summary": "Anthropic stream properties are verified independently; native event vocabulary, payload shapes and finish literals differ. Exact traces are retained and equality is not claimed.",
-      "affects": ["anthropic-text-stream"],
+      "summary": "Native stream properties are verified independently; event vocabulary, failure channels, payload shapes and finish literals differ. Actual traces are retained and exact equality is not claimed.",
+      "affects": [
+        "anthropic-text-stream",
+        "stream-failure-usage"
+      ],
       "shim": "Explicit stream-properties comparison records native traces and the registered divergence; it never removes or reshapes events."
     },
     {
@@ -69,6 +72,23 @@
         "openrouter-billing-response"
       ],
       "shim": "No substitute provider or mapping is used."
+    },
+    {
+      "id": "G-214",
+      "summary": "PHP raises raw TypeError for the two declared malformed Anthropic usage inputs. Native failure is checked explicitly and excluded from verified agreement.",
+      "affects": [
+        "stream-failure-usage/fau-0004",
+        "stream-failure-usage/fau-0009"
+      ]
+    },
+    {
+      "id": "G-215",
+      "summary": "TS/Py have no native multi-step stream/tool continuation loop. The three actual continuation controls are PHP-only; adapters must not issue a second request on behalf of the SDK.",
+      "affects": [
+        "stream-failure-usage/fau-0045",
+        "stream-failure-usage/fau-0046",
+        "stream-failure-usage/fau-0047"
+      ]
     }
   ],
   "$procedure": "Releasing a kit",

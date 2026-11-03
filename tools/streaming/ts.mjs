@@ -1,6 +1,9 @@
 // Measurement adapter: the native published transport decodes the raw bytes.
 // Cases must run serially because fetch is restored around each complete stream.
+import {parseFailureStream} from './failure-usage-ts.mjs';
+import {failureUsageViolations} from './failure-usage.mjs';
 export async function parseStream(lib, testCase) {
+  if (testCase.failure_stream) return parseFailureStream(lib,testCase);
   const originalFetch = globalThis.fetch;
   const chunks = decodeChunks(testCase.stream);
   let requests = 0;
@@ -64,7 +67,8 @@ function aliasOpaque(value, aliases) {
 }
 
 /** Evaluate the independent fixture properties without changing its trace. */
-export function violations(trace, properties, { completionTextRequired = true } = {}) {
+export function violations(trace, properties, { completionTextRequired = true, language = 'php' } = {}) {
+  if (properties.contract === 'failure-usage') return failureUsageViolations(trace,properties,{language});
   const failed = [];
   const ends = trace.events.filter(event => event.type === 'stream_end');
   const text = trace.events.filter(event => event.type === 'text_delta').map(event => event.payload.delta).join('');

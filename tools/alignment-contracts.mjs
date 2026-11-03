@@ -168,6 +168,7 @@ export function verifyCoverage(reports, actual, manifests = new Map()) {
   const rows = new Map();
   const expectedSkips = [];
   const suites = new Map();
+  const knownDifferences = [];
   for (const [language, documents] of reports) {
     const languageRows = new Map();
     for (const document of documents) {
@@ -179,15 +180,17 @@ export function verifyCoverage(reports, actual, manifests = new Map()) {
         if (result.status === 'skip' && (typeof result.reason !== 'string' || !result.reason.trim())) failures.push(`${key}/${language}: skip requires a reason`);
         keys.add(key);
         languageRows.set(key, result.status);
+        if(result.trace_comparison?.known_difference) knownDifferences.push({key,language,...result.trace_comparison.known_difference});
         suites.set(document.suite, [...(suites.get(document.suite) ?? []), result.status]);
         if (result.status === 'skip') expectedSkips.push({ key, language, reason: result.reason ?? 'No reason reported.' });
       }
     }
     rows.set(language, languageRows);
   }
-  const expected = [...keys].filter((key) => [...rows.values()].every((row) => row.get(key) === 'pass')).sort();
+  const expected = [...keys].filter((key) => !knownDifferences.some(row=>row.key===key) && [...rows.values()].every((row) => row.get(key) === 'pass')).sort();
   if (JSON.stringify([...actual.verified].sort()) !== JSON.stringify(expected)) failures.push('verified count includes unrun rows or omits executed agreement');
   const sorted = (values) => values.map((value) => JSON.stringify(value)).sort();
+  if(JSON.stringify(sorted(actual.knownDifferences??[]))!==JSON.stringify(sorted(knownDifferences))) failures.push('known native difference report omits a language, case or declaration');
   if (JSON.stringify(sorted(actual.skips)) !== JSON.stringify(sorted(expectedSkips))) failures.push('skip report omits a language, case, or reason');
   if (actual.skippedCases !== new Set(expectedSkips.map(({ key }) => key)).size) failures.push('skipped case count disagrees with per-language skips');
   for (const [suite, statuses] of suites) {

@@ -126,7 +126,8 @@ foreach ($suiteIds as $suiteId) {
         }
 
         $traceDetails = $suite->manifest['kind'] === 'stream-parse' ? [
-            'trace_comparison' => ['status' => $expected === $actual ? 'match' : 'reference-drift', 'gap' => null, 'expected' => $expected, 'actual' => $actual],
+            'trace_comparison' => ['status' => $expected === $actual ? 'match' : 'reference-drift', 'gap' => null, 'expected' => $expected, 'actual' => $actual,
+                ...(isset($case['properties']['native_differences']['php']) ? ['known_difference' => $case['properties']['native_differences']['php']] : [])],
         ] : [];
         if (Canonical::equals($expected, $actual)) {
             $results[] = ['id' => $case['id'], 'status' => 'pass', ...$traceDetails];
@@ -181,7 +182,9 @@ function evaluate(array $manifest, array $case): array
         ],
         'stream-parse' => [
             $case['expect']['result_json'],
-            Canonical::encode(Driver::parseStream($case['builder'], $case['stream'], $case['properties'])),
+            Canonical::encode(isset($case['failure_stream'])
+                ? Driver::parseFailureStream($case['builder'], $case['failure_stream'], $case['properties'])
+                : Driver::parseStream($case['builder'], $case['stream'], $case['properties'])),
         ],
         'roundtrip' => [
             $case['expect']['serialized_json'],

@@ -20,6 +20,52 @@ export interface BuilderStep {
   args?: unknown[];
 }
 
+export interface FailureUsagePayload {
+  usage: { prompt_tokens: number; completion_tokens: number;
+    cache_write_input_tokens: number | null; cache_read_input_tokens: number | null;
+    thought_tokens: number | null; cost: number | null;
+    cache_write_5m_input_tokens: number | null; cache_write_1h_input_tokens: number | null };
+  status: 'provisional';
+  scope: 'attempt';
+  step_index: number;
+  reported_fields: Array<keyof FailureUsagePayload['usage']>;
+  includes_completed_steps: false;
+}
+
+export interface FailureUsageAttemptProperties {
+  requests: number;
+  terminal: 'raised' | 'returned';
+  transport_identity: boolean | null;
+  error_events: number;
+  stream_ends: number;
+  failure_usage: FailureUsagePayload | null;
+  channels: Array<'event' | 'exception'>;
+  owned_tool_calls: number;
+  normal_completion?: true;
+  final_usage?: {prompt_tokens: number; completion_tokens: number; cost: null};
+}
+
+export interface FailureUsageProperties {
+  contract: 'failure-usage';
+  requests: number;
+  attempts: FailureUsageAttemptProperties[];
+  privacy_sentinels: string[];
+  native_outcomes?: Partial<Record<Language, Partial<Pick<FailureUsageAttemptProperties,
+    'terminal' | 'transport_identity' | 'error_events' | 'stream_ends' | 'channels'>>>>;
+  native_differences?: { php: { gap: 'G-214'; exception: 'TypeError'; transport_identity: false } };
+  native_gaps?: {ts: 'G-215'; py: 'G-215'};
+  serialization?: {reported: boolean; failure_usage: FailureUsagePayload | null};
+  telemetry?: {terminal: string};
+}
+
+export interface FailureStreamInput {
+  provider: 'anthropic' | 'openai' | 'mistral';
+  mode: 'single' | 'reuse' | 'interleave' | 'continuation' | 'serialization' | 'telemetry';
+  attempts?: Array<{responses: Array<{encoding: 'base64'; chunks: string[]; fault: 'none' | 'transport'}>}>;
+  owned_tool?: {name: 'owned_echo'; result: 'owned-constant-result'};
+  serialization?: 'legacy-error' | 'reported-zero-cost';
+}
+
 export interface ConformanceCase {
   id: string;
   title: string;
@@ -30,6 +76,7 @@ export interface ConformanceCase {
   builder?: BuilderStep[];
   response?: unknown;
   stream?: { encoding: 'base64'; chunks: string[] };
+  failure_stream?: FailureStreamInput;
   properties?: {
     text: string;
     normal_completion: boolean;
@@ -40,7 +87,7 @@ export interface ConformanceCase {
     final_usage?: Record<string, number>;
     error_codes?: string[];
     error_nonrecoverable?: true;
-  };
+  } | FailureUsageProperties;
   subject?: Record<string, unknown>;
   expect: Expectation;
   /**
