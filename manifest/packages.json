@@ -1209,7 +1209,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism-perplexity",
       "repository": "https://github.com/Particle-Academy/prism-perplexity",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "carries": "the Perplexity surface core does not - embeddings, search",
       "status": "published",
       "published": true,
