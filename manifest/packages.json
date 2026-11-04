@@ -310,7 +310,7 @@
       "kind": "runtime",
       "status": "published",
       "published": true,
-      "version": "0.35.0",
+      "version": "0.36.0",
       "catalog": "public"
     },
     "prism-browser": {
