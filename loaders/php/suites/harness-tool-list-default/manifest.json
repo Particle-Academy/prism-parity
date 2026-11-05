@@ -1,0 +1,30 @@
+{
+  "id": "harness-tool-list-default",
+  "title": "Tool-list defaults constrain the real turn entry points",
+  "kind": "security-corpus",
+  "pins": "Requested names can narrow a mode, never widen it by default. Record actual model offers and native refusals, alongside independently prewritten authority expectations. A consumer moving a read-only session between languages must not accidentally offer a registered destructive tool merely because caller input names it.",
+  "scope": "Normal published PHP send/stream and TS/Py send/structured entry points. Port-only explicit legacy opt-out, configuration migration and malformed flags remain additional native unit controls. No stream capability is invented in either port.",
+  "findings": "PHP legacy sessions silently intersect foreign names, whereas ports preserve a typed tool_not_available refusal. All forms keep the mode ceiling. Named sessions refuse foreign names. Default empty lists offer no tools. Raw native outcomes retain these differences.",
+  "pattern_doc": "docs/decisions/0021-parity-is-the-shipping-library-set.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-parity:tools/harness-tool-list/ToolListReferenceTest.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-harness-ts:test/tool-list-corpus.test.ts"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-harness-py:tests/test_tool_list_corpus.py"
+    }
+  }
+}

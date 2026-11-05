@@ -137,6 +137,8 @@ jobs:
         run: node tools/run-gate.mjs nodeTests -- node --test tools/harness-coexistence/evidence-rules.test.mjs
       - name: Exact-ref cross-port authority, mutants, workers and published-old-worker evidence
         run: node tools/harness-coexistence/hosted.mjs
+      - name: Tool-list reference entry points retain the recorded mode ceiling
+        run: node tools/run-gate.mjs harnessToolList -- php .harness-runtimes/php/vendor/bin/phpunit --no-configuration --bootstrap .harness-runtimes/php/vendor/autoload.php tools/harness-tool-list/ToolListReferenceTest.php
       - name: Preserve native receipts and logs
         if: always()
         uses: actions/upload-artifact@v4
