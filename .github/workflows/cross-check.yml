@@ -291,4 +291,10 @@ jobs:
           path: |
             prism-parity/.mcp-published/report.json
             prism-parity/.mcp-published/*.log
+            prism-parity/.mcp-published/php/vendor/particle-academy/prism-mcp/
+            prism-parity/.mcp-published/ts/node_modules/@particle-academy/prism-mcp/dist/
+            prism-parity/.mcp-published/py/**/prism_mcp/**
+          # The verified PHP export includes its public .gitattributes file.
+          # Only these known public SDK directories and synthetic logs are kept.
+          include-hidden-files: true
           if-no-files-found: error
