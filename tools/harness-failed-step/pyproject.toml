@@ -1,5 +1,5 @@
 [project]
 name = "prism-harness-failed-step-tools"
-version = "0.1.16"
+version = "0.1.17"
 requires-python = ">=3.12"
 dependencies = ["prism-ai-harness==0.3.0"]
