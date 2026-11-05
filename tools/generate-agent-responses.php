@@ -47,30 +47,33 @@ use Prism\Prism\Exceptions\PrismException;
 
 $check = in_array('--check', $argv, true);
 $path = __DIR__.'/../suites/perplexity-agent-response/cases.json';
-$document = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+$document = json_decode((string) file_get_contents($path), false, 512, JSON_THROW_ON_ERROR);
 
 /**
  * Drive the real client against one stubbed response and record what it makes
  * of it.
  *
- * `retrieve` rather than `create`, deliberately: it is the call the polling
- * loop makes, it sends no body of its own, and so the row records the PARSE
- * and nothing about the request that provoked it.
+ * Legacy rows default to retrieve. Cancellation rows exercise the real
+ * cancel-only identifier rules; create rows prove that alias does not leak.
  *
- * @param  array<string, mixed>  $case
  * @return array<string, mixed>
  */
-function parse(array $case): array
+function parse(stdClass $case): array
 {
     $factory = new Factory;
+    $factory->preventStrayRequests();
     $factory->fake([
-        '*' => $factory->response($case['body'], $case['http_status']),
+        '*' => $factory->response(json_encode($case->body, JSON_THROW_ON_ERROR), $case->http_status, ['Content-Type' => 'application/json']),
     ]);
 
     $client = new AgentClient($factory->baseUrl('https://api.perplexity.ai'));
 
     try {
-        $response = $client->retrieve('resp_probe');
+        $response = match ($case->operation ?? 'retrieve') {
+            'retrieve' => $client->retrieve('resp_probe'),
+            'cancel' => $client->cancel('resp_probe'),
+            'create' => $client->create('synthetic'),
+        };
     } catch (PrismException $exception) {
         // The identifier is what a consumer switches on, so it is recorded
         // rather than the message, which is prose and will be reworded.
@@ -88,7 +91,7 @@ function parse(array $case): array
         ];
     }
 
-    return [
+    $parsed = [
         'refused' => false,
         'id' => $response->id,
         'status' => $response->status->value,
@@ -106,6 +109,12 @@ function parse(array $case): array
         ],
         'text' => $response->text(),
     ];
+
+    if ($case->project_incomplete_reason ?? false) {
+        $parsed['incomplete_reason'] = $response->incompleteReason();
+    }
+
+    return $parsed;
 }
 
 /**
@@ -124,20 +133,21 @@ function errorTypeOf(string $message): string
 
 $stale = [];
 
-foreach ($document['cases'] as $index => $case) {
+foreach ($document->cases as $case) {
     $produced = parse($case);
-    $recorded = $case['parsed']['php'] ?? null;
+    $recorded = $case->parsed->php ?? null;
 
-    if ($recorded !== $produced) {
+    // Compare JSON containers without collapsing an empty object into a list.
+    if (json_encode($recorded) !== json_encode($produced)) {
         $stale[] = sprintf(
             '%s: recorded %s, reference produces %s',
-            $case['id'],
+            $case->id,
             json_encode($recorded, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
             json_encode($produced, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
         );
     }
 
-    $document['cases'][$index]['parsed']['php'] = $produced;
+    $case->parsed->php = $produced;
 }
 
 if ($check) {

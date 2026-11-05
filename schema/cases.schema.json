@@ -3292,6 +3292,13 @@
             },
             "text": {
               "type": "string"
+            },
+            "incomplete_reason": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "Native optional incomplete_details.reason projection, only requested by new lifecycle rows."
             }
           }
         }
@@ -3354,6 +3361,17 @@
           "items": {
             "type": "string"
           }
+        },
+        "operation": {
+          "enum": [
+            "retrieve",
+            "cancel",
+            "create"
+          ],
+          "description": "Defaults to retrieve for legacy rows."
+        },
+        "project_incomplete_reason": {
+          "type": "boolean"
         }
       },
       "allOf": [
@@ -3410,6 +3428,14 @@
               "minLength": 1
             },
             "body": {
+              "type": "string",
+              "minLength": 1
+            },
+            "operation": {
+              "type": "string",
+              "minLength": 1
+            },
+            "project_incomplete_reason": {
               "type": "string",
               "minLength": 1
             }
