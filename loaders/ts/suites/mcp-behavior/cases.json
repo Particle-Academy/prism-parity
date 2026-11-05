@@ -1,0 +1,1394 @@
+{
+    "suite": "mcp-behavior",
+    "schema_version": 1,
+    "corpus_version": "0.1.20",
+    "generated_by": "Native adapters executed against normal Packagist particle-academy/prism-mcp 0.3.0 (1de314c3859628dbd04629b80d8e81dbbad67323), npm @particle-academy/prism-mcp 0.4.0 (913403fc288273bdaa5d9361333b1dc8ebabec10), and PyPI prism-ai-mcp 0.3.0 (6b6ae1eea3c9c0a90cd95c37cd915f5e586d876a) at 2026-11-05T22:54:48.958Z. Published PHP observations replace the candidate reference column; no predictions, inputs or observed values changed. Primary archives and installed runtime bytes were independently verified before execution.",
+    "scope": "A16/A17/A18/A19/A20/A28 only. Reference observations are from normally installed PHP MCP 0.3.0; port observations are from normally installed npm 0.4.0 and PyPI 0.3.0. Callback failure, immutable events, exclusion reset and cancellation require native per-port tests. No raw mirrored-header encoding, HTTP transport, cache, live provider or G125 change.",
+    "cases": [
+        {
+            "id": "mcb-0001",
+            "title": "error flag: absent",
+            "since": "0.1.20",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "flag",
+                "present": false
+            },
+            "prediction": {
+                "isError": false
+            },
+            "result": {
+                "php": {
+                    "isError": false
+                },
+                "ts": {
+                    "isError": false
+                },
+                "py": {
+                    "isError": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0002",
+            "title": "error flag: null",
+            "since": "0.1.20",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "flag",
+                "present": true,
+                "value": null
+            },
+            "prediction": {
+                "isError": true
+            },
+            "result": {
+                "php": {
+                    "isError": true
+                },
+                "ts": {
+                    "isError": true
+                },
+                "py": {
+                    "isError": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0003",
+            "title": "error flag: false",
+            "since": "0.1.20",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "flag",
+                "present": true,
+                "value": false
+            },
+            "prediction": {
+                "isError": false
+            },
+            "result": {
+                "php": {
+                    "isError": false
+                },
+                "ts": {
+                    "isError": false
+                },
+                "py": {
+                    "isError": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0004",
+            "title": "error flag: true",
+            "since": "0.1.20",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "flag",
+                "present": true,
+                "value": true
+            },
+            "prediction": {
+                "isError": true
+            },
+            "result": {
+                "php": {
+                    "isError": true
+                },
+                "ts": {
+                    "isError": true
+                },
+                "py": {
+                    "isError": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0005",
+            "title": "error flag: zero",
+            "since": "0.1.20",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "flag",
+                "present": true,
+                "value": 0
+            },
+            "prediction": {
+                "isError": true
+            },
+            "result": {
+                "php": {
+                    "isError": true
+                },
+                "ts": {
+                    "isError": true
+                },
+                "py": {
+                    "isError": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0006",
+            "title": "error flag: one",
+            "since": "0.1.20",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "flag",
+                "present": true,
+                "value": 1
+            },
+            "prediction": {
+                "isError": true
+            },
+            "result": {
+                "php": {
+                    "isError": true
+                },
+                "ts": {
+                    "isError": true
+                },
+                "py": {
+                    "isError": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0007",
+            "title": "error flag: empty-string",
+            "since": "0.1.20",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "flag",
+                "present": true,
+                "value": ""
+            },
+            "prediction": {
+                "isError": true
+            },
+            "result": {
+                "php": {
+                    "isError": true
+                },
+                "ts": {
+                    "isError": true
+                },
+                "py": {
+                    "isError": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0008",
+            "title": "error flag: false-string",
+            "since": "0.1.20",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "flag",
+                "present": true,
+                "value": "false"
+            },
+            "prediction": {
+                "isError": true
+            },
+            "result": {
+                "php": {
+                    "isError": true
+                },
+                "ts": {
+                    "isError": true
+                },
+                "py": {
+                    "isError": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0009",
+            "title": "error flag: true-string",
+            "since": "0.1.20",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "flag",
+                "present": true,
+                "value": "true"
+            },
+            "prediction": {
+                "isError": true
+            },
+            "result": {
+                "php": {
+                    "isError": true
+                },
+                "ts": {
+                    "isError": true
+                },
+                "py": {
+                    "isError": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0010",
+            "title": "error flag: empty-list",
+            "since": "0.1.20",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "flag",
+                "present": true,
+                "value": []
+            },
+            "prediction": {
+                "isError": true
+            },
+            "result": {
+                "php": {
+                    "isError": true
+                },
+                "ts": {
+                    "isError": true
+                },
+                "py": {
+                    "isError": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0011",
+            "title": "error flag: empty-object",
+            "since": "0.1.20",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "flag",
+                "present": true,
+                "value": {}
+            },
+            "prediction": {
+                "isError": true
+            },
+            "result": {
+                "php": {
+                    "isError": true
+                },
+                "ts": {
+                    "isError": true
+                },
+                "py": {
+                    "isError": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0012",
+            "title": "trust before discovery: \"missing\"",
+            "since": "0.1.20",
+            "notes": "Missing or empty allowlists must refuse before disclosure to the transport; the wildcard empty-server control remains valid. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "trust",
+                "trust": "missing",
+                "tools": []
+            },
+            "prediction": {
+                "dispatches": 0,
+                "error": "server_not_trusted",
+                "empty": false
+            },
+            "result": {
+                "php": {
+                    "dispatches": 0,
+                    "error": "server_not_trusted",
+                    "empty": false
+                },
+                "ts": {
+                    "dispatches": 0,
+                    "error": "server_not_trusted",
+                    "empty": false
+                },
+                "py": {
+                    "dispatches": 0,
+                    "error": "server_not_trusted",
+                    "empty": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0013",
+            "title": "trust before discovery: []",
+            "since": "0.1.20",
+            "notes": "Missing or empty allowlists must refuse before disclosure to the transport; the wildcard empty-server control remains valid. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "trust",
+                "trust": [],
+                "tools": []
+            },
+            "prediction": {
+                "dispatches": 0,
+                "error": "server_not_trusted",
+                "empty": true
+            },
+            "result": {
+                "php": {
+                    "dispatches": 0,
+                    "error": "server_not_trusted",
+                    "empty": true
+                },
+                "ts": {
+                    "dispatches": 0,
+                    "error": "server_not_trusted",
+                    "empty": true
+                },
+                "py": {
+                    "dispatches": 0,
+                    "error": "server_not_trusted",
+                    "empty": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0014",
+            "title": "trust before discovery: \"*\"",
+            "since": "0.1.20",
+            "notes": "Missing or empty allowlists must refuse before disclosure to the transport; the wildcard empty-server control remains valid. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "trust",
+                "trust": "*",
+                "tools": []
+            },
+            "prediction": {
+                "dispatches": 1,
+                "offered": []
+            },
+            "result": {
+                "php": {
+                    "dispatches": 1,
+                    "offered": []
+                },
+                "ts": {
+                    "dispatches": 1,
+                    "offered": []
+                },
+                "py": {
+                    "dispatches": 1,
+                    "offered": []
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0015",
+            "title": "omitted content: mixed-image",
+            "since": "0.1.20",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "content",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": "alpha"
+                    },
+                    {
+                        "type": "image",
+                        "data": "SYNTHETIC_SECRET",
+                        "mimeType": "image/png"
+                    },
+                    {
+                        "type": "text",
+                        "text": "omega"
+                    }
+                ]
+            },
+            "prediction": {
+                "text": "alpha\n[image content omitted: this release passes text through only]\nomega"
+            },
+            "result": {
+                "php": {
+                    "text": "alpha\n[image content omitted: this release passes text through only]\nomega"
+                },
+                "ts": {
+                    "text": "alpha\n[image content omitted: this release passes text through only]\nomega"
+                },
+                "py": {
+                    "text": "alpha\n[image content omitted: this release passes text through only]\nomega"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0016",
+            "title": "omitted content: audio",
+            "since": "0.1.20",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "content",
+                "content": [
+                    {
+                        "type": "audio",
+                        "data": "SYNTHETIC_SECRET"
+                    }
+                ]
+            },
+            "prediction": {
+                "text": "[audio content omitted: this release passes text through only]"
+            },
+            "result": {
+                "php": {
+                    "text": "[audio content omitted: this release passes text through only]"
+                },
+                "ts": {
+                    "text": "[audio content omitted: this release passes text through only]"
+                },
+                "py": {
+                    "text": "[audio content omitted: this release passes text through only]"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0017",
+            "title": "omitted content: resource",
+            "since": "0.1.20",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "content",
+                "content": [
+                    {
+                        "type": "resource",
+                        "resource": {
+                            "uri": "https://owned.invalid/SYNTHETIC_SECRET",
+                            "text": "SYNTHETIC_SECRET"
+                        }
+                    }
+                ]
+            },
+            "prediction": {
+                "text": "[resource content omitted: this release passes text through only]"
+            },
+            "result": {
+                "php": {
+                    "text": "[resource content omitted: this release passes text through only]"
+                },
+                "ts": {
+                    "text": "[resource content omitted: this release passes text through only]"
+                },
+                "py": {
+                    "text": "[resource content omitted: this release passes text through only]"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0018",
+            "title": "omitted content: resource-link",
+            "since": "0.1.20",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "content",
+                "content": [
+                    {
+                        "type": "resource_link",
+                        "uri": "https://owned.invalid/SYNTHETIC_SECRET"
+                    }
+                ]
+            },
+            "prediction": {
+                "text": "[resource_link content omitted: this release passes text through only]"
+            },
+            "result": {
+                "php": {
+                    "text": "[resource_link content omitted: this release passes text through only]"
+                },
+                "ts": {
+                    "text": "[resource_link content omitted: this release passes text through only]"
+                },
+                "py": {
+                    "text": "[resource_link content omitted: this release passes text through only]"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0019",
+            "title": "omitted content: nontext-with-text",
+            "since": "0.1.20",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "content",
+                "content": [
+                    {
+                        "type": "image",
+                        "text": "SYNTHETIC_SECRET"
+                    }
+                ]
+            },
+            "prediction": {
+                "text": "[image content omitted: this release passes text through only]"
+            },
+            "result": {
+                "php": {
+                    "text": "[image content omitted: this release passes text through only]"
+                },
+                "ts": {
+                    "text": "[image content omitted: this release passes text through only]"
+                },
+                "py": {
+                    "text": "[image content omitted: this release passes text through only]"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0020",
+            "title": "omitted content: missing-type-with-text",
+            "since": "0.1.20",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "content",
+                "content": [
+                    {
+                        "text": "SYNTHETIC_SECRET"
+                    }
+                ]
+            },
+            "prediction": {
+                "text": "[unknown content omitted: this release passes text through only]"
+            },
+            "result": {
+                "php": {
+                    "text": "[unknown content omitted: this release passes text through only]"
+                },
+                "ts": {
+                    "text": "[unknown content omitted: this release passes text through only]"
+                },
+                "py": {
+                    "text": "[unknown content omitted: this release passes text through only]"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0021",
+            "title": "omitted content: text-with-nonstring",
+            "since": "0.1.20",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "content",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": 7
+                    }
+                ]
+            },
+            "prediction": {
+                "text": "[text content omitted: this release passes text through only]"
+            },
+            "result": {
+                "php": {
+                    "text": "[text content omitted: this release passes text through only]"
+                },
+                "ts": {
+                    "text": "[text content omitted: this release passes text through only]"
+                },
+                "py": {
+                    "text": "[text content omitted: this release passes text through only]"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0022",
+            "title": "omitted content: unknown-type",
+            "since": "0.1.20",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "content",
+                "content": [
+                    {
+                        "type": "future"
+                    }
+                ]
+            },
+            "prediction": {
+                "text": "[future content omitted: this release passes text through only]"
+            },
+            "result": {
+                "php": {
+                    "text": "[future content omitted: this release passes text through only]"
+                },
+                "ts": {
+                    "text": "[future content omitted: this release passes text through only]"
+                },
+                "py": {
+                    "text": "[future content omitted: this release passes text through only]"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0023",
+            "title": "omitted content: nonstring-type",
+            "since": "0.1.20",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "content",
+                "content": [
+                    {
+                        "type": 7
+                    }
+                ]
+            },
+            "prediction": {
+                "text": "[unknown content omitted: this release passes text through only]"
+            },
+            "result": {
+                "php": {
+                    "text": "[unknown content omitted: this release passes text through only]"
+                },
+                "ts": {
+                    "text": "[unknown content omitted: this release passes text through only]"
+                },
+                "py": {
+                    "text": "[unknown content omitted: this release passes text through only]"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0024",
+            "title": "omitted content: empty-text",
+            "since": "0.1.20",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "content",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": ""
+                    }
+                ]
+            },
+            "prediction": {
+                "text": ""
+            },
+            "result": {
+                "php": {
+                    "text": ""
+                },
+                "ts": {
+                    "text": ""
+                },
+                "py": {
+                    "text": ""
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0025",
+            "title": "omitted content: empty-content",
+            "since": "0.1.20",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "content",
+                "content": []
+            },
+            "prediction": {
+                "text": ""
+            },
+            "result": {
+                "php": {
+                    "text": ""
+                },
+                "ts": {
+                    "text": ""
+                },
+                "py": {
+                    "text": ""
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0026",
+            "title": "result cap: old-boundary",
+            "since": "0.1.20",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "cap",
+                "unit": "a",
+                "repeat": 65536
+            },
+            "prediction": {
+                "status": "returned",
+                "bytes": 65536
+            },
+            "result": {
+                "php": {
+                    "status": "returned",
+                    "bytes": 65536
+                },
+                "ts": {
+                    "status": "returned",
+                    "bytes": 65536
+                },
+                "py": {
+                    "status": "returned",
+                    "bytes": 65536
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0027",
+            "title": "result cap: above-old-boundary",
+            "since": "0.1.20",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "cap",
+                "unit": "a",
+                "repeat": 65537
+            },
+            "prediction": {
+                "status": "returned",
+                "bytes": 65537
+            },
+            "result": {
+                "php": {
+                    "status": "returned",
+                    "bytes": 65537
+                },
+                "ts": {
+                    "status": "returned",
+                    "bytes": 65537
+                },
+                "py": {
+                    "status": "returned",
+                    "bytes": 65537
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0028",
+            "title": "result cap: reference-boundary",
+            "since": "0.1.20",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "cap",
+                "unit": "a",
+                "repeat": 262144
+            },
+            "prediction": {
+                "status": "returned",
+                "bytes": 262144
+            },
+            "result": {
+                "php": {
+                    "status": "returned",
+                    "bytes": 262144
+                },
+                "ts": {
+                    "status": "returned",
+                    "bytes": 262144
+                },
+                "py": {
+                    "status": "returned",
+                    "bytes": 262144
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0029",
+            "title": "result cap: above-reference-boundary",
+            "since": "0.1.20",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "cap",
+                "unit": "a",
+                "repeat": 262145
+            },
+            "prediction": {
+                "status": "result_too_large"
+            },
+            "result": {
+                "php": {
+                    "status": "result_too_large"
+                },
+                "ts": {
+                    "status": "result_too_large"
+                },
+                "py": {
+                    "status": "result_too_large"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0030",
+            "title": "result cap: utf8-reference-boundary",
+            "since": "0.1.20",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "cap",
+                "unit": "é",
+                "repeat": 131072
+            },
+            "prediction": {
+                "status": "returned",
+                "bytes": 262144
+            },
+            "result": {
+                "php": {
+                    "status": "returned",
+                    "bytes": 262144
+                },
+                "ts": {
+                    "status": "returned",
+                    "bytes": 262144
+                },
+                "py": {
+                    "status": "returned",
+                    "bytes": 262144
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0031",
+            "title": "result cap: utf8-above-reference-boundary",
+            "since": "0.1.20",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "cap",
+                "unit": "é",
+                "repeat": 131073
+            },
+            "prediction": {
+                "status": "result_too_large"
+            },
+            "result": {
+                "php": {
+                    "status": "result_too_large"
+                },
+                "ts": {
+                    "status": "result_too_large"
+                },
+                "py": {
+                    "status": "result_too_large"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0032",
+            "title": "result cap: explicit-small-equal",
+            "since": "0.1.20",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "cap",
+                "unit": "a",
+                "repeat": 64,
+                "maxBytes": 64
+            },
+            "prediction": {
+                "status": "returned",
+                "bytes": 64
+            },
+            "result": {
+                "php": {
+                    "status": "returned",
+                    "bytes": 64
+                },
+                "ts": {
+                    "status": "returned",
+                    "bytes": 64
+                },
+                "py": {
+                    "status": "returned",
+                    "bytes": 64
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0033",
+            "title": "result cap: explicit-small-over",
+            "since": "0.1.20",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "cap",
+                "unit": "a",
+                "repeat": 65,
+                "maxBytes": 64
+            },
+            "prediction": {
+                "status": "result_too_large"
+            },
+            "result": {
+                "php": {
+                    "status": "result_too_large"
+                },
+                "ts": {
+                    "status": "result_too_large"
+                },
+                "py": {
+                    "status": "result_too_large"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0034",
+            "title": "result cap: explicit-disabled",
+            "since": "0.1.20",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "cap",
+                "unit": "a",
+                "repeat": 262145,
+                "maxBytes": 0
+            },
+            "prediction": {
+                "status": "returned",
+                "bytes": 262145
+            },
+            "result": {
+                "php": {
+                    "status": "returned",
+                    "bytes": 262145
+                },
+                "ts": {
+                    "status": "returned",
+                    "bytes": 262145
+                },
+                "py": {
+                    "status": "returned",
+                    "bytes": 262145
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0035",
+            "title": "result cap: oversized-error",
+            "since": "0.1.20",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "cap",
+                "unit": "a",
+                "repeat": 262145,
+                "isError": true
+            },
+            "prediction": {
+                "status": "result_too_large"
+            },
+            "result": {
+                "php": {
+                    "status": "result_too_large"
+                },
+                "ts": {
+                    "status": "result_too_large"
+                },
+                "py": {
+                    "status": "result_too_large"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0036",
+            "title": "named invalid mirrored schema refuses",
+            "since": "0.1.20",
+            "notes": "Invalid or duplicate mirrored annotations must not silently remove an explicitly trusted tool. A wildcard exclusion is visible to the application. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "mirror",
+                "trust": [
+                    "owned"
+                ],
+                "tools": [
+                    {
+                        "name": "owned",
+                        "description": "Owned fixture",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {
+                                "tenant": {
+                                    "type": "object",
+                                    "x-mcp-header": "Tenant"
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "prediction": {
+                "error": "mirrored_parameter_refused"
+            },
+            "result": {
+                "php": {
+                    "error": "mirrored_parameter_refused"
+                },
+                "ts": {
+                    "error": "mirrored_parameter_refused"
+                },
+                "py": {
+                    "error": "mirrored_parameter_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0037",
+            "title": "wildcard invalid mirrored schema is visible",
+            "since": "0.1.20",
+            "notes": "Invalid or duplicate mirrored annotations must not silently remove an explicitly trusted tool. A wildcard exclusion is visible to the application. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "mirror",
+                "trust": "*",
+                "tools": [
+                    {
+                        "name": "owned",
+                        "description": "Owned fixture",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {
+                                "tenant": {
+                                    "type": "object",
+                                    "x-mcp-header": "Tenant"
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "prediction": {
+                "offered": [],
+                "excluded": [
+                    "owned"
+                ]
+            },
+            "result": {
+                "php": {
+                    "offered": [],
+                    "excluded": [
+                        "owned"
+                    ]
+                },
+                "ts": {
+                    "offered": [],
+                    "excluded": [
+                        "owned"
+                    ]
+                },
+                "py": {
+                    "offered": [],
+                    "excluded": [
+                        "owned"
+                    ]
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0038",
+            "title": "case-insensitive duplicate mirrored header refuses",
+            "since": "0.1.20",
+            "notes": "Invalid or duplicate mirrored annotations must not silently remove an explicitly trusted tool. A wildcard exclusion is visible to the application. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "mirror",
+                "trust": [
+                    "owned"
+                ],
+                "tools": [
+                    {
+                        "name": "owned",
+                        "description": "Owned fixture",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {
+                                "a": {
+                                    "type": "string",
+                                    "x-mcp-header": "Tenant"
+                                },
+                                "b": {
+                                    "type": "string",
+                                    "x-mcp-header": "tenant"
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "prediction": {
+                "error": "mirrored_parameter_refused"
+            },
+            "result": {
+                "php": {
+                    "error": "mirrored_parameter_refused"
+                },
+                "ts": {
+                    "error": "mirrored_parameter_refused"
+                },
+                "py": {
+                    "error": "mirrored_parameter_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0039",
+            "title": "valid explicitly named mirrored schema remains offered",
+            "since": "0.1.20",
+            "notes": "Invalid or duplicate mirrored annotations must not silently remove an explicitly trusted tool. A wildcard exclusion is visible to the application. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "mirror",
+                "trust": [
+                    "owned"
+                ],
+                "tools": [
+                    {
+                        "name": "owned",
+                        "description": "Owned fixture",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {
+                                "tenant": {
+                                    "type": "string",
+                                    "x-mcp-header": "Tenant"
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "prediction": {
+                "offered": [
+                    "owned"
+                ],
+                "excluded": []
+            },
+            "result": {
+                "php": {
+                    "offered": [
+                        "owned"
+                    ],
+                    "excluded": []
+                },
+                "ts": {
+                    "offered": [
+                        "owned"
+                    ],
+                    "excluded": []
+                },
+                "py": {
+                    "offered": [
+                        "owned"
+                    ],
+                    "excluded": []
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0040",
+            "title": "missing configured tool warns without remote strings",
+            "since": "0.1.20",
+            "notes": "Server descriptions and unconfigured names must never enter the configured-name warning channel; present and wildcard controls stay quiet. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "diagnostic",
+                "trust": [
+                    "owned",
+                    "configured_missing"
+                ],
+                "tools": [
+                    {
+                        "name": "owned",
+                        "description": "Owned fixture",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    },
+                    {
+                        "name": "REMOTE_SENTINEL",
+                        "description": "REMOTE_SECRET",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    }
+                ]
+            },
+            "prediction": {
+                "offered": [
+                    "owned"
+                ],
+                "warned": true,
+                "private": true
+            },
+            "result": {
+                "php": {
+                    "offered": [
+                        "owned"
+                    ],
+                    "warned": true,
+                    "private": true
+                },
+                "ts": {
+                    "offered": [
+                        "owned"
+                    ],
+                    "warned": true,
+                    "private": true
+                },
+                "py": {
+                    "offered": [
+                        "owned"
+                    ],
+                    "warned": true,
+                    "private": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0041",
+            "title": "all configured tools present stays quiet",
+            "since": "0.1.20",
+            "notes": "Server descriptions and unconfigured names must never enter the configured-name warning channel; present and wildcard controls stay quiet. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "diagnostic",
+                "trust": [
+                    "owned"
+                ],
+                "tools": [
+                    {
+                        "name": "owned",
+                        "description": "Owned fixture",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    },
+                    {
+                        "name": "REMOTE_SENTINEL",
+                        "description": "REMOTE_SECRET",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    }
+                ]
+            },
+            "prediction": {
+                "offered": [
+                    "owned"
+                ],
+                "warned": false,
+                "private": true
+            },
+            "result": {
+                "php": {
+                    "offered": [
+                        "owned"
+                    ],
+                    "warned": false,
+                    "private": true
+                },
+                "ts": {
+                    "offered": [
+                        "owned"
+                    ],
+                    "warned": false,
+                    "private": true
+                },
+                "py": {
+                    "offered": [
+                        "owned"
+                    ],
+                    "warned": false,
+                    "private": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "mcb-0042",
+            "title": "wildcard has no missing configured names",
+            "since": "0.1.20",
+            "notes": "Server descriptions and unconfigured names must never enter the configured-name warning channel; present and wildcard controls stay quiet. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
+            "given": {
+                "kind": "diagnostic",
+                "trust": "*",
+                "tools": [
+                    {
+                        "name": "owned",
+                        "description": "Owned fixture",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    },
+                    {
+                        "name": "REMOTE_SENTINEL",
+                        "description": "REMOTE_SECRET",
+                        "inputSchema": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    }
+                ]
+            },
+            "prediction": {
+                "offered": [
+                    "owned",
+                    "REMOTE_SENTINEL"
+                ],
+                "warned": false,
+                "private": true
+            },
+            "result": {
+                "php": {
+                    "offered": [
+                        "owned",
+                        "REMOTE_SENTINEL"
+                    ],
+                    "warned": false,
+                    "private": true
+                },
+                "ts": {
+                    "offered": [
+                        "owned",
+                        "REMOTE_SENTINEL"
+                    ],
+                    "warned": false,
+                    "private": true
+                },
+                "py": {
+                    "offered": [
+                        "owned",
+                        "REMOTE_SENTINEL"
+                    ],
+                    "warned": false,
+                    "private": true
+                }
+            },
+            "agrees": true
+        }
+    ]
+}

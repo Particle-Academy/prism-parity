@@ -5891,6 +5891,1176 @@
         "environment_names",
         "cases"
       ]
+    },
+    "mcpBehaviorDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "suite": {
+          "const": "mcp-behavior"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated_by": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^mcb-[0-9]{4}$"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "since": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  },
+                  "given": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "kind": {
+                            "const": "flag"
+                          },
+                          "present": {
+                            "const": false
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "present"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "kind": {
+                            "const": "flag"
+                          },
+                          "present": {
+                            "const": true
+                          },
+                          "value": {
+                            "type": [
+                              "null",
+                              "boolean",
+                              "number",
+                              "string",
+                              "array",
+                              "object"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "present",
+                          "value"
+                        ]
+                      }
+                    ]
+                  },
+                  "prediction": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "isError": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "isError"
+                    ]
+                  },
+                  "result": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "php": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "isError": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "isError"
+                        ]
+                      },
+                      "ts": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "isError": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "isError"
+                        ]
+                      },
+                      "py": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "isError": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "isError"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "php",
+                      "ts",
+                      "py"
+                    ]
+                  },
+                  "agrees": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "since",
+                  "notes",
+                  "given",
+                  "prediction",
+                  "result",
+                  "agrees"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^mcb-[0-9]{4}$"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "since": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  },
+                  "given": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "trust"
+                      },
+                      "trust": {
+                        "oneOf": [
+                          {
+                            "const": "missing"
+                          },
+                          {
+                            "const": "*"
+                          },
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "maxItems": 100
+                          }
+                        ]
+                      },
+                      "tools": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        },
+                        "maxItems": 100
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "trust",
+                      "tools"
+                    ]
+                  },
+                  "prediction": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "dispatches": {
+                            "const": 1
+                          },
+                          "offered": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "maxItems": 100
+                          }
+                        },
+                        "required": [
+                          "dispatches",
+                          "offered"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "dispatches": {
+                            "const": 0
+                          },
+                          "error": {
+                            "const": "server_not_trusted"
+                          },
+                          "empty": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "dispatches",
+                          "error",
+                          "empty"
+                        ]
+                      }
+                    ]
+                  },
+                  "result": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "php": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "dispatches": {
+                                "const": 1
+                              },
+                              "offered": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "maxItems": 100
+                              }
+                            },
+                            "required": [
+                              "dispatches",
+                              "offered"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "dispatches": {
+                                "const": 0
+                              },
+                              "error": {
+                                "const": "server_not_trusted"
+                              },
+                              "empty": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "dispatches",
+                              "error",
+                              "empty"
+                            ]
+                          }
+                        ]
+                      },
+                      "ts": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "dispatches": {
+                                "const": 1
+                              },
+                              "offered": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "maxItems": 100
+                              }
+                            },
+                            "required": [
+                              "dispatches",
+                              "offered"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "dispatches": {
+                                "const": 0
+                              },
+                              "error": {
+                                "const": "server_not_trusted"
+                              },
+                              "empty": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "dispatches",
+                              "error",
+                              "empty"
+                            ]
+                          }
+                        ]
+                      },
+                      "py": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "dispatches": {
+                                "const": 1
+                              },
+                              "offered": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "maxItems": 100
+                              }
+                            },
+                            "required": [
+                              "dispatches",
+                              "offered"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "dispatches": {
+                                "const": 0
+                              },
+                              "error": {
+                                "const": "server_not_trusted"
+                              },
+                              "empty": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "dispatches",
+                              "error",
+                              "empty"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "php",
+                      "ts",
+                      "py"
+                    ]
+                  },
+                  "agrees": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "since",
+                  "notes",
+                  "given",
+                  "prediction",
+                  "result",
+                  "agrees"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^mcb-[0-9]{4}$"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "since": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  },
+                  "given": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "content"
+                      },
+                      "content": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        },
+                        "maxItems": 100
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "content"
+                    ]
+                  },
+                  "prediction": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "text": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "text"
+                    ]
+                  },
+                  "result": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "php": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "text": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "text"
+                        ]
+                      },
+                      "ts": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "text": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "text"
+                        ]
+                      },
+                      "py": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "text": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "text"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "php",
+                      "ts",
+                      "py"
+                    ]
+                  },
+                  "agrees": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "since",
+                  "notes",
+                  "given",
+                  "prediction",
+                  "result",
+                  "agrees"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^mcb-[0-9]{4}$"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "since": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  },
+                  "given": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "cap"
+                      },
+                      "unit": {
+                        "enum": [
+                          "a",
+                          "é"
+                        ]
+                      },
+                      "repeat": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 262145
+                      },
+                      "maxBytes": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 262144
+                      },
+                      "isError": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "unit",
+                      "repeat"
+                    ]
+                  },
+                  "prediction": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "status": {
+                            "const": "returned"
+                          },
+                          "bytes": {
+                            "type": "integer",
+                            "minimum": 0
+                          }
+                        },
+                        "required": [
+                          "status",
+                          "bytes"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "status": {
+                            "const": "result_too_large"
+                          }
+                        },
+                        "required": [
+                          "status"
+                        ]
+                      }
+                    ]
+                  },
+                  "result": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "php": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "status": {
+                                "const": "returned"
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "minimum": 0
+                              }
+                            },
+                            "required": [
+                              "status",
+                              "bytes"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "status": {
+                                "const": "result_too_large"
+                              }
+                            },
+                            "required": [
+                              "status"
+                            ]
+                          }
+                        ]
+                      },
+                      "ts": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "status": {
+                                "const": "returned"
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "minimum": 0
+                              }
+                            },
+                            "required": [
+                              "status",
+                              "bytes"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "status": {
+                                "const": "result_too_large"
+                              }
+                            },
+                            "required": [
+                              "status"
+                            ]
+                          }
+                        ]
+                      },
+                      "py": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "status": {
+                                "const": "returned"
+                              },
+                              "bytes": {
+                                "type": "integer",
+                                "minimum": 0
+                              }
+                            },
+                            "required": [
+                              "status",
+                              "bytes"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "status": {
+                                "const": "result_too_large"
+                              }
+                            },
+                            "required": [
+                              "status"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "php",
+                      "ts",
+                      "py"
+                    ]
+                  },
+                  "agrees": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "since",
+                  "notes",
+                  "given",
+                  "prediction",
+                  "result",
+                  "agrees"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^mcb-[0-9]{4}$"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "since": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  },
+                  "given": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "mirror"
+                      },
+                      "trust": {
+                        "oneOf": [
+                          {
+                            "const": "missing"
+                          },
+                          {
+                            "const": "*"
+                          },
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "maxItems": 100
+                          }
+                        ]
+                      },
+                      "tools": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        },
+                        "maxItems": 100
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "trust",
+                      "tools"
+                    ]
+                  },
+                  "prediction": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "offered": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "maxItems": 100
+                          },
+                          "excluded": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "maxItems": 100
+                          }
+                        },
+                        "required": [
+                          "offered",
+                          "excluded"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "error": {
+                            "const": "mirrored_parameter_refused"
+                          }
+                        },
+                        "required": [
+                          "error"
+                        ]
+                      }
+                    ]
+                  },
+                  "result": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "php": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "offered": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "maxItems": 100
+                              },
+                              "excluded": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "maxItems": 100
+                              }
+                            },
+                            "required": [
+                              "offered",
+                              "excluded"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "error": {
+                                "const": "mirrored_parameter_refused"
+                              }
+                            },
+                            "required": [
+                              "error"
+                            ]
+                          }
+                        ]
+                      },
+                      "ts": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "offered": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "maxItems": 100
+                              },
+                              "excluded": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "maxItems": 100
+                              }
+                            },
+                            "required": [
+                              "offered",
+                              "excluded"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "error": {
+                                "const": "mirrored_parameter_refused"
+                              }
+                            },
+                            "required": [
+                              "error"
+                            ]
+                          }
+                        ]
+                      },
+                      "py": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "offered": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "maxItems": 100
+                              },
+                              "excluded": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                },
+                                "maxItems": 100
+                              }
+                            },
+                            "required": [
+                              "offered",
+                              "excluded"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "error": {
+                                "const": "mirrored_parameter_refused"
+                              }
+                            },
+                            "required": [
+                              "error"
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "php",
+                      "ts",
+                      "py"
+                    ]
+                  },
+                  "agrees": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "since",
+                  "notes",
+                  "given",
+                  "prediction",
+                  "result",
+                  "agrees"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^mcb-[0-9]{4}$"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "since": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  },
+                  "given": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "diagnostic"
+                      },
+                      "trust": {
+                        "oneOf": [
+                          {
+                            "const": "missing"
+                          },
+                          {
+                            "const": "*"
+                          },
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "maxItems": 100
+                          }
+                        ]
+                      },
+                      "tools": {
+                        "type": "array",
+                        "items": {
+                          "type": "object"
+                        },
+                        "maxItems": 100
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "trust",
+                      "tools"
+                    ]
+                  },
+                  "prediction": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "offered": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "maxItems": 100
+                      },
+                      "warned": {
+                        "type": "boolean"
+                      },
+                      "private": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "offered",
+                      "warned",
+                      "private"
+                    ]
+                  },
+                  "result": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "php": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "offered": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "maxItems": 100
+                          },
+                          "warned": {
+                            "type": "boolean"
+                          },
+                          "private": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "offered",
+                          "warned",
+                          "private"
+                        ]
+                      },
+                      "ts": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "offered": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "maxItems": 100
+                          },
+                          "warned": {
+                            "type": "boolean"
+                          },
+                          "private": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "offered",
+                          "warned",
+                          "private"
+                        ]
+                      },
+                      "py": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "offered": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "maxItems": 100
+                          },
+                          "warned": {
+                            "type": "boolean"
+                          },
+                          "private": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "offered",
+                          "warned",
+                          "private"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "php",
+                      "ts",
+                      "py"
+                    ]
+                  },
+                  "agrees": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "since",
+                  "notes",
+                  "given",
+                  "prediction",
+                  "result",
+                  "agrees"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "generated_by",
+        "scope",
+        "cases"
+      ]
     }
   },
   "oneOf": [
@@ -5959,6 +7129,9 @@
     },
     {
       "$ref": "#/$defs/providerConfigurationDocument"
+    },
+    {
+      "$ref": "#/$defs/mcpBehaviorDocument"
     }
   ]
 }

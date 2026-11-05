@@ -17,3 +17,6 @@ package-lock.json
 # observed reporting success while silently keeping the old bytes, so the mirror
 # is never a source of truth. Delete it and reinstall.
 runners/php/vendor/
+
+# Fresh published MCP consumers and evidence; never corpus source.
+.mcp-published/
