@@ -199,13 +199,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          coverage: none
       - name: Fetch the third-party allowlist
         uses: actions/checkout@v4
         with:
@@ -279,6 +272,13 @@ jobs:
           node prism-parity/tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo prism-mcp
           node prism-parity/tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo prism-mcp-ts
           node prism-parity/tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo prism-mcp-py
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
       - name: Record exact candidate source identities
         run: |
           git -C prism-mcp log -1 --format=%H
