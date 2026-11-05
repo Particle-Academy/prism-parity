@@ -5,6 +5,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { compile } from '@particle-academy/fancy-schema';
 import { failureUsageCaseFailures } from './streaming/failure-usage.mjs';
+import { providerConfigurationFailures } from './provider-configuration/contract.mjs';
 
 const repository = dirname(dirname(fileURLToPath(import.meta.url)));
 
@@ -18,7 +19,8 @@ export function validateCases(root = repository) {
     try {
       const document = JSON.parse(readFileSync(join(root, 'suites', suite, 'cases.json'), 'utf8'));
       const { valid: schemaValid, errors } = check(document);
-      const semantic = suite === 'stream-failure-usage' ? failureUsageCaseFailures(document) : [];
+      const semantic = suite === 'stream-failure-usage' ? failureUsageCaseFailures(document)
+        : suite === 'provider-configuration' ? providerConfigurationFailures(document) : [];
       const valid = schemaValid && semantic.length === 0;
       if (valid) console.log(`  ok — ${suite}`);
       else {
