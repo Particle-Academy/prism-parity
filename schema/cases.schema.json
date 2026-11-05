@@ -4733,6 +4733,226 @@
           }
         }
       }
+    },
+    "toolListObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entry": {
+          "enum": [
+            "send",
+            "stream",
+            "structured"
+          ]
+        },
+        "requests": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "error": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "class": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "class",
+                "message"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "entry",
+        "requests",
+        "error"
+      ]
+    },
+    "toolListCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "names": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expected": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "named": {
+          "type": "boolean"
+        },
+        "authorize": {
+          "type": "boolean"
+        },
+        "wildcardMode": {
+          "type": "boolean"
+        },
+        "result": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "php": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "send": {
+                  "$ref": "#/$defs/toolListObservation"
+                },
+                "stream": {
+                  "$ref": "#/$defs/toolListObservation"
+                }
+              },
+              "required": [
+                "send",
+                "stream"
+              ]
+            },
+            "ts": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "send": {
+                  "$ref": "#/$defs/toolListObservation"
+                },
+                "structured": {
+                  "$ref": "#/$defs/toolListObservation"
+                }
+              },
+              "required": [
+                "send",
+                "structured"
+              ]
+            },
+            "py": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "send": {
+                  "$ref": "#/$defs/toolListObservation"
+                },
+                "structured": {
+                  "$ref": "#/$defs/toolListObservation"
+                }
+              },
+              "required": [
+                "send",
+                "structured"
+              ]
+            }
+          },
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "since",
+        "notes",
+        "names",
+        "expected",
+        "named",
+        "authorize",
+        "wildcardMode",
+        "result"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "toolListDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "suite": {
+          "const": "harness-tool-list-default"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "generated_by": {
+          "type": "string"
+        },
+        "pins_note": {
+          "type": "string"
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 11,
+          "items": {
+            "$ref": "#/$defs/toolListCase"
+          }
+        }
+      },
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "generated_by",
+        "pins_note",
+        "cases"
+      ]
     }
   },
   "oneOf": [
@@ -4795,6 +5015,9 @@
     },
     {
       "$ref": "#/$defs/failureUsageDocument"
+    },
+    {
+      "$ref": "#/$defs/toolListDocument"
     }
   ]
 }
