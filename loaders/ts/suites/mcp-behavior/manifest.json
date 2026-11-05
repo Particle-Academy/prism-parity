@@ -3,16 +3,33 @@
     "title": "MCP admission, diagnostics and guarded result boundaries",
     "kind": "security-corpus",
     "pins": "An untrusted server must not learn it has an audience before application trust is declared. Missing and empty trust, withdrawn explicitly requested tools, malformed failure flags and omitted content must remain observable. A drifting byte cap lets a server spend a different token budget; a silently successful null failure flag lets model reasoning consume a failed tool as success. Explicitly named invalid annotations refuse instead of silently shortening the offered capability set.",
-    "scope": "A16/A17/A18/A19/A20/A28 boundary slice only. Callback cancellation/identity/immutability, exclusion reset and asynchronous failures require native port tests. Raw mirrored-header value encoding G132, transport/cache gaps B24/B25, provider execution, G43 and G125 remain outside this suite. Current observations are candidate-source evidence; released-PHP regeneration and exact hosted/main proof are still required.",
+    "scope": "A16/A17/A18/A19/A20/A28 boundary slice only. Callback cancellation/identity/immutability, exclusion reset and asynchronous failures require native port tests. Raw mirrored-header value encoding G132, transport/cache gaps B24/B25, provider execution, G43 and G125 remain outside this suite. Observations are regenerated from normal PHP0.3.0/npm0.4.0/PyPI0.3.0 artifacts after exact archive/runtime verification. Current canonical hosted/main proof remains required.",
     "construction": "Native PHP PendingConnection/Client hydration and RemoteTool, with a fixture at the protocol-reply boundary. Native TS/Python clients use injected transports. PHP refuses stray HTTP, TS refuses fetch and Python fences DNS/connect after event-loop bootstrap. PHP namespaces public Tool names; only the fixed configured-server prefix is normalized. Observations come from execution; independent predictions were written before the new adapters ran.",
-    "findings": "Candidate implementations agree and match the independently stated predictions. Agreement is not a proof that all implementations are safe. Initial Python adapter text stdin on Windows changed the result-body UTF-8 boundary input before SDK execution; the retained refusal was corrected by reading JSON bytes, without changing SDK inputs, predictions or source. No released-artifact or broad MCP parity closure is claimed.",
+    "findings": "Normally published implementations agree on all42 native cases and match independent prewritten predictions. Normal PHP current and floor consumers also agree. Agreement does not prove every implementation safe; callback/cancellation and immutable-event controls remain in package-native tests. Initial Windows UTF-8 stdin and old-dependency PHP8.4 deprecation stdout refusals are retained; only probe decoding/diagnostic routing changed, never SDK inputs or predictions. No broad MCP or registered-gap closure is claimed.",
     "pattern_doc": "docs/decisions/0015-the-error-path-is-a-channel.md",
     "reference": "php",
-    "comparison": { "mode": "canonical-json-string" },
-    "discrimination": { "status": "unprobed", "gap": "Package production mutation controls are archived separately. Standing canonical mutation wiring and published reference verification are not yet delivered." },
+    "comparison": {
+        "mode": "canonical-json-string"
+    },
+    "discrimination": {
+        "status": "unprobed",
+        "gap": "Package production mutation controls are archived separately. Standing canonical mutation wiring and published reference verification are not yet delivered."
+    },
     "implementations": {
-        "php": { "status": "full", "runner": "prism-parity:tools/mcp-behavior.mjs", "note": "Native candidate adapter; run php --check. Published PHP reference installation and CI wiring remain separate." },
-        "ts": { "status": "full", "runner": "prism-parity:tools/mcp-behavior.mjs", "note": "Native candidate adapter; run ts --check. Hosted/current-main and artifact proofs remain separate." },
-        "py": { "status": "full", "runner": "prism-parity:tools/mcp-behavior.mjs", "note": "Native candidate adapter; run py --check. Hosted/current-main and artifact proofs remain separate." }
+        "php": {
+            "status": "full",
+            "runner": "prism-parity:tools/mcp-behavior.mjs",
+            "note": "Native published PHP0.3.0 reference adapter; run php --check against a verified normal installation. CI verifies released runtime bytes before execution."
+        },
+        "ts": {
+            "status": "full",
+            "runner": "prism-parity:tools/mcp-behavior.mjs",
+            "note": "Native published npm0.4.0 adapter; run ts --check against a verified normal installation."
+        },
+        "py": {
+            "status": "full",
+            "runner": "prism-parity:tools/mcp-behavior.mjs",
+            "note": "Native published PyPI0.3.0 adapter; run py --check against a verified normal installation."
+        }
     }
 }

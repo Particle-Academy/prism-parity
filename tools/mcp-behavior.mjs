@@ -22,7 +22,8 @@ let rows;
 if (language === 'ts') rows = await observe(document, process.env.PRISM_MCP_TS_DIST ?? resolve(root, '../prism-mcp-ts/dist/index.js'));
 else {
   const bin = language === 'php' ? process.env.PRISM_MCP_PHP_BINARY ?? 'php' : process.env.PRISM_MCP_PY_BINARY ?? 'python';
-  const result = spawnSync(bin, [join(root, 'tools/mcp-behavior', language === 'php' ? 'php.php' : 'py.py')],
+  const nativeArgs = [...(language === 'php' ? ['-d', 'display_errors=stderr'] : []), join(root, 'tools/mcp-behavior', language === 'php' ? 'php.php' : 'py.py')];
+  const result = spawnSync(bin, nativeArgs,
     { input: JSON.stringify(document), encoding: 'utf8', timeout: 120000, maxBuffer: 8 * 1024 * 1024, windowsHide: true });
   if (result.stderr) process.stderr.write(result.stderr);
   assert.equal(result.status, 0, 'Native MCP observer did not complete');

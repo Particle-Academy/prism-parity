@@ -2,14 +2,14 @@
     "suite": "mcp-behavior",
     "schema_version": 1,
     "corpus_version": "0.1.20",
-    "generated_by": "Native tools/mcp-behavior adapters executed against owned candidate SDK sources 2026-11-05T19:48:26.997Z. Candidate observations ONLY, not released-PHP goldens. Initial Windows stdin CP1252 input-decoding refusal retained; Python adapter now reads UTF-8 JSON bytes. No SDK/golden/prediction change.",
-    "scope": "A16/A17/A18/A19/A20/A28 only. Candidate source observations are not released-PHP goldens. Callback failure, immutable events, exclusion reset and cancellation require native per-port tests. No raw mirrored-header encoding, HTTP transport, cache, live provider or G125 change.",
+    "generated_by": "Native adapters executed against normal Packagist particle-academy/prism-mcp 0.3.0 (1de314c3859628dbd04629b80d8e81dbbad67323), npm @particle-academy/prism-mcp 0.4.0 (913403fc288273bdaa5d9361333b1dc8ebabec10), and PyPI prism-ai-mcp 0.3.0 (6b6ae1eea3c9c0a90cd95c37cd915f5e586d876a) at 2026-11-05T22:54:48.958Z. Published PHP observations replace the candidate reference column; no predictions, inputs or observed values changed. Primary archives and installed runtime bytes were independently verified before execution.",
+    "scope": "A16/A17/A18/A19/A20/A28 only. Reference observations are from normally installed PHP MCP 0.3.0; port observations are from normally installed npm 0.4.0 and PyPI 0.3.0. Callback failure, immutable events, exclusion reset and cancellation require native per-port tests. No raw mirrored-header encoding, HTTP transport, cache, live provider or G125 change.",
     "cases": [
         {
             "id": "mcb-0001",
             "title": "error flag: absent",
             "since": "0.1.20",
-            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "flag",
                 "present": false
@@ -34,7 +34,7 @@
             "id": "mcb-0002",
             "title": "error flag: null",
             "since": "0.1.20",
-            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "flag",
                 "present": true,
@@ -60,7 +60,7 @@
             "id": "mcb-0003",
             "title": "error flag: false",
             "since": "0.1.20",
-            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "flag",
                 "present": true,
@@ -86,7 +86,7 @@
             "id": "mcb-0004",
             "title": "error flag: true",
             "since": "0.1.20",
-            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "flag",
                 "present": true,
@@ -112,7 +112,7 @@
             "id": "mcb-0005",
             "title": "error flag: zero",
             "since": "0.1.20",
-            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "flag",
                 "present": true,
@@ -138,7 +138,7 @@
             "id": "mcb-0006",
             "title": "error flag: one",
             "since": "0.1.20",
-            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "flag",
                 "present": true,
@@ -164,7 +164,7 @@
             "id": "mcb-0007",
             "title": "error flag: empty-string",
             "since": "0.1.20",
-            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "flag",
                 "present": true,
@@ -190,7 +190,7 @@
             "id": "mcb-0008",
             "title": "error flag: false-string",
             "since": "0.1.20",
-            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "flag",
                 "present": true,
@@ -216,7 +216,7 @@
             "id": "mcb-0009",
             "title": "error flag: true-string",
             "since": "0.1.20",
-            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "flag",
                 "present": true,
@@ -242,7 +242,7 @@
             "id": "mcb-0010",
             "title": "error flag: empty-list",
             "since": "0.1.20",
-            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "flag",
                 "present": true,
@@ -268,7 +268,7 @@
             "id": "mcb-0011",
             "title": "error flag: empty-object",
             "since": "0.1.20",
-            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Malformed error flags must never turn a failed tool into success. Absent and literal false are independent positive controls. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "flag",
                 "present": true,
@@ -294,7 +294,7 @@
             "id": "mcb-0012",
             "title": "trust before discovery: \"missing\"",
             "since": "0.1.20",
-            "notes": "Missing or empty allowlists must refuse before disclosure to the transport; the wildcard empty-server control remains valid. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Missing or empty allowlists must refuse before disclosure to the transport; the wildcard empty-server control remains valid. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "trust",
                 "trust": "missing",
@@ -328,7 +328,7 @@
             "id": "mcb-0013",
             "title": "trust before discovery: []",
             "since": "0.1.20",
-            "notes": "Missing or empty allowlists must refuse before disclosure to the transport; the wildcard empty-server control remains valid. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Missing or empty allowlists must refuse before disclosure to the transport; the wildcard empty-server control remains valid. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "trust",
                 "trust": [],
@@ -362,7 +362,7 @@
             "id": "mcb-0014",
             "title": "trust before discovery: \"*\"",
             "since": "0.1.20",
-            "notes": "Missing or empty allowlists must refuse before disclosure to the transport; the wildcard empty-server control remains valid. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Missing or empty allowlists must refuse before disclosure to the transport; the wildcard empty-server control remains valid. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "trust",
                 "trust": "*",
@@ -392,7 +392,7 @@
             "id": "mcb-0015",
             "title": "omitted content: mixed-image",
             "since": "0.1.20",
-            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "content",
                 "content": [
@@ -431,7 +431,7 @@
             "id": "mcb-0016",
             "title": "omitted content: audio",
             "since": "0.1.20",
-            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "content",
                 "content": [
@@ -461,7 +461,7 @@
             "id": "mcb-0017",
             "title": "omitted content: resource",
             "since": "0.1.20",
-            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "content",
                 "content": [
@@ -494,7 +494,7 @@
             "id": "mcb-0018",
             "title": "omitted content: resource-link",
             "since": "0.1.20",
-            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "content",
                 "content": [
@@ -524,7 +524,7 @@
             "id": "mcb-0019",
             "title": "omitted content: nontext-with-text",
             "since": "0.1.20",
-            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "content",
                 "content": [
@@ -554,7 +554,7 @@
             "id": "mcb-0020",
             "title": "omitted content: missing-type-with-text",
             "since": "0.1.20",
-            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "content",
                 "content": [
@@ -583,7 +583,7 @@
             "id": "mcb-0021",
             "title": "omitted content: text-with-nonstring",
             "since": "0.1.20",
-            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "content",
                 "content": [
@@ -613,7 +613,7 @@
             "id": "mcb-0022",
             "title": "omitted content: unknown-type",
             "since": "0.1.20",
-            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "content",
                 "content": [
@@ -642,7 +642,7 @@
             "id": "mcb-0023",
             "title": "omitted content: nonstring-type",
             "since": "0.1.20",
-            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "content",
                 "content": [
@@ -671,7 +671,7 @@
             "id": "mcb-0024",
             "title": "omitted content: empty-text",
             "since": "0.1.20",
-            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "content",
                 "content": [
@@ -701,7 +701,7 @@
             "id": "mcb-0025",
             "title": "omitted content: empty-content",
             "since": "0.1.20",
-            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Hostile nontext payload data or stray text must not be silently forwarded or discarded. Ordered omission markers preserve visible loss. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "content",
                 "content": []
@@ -726,7 +726,7 @@
             "id": "mcb-0026",
             "title": "result cap: old-boundary",
             "since": "0.1.20",
-            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "cap",
                 "unit": "a",
@@ -756,7 +756,7 @@
             "id": "mcb-0027",
             "title": "result cap: above-old-boundary",
             "since": "0.1.20",
-            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "cap",
                 "unit": "a",
@@ -786,7 +786,7 @@
             "id": "mcb-0028",
             "title": "result cap: reference-boundary",
             "since": "0.1.20",
-            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "cap",
                 "unit": "a",
@@ -816,7 +816,7 @@
             "id": "mcb-0029",
             "title": "result cap: above-reference-boundary",
             "since": "0.1.20",
-            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "cap",
                 "unit": "a",
@@ -842,7 +842,7 @@
             "id": "mcb-0030",
             "title": "result cap: utf8-reference-boundary",
             "since": "0.1.20",
-            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "cap",
                 "unit": "é",
@@ -872,7 +872,7 @@
             "id": "mcb-0031",
             "title": "result cap: utf8-above-reference-boundary",
             "since": "0.1.20",
-            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "cap",
                 "unit": "é",
@@ -898,7 +898,7 @@
             "id": "mcb-0032",
             "title": "result cap: explicit-small-equal",
             "since": "0.1.20",
-            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "cap",
                 "unit": "a",
@@ -929,7 +929,7 @@
             "id": "mcb-0033",
             "title": "result cap: explicit-small-over",
             "since": "0.1.20",
-            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "cap",
                 "unit": "a",
@@ -956,7 +956,7 @@
             "id": "mcb-0034",
             "title": "result cap: explicit-disabled",
             "since": "0.1.20",
-            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "cap",
                 "unit": "a",
@@ -987,7 +987,7 @@
             "id": "mcb-0035",
             "title": "result cap: oversized-error",
             "since": "0.1.20",
-            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "UTF-8 byte boundaries and oversized success/error results must refuse without truncation; explicit and disabled limits remain observable. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "cap",
                 "unit": "a",
@@ -1014,7 +1014,7 @@
             "id": "mcb-0036",
             "title": "named invalid mirrored schema refuses",
             "since": "0.1.20",
-            "notes": "Invalid or duplicate mirrored annotations must not silently remove an explicitly trusted tool. A wildcard exclusion is visible to the application. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Invalid or duplicate mirrored annotations must not silently remove an explicitly trusted tool. A wildcard exclusion is visible to the application. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "mirror",
                 "trust": [
@@ -1056,7 +1056,7 @@
             "id": "mcb-0037",
             "title": "wildcard invalid mirrored schema is visible",
             "since": "0.1.20",
-            "notes": "Invalid or duplicate mirrored annotations must not silently remove an explicitly trusted tool. A wildcard exclusion is visible to the application. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Invalid or duplicate mirrored annotations must not silently remove an explicitly trusted tool. A wildcard exclusion is visible to the application. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "mirror",
                 "trust": "*",
@@ -1108,7 +1108,7 @@
             "id": "mcb-0038",
             "title": "case-insensitive duplicate mirrored header refuses",
             "since": "0.1.20",
-            "notes": "Invalid or duplicate mirrored annotations must not silently remove an explicitly trusted tool. A wildcard exclusion is visible to the application. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Invalid or duplicate mirrored annotations must not silently remove an explicitly trusted tool. A wildcard exclusion is visible to the application. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "mirror",
                 "trust": [
@@ -1154,7 +1154,7 @@
             "id": "mcb-0039",
             "title": "valid explicitly named mirrored schema remains offered",
             "since": "0.1.20",
-            "notes": "Invalid or duplicate mirrored annotations must not silently remove an explicitly trusted tool. A wildcard exclusion is visible to the application. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Invalid or duplicate mirrored annotations must not silently remove an explicitly trusted tool. A wildcard exclusion is visible to the application. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "mirror",
                 "trust": [
@@ -1208,7 +1208,7 @@
             "id": "mcb-0040",
             "title": "missing configured tool warns without remote strings",
             "since": "0.1.20",
-            "notes": "Server descriptions and unconfigured names must never enter the configured-name warning channel; present and wildcard controls stay quiet. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Server descriptions and unconfigured names must never enter the configured-name warning channel; present and wildcard controls stay quiet. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "diagnostic",
                 "trust": [
@@ -1270,7 +1270,7 @@
             "id": "mcb-0041",
             "title": "all configured tools present stays quiet",
             "since": "0.1.20",
-            "notes": "Server descriptions and unconfigured names must never enter the configured-name warning channel; present and wildcard controls stay quiet. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Server descriptions and unconfigured names must never enter the configured-name warning channel; present and wildcard controls stay quiet. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "diagnostic",
                 "trust": [
@@ -1331,7 +1331,7 @@
             "id": "mcb-0042",
             "title": "wildcard has no missing configured names",
             "since": "0.1.20",
-            "notes": "Server descriptions and unconfigured names must never enter the configured-name warning channel; present and wildcard controls stay quiet. Prediction predates native execution; result columns are execution output, currently candidate source only.",
+            "notes": "Server descriptions and unconfigured names must never enter the configured-name warning channel; present and wildcard controls stay quiet. Prediction predates native execution; result columns are execution output, recorded from normal published packages.",
             "given": {
                 "kind": "diagnostic",
                 "trust": "*",

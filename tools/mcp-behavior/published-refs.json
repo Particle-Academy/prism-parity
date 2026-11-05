@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "php": {
+    "version": "0.3.0",
+    "source": "1de314c3859628dbd04629b80d8e81dbbad67323",
+    "files": {
+      ".gitattributes": "a514aa5afd2f2fff09c1345485775e3c68354b6fa30c6aa33da89c3042e8ec57",
+      "AGENTS.md": "c4755fa818284073cafbf4a366dc6b41f8c0adf38ecde116eb871b1cbc386b08",
+      "CHANGELOG.md": "3109543f25aec59d782f46043fb87d18a93d3c0437f04d43d84181b36ba6b3c1",
+      "CLAUDE.md": "32ffd17202f44a77ab78b12a125727dbe6bcc5b165bc3879d9117f595ee54da7",
+      "composer.json": "8080d125705e9d44a8c5f947ca308c03bd14910eb3bff7d460e98b911e8b4f1e",
+      "LICENSE": "9c194b64f52c76e677eb84a3e30f369c82727ea58abe50670d5de3f9ccd23270",
+      "pint.json": "4efc0ba5cbe0c050afd7bbc1d7e9abd3ef20bbfe8bc23dc4662f1d60481c4335",
+      "README.md": "45526fab405e2731f8a54ac883f9c6f71738fb3708208c6c6e9db1f54556b753",
+      "RELEASING.md": "bfc79dede0ebd76f8a638912b43504db6596d4a191d8ca638164415b6fdeeee1",
+      "config/prism-mcp.php": "b3ef181b57d25d3cc316a42a0e3942de6576412bed25fe307a67986f34ec3035",
+      "src/McpManager.php": "31fe5b5fb38c12d93bf8b3bd5194bfd4d15ab5e796777690853650ab81596a23",
+      "src/PrismMcpServiceProvider.php": "97d969ebfe01e3bbef1376bfae966fcd3e30b3e02be13492b9cad692c815c52d",
+      "tools/check-release-notes.sh": "7cf46865867721df7a7820537c64343e35d10399cabc91e59f221118646da764",
+      "tools/check-release-notes.test.sh": "8a12b541d7447b09302b433fed40fc6c706549ea420b43483ec4d2a02efefefa",
+      "src/Client/Client.php": "aa577f9c507ad26c707becb5316090752ada6c652c9cefed55d5a1526af253e5",
+      "src/Client/PendingConnection.php": "84b62ae70727ef4188e5b2d4850dc89555653dcdae531da629a345da07387cab",
+      "src/Client/Protocol.php": "de78bd0b954a4faddfdbfa68d8b48b693dca3653ffbb9c04231b55475fe6355f",
+      "src/Client/ServerConfig.php": "ce24c799c0143efbd8db91c49cf024e560efd001afdbf08fc3fe0e7b199b5ef5",
+      "src/Client/ToolResult.php": "101ed97eb2ab0e659414af2bac898216d20a603baaf59d80729a4d74fce325ea",
+      "src/Contracts/ToolGate.php": "ec64117bee0f0c2b8541a96f6096d6892142fc01ad31cb58266ad18ea605f0a7",
+      "src/Contracts/Transport.php": "6528b313979779232a94d9aaf3e25ef7b5bf4ad1b0fe513edf1ebf0235023bad",
+      "src/Enums/MetaKey.php": "0e3ac1b463c237ad5865649e513088b6a18163c4114bc26af1b0df2e42514b66",
+      "src/Enums/ProtocolVersion.php": "adafebadf0fe6c18982d89df81eae93a944e288dec8b0888d915b3635852b3fd",
+      "src/Enums/RequestHeader.php": "d979120ac02aeaee72a32032db79ce2b8dd087c5cc3f049475d4f22e99d5a4c7",
+      "src/Exceptions/McpException.php": "2cadefed76ea3ce00dee7a29f4307634c7509f17c215bfd4c0d2d870a62c4528",
+      "src/Exceptions/MirroredParameterRefused.php": "156f4dd3453c9e470b2237f67430b59c3eb20a9c373c453c0cfb29162ff11371",
+      "src/Exceptions/ProtocolFailure.php": "97580068cc864fbb6e72a71ebe10f3904d108df5bf426821ac76092af0f1936b",
+      "src/Exceptions/ResultTooLarge.php": "a9e39ee01ab1abf9259ee55eee68e45c6f53224a445ba092d18fe784697e97df",
+      "src/Exceptions/ServerNotConfigured.php": "bf4af7cb0b5daad9ad81e4c0b39ae05868a755f4699e9157517d4067f6fd0bbb",
+      "src/Exceptions/ServerNotTrusted.php": "541887e69f6884be81bc930c719d07d5f8ba0ccbe709e53c1d1a8ebd5f05d3e5",
+      "src/Exceptions/ServerTimedOut.php": "c57df682068abd819143a6d03f7534c10b31d68bc95ce1945047284bf4ae33f7",
+      "src/Exceptions/ToolCallFailed.php": "0646749afddb78bbc545faa714afa69085646589d3e9c55139b33ac70192b5b0",
+      "src/Exceptions/ToolDefinitionChanged.php": "dc01ac3a4d60fa18bb7f023ed6cbf58853ce18ef612d5e3a40f07ecdedb10c77",
+      "src/Exceptions/ToolDenied.php": "12cca29edd2c72978995c279d056181ac689396461d1e431cc39a99c8cd84cfb",
+      "src/Exceptions/TransportFailure.php": "515a27800b763e39df41ad86e9a16afa579c8f467c2dd1adfd2cc353e1aa37f5",
+      "src/Exceptions/UnsupportedProtocolVersion.php": "51d755dc293f60db3f47bb76936799dd9985ac989e9e2670e25f18bab28d28a3",
+      "src/Exceptions/UnsupportedTransport.php": "e332162b66a1df9195038263daf2c011fd5ef81049e2fdbb726a57b3b9328326",
+      "src/Facades/PrismMcp.php": "b0733ee7dcc4af7a646f291923c45cbad098b95c5355d60275d54f31c07b51a6",
+      "src/Gates/AllowAll.php": "0538f53dc47fe9725e8e1a68a85703cb20b01ebcb85a9f418bf2b8ad04871d41",
+      "src/Gates/DenyAll.php": "b2253cd929bf3b0624e4f7d9001bd361588f1fed52a11438613526a63cc482ef",
+      "src/Gates/FeatureGate.php": "d5a188d39a52aff22b85a638934b6d6205cb59b0f53d7f0031cf6bf772b0e6ca",
+      "src/Gates/LaravelGate.php": "d5c86224b21a0a03f9bcf1fed61c1fc12e48a065fe225b73c2930956ec56d312",
+      "src/Support/Json.php": "9562a7bc3c489eaa15e28df4aff810fa07312fba70648465a0cb47cc27037a45",
+      "src/Support/Legible.php": "0495bfcc668e3d64457df51ee2a0ccf396d2f71b0d50e66c843f3c131b1d7786",
+      "src/Support/MirroredParameters.php": "4cc36ed80d8db49a7c4b6da273a9ebb570f4ba60840fc0764caf0bd709d4e45f",
+      "src/Support/ToolDefinition.php": "6e42bbf283e738c11c052eededcbe34bf56d4f3b1c5c9ed6d84059a915b56512",
+      "src/Tools/RemoteTool.php": "ce610b97871539a984f6d352ab762764c87581e6d42b2af34ecc922ef8a99dbe",
+      "src/Transport/HttpTransport.php": "d19fb70f03665bf0f04ce528d25c8bca537ab9e35763ef6d68fca12cf861e244",
+      "src/Trust/ResultGuard.php": "b0c3626e5697fdb6dc388fbfb241e3706194d8f6a59327bc96ab2515be542726",
+      "src/Trust/TrustPolicy.php": "385a32ce8a32ae360ff693785aa0df975b28233f45abc0b9eaa71b4841c8678b",
+      "src/Console/Commands/PinsCommand.php": "6346d3ffd4bffeddc041a584e3260701983da496e250342d48962aaac70edee2"
+    }
+  },
+  "ts": {
+    "version": "0.4.0",
+    "source": "913403fc288273bdaa5d9361333b1dc8ebabec10",
+    "integrity": "sha512-PVhVdjC6hsCqiIs7tGOI4MR/SsMgNFjCN6poZzzBlpp/bKn4uGyNjLZJWVuKEqpWfzrOmCkDQap85g3vS8hJdQ==",
+    "tarball": "https://registry.npmjs.org/@particle-academy/prism-mcp/-/prism-mcp-0.4.0.tgz",
+    "files": {
+      "dist/index.d.ts": "acdf12f2f03242ab84d38181295f930b3e6d3928a2daeeebaed3b6d4ae178993",
+      "dist/index.js": "54c332bbf47ec9e175b687d78103ec7524aeac98d3638ad0dc4f32f6a87e9edb"
+    }
+  },
+  "py": {
+    "version": "0.3.0",
+    "source": "6b6ae1eea3c9c0a90cd95c37cd915f5e586d876a",
+    "wheel": {
+      "filename": "prism_ai_mcp-0.3.0-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/56/40/2911b8404b30eb41b29b5e113b39abae6a37bcc67fce80b6d1bcd5c866d1/prism_ai_mcp-0.3.0-py3-none-any.whl",
+      "sha256": "17c148bae26247228f0606d405ffb2faa2db1c863df1716371f8257e59da5cf1"
+    },
+    "files": {
+      "prism_mcp/__init__.py": "916b687d52f2760a90d9756e45585afbe3e3d182dca9093ef59853b67e1468c3",
+      "prism_mcp/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
