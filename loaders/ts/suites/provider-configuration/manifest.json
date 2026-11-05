@@ -1,0 +1,35 @@
+{
+    "id": "provider-configuration",
+    "title": "Provider configuration presence, thinking defaults and native FIM headers",
+    "kind": "security-corpus",
+    "pins": "Per-field omitted/null/empty config precedence, reserved environment spellings, default thinking casting and request precedence, and quota headers surviving actual Mistral FIM dispatch. Drift can select a credential the caller meant to clear, enable a beta unintentionally, spend a different thinking budget or discard received quota. An empty value, an absent header and a zero quota must remain distinguishable to the consuming application.",
+    "scope": "Only three shared providers. No live provider execution, timeout measurement, warning lifecycle, or broader provider coverage. Existing rate-limit offset and streaming trace divergences are unchanged.",
+    "construction": "Native PHP manager and RequestPayloadMap; native TypeScript/Python constructors and injected provider transports. Synthetic environment values are isolated. Unexpected network is refused. FIM freezes UTC at 2027-01-15T08:00:00Z.",
+    "findings": "Candidate observations are recorded per implementation. Agreement is derived only after all three have executed; it is not a correctness claim. Independent prewritten native predictions and port transport lifecycle tests are additional evidence.",
+    "pattern_doc": "docs/decisions/0006-goldens-from-the-reference.md",
+    "reference": "php",
+    "comparison": {
+        "mode": "canonical-json-string"
+    },
+    "discrimination": {
+        "status": "unprobed",
+        "gap": "Production mutation controls and their archived results are not yet delivered for this suite."
+    },
+    "implementations": {
+        "php": {
+            "status": "full",
+            "runner": "prism-parity:tools/provider-configuration.mjs",
+            "note": "Run the corpus-loading entry point with php --check; it dispatches to the native PHP adapter. Port source mains are checked here; published alignment is not claimed."
+        },
+        "ts": {
+            "status": "full",
+            "runner": "prism-parity:tools/provider-configuration.mjs",
+            "note": "Run the corpus-loading entry point with ts --check; it dispatches to the native TypeScript adapter. Port source mains are checked here; published alignment is not claimed."
+        },
+        "py": {
+            "status": "full",
+            "runner": "prism-parity:tools/provider-configuration.mjs",
+            "note": "Run the corpus-loading entry point with py --check; it dispatches to the native Python adapter. Port source mains are checked here; published alignment is not claimed."
+        }
+    }
+}

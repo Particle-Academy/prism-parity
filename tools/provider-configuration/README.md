@@ -1,0 +1,9 @@
+The provider-configuration corpus executes provider constructors, Anthropic thinking request mapping and Mistral FIM transport dispatch. Its 162 rows record actual SDK outputs. `agrees` is derived from all three columns. The schema and semantic validator refuse missing observations, duplicate case IDs and a false agreement claim.
+
+Run `node tools/provider-configuration.mjs php --check`, then repeat with `ts` and `py`. The `--record` option explicitly updates one native column. The PHP adapter uses the normally installed reference in `runners/php/vendor`; the TypeScript adapter reads the built sibling `prism-ts/dist`; Python imports the installed package. `PRISM_AUTOLOAD`, `PRISM_TS_DIST`, `PRISM_PY_SRC`, `PRISM_PHP_BINARY` and `PRISM_PY_BINARY` are generator overrides for other checkout layouts. Loaders read only their own shipped fixtures.
+
+All environment names and values are synthetic and isolated. PHP uses Laravel's HTTP fake with stray requests prevented. TypeScript refuses unowned fetches; Python refuses DNS and sockets. FIM receives exact-case headers through the actual provider dispatch, with clock and default timezone fixed to UTC. Existing rate-limit offset divergences and G125 streaming trace differences are retained in their own suites.
+
+`python tools/provider-configuration/network-controls.py` verifies the canonical streaming adapter against the actual transport and deliberately escaping transports. Independent outer guards keep these negative controls offline even if an inner guard regresses.
+
+Deadline duration, cancellation, warning privacy, certificate verification and DNS binding require native port tests. These JSON observations do not measure those properties. Port source changes must land before the canonical CI can check their new behavior against default branches; local candidate results do not establish published alignment.

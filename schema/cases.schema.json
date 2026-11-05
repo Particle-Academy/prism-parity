@@ -4953,6 +4953,944 @@
         "pins_note",
         "cases"
       ]
+    },
+    "providerConfigurationCase": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {},
+            "title": {},
+            "since": {},
+            "notes": {},
+            "skip": {},
+            "agrees": {},
+            "given": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "config"
+                    },
+                    "provider": {
+                      "const": "anthropic"
+                    },
+                    "property": {
+                      "enum": [
+                        "apiKey",
+                        "url",
+                        "apiVersion",
+                        "betaFeatures"
+                      ]
+                    },
+                    "env": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "ANTHROPIC_API_KEY": {
+                          "type": "string"
+                        },
+                        "ANTHROPIC_URL": {
+                          "type": "string"
+                        },
+                        "ANTHROPIC_API_VERSION": {
+                          "type": "string"
+                        },
+                        "ANTHROPIC_BETA": {
+                          "type": "string"
+                        },
+                        "OPENAI_API_KEY": {
+                          "type": "string"
+                        },
+                        "OPENAI_URL": {
+                          "type": "string"
+                        },
+                        "OPENAI_ORGANIZATION": {
+                          "type": "string"
+                        },
+                        "OPENAI_PROJECT": {
+                          "type": "string"
+                        },
+                        "OPENAI_API_FORMAT": {
+                          "type": "string"
+                        },
+                        "MISTRAL_API_KEY": {
+                          "type": "string"
+                        },
+                        "MISTRAL_URL": {
+                          "type": "string"
+                        },
+                        "ANTHROPIC_DEFAULT_THINKING_BUDGET": {
+                          "type": "string"
+                        },
+                        "ANTHROPIC_BETA_FEATURES": {
+                          "type": "string"
+                        }
+                      },
+                      "required": []
+                    },
+                    "config": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "api_key": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "url": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "version": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "anthropic_beta": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": []
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "provider",
+                    "property",
+                    "config"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "config"
+                    },
+                    "provider": {
+                      "const": "openai"
+                    },
+                    "property": {
+                      "enum": [
+                        "apiKey",
+                        "url",
+                        "organization",
+                        "project",
+                        "apiFormat"
+                      ]
+                    },
+                    "env": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "ANTHROPIC_API_KEY": {
+                          "type": "string"
+                        },
+                        "ANTHROPIC_URL": {
+                          "type": "string"
+                        },
+                        "ANTHROPIC_API_VERSION": {
+                          "type": "string"
+                        },
+                        "ANTHROPIC_BETA": {
+                          "type": "string"
+                        },
+                        "OPENAI_API_KEY": {
+                          "type": "string"
+                        },
+                        "OPENAI_URL": {
+                          "type": "string"
+                        },
+                        "OPENAI_ORGANIZATION": {
+                          "type": "string"
+                        },
+                        "OPENAI_PROJECT": {
+                          "type": "string"
+                        },
+                        "OPENAI_API_FORMAT": {
+                          "type": "string"
+                        },
+                        "MISTRAL_API_KEY": {
+                          "type": "string"
+                        },
+                        "MISTRAL_URL": {
+                          "type": "string"
+                        },
+                        "ANTHROPIC_DEFAULT_THINKING_BUDGET": {
+                          "type": "string"
+                        },
+                        "ANTHROPIC_BETA_FEATURES": {
+                          "type": "string"
+                        }
+                      },
+                      "required": []
+                    },
+                    "config": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "api_key": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "url": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "organization": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "project": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "api_format": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": []
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "provider",
+                    "property",
+                    "config"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "const": "config"
+                    },
+                    "provider": {
+                      "const": "mistral"
+                    },
+                    "property": {
+                      "enum": [
+                        "apiKey",
+                        "url"
+                      ]
+                    },
+                    "env": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "ANTHROPIC_API_KEY": {
+                          "type": "string"
+                        },
+                        "ANTHROPIC_URL": {
+                          "type": "string"
+                        },
+                        "ANTHROPIC_API_VERSION": {
+                          "type": "string"
+                        },
+                        "ANTHROPIC_BETA": {
+                          "type": "string"
+                        },
+                        "OPENAI_API_KEY": {
+                          "type": "string"
+                        },
+                        "OPENAI_URL": {
+                          "type": "string"
+                        },
+                        "OPENAI_ORGANIZATION": {
+                          "type": "string"
+                        },
+                        "OPENAI_PROJECT": {
+                          "type": "string"
+                        },
+                        "OPENAI_API_FORMAT": {
+                          "type": "string"
+                        },
+                        "MISTRAL_API_KEY": {
+                          "type": "string"
+                        },
+                        "MISTRAL_URL": {
+                          "type": "string"
+                        },
+                        "ANTHROPIC_DEFAULT_THINKING_BUDGET": {
+                          "type": "string"
+                        },
+                        "ANTHROPIC_BETA_FEATURES": {
+                          "type": "string"
+                        }
+                      },
+                      "required": []
+                    },
+                    "config": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "api_key": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "url": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": []
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "provider",
+                    "property",
+                    "config"
+                  ]
+                }
+              ]
+            },
+            "result": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "php": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "value": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "error": {
+                          "const": "TypeError"
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    }
+                  ]
+                },
+                "ts": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "value": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "error": {
+                          "const": "TypeError"
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    }
+                  ]
+                },
+                "py": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "value": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "value"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "error": {
+                          "const": "TypeError"
+                        }
+                      },
+                      "required": [
+                        "error"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "php",
+                "ts",
+                "py"
+              ]
+            }
+          },
+          "required": [
+            "given",
+            "result"
+          ],
+          "allOf": [
+            {
+              "$ref": "#/$defs/securityCase"
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {},
+            "title": {},
+            "since": {},
+            "notes": {},
+            "skip": {},
+            "agrees": {},
+            "given": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "thinking"
+                },
+                "env": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "ANTHROPIC_API_KEY": {
+                      "type": "string"
+                    },
+                    "ANTHROPIC_URL": {
+                      "type": "string"
+                    },
+                    "ANTHROPIC_API_VERSION": {
+                      "type": "string"
+                    },
+                    "ANTHROPIC_BETA": {
+                      "type": "string"
+                    },
+                    "OPENAI_API_KEY": {
+                      "type": "string"
+                    },
+                    "OPENAI_URL": {
+                      "type": "string"
+                    },
+                    "OPENAI_ORGANIZATION": {
+                      "type": "string"
+                    },
+                    "OPENAI_PROJECT": {
+                      "type": "string"
+                    },
+                    "OPENAI_API_FORMAT": {
+                      "type": "string"
+                    },
+                    "MISTRAL_API_KEY": {
+                      "type": "string"
+                    },
+                    "MISTRAL_URL": {
+                      "type": "string"
+                    },
+                    "ANTHROPIC_DEFAULT_THINKING_BUDGET": {
+                      "type": "string"
+                    },
+                    "ANTHROPIC_BETA_FEATURES": {
+                      "type": "string"
+                    }
+                  },
+                  "required": []
+                },
+                "defaultConfig": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "reasoning": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "thinking": {
+                  "oneOf": [
+                    {
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "enabled": {
+                          "type": "boolean"
+                        },
+                        "type": {
+                          "enum": [
+                            "enabled",
+                            "adaptive",
+                            "disabled"
+                          ]
+                        },
+                        "budgetTokens": {
+                          "type": [
+                            "string",
+                            "number",
+                            "boolean",
+                            "null"
+                          ]
+                        },
+                        "budget_tokens": {
+                          "type": [
+                            "string",
+                            "number",
+                            "boolean",
+                            "null"
+                          ]
+                        }
+                      },
+                      "required": []
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "kind",
+                "thinking"
+              ]
+            },
+            "result": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "php": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "thinking": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "type": {
+                              "const": "adaptive"
+                            }
+                          },
+                          "required": [
+                            "type"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "type": {
+                              "const": "disabled"
+                            }
+                          },
+                          "required": [
+                            "type"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "type": {
+                              "const": "enabled"
+                            },
+                            "budget_tokens": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "budget_tokens"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "thinking"
+                  ]
+                },
+                "ts": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "thinking": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "type": {
+                              "const": "adaptive"
+                            }
+                          },
+                          "required": [
+                            "type"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "type": {
+                              "const": "disabled"
+                            }
+                          },
+                          "required": [
+                            "type"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "type": {
+                              "const": "enabled"
+                            },
+                            "budget_tokens": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "budget_tokens"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "thinking"
+                  ]
+                },
+                "py": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "thinking": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "type": {
+                              "const": "adaptive"
+                            }
+                          },
+                          "required": [
+                            "type"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "type": {
+                              "const": "disabled"
+                            }
+                          },
+                          "required": [
+                            "type"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "type": {
+                              "const": "enabled"
+                            },
+                            "budget_tokens": {
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "budget_tokens"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "thinking"
+                  ]
+                }
+              },
+              "required": [
+                "php",
+                "ts",
+                "py"
+              ]
+            }
+          },
+          "required": [
+            "given",
+            "result"
+          ],
+          "allOf": [
+            {
+              "$ref": "#/$defs/securityCase"
+            }
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {},
+            "title": {},
+            "since": {},
+            "notes": {},
+            "skip": {},
+            "agrees": {},
+            "given": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "fim"
+                },
+                "provider": {
+                  "const": "mistral"
+                },
+                "now": {
+                  "type": "integer"
+                },
+                "headers": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "kind",
+                "provider",
+                "now",
+                "headers"
+              ]
+            },
+            "result": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "php": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "count": {
+                      "const": 1
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "rates": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/rateLimitBucket"
+                      }
+                    }
+                  },
+                  "required": [
+                    "count",
+                    "text",
+                    "rates"
+                  ]
+                },
+                "ts": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "count": {
+                      "const": 1
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "rates": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/rateLimitBucket"
+                      }
+                    }
+                  },
+                  "required": [
+                    "count",
+                    "text",
+                    "rates"
+                  ]
+                },
+                "py": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "count": {
+                      "const": 1
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "rates": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/rateLimitBucket"
+                      }
+                    }
+                  },
+                  "required": [
+                    "count",
+                    "text",
+                    "rates"
+                  ]
+                }
+              },
+              "required": [
+                "php",
+                "ts",
+                "py"
+              ]
+            }
+          },
+          "required": [
+            "given",
+            "result"
+          ],
+          "allOf": [
+            {
+              "$ref": "#/$defs/securityCase"
+            }
+          ]
+        }
+      ]
+    },
+    "providerConfigurationDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "suite": {
+          "const": "provider-configuration"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated_by": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "environment_names": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "ANTHROPIC_API_KEY",
+              "ANTHROPIC_URL",
+              "ANTHROPIC_API_VERSION",
+              "ANTHROPIC_BETA",
+              "OPENAI_API_KEY",
+              "OPENAI_URL",
+              "OPENAI_ORGANIZATION",
+              "OPENAI_PROJECT",
+              "OPENAI_API_FORMAT",
+              "MISTRAL_API_KEY",
+              "MISTRAL_URL",
+              "ANTHROPIC_DEFAULT_THINKING_BUDGET",
+              "ANTHROPIC_BETA_FEATURES"
+            ]
+          },
+          "uniqueItems": true,
+          "minItems": 13,
+          "maxItems": 13
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/providerConfigurationCase"
+          }
+        }
+      },
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "environment_names",
+        "cases"
+      ]
     }
   },
   "oneOf": [
@@ -5018,6 +5956,9 @@
     },
     {
       "$ref": "#/$defs/toolListDocument"
+    },
+    {
+      "$ref": "#/$defs/providerConfigurationDocument"
     }
   ]
 }

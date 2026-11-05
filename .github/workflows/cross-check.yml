@@ -158,3 +158,11 @@ jobs:
       - name: Cross-check
         working-directory: prism-parity
         run: node tools/run-gate.mjs crossCheck -- node scripts/cross-check.mjs
+
+      - name: Native provider configuration and FIM observations
+        working-directory: prism-parity
+        run: |
+          node tools/provider-configuration.mjs php --check
+          node tools/provider-configuration.mjs ts --check
+          node tools/provider-configuration.mjs py --check
+          python tools/provider-configuration/network-controls.py
