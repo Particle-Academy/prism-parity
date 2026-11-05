@@ -18,18 +18,18 @@
     "implementations": {
         "php": {
             "status": "full",
-            "runner": "prism-parity:tools/provider-configuration/php.php",
-            "note": "Executed by tools/provider-configuration.mjs in --check mode. Candidate port execution is local until coordinated source PRs and owner publication; published alignment is not claimed."
+            "runner": "prism-parity:tools/provider-configuration.mjs",
+            "note": "Run the corpus-loading entry point with php --check; it dispatches to the native PHP adapter. Port source mains are checked here; published alignment is not claimed."
         },
         "ts": {
             "status": "full",
-            "runner": "prism-parity:tools/provider-configuration/ts.mjs",
-            "note": "Executed by tools/provider-configuration.mjs in --check mode. Candidate port execution is local until coordinated source PRs and owner publication; published alignment is not claimed."
+            "runner": "prism-parity:tools/provider-configuration.mjs",
+            "note": "Run the corpus-loading entry point with ts --check; it dispatches to the native TypeScript adapter. Port source mains are checked here; published alignment is not claimed."
         },
         "py": {
             "status": "full",
-            "runner": "prism-parity:tools/provider-configuration/py.py",
-            "note": "Executed by tools/provider-configuration.mjs in --check mode. Candidate port execution is local until coordinated source PRs and owner publication; published alignment is not claimed."
+            "runner": "prism-parity:tools/provider-configuration.mjs",
+            "note": "Run the corpus-loading entry point with py --check; it dispatches to the native Python adapter. Port source mains are checked here; published alignment is not claimed."
         }
     }
 }
