@@ -50,7 +50,7 @@ export function requireEvidence(name,output) {
   for(const[language,version,count]of[['ts','0.9.2',60],['py','0.4.2',31]]){
    const artifact=last.artifacts[language];assert.equal(artifact.version,version);assert.equal(artifact.runtimeFiles,count);assert.equal(Object.keys(artifact.runtime).length,count);assert.equal(artifact.unchanged,true);assert.match(artifact.sha256,/^[a-f0-9]{64}$/);
   }
-  assert.deepEqual(last.groups.map(row=>row.name),groups.slice(0,8).filter(name=>name!=='production-mutants'));
+  assert.deepEqual(last.groups.map(row=>row.name),["addresses","paged-index","coexistence","live-expiry","recovery-races","mixed-index-workers","published-old-workers"]);
   assert(last.groups.every(row=>row.passed===true&&/^[a-f0-9]{64}$/.test(row.sha256)));
   assert.deepEqual(last.optIns,['ts','py'].map(language=>({language,checks:8,collisions:3,outsideRefusals:2,requests:[['inside'],[]],handlers:0})));
   assert.equal(last.callback.checks,5);assert.deepEqual(last.callback.callbackRows,['EEXIST','EPERM','EACCES','EBUSY'].map(code=>({code,callbacks:1,writes:1,originalError:true,released:true})));
