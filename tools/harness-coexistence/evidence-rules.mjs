@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
+import { requireCleanupEvidence } from '../lock-owner-review/cleanup-contract.mjs';
 
-export const groups=['addresses','paged-index','coexistence','production-mutants','live-expiry','recovery-races','mixed-index-workers','published-old-workers','published-current-ports'];
+export const groups=['addresses','paged-index','coexistence','production-mutants','live-expiry','recovery-races','mixed-index-workers','cleanup-refusal','published-old-workers','published-current-ports'];
 
 export function requireEvidence(name,output) {
  assert(groups.includes(name),'Unknown evidence group');
@@ -31,6 +32,8 @@ export function requireEvidence(name,output) {
   assert.equal(new Set(last.reports.map(row=>row.case)).size,7);
   assert(last.reports.every(row=>row.contender_callbacks===0&&row.contender_error==='session_locked'&&row.after_release_callbacks===1));
   assert(last.reports.slice(0,3).every(row=>row.indexed_addresses===101&&row.positions_dense===true&&row.unique_addresses===true&&row.state_isolated===true));
+ }else if(name==='cleanup-refusal'){
+  requireCleanupEvidence(last);
  }else if(name==='published-old-workers'){
   assert.equal(last.rolling_upgrade_claimed,false);assert.equal(last.rows.length,12);
   assert(last.rows.every(row=>row.production_writer===true&&row.callbacks===0&&row.mutation_attempts===0&&row.directory_unchanged===true));

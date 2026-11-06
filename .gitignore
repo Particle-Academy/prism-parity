@@ -20,3 +20,4 @@ runners/php/vendor/
 
 # Fresh published MCP consumers and evidence; never corpus source.
 .mcp-published/
+.cleanup-runtimes/
