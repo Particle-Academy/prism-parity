@@ -332,7 +332,7 @@
       "registry": "pypi",
       "name": "prism-ai-browser",
       "repository": "https://github.com/Particle-Academy/prism-browser-py",
-      "version": "0.1.1",
+      "version": "0.2.0",
       "published": true,
       "family": "browser",
       "surface": {
@@ -364,7 +364,7 @@
       "registry": "npm",
       "name": "@particle-academy/prism-browser",
       "repository": "https://github.com/Particle-Academy/prism-browser-ts",
-      "version": "0.2.1",
+      "version": "0.3.0",
       "published": true,
       "family": "browser",
       "surface": {
@@ -532,7 +532,7 @@
       "kind": "runtime",
       "status": "published",
       "published": true,
-      "version": "0.5.1",
+      "version": "0.6.0",
       "catalog": "public"
     },
     "prism-human-plus-py": {
@@ -541,7 +541,7 @@
       "registry": "pypi",
       "name": "prism-ai-human-plus",
       "repository": "https://github.com/Particle-Academy/prism-human-plus-py",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "published": true,
       "family": "human-plus",
       "surface": {
@@ -585,7 +585,7 @@
       "registry": "npm",
       "name": "@particle-academy/prism-human-plus",
       "repository": "https://github.com/Particle-Academy/prism-human-plus-ts",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "published": true,
       "family": "human-plus",
       "surface": {
