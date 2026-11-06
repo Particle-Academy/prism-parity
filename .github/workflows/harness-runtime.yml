@@ -43,13 +43,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: Particle-Academy/prism-harness-ts
-          ref: 7f5bc99636372a3e53cabc1fe65c54d3467737fb
+          ref: ad2137e19c0d3cbe3539f18a705107bf04d2ab7f
           path: .cleanup-runtimes/ts
           persist-credentials: false
       - uses: actions/checkout@v4
         with:
           repository: Particle-Academy/prism-harness-py
-          ref: 4b735cc843c7d4438eb21c847fa6a5ba5965fdca
+          ref: 1b74a2931e2b82f003078a4a8f3699155ca93b24
           path: .cleanup-runtimes/py
           persist-credentials: false
       - name: Fetch the third-party allowlist
