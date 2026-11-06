@@ -485,7 +485,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: "8.3"
-          extensions: curl, mbstring
+          extensions: curl, fileinfo, mbstring
           coverage: none
       - name: Install canonical validator
         working-directory: prism-parity
