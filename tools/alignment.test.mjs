@@ -8,6 +8,44 @@ import test from 'node:test';
 import { compareClaims, checkRunner, requireVerdict, verifyCoverage, unmarkedCounts, checkWorkflowDependencies } from './alignment-contracts.mjs';
 import { coverage } from '../scripts/cross-check-coverage.mjs';
 import { gates } from './gate-contracts.mjs';
+import { cleanupRow, cleanupCaseIds, requireCleanupVector, requireCleanupEvidence } from './lock-owner-review/cleanup-contract.mjs';
+
+test('the shared cleanup refusal row keeps OS denial inside the existing admission budget', () => {
+  const document = JSON.parse(readFileSync(new URL('../docs/decisions/0022-local-file-lock-vectors.json', import.meta.url), 'utf8'));
+  assert.equal(document.cleanup.length, 1);
+  assert.deepEqual(requireCleanupVector(document.cleanup[0]), cleanupRow);
+  for (const change of [
+    row => { row.expected_state = 'take'; },
+    row => { row.admission.callback_before_clear = true; },
+    row => { row.admission.budget = 'new-retry-budget'; },
+    row => { row.required_cases.pop(); },
+    row => { row.os_errors.py = []; },
+  ]) {
+    const row = structuredClone(cleanupRow); change(row);
+    assert.throws(() => requireCleanupVector(row));
+  }
+});
+
+test('cleanup evidence requires all independently named controls in both file-owner ports', () => {
+  const proof = {
+    format: 'file-lock-cleanup-held-evidence-v1', row: cleanupRow.id, inputSha256: 'a'.repeat(64),
+    reports: ['ts', 'py'].map(language => ({
+      language, sourceHead: 'd'.repeat(40), fixtureSemanticSha256: 'a'.repeat(64), sourceTestSha256: 'b'.repeat(64), nativeReportSha256: 'c'.repeat(64),
+      tests: cleanupCaseIds(language).map(id => ({ id, name: id, status: 'passed' })),
+    })),
+  };
+  assert.equal(requireCleanupEvidence(proof), true);
+  for (const change of [
+    row => { row.reports.pop(); },
+    row => { row.reports[0].tests.pop(); },
+    row => { row.reports[0].tests[0].status = 'skipped'; },
+    row => { row.reports[0].tests[0].id = row.reports[0].tests[1].id; },
+    row => { row.reports[0].fixtureSemanticSha256 = 'd'.repeat(64); },
+  ]) {
+    const row = structuredClone(proof); change(row);
+    assert.throws(() => requireCleanupEvidence(row));
+  }
+});
 import { validateWindowsContexts, NO_JOB_UNMEASURED } from './lock-owner-review/windows-context-contract.mjs';
 
 test('native recovery evidence requires actual work and explicit verified or unmeasured Windows baseline', () => {

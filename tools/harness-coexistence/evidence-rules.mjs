@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
+import { requireCleanupEvidence } from '../lock-owner-review/cleanup-contract.mjs';
 
-export const groups=['addresses','paged-index','coexistence','production-mutants','live-expiry','recovery-races','mixed-index-workers','published-old-workers','published-current-ports'];
+export const groups=['addresses','paged-index','coexistence','production-mutants','live-expiry','recovery-races','mixed-index-workers','cleanup-refusal','published-old-workers','published-current-ports'];
 
 export function requireEvidence(name,output) {
  assert(groups.includes(name),'Unknown evidence group');
@@ -31,6 +32,8 @@ export function requireEvidence(name,output) {
   assert.equal(new Set(last.reports.map(row=>row.case)).size,7);
   assert(last.reports.every(row=>row.contender_callbacks===0&&row.contender_error==='session_locked'&&row.after_release_callbacks===1));
   assert(last.reports.slice(0,3).every(row=>row.indexed_addresses===101&&row.positions_dense===true&&row.unique_addresses===true&&row.state_isolated===true));
+ }else if(name==='cleanup-refusal'){
+  requireCleanupEvidence(last);
  }else if(name==='published-old-workers'){
   assert.equal(last.rolling_upgrade_claimed,false);assert.equal(last.rows.length,12);
   assert(last.rows.every(row=>row.production_writer===true&&row.callbacks===0&&row.mutation_attempts===0&&row.directory_unchanged===true));
@@ -47,7 +50,7 @@ export function requireEvidence(name,output) {
   for(const[language,version,count]of[['ts','0.9.2',60],['py','0.4.2',31]]){
    const artifact=last.artifacts[language];assert.equal(artifact.version,version);assert.equal(artifact.runtimeFiles,count);assert.equal(Object.keys(artifact.runtime).length,count);assert.equal(artifact.unchanged,true);assert.match(artifact.sha256,/^[a-f0-9]{64}$/);
   }
-  assert.deepEqual(last.groups.map(row=>row.name),groups.slice(0,8).filter(name=>name!=='production-mutants'));
+  assert.deepEqual(last.groups.map(row=>row.name),["addresses","paged-index","coexistence","live-expiry","recovery-races","mixed-index-workers","published-old-workers"]);
   assert(last.groups.every(row=>row.passed===true&&/^[a-f0-9]{64}$/.test(row.sha256)));
   assert.deepEqual(last.optIns,['ts','py'].map(language=>({language,checks:8,collisions:3,outsideRefusals:2,requests:[['inside'],[]],handlers:0})));
   assert.equal(last.callback.checks,5);assert.deepEqual(last.callback.callbackRows,['EEXIST','EPERM','EACCES','EBUSY'].map(code=>({code,callbacks:1,writes:1,originalError:true,released:true})));

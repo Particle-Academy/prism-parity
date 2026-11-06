@@ -70,10 +70,11 @@ vocabulary and payload equality is registered separately as G-125; the runner
 reports that divergence instead of discarding events to manufacture equality.
 See [the stream comparison contract](docs/streaming-conformance.md).
 
-The candidate `satellite-policy` suite executes Browser policy migration and
-Human+ relay preflight/status checks with separate predictions. Its Human+ PHP
-observations require published-artifact regeneration before final canonical
-merge. See [the native adapter contract](tools/satellite-policy/README.md).
+The `satellite-policy` suite executes Browser policy migration and Human+ relay
+preflight/status checks with separate predictions. PHP goldens were regenerated
+from normally installed releases without changing those predictions. CI installs
+the reviewed published SDKs, verifies their runtime bytes and runs all three
+native observers. See [the native adapter contract](tools/satellite-policy/README.md).
 
 | Suite | Kind | Cases | Pins |
 |---|---|---|---|

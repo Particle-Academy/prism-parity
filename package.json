@@ -6,7 +6,7 @@
   },
   "scripts": {
     "validate:cases": "node tools/validate-cases.mjs",
-    "test:schema": "node --test tools/validate-cases.test.mjs tools/failed-step-schema.test.mjs tools/embedding-decoding-schema.test.mjs tools/failure-usage-schema.test.mjs tools/failure-usage-properties.test.mjs tools/perplexity-lifecycle-schema.test.mjs tools/tool-list-schema.test.mjs tools/provider-configuration-schema.test.mjs tools/mcp-behavior-schema.test.mjs tools/mcp-behavior-published.test.mjs tools/satellite-policy-schema.test.mjs"
+    "test:schema": "node --test tools/validate-cases.test.mjs tools/failed-step-schema.test.mjs tools/embedding-decoding-schema.test.mjs tools/failure-usage-schema.test.mjs tools/failure-usage-properties.test.mjs tools/perplexity-lifecycle-schema.test.mjs tools/tool-list-schema.test.mjs tools/provider-configuration-schema.test.mjs tools/mcp-behavior-schema.test.mjs tools/mcp-behavior-published.test.mjs tools/satellite-policy-schema.test.mjs tools/satellite-policy-published-schema.test.mjs"
   },
   "devDependencies": {
     "@particle-academy/fancy-schema": "github:Particle-Academy/fancy-schema#v0.2.1"

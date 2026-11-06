@@ -1,0 +1,11 @@
+{
+  "referenceKind": "published-artifact",
+  "packages": [
+    { "repository": "prism-browser", "package": "particle-academy/prism-browser", "version": "0.4.1", "source": "a7d2a915ef70840e325e9c0f06319b2994b13c9f" },
+    { "repository": "prism-browser-ts", "package": "@particle-academy/prism-browser", "version": "0.3.0", "source": "8380640802cf48240ac83659a36385504fcde4c0" },
+    { "repository": "prism-browser-py", "package": "prism-ai-browser", "version": "0.2.0", "source": "9af7c808aaa8d842854dbef009b803b2f323eecb" },
+    { "repository": "prism-human-plus", "package": "particle-academy/prism-human-plus", "version": "0.6.0", "source": "6b69d530f52bf904a7ce9a337bc56678f89c69d0" },
+    { "repository": "prism-human-plus-ts", "package": "@particle-academy/prism-human-plus", "version": "0.5.0", "source": "9220fcd398ef50e37d453be284a92495e0b76a99" },
+    { "repository": "prism-human-plus-py", "package": "prism-ai-human-plus", "version": "0.3.0", "source": "fbbdf840b4efafa08731af6a2ea7df90f4285f58" }
+  ]
+}

@@ -5,7 +5,7 @@ import {dirname, join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
-import {requireEvidence} from './evidence-rules.mjs';
+import {groups,requireEvidence} from './evidence-rules.mjs';
 
 const here=dirname(fileURLToPath(import.meta.url));
 const allowDirty=process.argv.includes('--allow-dirty-source');
@@ -15,7 +15,7 @@ const work=fs.mkdtempSync(join(process.env.PRISM_EVIDENCE_ROOT??os.tmpdir(),'pri
 const expectedRefs=JSON.parse(fs.readFileSync(join(here,'runtime-refs.json')));
 const env={};
 for(const[key,value]of Object.entries(process.env))if(/^(PATH|SYSTEMROOT|WINDIR|COMSPEC|PATHEXT|TEMP|TMP|LANG|LC_ALL)$/i.test(key))env[key]=value;
-for(const key of ['PRISM_HARNESS_AUTOLOAD','PRISM_HARNESS_PHP_RUNNER','PRISM_HARNESS_TS','PYTHONPATH','PRISM_PYTHON_BINARY','PRISM_PHP_BINARY'])if(process.env[key])env[key]=process.env[key];
+for(const key of ['PRISM_HARNESS_AUTOLOAD','PRISM_HARNESS_PHP_RUNNER','PRISM_HARNESS_TS','PYTHONPATH','PRISM_PYTHON_BINARY','PRISM_PHP_BINARY','PRISM_CLEANUP_TS','PRISM_CLEANUP_PY'])if(process.env[key])env[key]=process.env[key];
 const heads={};
 for(const[name,cwd]of Object.entries({php:env.PRISM_HARNESS_PHP_RUNNER,ts:env.PRISM_HARNESS_TS,py:dirname(env.PYTHONPATH)})){
  const head=spawnSync('git',['-C',cwd,'rev-parse','HEAD'],{env,encoding:'utf8',timeout:10000,windowsHide:true});
@@ -35,6 +35,7 @@ for(const[name,script,args]of[
  ['live-expiry','index-workers.mjs',['--live-expiry']],
  ['recovery-races','owner-lock-workers.mjs',[]],
  ['mixed-index-workers','index-workers.mjs',[]],
+ ['cleanup-refusal','../lock-owner-review/cleanup-ports.mjs',[]],
  ['published-old-workers','published-lock-production.mjs',[]],
  ['published-current-ports','published-ports.mjs',[]],
 ]){
@@ -47,7 +48,7 @@ for(const[name,script,args]of[
  const row={name,exit:result.status,error:result.error?.code??null,verdictError,log,sha256:createHash('sha256').update(fs.readFileSync(log)).digest('hex')};rows.push(row);console.log(JSON.stringify(row));
  if(result.error||result.status!==0||verdictError)break;
 }
-const status=rows.length===9&&rows.every(row=>row.exit===0&&row.error===null&&row.verdictError===null)?'PASS':'FAIL';
+const status=rows.length===groups.length&&rows.every((row,index)=>row.name===groups[index]&&row.exit===0&&row.error===null&&row.verdictError===null)?'PASS':'FAIL';
 const report={at:new Date().toISOString(),scope:'cross-port production source and integrity-pinned published TS0.9.2/Python0.4.2 evidence; PHP0.20.1 artifact acceptance recorded separately',inspectionGuarantee:'No handlers, model/provider requests, new entries or logical state changes; ordinary expired-value physical cleanup preserved',allowDirtySource:allowDirty,heads,platform:process.platform,status,work,rows};
 fs.writeFileSync(join(work,'report.json'),JSON.stringify(report,null,2),{flag:'wx'});
 console.log(JSON.stringify({report:join(work,'report.json'),status}));

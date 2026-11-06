@@ -20,6 +20,10 @@ runners/php/vendor/
 
 # Fresh published MCP consumers and evidence; never corpus source.
 .mcp-published/
+.cleanup-runtimes/
 
 # Candidate SDK evidence is never a normally published reference artifact.
 .satellite-candidate/
+
+# Disposable normal published satellite consumers and proof logs.
+.satellite-published/

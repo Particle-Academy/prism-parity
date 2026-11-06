@@ -381,7 +381,29 @@ recovery vector. A primitive experiment is not proof of the complete lock.
 - Named memory-state/file-durable sessions use the host lock across actual
   processes. Custom stores with missing or narrower declarations refuse.
 - Native gates and published-default stored-byte/provider-request comparisons
-  pass. Shared format vectors retain the original failure evidence.
+  were recorded as passing for that source snapshot. Shared format vectors
+  retain the original failure evidence; G-242 below remains a separate open issue.
 
 This does not authorize erasure. A future erasure planner must recover an index's
 pending append or refuse; a pending head is not a complete ownership census.
+
+### OS refusal during released-owner cleanup (G-242)
+
+The shared `cleanup-refused-by-os` row is required for every file-owner port.
+After the complete owner record has been proved stale in the same identity,
+Windows may still refuse deletion of its nonce-bound `.release.tmp` file.
+Python WinError 5/32 and TypeScript `EPERM`/`EBUSY` mean **held**: use the existing
+admission backoff and deadline, then inspect again. They grant no takeover or
+extra wait budget. An exhausted budget refuses without running a callback or
+changing the protected owner bytes. An unrelated I/O error propagates.
+
+The two file-owner ports vendor this row for deterministic error-injection tests.
+The canonical native gate checks each copy and executes all five controls per
+language: both OS refusals followed by successful cleanup, both exhausted-budget
+refusals, and unrelated-error propagation. A missing, skipped or renamed control
+cannot pass as a complete row. PHP has no shipped file-owner store and does not
+claim this capability.
+
+The original published Python 0.4.2 Windows failure remains G-242 evidence.
+Source test success does not establish that a fixed package has been published;
+release and normal-artifact verification remain separate gates.
