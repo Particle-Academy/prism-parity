@@ -1,0 +1,35 @@
+{
+  "id": "satellite-policy",
+  "title": "Browser policy and Human+ relay preflight boundaries",
+  "kind": "security-corpus",
+  "pins": "A consumer must not send a browser engine to an unconditional private-address refusal, revive a retired policy bypass through configuration, or let relay body text change an authorization/conflict status. All native DNS records must be checked before each relay HTTP leg; a positive response and a required trusted proxy must remain distinguishable from local preflight checks.",
+  "scope": "Browser A14 and Human+ A13/A15 preflight/status slice using normally installed reviewed published releases. No connection-pinning or resolver-deadline claim.",
+  "construction": "Native PHP Browser manager, relay endpoint and Guzzle transports; native TypeScript and Python policies and exchange. DNS APIs and injected HTTP are controlled at the existing seams. PHP concurrent cURL cases use a bounded disposable loopback server and real child process. Predictions were frozen before these adapters ran.",
+  "findings": "Native observations from published artifacts agree and match independent expectations frozen before execution. Agreement cannot establish safety outside the predicted preflight/status boundary. Hosted PR, actual-main and normal-artifact evidence remain separate proof obligations.",
+  "pattern_doc": "docs/decisions/0015-the-error-path-is-a-channel.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "unprobed",
+    "gap": "Package production mutants are recorded separately. Canonical schema and artifact-provenance negative controls are enforced; actual hosted and main evidence have separate receipts."
+  },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-parity:tools/satellite-policy.mjs",
+      "note": "Native observer against normal installed published SDKs; tools/satellite-policy/published.mjs verifies immutable runtime provenance."
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-parity:tools/satellite-policy.mjs",
+      "note": "Native observer against normal installed published SDKs; tools/satellite-policy/published.mjs verifies immutable runtime provenance."
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-parity:tools/satellite-policy.mjs",
+      "note": "Native observer against normal installed published SDKs; tools/satellite-policy/published.mjs verifies immutable runtime provenance."
+    }
+  }
+}
