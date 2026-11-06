@@ -40,6 +40,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - uses: actions/checkout@v4
+        with:
+          repository: Particle-Academy/prism-harness-ts
+          ref: ad2137e19c0d3cbe3539f18a705107bf04d2ab7f
+          path: .cleanup-runtimes/ts
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: Particle-Academy/prism-harness-py
+          ref: 1b74a2931e2b82f003078a4a8f3699155ca93b24
+          path: .cleanup-runtimes/py
+          persist-credentials: false
       - name: Fetch the third-party allowlist
         uses: actions/checkout@v4
         with:
@@ -111,6 +123,8 @@ jobs:
           node tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo .harness-runtimes/php
           node tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo .harness-runtimes/ts
           node tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo .harness-runtimes/py
+          node tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo .cleanup-runtimes/ts
+          node tools/run-gate.mjs allowlist -- node .third-party-allowlist/third-party/check.mjs --repo .cleanup-runtimes/py
           node -e "require('node:fs').rmSync('.third-party-allowlist',{recursive:true,force:true})"
 
       - name: Setup PHP
@@ -131,6 +145,9 @@ jobs:
       - name: Build the exact TypeScript source
         working-directory: .harness-runtimes/ts
         run: npm run build
+      - name: Install isolated cleanup TypeScript test dependencies
+        working-directory: .cleanup-runtimes/ts
+        run: npm ci
       - name: Install Python fixture dependencies
         run: python -m pip install "./.harness-runtimes/py[dev]"
       - name: Evidence reader rejects silence and reduced proof

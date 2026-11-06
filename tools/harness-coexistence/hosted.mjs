@@ -7,6 +7,8 @@ import {spawnSync} from 'node:child_process';
 const here=dirname(fileURLToPath(import.meta.url)),root=resolve(here,'../..');
 const refs=JSON.parse(fs.readFileSync(join(here,'runtime-refs.json')));
 const paths=Object.fromEntries(Object.entries(refs).map(([name,ref])=>[name,resolve(root,ref.path)]));
+const cleanupRefs=JSON.parse(fs.readFileSync(join(here,'../lock-owner-review/cleanup-refs.json')));
+const cleanupPaths=Object.fromEntries(Object.entries(cleanupRefs).map(([name,ref])=>[name,resolve(root,ref.path)]));
 function executable(command,args) {
  const result=spawnSync(command,args,{encoding:'utf8',timeout:10000,windowsHide:true,shell:false});
  assert(!result.error&&result.status===0,'Cannot locate '+command);
@@ -19,6 +21,7 @@ const result=spawnSync(process.execPath,[join(here,'ci.mjs')],{
  env:{...process.env,PRISM_HARNESS_AUTOLOAD:join(paths.php,'vendor/autoload.php'),
   PRISM_HARNESS_PHP_RUNNER:paths.php,PRISM_HARNESS_TS:paths.ts,
   PYTHONPATH:join(paths.py,'src'),PRISM_PHP_BINARY:php,PRISM_PYTHON_BINARY:python,
+  PRISM_CLEANUP_TS:cleanupPaths.ts,PRISM_CLEANUP_PY:cleanupPaths.py,
   PRISM_EVIDENCE_ROOT:process.env.RUNNER_TEMP},
 });
 assert(!result.error&&result.status===0,'Exact-ref source evidence failed');
