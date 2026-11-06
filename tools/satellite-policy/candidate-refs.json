@@ -1,0 +1,29 @@
+{
+  "referenceKind": "candidate-source",
+  "packages": [
+    {
+      "repository": "prism-browser",
+      "source": "a7d2a915ef70840e325e9c0f06319b2994b13c9f"
+    },
+    {
+      "repository": "prism-browser-ts",
+      "source": "20cfc9641dc7b052c394c9fdb1f45fc3b38d65f4"
+    },
+    {
+      "repository": "prism-browser-py",
+      "source": "5a33d42682c926f7fde4f9f5c219cfd209414921"
+    },
+    {
+      "repository": "prism-human-plus",
+      "source": "4c0e13d31cfece7ac0b402f95e24b3032666cd38"
+    },
+    {
+      "repository": "prism-human-plus-ts",
+      "source": "7eb84209caf77a4be53f030e90b54a73451eecd7"
+    },
+    {
+      "repository": "prism-human-plus-py",
+      "source": "763a8f1f791f00d8767bc5f3896bcf535a8de616"
+    }
+  ]
+}

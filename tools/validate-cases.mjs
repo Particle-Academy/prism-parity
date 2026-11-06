@@ -7,6 +7,7 @@ import { compile } from '@particle-academy/fancy-schema';
 import { failureUsageCaseFailures } from './streaming/failure-usage.mjs';
 import { providerConfigurationFailures } from './provider-configuration/contract.mjs';
 import { mcpBehaviorFailures } from './mcp-behavior/contract.mjs';
+import { satellitePolicyFailures } from './satellite-policy/contract.mjs';
 
 const repository = dirname(dirname(fileURLToPath(import.meta.url)));
 
@@ -22,7 +23,8 @@ export function validateCases(root = repository) {
       const { valid: schemaValid, errors } = check(document);
       const semantic = suite === 'stream-failure-usage' ? failureUsageCaseFailures(document)
         : suite === 'provider-configuration' ? providerConfigurationFailures(document)
-          : suite === 'mcp-behavior' ? mcpBehaviorFailures(document) : [];
+          : suite === 'mcp-behavior' ? mcpBehaviorFailures(document)
+            : suite === 'satellite-policy' ? satellitePolicyFailures(document) : [];
       const valid = schemaValid && semantic.length === 0;
       if (valid) console.log(`  ok — ${suite}`);
       else {

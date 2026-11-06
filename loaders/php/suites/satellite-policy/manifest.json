@@ -1,0 +1,35 @@
+{
+  "id": "satellite-policy",
+  "title": "Browser policy and Human+ relay preflight boundaries",
+  "kind": "security-corpus",
+  "pins": "A consumer must not send a browser engine to an unconditional private-address refusal, revive a retired policy bypass through configuration, or let relay body text change an authorization/conflict status. All native DNS records must be checked before each relay HTTP leg; a positive response and a required trusted proxy must remain distinguishable from local preflight checks.",
+  "scope": "Browser A14 and Human+ A13/A15 preflight/status slice. Candidate source only; published PHP regeneration and normal artifacts are required before final canonical merge. No connection-pinning or resolver-deadline claim.",
+  "construction": "Native PHP Browser manager, relay endpoint and Guzzle transports; native TypeScript and Python policies and exchange. DNS APIs and injected HTTP are controlled at the existing seams. PHP concurrent cURL cases use a bounded disposable loopback server and real child process. Predictions were frozen before these adapters ran.",
+  "findings": "Native candidate observations agree and match the independent expectations frozen before execution. Agreement cannot establish safety outside the predicted preflight/status boundary. Published reference regeneration, hosted CI, actual-main proof and normal artifacts remain delivery prerequisites.",
+  "pattern_doc": "docs/decisions/0015-the-error-path-is-a-channel.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "unprobed",
+    "gap": "Package production mutants are recorded separately. Canonical verifier negative controls and actual hosted proof remain required."
+  },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-parity:tools/satellite-policy.mjs",
+      "note": "Native candidate-source adapter; published verification remains pending."
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-parity:tools/satellite-policy.mjs",
+      "note": "Native candidate-source adapter; published verification remains pending."
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-parity:tools/satellite-policy.mjs",
+      "note": "Native candidate-source adapter; published verification remains pending."
+    }
+  }
+}

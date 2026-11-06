@@ -20,3 +20,6 @@ runners/php/vendor/
 
 # Fresh published MCP consumers and evidence; never corpus source.
 .mcp-published/
+
+# Candidate SDK evidence is never a normally published reference artifact.
+.satellite-candidate/

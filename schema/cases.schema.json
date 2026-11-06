@@ -7061,6 +7061,1459 @@
         "scope",
         "cases"
       ]
+    },
+    "satellitePolicyDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "suite": {
+          "const": "satellite-policy"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "generated_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 232,
+          "maxItems": 232,
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^sat-[0-9]{4}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "since": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "notes": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "given": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "browser"
+                      },
+                      "mode": {
+                        "enum": [
+                          "default",
+                          "property",
+                          "constructor"
+                        ]
+                      },
+                      "url": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2048
+                      },
+                      "allowedHosts": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 64,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2048
+                        }
+                      },
+                      "value": {
+                        "type": [
+                          "null",
+                          "boolean",
+                          "number",
+                          "string"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "mode",
+                      "url",
+                      "allowedHosts"
+                    ]
+                  },
+                  "prediction": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "outcome": {
+                        "enum": [
+                          "returned",
+                          "refused"
+                        ]
+                      },
+                      "engineCalls": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      }
+                    },
+                    "required": [
+                      "outcome",
+                      "engineCalls"
+                    ]
+                  },
+                  "result": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "php": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "outcome": {
+                            "enum": [
+                              "returned",
+                              "refused"
+                            ]
+                          },
+                          "engineCalls": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          }
+                        },
+                        "required": [
+                          "outcome",
+                          "engineCalls"
+                        ]
+                      },
+                      "ts": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "outcome": {
+                            "enum": [
+                              "returned",
+                              "refused"
+                            ]
+                          },
+                          "engineCalls": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          }
+                        },
+                        "required": [
+                          "outcome",
+                          "engineCalls"
+                        ]
+                      },
+                      "py": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "outcome": {
+                            "enum": [
+                              "returned",
+                              "refused"
+                            ]
+                          },
+                          "engineCalls": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          }
+                        },
+                        "required": [
+                          "outcome",
+                          "engineCalls"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "php",
+                      "ts",
+                      "py"
+                    ]
+                  },
+                  "agrees": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "since",
+                  "notes",
+                  "given",
+                  "prediction",
+                  "result",
+                  "agrees"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^sat-[0-9]{4}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "since": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "notes": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "given": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "browser-serialization"
+                      }
+                    },
+                    "required": [
+                      "kind"
+                    ]
+                  },
+                  "prediction": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "keys": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 10,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2048
+                        }
+                      }
+                    },
+                    "required": [
+                      "keys"
+                    ]
+                  },
+                  "result": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "php": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "keys": {
+                            "type": "array",
+                            "minItems": 1,
+                            "maxItems": 10,
+                            "items": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 2048
+                            }
+                          }
+                        },
+                        "required": [
+                          "keys"
+                        ]
+                      },
+                      "ts": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "keys": {
+                            "type": "array",
+                            "minItems": 1,
+                            "maxItems": 10,
+                            "items": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 2048
+                            }
+                          }
+                        },
+                        "required": [
+                          "keys"
+                        ]
+                      },
+                      "py": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "keys": {
+                            "type": "array",
+                            "minItems": 1,
+                            "maxItems": 10,
+                            "items": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 2048
+                            }
+                          }
+                        },
+                        "required": [
+                          "keys"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "php",
+                      "ts",
+                      "py"
+                    ]
+                  },
+                  "agrees": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "since",
+                  "notes",
+                  "given",
+                  "prediction",
+                  "result",
+                  "agrees"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^sat-[0-9]{4}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "since": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "notes": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "given": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "relay-classifier"
+                      },
+                      "status": {
+                        "type": "integer",
+                        "minimum": 100,
+                        "maximum": 599
+                      },
+                      "body": {
+                        "type": "string",
+                        "maxLength": 2048
+                      },
+                      "operation": {
+                        "enum": [
+                          "post",
+                          "stream",
+                          "notify",
+                          "detach"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "status",
+                      "body",
+                      "operation"
+                    ]
+                  },
+                  "prediction": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "category": {
+                        "enum": [
+                          "success",
+                          "AttachmentUnauthorized",
+                          "SurfaceRevisionRejected",
+                          "SurfaceUnavailable",
+                          "HumanPlusError"
+                        ]
+                      },
+                      "private": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "category",
+                      "private"
+                    ]
+                  },
+                  "result": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "php": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "category": {
+                            "enum": [
+                              "success",
+                              "AttachmentUnauthorized",
+                              "SurfaceRevisionRejected",
+                              "SurfaceUnavailable",
+                              "HumanPlusError"
+                            ]
+                          },
+                          "private": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "private"
+                        ]
+                      },
+                      "ts": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "category": {
+                            "enum": [
+                              "success",
+                              "AttachmentUnauthorized",
+                              "SurfaceRevisionRejected",
+                              "SurfaceUnavailable",
+                              "HumanPlusError"
+                            ]
+                          },
+                          "private": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "private"
+                        ]
+                      },
+                      "py": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "category": {
+                            "enum": [
+                              "success",
+                              "AttachmentUnauthorized",
+                              "SurfaceRevisionRejected",
+                              "SurfaceUnavailable",
+                              "HumanPlusError"
+                            ]
+                          },
+                          "private": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "private"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "php",
+                      "ts",
+                      "py"
+                    ]
+                  },
+                  "agrees": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "since",
+                  "notes",
+                  "given",
+                  "prediction",
+                  "result",
+                  "agrees"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^sat-[0-9]{4}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "since": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "notes": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "given": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "relay-call"
+                      },
+                      "status": {
+                        "type": "integer",
+                        "minimum": 100,
+                        "maximum": 599
+                      },
+                      "body": {
+                        "type": "string",
+                        "maxLength": 2048
+                      },
+                      "operation": {
+                        "enum": [
+                          "post",
+                          "stream",
+                          "notify",
+                          "detach"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "status",
+                      "body",
+                      "operation"
+                    ]
+                  },
+                  "prediction": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "category": {
+                        "enum": [
+                          "success",
+                          "AttachmentUnauthorized",
+                          "SurfaceRevisionRejected",
+                          "SurfaceUnavailable",
+                          "HumanPlusError"
+                        ]
+                      },
+                      "private": {
+                        "type": "boolean"
+                      },
+                      "posts": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      },
+                      "streams": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      },
+                      "dnsCalls": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      }
+                    },
+                    "required": [
+                      "category",
+                      "private",
+                      "posts",
+                      "streams",
+                      "dnsCalls"
+                    ]
+                  },
+                  "result": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "php": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "category": {
+                            "enum": [
+                              "success",
+                              "AttachmentUnauthorized",
+                              "SurfaceRevisionRejected",
+                              "SurfaceUnavailable",
+                              "HumanPlusError"
+                            ]
+                          },
+                          "private": {
+                            "type": "boolean"
+                          },
+                          "posts": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "streams": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "dnsCalls": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "private",
+                          "posts",
+                          "streams",
+                          "dnsCalls"
+                        ]
+                      },
+                      "ts": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "category": {
+                            "enum": [
+                              "success",
+                              "AttachmentUnauthorized",
+                              "SurfaceRevisionRejected",
+                              "SurfaceUnavailable",
+                              "HumanPlusError"
+                            ]
+                          },
+                          "private": {
+                            "type": "boolean"
+                          },
+                          "posts": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "streams": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "dnsCalls": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "private",
+                          "posts",
+                          "streams",
+                          "dnsCalls"
+                        ]
+                      },
+                      "py": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "category": {
+                            "enum": [
+                              "success",
+                              "AttachmentUnauthorized",
+                              "SurfaceRevisionRejected",
+                              "SurfaceUnavailable",
+                              "HumanPlusError"
+                            ]
+                          },
+                          "private": {
+                            "type": "boolean"
+                          },
+                          "posts": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "streams": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "dnsCalls": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "private",
+                          "posts",
+                          "streams",
+                          "dnsCalls"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "php",
+                      "ts",
+                      "py"
+                    ]
+                  },
+                  "agrees": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "since",
+                  "notes",
+                  "given",
+                  "prediction",
+                  "result",
+                  "agrees"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^sat-[0-9]{4}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "since": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "notes": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "given": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "relay-dns"
+                      },
+                      "url": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2048
+                      },
+                      "allowedHosts": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 64,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2048
+                        }
+                      },
+                      "answers": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 4,
+                        "items": {
+                          "oneOf": [
+                            {
+                              "const": false
+                            },
+                            {
+                              "type": "array",
+                              "maxItems": 64,
+                              "items": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 2048
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      "allowedPorts": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 8,
+                        "items": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 65535
+                        }
+                      },
+                      "proxy": {
+                        "const": null
+                      },
+                      "allowUnverified": {
+                        "type": "boolean"
+                      },
+                      "allowInsecureLoopback": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "url",
+                      "allowedHosts",
+                      "answers"
+                    ]
+                  },
+                  "prediction": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "category": {
+                        "enum": [
+                          "success",
+                          "AttachmentUnauthorized",
+                          "SurfaceRevisionRejected",
+                          "SurfaceUnavailable",
+                          "HumanPlusError"
+                        ]
+                      },
+                      "private": {
+                        "type": "boolean"
+                      },
+                      "posts": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      },
+                      "streams": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      },
+                      "dnsCalls": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      }
+                    },
+                    "required": [
+                      "category",
+                      "private",
+                      "posts",
+                      "streams",
+                      "dnsCalls"
+                    ]
+                  },
+                  "result": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "php": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "category": {
+                            "enum": [
+                              "success",
+                              "AttachmentUnauthorized",
+                              "SurfaceRevisionRejected",
+                              "SurfaceUnavailable",
+                              "HumanPlusError"
+                            ]
+                          },
+                          "private": {
+                            "type": "boolean"
+                          },
+                          "posts": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "streams": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "dnsCalls": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "private",
+                          "posts",
+                          "streams",
+                          "dnsCalls"
+                        ]
+                      },
+                      "ts": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "category": {
+                            "enum": [
+                              "success",
+                              "AttachmentUnauthorized",
+                              "SurfaceRevisionRejected",
+                              "SurfaceUnavailable",
+                              "HumanPlusError"
+                            ]
+                          },
+                          "private": {
+                            "type": "boolean"
+                          },
+                          "posts": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "streams": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "dnsCalls": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "private",
+                          "posts",
+                          "streams",
+                          "dnsCalls"
+                        ]
+                      },
+                      "py": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "category": {
+                            "enum": [
+                              "success",
+                              "AttachmentUnauthorized",
+                              "SurfaceRevisionRejected",
+                              "SurfaceUnavailable",
+                              "HumanPlusError"
+                            ]
+                          },
+                          "private": {
+                            "type": "boolean"
+                          },
+                          "posts": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "streams": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "dnsCalls": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "private",
+                          "posts",
+                          "streams",
+                          "dnsCalls"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "php",
+                      "ts",
+                      "py"
+                    ]
+                  },
+                  "agrees": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "since",
+                  "notes",
+                  "given",
+                  "prediction",
+                  "result",
+                  "agrees"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^sat-[0-9]{4}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "since": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "notes": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "given": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "relay-literal"
+                      },
+                      "url": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 2048
+                      },
+                      "allowedHosts": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 64,
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2048
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "url",
+                      "allowedHosts"
+                    ]
+                  },
+                  "prediction": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "category": {
+                        "enum": [
+                          "success",
+                          "AttachmentUnauthorized",
+                          "SurfaceRevisionRejected",
+                          "SurfaceUnavailable",
+                          "HumanPlusError"
+                        ]
+                      },
+                      "private": {
+                        "type": "boolean"
+                      },
+                      "posts": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      },
+                      "streams": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      },
+                      "dnsCalls": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 1000
+                      }
+                    },
+                    "required": [
+                      "category",
+                      "private",
+                      "posts",
+                      "streams",
+                      "dnsCalls"
+                    ]
+                  },
+                  "result": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "php": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "category": {
+                            "enum": [
+                              "success",
+                              "AttachmentUnauthorized",
+                              "SurfaceRevisionRejected",
+                              "SurfaceUnavailable",
+                              "HumanPlusError"
+                            ]
+                          },
+                          "private": {
+                            "type": "boolean"
+                          },
+                          "posts": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "streams": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "dnsCalls": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "private",
+                          "posts",
+                          "streams",
+                          "dnsCalls"
+                        ]
+                      },
+                      "ts": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "category": {
+                            "enum": [
+                              "success",
+                              "AttachmentUnauthorized",
+                              "SurfaceRevisionRejected",
+                              "SurfaceUnavailable",
+                              "HumanPlusError"
+                            ]
+                          },
+                          "private": {
+                            "type": "boolean"
+                          },
+                          "posts": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "streams": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "dnsCalls": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "private",
+                          "posts",
+                          "streams",
+                          "dnsCalls"
+                        ]
+                      },
+                      "py": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "category": {
+                            "enum": [
+                              "success",
+                              "AttachmentUnauthorized",
+                              "SurfaceRevisionRejected",
+                              "SurfaceUnavailable",
+                              "HumanPlusError"
+                            ]
+                          },
+                          "private": {
+                            "type": "boolean"
+                          },
+                          "posts": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "streams": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          },
+                          "dnsCalls": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1000
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "private",
+                          "posts",
+                          "streams",
+                          "dnsCalls"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "php",
+                      "ts",
+                      "py"
+                    ]
+                  },
+                  "agrees": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "since",
+                  "notes",
+                  "given",
+                  "prediction",
+                  "result",
+                  "agrees"
+                ]
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^sat-[0-9]{4}$"
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "since": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "notes": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096
+                  },
+                  "given": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "relay-native"
+                      },
+                      "postStatus": {
+                        "type": "integer",
+                        "minimum": 100,
+                        "maximum": 599
+                      },
+                      "getStatus": {
+                        "type": "integer",
+                        "minimum": 100,
+                        "maximum": 599
+                      },
+                      "correlated": {
+                        "type": "boolean"
+                      },
+                      "earlyFrame": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "postStatus",
+                      "getStatus",
+                      "correlated",
+                      "earlyFrame"
+                    ]
+                  },
+                  "prediction": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "category": {
+                        "enum": [
+                          "success",
+                          "AttachmentUnauthorized",
+                          "SurfaceRevisionRejected",
+                          "SurfaceUnavailable",
+                          "HumanPlusError"
+                        ]
+                      },
+                      "private": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "category",
+                      "private"
+                    ]
+                  },
+                  "result": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "php": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "category": {
+                            "enum": [
+                              "success",
+                              "AttachmentUnauthorized",
+                              "SurfaceRevisionRejected",
+                              "SurfaceUnavailable",
+                              "HumanPlusError"
+                            ]
+                          },
+                          "private": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "private"
+                        ]
+                      },
+                      "ts": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "category": {
+                            "enum": [
+                              "success",
+                              "AttachmentUnauthorized",
+                              "SurfaceRevisionRejected",
+                              "SurfaceUnavailable",
+                              "HumanPlusError"
+                            ]
+                          },
+                          "private": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "private"
+                        ]
+                      },
+                      "py": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "category": {
+                            "enum": [
+                              "success",
+                              "AttachmentUnauthorized",
+                              "SurfaceRevisionRejected",
+                              "SurfaceUnavailable",
+                              "HumanPlusError"
+                            ]
+                          },
+                          "private": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "category",
+                          "private"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "php",
+                      "ts",
+                      "py"
+                    ]
+                  },
+                  "agrees": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id",
+                  "title",
+                  "since",
+                  "notes",
+                  "given",
+                  "prediction",
+                  "result",
+                  "agrees"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "generated_by",
+        "scope",
+        "cases"
+      ]
     }
   },
   "oneOf": [
@@ -7132,6 +8585,9 @@
     },
     {
       "$ref": "#/$defs/mcpBehaviorDocument"
+    },
+    {
+      "$ref": "#/$defs/satellitePolicyDocument"
     }
   ]
 }

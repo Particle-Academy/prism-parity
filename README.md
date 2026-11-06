@@ -52,11 +52,11 @@ Python. `manifest/packages.json` records that package-family matrix and
 `tools/parity-check.mjs --report` prints its remaining gaps. See
 [decision 0021](docs/decisions/0021-parity-is-the-shipping-library-set.md).
 
-Corpus <!-- metric:corpus.version -->0.1.20<!-- /metric --> contains
+Corpus <!-- metric:corpus.version -->0.1.21<!-- /metric --> contains
 <!-- metric:golden.suites -->13<!-- /metric --> golden-based suites with
 <!-- metric:golden.cases -->188<!-- /metric --> stored cases.
-The rubric scores <!-- metric:security.corpora -->20<!-- /metric --> security corpora
-and identifies <!-- metric:security.adversarialRows -->398<!-- /metric --> adversarial rows.
+The rubric scores <!-- metric:security.corpora -->21<!-- /metric --> security corpora
+and identifies <!-- metric:security.adversarialRows -->622<!-- /metric --> adversarial rows.
 <!-- metric:families.withSuite -->9<!-- /metric --> of
 <!-- metric:families.total -->9<!-- /metric --> declared corpus target families have a suite.
 These are corpus inventory counts, not executed coverage. The cross-check reports
@@ -69,6 +69,11 @@ retains generated PHP goldens and each actual native trace. Exact stream event
 vocabulary and payload equality is registered separately as G-125; the runner
 reports that divergence instead of discarding events to manufacture equality.
 See [the stream comparison contract](docs/streaming-conformance.md).
+
+The candidate `satellite-policy` suite executes Browser policy migration and
+Human+ relay preflight/status checks with separate predictions. Its Human+ PHP
+observations require published-artifact regeneration before final canonical
+merge. See [the native adapter contract](tools/satellite-policy/README.md).
 
 | Suite | Kind | Cases | Pins |
 |---|---|---|---|
