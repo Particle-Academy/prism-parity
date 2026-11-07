@@ -25,6 +25,13 @@ jobs:
           ref: 4208acc064ade94209f8f365638484b3dc79b29e
           path: .harness-runtimes/php
           persist-credentials: false
+      - name: Check out the current PHP approval reference
+        uses: actions/checkout@v4
+        with:
+          repository: Particle-Academy/prism-harness
+          ref: c8bd2faf90c8bea6f6576fa3db864e7c7b06f646
+          path: .harness-runtimes/approval-php
+          persist-credentials: false
       - uses: actions/checkout@v4
         with:
           repository: Particle-Academy/prism-harness-ts
@@ -139,6 +146,9 @@ jobs:
       - name: Install PHP fixture dependencies
         working-directory: .harness-runtimes/php
         run: composer install --no-interaction --prefer-dist
+      - name: Install current PHP approval reference dependencies
+        working-directory: .harness-runtimes/approval-php
+        run: composer install --no-interaction --prefer-dist
       - name: Install TypeScript fixture dependencies
         working-directory: .harness-runtimes/ts
         run: npm ci
@@ -155,7 +165,7 @@ jobs:
       - name: Exact-ref cross-port authority, mutants, workers and published-old-worker evidence
         run: node tools/harness-coexistence/hosted.mjs
       - name: Tool-list reference entry points retain the recorded mode ceiling
-        run: node tools/run-gate.mjs harnessToolList -- php .harness-runtimes/php/vendor/bin/phpunit --no-configuration --bootstrap .harness-runtimes/php/vendor/autoload.php tools/harness-tool-list/ToolListReferenceTest.php
+        run: node tools/run-gate.mjs harnessToolList -- php .harness-runtimes/approval-php/vendor/bin/phpunit --no-configuration --bootstrap .harness-runtimes/approval-php/vendor/autoload.php tools/harness-tool-list/ToolListReferenceTest.php
       - name: Preserve native receipts and logs
         if: always()
         uses: actions/upload-artifact@v4
