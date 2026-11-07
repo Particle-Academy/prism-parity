@@ -4788,6 +4788,9 @@
               ]
             }
           ]
+        },
+        "handlers": {
+          "$ref": "#/$defs/toolListHandlerCounts"
         }
       },
       "required": [
@@ -4897,6 +4900,12 @@
             "ts",
             "py"
           ]
+        },
+        "resumeApproval": {
+          "type": "boolean"
+        },
+        "expectedHandlers": {
+          "$ref": "#/$defs/toolListHandlerCounts"
         }
       },
       "required": [
@@ -4914,6 +4923,89 @@
       "allOf": [
         {
           "$ref": "#/$defs/securityCase"
+        },
+        {
+          "oneOf": [
+            {
+              "not": {
+                "anyOf": [
+                  {
+                    "required": [
+                      "resumeApproval"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "expectedHandlers"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "required": [
+                "resumeApproval",
+                "expectedHandlers"
+              ],
+              "properties": {
+                "named": {
+                  "const": false
+                },
+                "authorize": {
+                  "const": false
+                },
+                "wildcardMode": {
+                  "const": false
+                },
+                "result": {
+                  "properties": {
+                    "php": {
+                      "properties": {
+                        "send": {
+                          "required": [
+                            "handlers"
+                          ]
+                        },
+                        "stream": {
+                          "required": [
+                            "handlers"
+                          ]
+                        }
+                      }
+                    },
+                    "ts": {
+                      "properties": {
+                        "send": {
+                          "required": [
+                            "handlers"
+                          ]
+                        },
+                        "structured": {
+                          "required": [
+                            "handlers"
+                          ]
+                        }
+                      }
+                    },
+                    "py": {
+                      "properties": {
+                        "send": {
+                          "required": [
+                            "handlers"
+                          ]
+                        },
+                        "structured": {
+                          "required": [
+                            "handlers"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
         }
       ]
     },
@@ -8513,6 +8605,26 @@
         "generated_by",
         "scope",
         "cases"
+      ]
+    },
+    "toolListHandlerCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "inside": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "second": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "inside",
+        "second"
       ]
     }
   },

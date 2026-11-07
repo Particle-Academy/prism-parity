@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -75,6 +76,11 @@ final class ToolListReferenceTest extends TestCase
     #[DataProvider('scenarios')]
     public function test_actual_entry(array $case, string $entry): void
     {
+        if (array_key_exists('resumeApproval', $case)) {
+            $this->approvalResume($case, $entry);
+
+            return;
+        }
         $mode = ['tools' => ($case['wildcardMode'] ?? false) ? ['*'] : ['inside', 'second'], 'max_steps' => 2];
         config(['prism-harness.agent.modes.chat' => $mode]);
         config(['prism-harness.agents.support' => ['owner' => 'support', 'default' => 'chat', 'modes' => ['chat' => $mode]]]);
@@ -142,5 +148,101 @@ final class ToolListReferenceTest extends TestCase
                 self::assertNull($error);
             }
         }
+    }
+
+    private function approvalResume(array $case, string $entry): void
+    {
+        config(['prism-harness.agent.modes.chat' => ['tools' => ['inside', 'second'], 'requires_approval' => ['inside'], 'max_steps' => 2],
+            'prism-harness.agent.provider' => 'anthropic', 'prism-harness.agent.model' => 'scope-model',
+            'prism-harness.agent.authorize_tools' => false, 'prism.providers.anthropic.api_key' => 'synthetic-offline']);
+        Http::preventStrayRequests();
+        $handlers = ['inside' => 0, 'second' => 0];
+        $tools = new ToolRegistry;
+        foreach (['inside', 'second'] as $name) {
+            $tools->register((new Tool)->as($name)->for('An inert scope probe.')->using(function () use (&$handlers, $name): string {
+                $handlers[$name]++;
+
+                return 'done';
+            }));
+        }
+        app()->instance(ToolRegistry::class, $tools);
+        $sequence = Http::fakeSequence()->push($this->approvalReply('inside', 1));
+        foreach ([2, 3] as $index) {
+            $sequence->push($entry === 'stream' ? $this->approvalSse('second', $index, $index === 3) : $this->approvalReply('second', $index, $index === 3),
+                200, $entry === 'stream' ? ['Content-Type' => 'text/event-stream'] : []);
+        }
+        $participant = ToolListParticipant::create();
+        $harness = app(PrismHarness::class);
+        $session = $harness->for($participant)->session('tool-list-probe');
+        $first = $session->send('probe', $case['names']);
+        self::assertTrue($first->awaitingApproval());
+        self::assertCount(1, $first->pendingApprovals());
+        self::assertSame(['inside' => 0, 'second' => 0], $handlers);
+        $fresh = $harness->for($participant)->session('tool-list-probe');
+        self::assertNotSame($session, $fresh);
+        self::assertSame($session->key(), $fresh->key());
+        $fresh->thread()->record([new \Prism\Prism\ValueObjects\Messages\ToolResultMessage(toolApprovalResponses: [
+            new \Prism\Prism\ValueObjects\ToolApprovalResponse($first->pendingApprovals()[0]->approvalId, $case['resumeApproval']),
+        ])]);
+        $error = null;
+        try {
+            if ($entry === 'stream') {
+                foreach ($fresh->stream('') as $event) {
+                    if ($event instanceof \Prism\Prism\Streaming\Events\ErrorEvent) {
+                        throw new RuntimeException('Native stream error: '.json_encode($event));
+                    }
+                }
+            } else {
+                $fresh->send('');
+            }
+        } catch (Throwable $failure) {
+            $error = ['class' => $failure::class, 'message' => $failure->getMessage()];
+        }
+        $requests = [];
+        foreach (Http::recorded() as [$request]) {
+            $body = json_decode((string) $request->body(), true, flags: JSON_THROW_ON_ERROR);
+            self::assertStringNotContainsString('harness_tool_names', (string) $request->body());
+            $requests[] = array_column($body['tools'] ?? [], 'name');
+        }
+        self::assertSame($case['expectedHandlers'], $handlers);
+        self::assertGreaterThanOrEqual(2, count($requests));
+        foreach ($requests as $offer) {
+            self::assertSame($case['expected'], $offer);
+        }
+        self::assertNull($error);
+        $observation = ['entry' => $entry, 'requests' => $requests, 'error' => $error, 'handlers' => $handlers];
+        $output = getenv('PRISM_TOOL_LIST_OUTPUT');
+        if ($output !== false && $output !== '') {
+            file_put_contents($output, json_encode(['id' => $case['id'], ...$observation], JSON_THROW_ON_ERROR)."\n", FILE_APPEND | LOCK_EX);
+        } else {
+            self::assertSame($case['result']['php'][$entry], $observation);
+        }
+    }
+
+    private function approvalReply(string $name, int $index, bool $final = false): array
+    {
+        return ['id' => 'msg-'.$index, 'type' => 'message', 'role' => 'assistant', 'model' => 'scope-model',
+            'content' => $final ? [['type' => 'text', 'text' => 'done']] : [
+                ['type' => 'tool_use', 'id' => 'call-'.$index, 'name' => $name, 'input' => new stdClass],
+            ], 'stop_reason' => $final ? 'end_turn' : 'tool_use', 'stop_sequence' => null,
+            'usage' => ['input_tokens' => 3, 'output_tokens' => 2]];
+    }
+
+    private function approvalSse(string $name, int $index, bool $final = false): string
+    {
+        $reply = $this->approvalReply($name, $index, $final);
+        $events = [['type' => 'message_start', 'message' => [...$reply, 'content' => [], 'stop_reason' => null,
+            'usage' => ['input_tokens' => 3, 'output_tokens' => 0]]]];
+        foreach ($reply['content'] as $blockIndex => $block) {
+            $events[] = ['type' => 'content_block_start', 'index' => $blockIndex,
+                'content_block' => $block['type'] === 'text' ? ['type' => 'text', 'text' => ''] : $block];
+            $events[] = ['type' => 'content_block_delta', 'index' => $blockIndex, 'delta' => $block['type'] === 'text'
+                ? ['type' => 'text_delta', 'text' => $block['text']] : ['type' => 'input_json_delta', 'partial_json' => '{}']];
+            $events[] = ['type' => 'content_block_stop', 'index' => $blockIndex];
+        }
+        $events[] = ['type' => 'message_delta', 'delta' => ['stop_reason' => $reply['stop_reason'], 'stop_sequence' => null], 'usage' => ['output_tokens' => 2]];
+        $events[] = ['type' => 'message_stop'];
+
+        return implode('', array_map(fn (array $event): string => 'event: '.$event['type']."\ndata: ".json_encode($event)."\n\n", $events));
     }
 }
