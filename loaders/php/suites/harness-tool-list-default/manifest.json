@@ -2,9 +2,9 @@
   "id": "harness-tool-list-default",
   "title": "Tool-list defaults constrain the real turn entry points",
   "kind": "security-corpus",
-  "pins": "Requested names can narrow a mode, never widen it by default. Record actual model offers and native refusals, alongside independently prewritten authority expectations. A consumer moving a read-only session between languages must not accidentally offer a registered destructive tool merely because caller input names it.",
-  "scope": "Normal published PHP send/stream and TS/Py send/structured entry points. Port-only explicit legacy opt-out, configuration migration and malformed flags remain additional native unit controls. No stream capability is invented in either port.",
-  "findings": "PHP legacy sessions silently intersect foreign names, whereas ports preserve a typed tool_not_available refusal. All forms keep the mode ceiling. Named sessions refuse foreign names. Default empty lists offer no tools. Raw native outcomes retain these differences.",
+  "pins": "Requested names can narrow a mode, never widen it by default. Record actual model offers and native refusals, alongside independently prewritten authority expectations. A consumer moving a read-only session between languages must not accidentally offer a registered destructive tool merely because caller input names it. Durable resumes retain the actual turn offer. Affirming or denying a narrowed turn cannot add another mode tool; a full-offer control still executes that tool once.",
+  "scope": "PHP send/stream and TS/Py send/structured entries. The original eleven rows test actual offers without dispatch. Three new rows use real initial approval pauses, fresh Sessions and inert native handler counters. Source candidates are recorded here; published PHP regeneration is required before canonical readiness. No stream capability is invented in the ports.",
+  "findings": "PHP legacy sessions silently intersect foreign names, whereas ports preserve a typed tool_not_available refusal. All forms keep the mode ceiling. Named sessions refuse foreign names. Default empty lists offer no tools. Raw native outcomes retain these differences. New narrowed approve/deny rows execute the second handler zero times, while a full-offer positive control executes it once. Legacy records, narrowed current ceilings and scheduling races remain additional native unit tests; these rows do not claim their own coverage of those cases.",
   "pattern_doc": "docs/decisions/0021-parity-is-the-shipping-library-set.md",
   "reference": "php",
   "comparison": {
