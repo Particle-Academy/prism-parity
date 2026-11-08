@@ -490,7 +490,7 @@
       "registry": "npm",
       "name": "@particle-academy/prism-harness",
       "repository": "https://github.com/Particle-Academy/prism-harness-ts",
-      "version": "0.10.1",
+      "version": "0.10.2",
       "published": true,
       "family": "harness",
       "surface": {
