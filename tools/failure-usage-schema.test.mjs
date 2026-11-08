@@ -23,6 +23,7 @@ for(const[name,mutate]of[
  ['native accounting override',d=>{d.cases[6].properties.native_outcomes.ts.failure_usage=null;}],
  ['continuation gap spread',d=>{d.cases[0].properties.native_gaps={ts:'G-215',py:'G-215'};}],
  ['missing continuation gap',d=>{delete d.cases.find(x=>x.id==='fau-0045').properties.native_gaps;}],
+ ['missing late-id continuation gap',d=>{delete d.cases.find(x=>x.id==='fau-0054').properties.native_gaps;}],
  ['executable builder method',d=>{d.cases[0].builder.splice(3,0,{call:'asText',args:[]});}],
  ['successful accounting assertion removed',d=>{delete d.cases.find(x=>x.id==='fau-0040').properties.attempts[0].final_usage;}],
 ])test('semantic gate rejects '+name,()=>{const d=fixture();mutate(d);assert.notDeepEqual(failureUsageCaseFailures(d,{allowGenerate:true}),[]);});

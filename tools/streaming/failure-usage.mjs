@@ -38,7 +38,7 @@ export function failureUsageCaseFailures(document,{allowGenerate=false}={}){
     if(nativeOutcomes?!equal(properties.native_outcomes,nativeOutcomes):own(properties,'native_outcomes'))fail('native channel declaration changed or spread');
     if(input.mode==='telemetry'){
       if(!properties.telemetry||!equal(Object.keys(row.skip??{}).sort(),['py','ts'])||Object.values(row.skip).some(x=>typeof x!=='string'||!x.startsWith('PHP public generation telemetry dispatch is outside')))fail('native PHP telemetry must declare its exact port surface limits');
-    }else if(['fau-0045','fau-0046','fau-0047'].includes(row.id)){
+    }else if(['fau-0045','fau-0046','fau-0047','fau-0054'].includes(row.id)){
       if(input.mode!=='continuation'||!equal(properties.native_gaps,{ts:'G-215',py:'G-215'})||!equal(Object.keys(row.skip??{}).sort(),['py','ts'])||Object.values(row.skip).some(x=>typeof x!=='string'||!x.startsWith('G-215: no native multi-step stream tool continuation')))fail('native continuation gap must stay explicit and scoped');
     }else if(own(row,'skip')||own(properties,'telemetry')||own(properties,'native_gaps'))fail('shared failure controls cannot be skipped');
     if(input.mode!=='continuation'&&own(properties,'native_gaps'))fail('native continuation gap spread');

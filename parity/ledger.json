@@ -83,11 +83,12 @@
     },
     {
       "id": "G-215",
-      "summary": "TS/Py have no native multi-step stream/tool continuation loop. The three actual continuation controls are PHP-only; adapters must not issue a second request on behalf of the SDK.",
+      "summary": "TS/Py have no native multi-step stream/tool continuation loop. The four actual continuation controls are PHP-only; adapters must not issue a second request on behalf of the SDK.",
       "affects": [
         "stream-failure-usage/fau-0045",
         "stream-failure-usage/fau-0046",
-        "stream-failure-usage/fau-0047"
+        "stream-failure-usage/fau-0047",
+        "stream-failure-usage/fau-0054"
       ]
     }
   ],
