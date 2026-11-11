@@ -14,7 +14,7 @@
     ],
     "require": {
         "php": "^8.2",
-        "particle-academy/prism": "0.147.1",
+        "particle-academy/prism": "0.147.2",
         "particle-academy/prism-conformance": "dev-main|*",
         "particle-academy/prism-harness": "0.18.0"
     },
