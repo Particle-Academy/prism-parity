@@ -800,7 +800,7 @@
             "id": "trq-0024",
             "title": "tool with strict enabled",
             "since": "0.1.0",
-            "notes": "The true half of trq-0010: strict appears only when truthy. Together they pin that the key is filtered on falsiness rather than on nullity.",
+            "notes": "The true half of trq-0010: strict appears only when truthy. Together they pin that the key is filtered on falsiness rather than on nullity. Approved deliberate reference move in corpus 0.1.24: normally installed published PHP 0.147.2 now sends a closed empty root parameter object (properties is an object, required is empty, additionalProperties is false). The previous omission was core issue #143, not behavior for the ports to preserve. All unrelated cases and G125 traces are unchanged.",
             "builder": [
                 {
                     "call": "using",
@@ -832,7 +832,7 @@
                 }
             ],
             "expect": {
-                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"tools\":[{\"type\":\"function\",\"name\":\"ping\",\"description\":\"Ping\",\"strict\":true}]}"
+                "body_json": "{\"model\":\"gpt-4o\",\"input\":[{\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"hi\"}]}],\"max_output_tokens\":null,\"tools\":[{\"type\":\"function\",\"name\":\"ping\",\"description\":\"Ping\",\"parameters\":{\"type\":\"object\",\"properties\":{},\"required\":[],\"additionalProperties\":false},\"strict\":true}]}"
             }
         },
         {
