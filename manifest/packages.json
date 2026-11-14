@@ -437,15 +437,14 @@
       "registry": "packagist",
       "name": "particle-academy/prism-graph",
       "repository": "https://github.com/Particle-Academy/prism-graph",
-      "version": null,
+      "version": "0.1.0",
       "carries": "knowledge graphs with embeddings: verbatim content-addressed chunks, app-owned tables, optional vector stores (PDO, sqlite-vec, pgvector, any), validity-window facts that cite chunks",
       "family": "graph",
       "kind": "runtime",
       "role": "reference",
-      "status": "planned",
-      "published": false,
-      "catalog": "hidden",
-      "catalog_reason": "Not yet published; 0.1.0 awaits first Packagist publish."
+      "status": "published",
+      "published": true,
+      "catalog": "public"
     },
     "prism-harness": {
       "language": "php",
@@ -1020,22 +1019,6 @@
       "status": "published",
       "catalog": "public"
     },
-    "prism-rag": {
-      "language": "php",
-      "registry": "packagist",
-      "name": "particle-academy/prism-rag",
-      "repository": null,
-      "version": null,
-      "carries": "document ingestion, chunking, retrieval - consumes prism-memory's VectorStore",
-      "planning_note": "specified, not started - held until the VectorStore contract is ratified",
-      "family": "rag",
-      "kind": "runtime",
-      "role": "reference",
-      "status": "planned",
-      "published": false,
-      "catalog": "hidden",
-      "catalog_reason": "Design only; no repository or published artifact."
-    },
     "prism-ts": {
       "language": "ts",
       "role": "port",
@@ -1296,18 +1279,6 @@
         "server-direction"
       ],
       "catalog": "public"
-    },
-    "prism-rag": {
-      "language": "php",
-      "registry": "packagist",
-      "name": "particle-academy/prism-rag",
-      "repository": null,
-      "version": null,
-      "carries": "document ingestion, chunking, retrieval - consumes prism-memory's VectorStore",
-      "status": "planned",
-      "published": false,
-      "catalog": "hidden",
-      "catalog_reason": "Design only; no repository or published artifact."
     }
   },
   "family_references": {
@@ -1322,7 +1293,6 @@
     "workspace": "prism-workspace",
     "acp": "prism-acp-ts",
     "mcp-server": "prism-mcp-server-ts",
-    "rag": "prism-rag",
     "graph": "prism-graph"
   },
   "projects": {

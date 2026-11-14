@@ -19,7 +19,7 @@ of them.
 | Spec | Package | Fills |
 |---|---|---|
 | [prism-memory.md](prism-memory.md) | `prism-memory` | persistent context, semantic recall, vector storage |
-| [prism-rag.md](prism-rag.md) | `prism-rag` | document ingestion, chunking, retrieval |
+| [prism-rag.md](prism-rag.md) | `prism-rag` | RETIRED, superseded by `prism-graph` |
 | [prism-workspace.md](prism-workspace.md) | `prism-workspace` | sandboxed filesystem, code execution, skill files |
 | [prism-mcp.md](prism-mcp.md) | `prism-mcp` | Model Context Protocol, server and client |
 | [prism-agent-team.md](prism-agent-team.md) | *(the Lab + one agent per language)* | ecosystem-wide testing team, coordinated by Prism.php |
