@@ -54,7 +54,7 @@ once the feature starts working is the worst kind.
 ## Decisions already taken
 
 **This package owns the vector-store contract for the whole ecosystem.**
-`prism-rag` will consume it rather than defining its own. Two vector
+`prism-graph`, which superseded the planned `prism-rag`, ships a narrower contract of its own today because it must run without Laravel; an adapter onto this one is planned (G-268). Two vector
 abstractions in one ecosystem is the thing that makes an ecosystem a collection.
 The contract lives here because memory is the package that needs it first, not
 because memory is more important. Recorded in

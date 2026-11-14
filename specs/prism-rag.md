@@ -1,6 +1,6 @@
 # prism-rag
 
-**Status:** specified, not built.
+**Status:** RETIRED 2026-11-14, never built. Superseded by [`prism-graph`](https://github.com/Particle-Academy/prism-graph), which carries ingestion, chunking and retrieval. Kept as history.
 **Fills:** document ingestion, chunking, retrieval.
 
 Read [`docs/patterns/`](../docs/patterns/) and [`docs/decisions/`](../docs/decisions/)
