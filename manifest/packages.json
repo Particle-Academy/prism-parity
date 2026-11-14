@@ -451,15 +451,14 @@
       "registry": "npm",
       "name": "@particle-academy/prism-graph",
       "repository": "https://github.com/Particle-Academy/prism-graph-ts",
-      "version": null,
+      "version": "0.1.0",
       "carries": "TS port of prism-graph: scoped long-term agent memory (SQLite via node:sqlite) plus mountable MCP tool definitions",
       "family": "graph",
       "kind": "runtime",
       "role": "port",
-      "status": "planned",
-      "published": false,
-      "catalog": "hidden",
-      "catalog_reason": "Not yet published; awaiting first npm publish."
+      "status": "published",
+      "published": true,
+      "catalog": "public"
     },
     "prism-harness": {
       "language": "php",
