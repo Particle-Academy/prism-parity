@@ -432,6 +432,21 @@
       "catalog": "hidden",
       "catalog_reason": "Conformance fixture loader built from prism-parity; not a public runtime package and no registry release exists."
     },
+    "prism-graph": {
+      "language": "php",
+      "registry": "packagist",
+      "name": "particle-academy/prism-graph",
+      "repository": "https://github.com/Particle-Academy/prism-graph",
+      "version": null,
+      "carries": "knowledge graphs with embeddings: verbatim content-addressed chunks, app-owned tables, optional vector stores (PDO, sqlite-vec, pgvector, any), validity-window facts that cite chunks",
+      "family": "graph",
+      "kind": "runtime",
+      "role": "reference",
+      "status": "planned",
+      "published": false,
+      "catalog": "hidden",
+      "catalog_reason": "Not yet published; 0.1.0 awaits first Packagist publish."
+    },
     "prism-harness": {
       "language": "php",
       "registry": "packagist",
@@ -1307,7 +1322,8 @@
     "workspace": "prism-workspace",
     "acp": "prism-acp-ts",
     "mcp-server": "prism-mcp-server-ts",
-    "rag": "prism-rag"
+    "rag": "prism-rag",
+    "graph": "prism-graph"
   },
   "projects": {
     "prism-consensus": {
