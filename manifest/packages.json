@@ -437,7 +437,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism-graph",
       "repository": "https://github.com/Particle-Academy/prism-graph",
-      "version": "0.1.0",
+      "version": "0.2.1",
       "carries": "knowledge graphs with embeddings: verbatim content-addressed chunks, app-owned tables, optional vector stores (PDO, sqlite-vec, pgvector, any), validity-window facts that cite chunks",
       "family": "graph",
       "kind": "runtime",
@@ -445,6 +445,21 @@
       "status": "published",
       "published": true,
       "catalog": "public"
+    },
+    "prism-graph-ts": {
+      "language": "ts",
+      "registry": "npm",
+      "name": "@particle-academy/prism-graph",
+      "repository": "https://github.com/Particle-Academy/prism-graph-ts",
+      "version": null,
+      "carries": "TS port of prism-graph: scoped long-term agent memory (SQLite via node:sqlite) plus mountable MCP tool definitions",
+      "family": "graph",
+      "kind": "runtime",
+      "role": "port",
+      "status": "planned",
+      "published": false,
+      "catalog": "hidden",
+      "catalog_reason": "Not yet published; awaiting first npm publish."
     },
     "prism-harness": {
       "language": "php",
