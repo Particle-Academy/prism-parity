@@ -47,6 +47,10 @@
       "private": false
     },
     {
+      "name": "prism-graph",
+      "private": false
+    },
+    {
       "name": "prism-harness",
       "private": false
     },
