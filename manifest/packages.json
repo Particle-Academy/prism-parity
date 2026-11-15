@@ -728,11 +728,10 @@
       "repository": "https://github.com/Particle-Academy/prism-mcp-server-py",
       "family": "mcp-server",
       "kind": "runtime",
-      "status": "planned",
-      "published": false,
-      "version": null,
-      "catalog": "hidden",
-      "catalog_reason": "Python MCP server implementation exists, but prism-ai-mcp-server has no published PyPI release."
+      "status": "published",
+      "published": true,
+      "version": "0.2.0",
+      "catalog": "public"
     },
     "prism-mcp-server-ts": {
       "language": "ts",
