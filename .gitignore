@@ -27,3 +27,7 @@ runners/php/vendor/
 
 # Disposable normal published satellite consumers and proof logs.
 .satellite-published/
+
+# The PHP reference runner is locked so a corpus verdict cannot move with a
+# library release (credential-scope cs-0016 once changed with the Guzzle major).
+!/runners/php/composer.lock
