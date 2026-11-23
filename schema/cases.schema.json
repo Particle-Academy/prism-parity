@@ -8627,6 +8627,147 @@
         "second"
       ]
     },
+    "harnessAgentBindingOutcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "refused",
+        "parent",
+        "child"
+      ],
+      "properties": {
+        "refused": {},
+        "parent": {},
+        "child": {}
+      }
+    },
+    "harnessAgentBindingCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "global": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "provider",
+            "model"
+          ],
+          "properties": {
+            "provider": {
+              "type": "string"
+            },
+            "model": {
+              "type": "string"
+            }
+          }
+        },
+        "modes": {
+          "type": "object"
+        },
+        "agents": {
+          "type": "object"
+        },
+        "run": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "agent",
+            "mode",
+            "session_provider",
+            "session_model",
+            "delegate"
+          ],
+          "properties": {
+            "agent": {},
+            "mode": {
+              "type": "string"
+            },
+            "session_provider": {},
+            "session_model": {},
+            "delegate": {}
+          }
+        },
+        "expected": {
+          "$ref": "#/$defs/harnessAgentBindingOutcome"
+        },
+        "result": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "$ref": "#/$defs/harnessAgentBindingOutcome"
+            },
+            "ts": {
+              "$ref": "#/$defs/harnessAgentBindingOutcome"
+            },
+            "py": {
+              "$ref": "#/$defs/harnessAgentBindingOutcome"
+            }
+          }
+        }
+      },
+      "required": [
+        "title",
+        "global",
+        "modes",
+        "agents",
+        "run",
+        "expected",
+        "result",
+        "agrees"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "harnessAgentBindingDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "suite": {
+          "const": "harness-agent-binding"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated_by": {
+          "type": "string"
+        },
+        "pins_note": {
+          "type": "string"
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/harnessAgentBindingCase"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ]
+    },
     "credentialScopeCase": {
       "oneOf": [
         {
@@ -9118,6 +9259,9 @@
     },
     {
       "$ref": "#/$defs/satellitePolicyDocument"
+    },
+    {
+      "$ref": "#/$defs/harnessAgentBindingDocument"
     },
     {
       "$ref": "#/$defs/credentialScopeDocument"

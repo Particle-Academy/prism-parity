@@ -29,6 +29,9 @@
 export const IDENTIFIER_FIELDS = new Set([
   'name', 'names', 'tool', 'tools', 'tool_name', 'kind', 'type',
   'worker', 'outcome', 'method', 'verb', 'handle', 'actor_type', 'operation',
+  // G-321: a subagent's `agent` and a mode's `agents` allow-list are names a
+  // near-miss must not resolve; harness-agent-binding pads and folds them.
+  'agent', 'agents',
 ]);
 
 const IDENTIFIER = /^[A-Za-z0-9_.:\\/-]+$/;
