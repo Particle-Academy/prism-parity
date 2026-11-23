@@ -94,7 +94,8 @@ def observe(document: dict[str, Any]) -> list[dict[str, Any]]:
                         else:
                             register_provider(row["name"], stub)
                     except ValueError as error:
-                        if "already registered" not in str(error):
+                        # A collision, or a name the registry refuses as unreadable.
+                        if "already registered" not in str(error) and "not a valid provider name" not in str(error):
                             raise
                         refused = True
                     except TypeError as error:

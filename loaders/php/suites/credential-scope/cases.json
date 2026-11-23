@@ -529,7 +529,7 @@
             "id": "cs-0016",
             "title": "a padded url with edge spaces",
             "since": "0.1.25",
-            "notes": "Padded: leading and trailing spaces around the trusted url. Records whether each language trims before comparing; the request goes to the trusted host either way.",
+            "notes": "Padded: leading and trailing spaces around the trusted url. Records whether each language trims before comparing. No language sends the key anywhere but the trusted host. PHP's answer depends on its HTTP stack: under Laravel 13 / Guzzle 8 the padded URL is rejected before dispatch (recorded here, and what the unlocked CI runner resolves); under Laravel 12 / Guzzle 7 it is sent to the trusted host with the inherited key, as TypeScript and Python do.",
             "given": {
                 "kind": "endpoint",
                 "provider": "openai",
@@ -542,8 +542,8 @@
             },
             "result": {
                 "php": {
-                    "dispatched": true,
-                    "credential": "inherited",
+                    "dispatched": false,
+                    "credential": "none",
                     "account": "none"
                 },
                 "ts": {
@@ -557,7 +557,7 @@
                     "account": "none"
                 }
             },
-            "agrees": true
+            "agrees": false
         },
         {
             "id": "cs-0017",
@@ -980,7 +980,7 @@
                     "builtins_intact": true
                 },
                 "ts": {
-                    "refused": false,
+                    "refused": true,
                     "builtins_intact": true
                 },
                 "py": {
@@ -988,7 +988,7 @@
                     "builtins_intact": true
                 }
             },
-            "agrees": false
+            "agrees": true
         },
         {
             "id": "cs-0030",
@@ -1006,7 +1006,7 @@
                     "builtins_intact": true
                 },
                 "ts": {
-                    "refused": false,
+                    "refused": true,
                     "builtins_intact": true
                 },
                 "py": {
@@ -1014,13 +1014,13 @@
                     "builtins_intact": true
                 }
             },
-            "agrees": false
+            "agrees": true
         },
         {
             "id": "cs-0031",
-            "title": "a leading-padded built-in name",
+            "title": "a leading-padded built-in name is refused",
             "since": "0.1.25",
-            "notes": "Padded: a leading space. Records whether registration is refused; what must hold either way is that the built-in still resolves.",
+            "notes": "Padded: a leading space. A second key that reads as openai in a config file or a log. Refused at registration, never trimmed: the name may not contain whitespace, control, format or G-36 codepoints. The built-in still resolves.",
             "given": {
                 "kind": "register",
                 "name": " openai",
@@ -1028,15 +1028,15 @@
             },
             "result": {
                 "php": {
-                    "refused": false,
+                    "refused": true,
                     "builtins_intact": true
                 },
                 "ts": {
-                    "refused": false,
+                    "refused": true,
                     "builtins_intact": true
                 },
                 "py": {
-                    "refused": false,
+                    "refused": true,
                     "builtins_intact": true
                 }
             },
@@ -1044,9 +1044,9 @@
         },
         {
             "id": "cs-0032",
-            "title": "a trailing-padded built-in name",
+            "title": "a trailing-padded built-in name is refused",
             "since": "0.1.25",
-            "notes": "Padded: a trailing space, the G-36 shape. Records whether registration is refused; the built-in must still resolve.",
+            "notes": "Padded: a trailing space, the G-36 shape. All three languages used to accept it and agree, which no comparison could flag. Refused at registration, never trimmed. The built-in still resolves.",
             "given": {
                 "kind": "register",
                 "name": "openai ",
@@ -1054,15 +1054,15 @@
             },
             "result": {
                 "php": {
-                    "refused": false,
+                    "refused": true,
                     "builtins_intact": true
                 },
                 "ts": {
-                    "refused": false,
+                    "refused": true,
                     "builtins_intact": true
                 },
                 "py": {
-                    "refused": false,
+                    "refused": true,
                     "builtins_intact": true
                 }
             },
@@ -1070,9 +1070,9 @@
         },
         {
             "id": "cs-0033",
-            "title": "a zero-width-padded built-in name",
+            "title": "a zero-width-padded built-in name is refused",
             "since": "0.1.25",
-            "notes": "Zero-width: a trailing U+200B is invisible. The built-in must still resolve.",
+            "notes": "Zero-width: a trailing U+200B is invisible and is not whitespace in any language's built-in, so it is refused by the explicit G-36 codepoint set, not by trim(). The built-in still resolves.",
             "given": {
                 "kind": "register",
                 "name": "openai​",
@@ -1080,15 +1080,15 @@
             },
             "result": {
                 "php": {
-                    "refused": false,
+                    "refused": true,
                     "builtins_intact": true
                 },
                 "ts": {
-                    "refused": false,
+                    "refused": true,
                     "builtins_intact": true
                 },
                 "py": {
-                    "refused": false,
+                    "refused": true,
                     "builtins_intact": true
                 }
             },
@@ -1138,7 +1138,7 @@
                     "builtins_intact": true
                 },
                 "ts": {
-                    "refused": false,
+                    "refused": true,
                     "builtins_intact": true
                 },
                 "py": {
@@ -1146,7 +1146,7 @@
                     "builtins_intact": true
                 }
             },
-            "agrees": false
+            "agrees": true
         },
         {
             "id": "cs-0036",

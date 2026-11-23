@@ -61,7 +61,8 @@ export async function observe(document, dist) {
         try {
           sdk.registerProvider(row.name, stub, row.replace ? { replace: true } : undefined);
         } catch (error) {
-          if (!(error instanceof Error) || !/already registered/.test(error.message)) throw error;
+          // A collision, or a name the registry refuses as unreadable.
+          if (!(error instanceof Error) || !/already registered|not a valid provider name/.test(error.message)) throw error;
           refused = true;
         }
         const intact = Object.entries(builtIns).every(([key, Type]) => sdk.resolveProvider(key, { apiKey: 'x' }) instanceof Type);

@@ -109,7 +109,9 @@ try {
                     $manager->extend($case['name'], $stub);
                 }
             } catch (InvalidArgumentException $error) {
-                if (! str_contains($error->getMessage(), 'already registered')) {
+                // A collision, or a name the registry refuses as unreadable.
+                if (! str_contains($error->getMessage(), 'already registered')
+                    && ! str_contains($error->getMessage(), 'not a valid provider name')) {
                     throw $error;
                 }
                 $refused = true;
