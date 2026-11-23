@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8c753f93c4df2a016b8752259e2f5fb5",
+    "content-hash": "42721eb1569ab717ce24f4c6572ea3d9",
     "packages": [
         {
             "name": "brick/math",
@@ -2460,16 +2460,16 @@
         },
         {
             "name": "particle-academy/prism",
-            "version": "v0.151.1",
+            "version": "v0.152.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Particle-Academy/prism.git",
-                "reference": "3506875d68496c89228c4c6091f91ec784f8a899"
+                "reference": "ed554ed4c224d010158d34564ef769c5e7fe5789"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Particle-Academy/prism/zipball/3506875d68496c89228c4c6091f91ec784f8a899",
-                "reference": "3506875d68496c89228c4c6091f91ec784f8a899",
+                "url": "https://api.github.com/repos/Particle-Academy/prism/zipball/ed554ed4c224d010158d34564ef769c5e7fe5789",
+                "reference": "ed554ed4c224d010158d34564ef769c5e7fe5789",
                 "shasum": ""
             },
             "require": {
@@ -2535,7 +2535,7 @@
             "description": "A powerful Laravel package for integrating Large Language Models (LLMs) into your applications. Actively maintained fork of prism-php/prism.",
             "support": {
                 "issues": "https://github.com/Particle-Academy/prism/issues",
-                "source": "https://github.com/Particle-Academy/prism/tree/v0.151.1"
+                "source": "https://github.com/Particle-Academy/prism/tree/v0.152.0"
             },
             "funding": [
                 {
@@ -2543,8 +2543,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-11-23T06:15:33+00:00",
-            "published-time": "2026-11-23T06:42:04+00:00"
+            "time": "2026-11-23T19:30:48+00:00",
+            "published-time": "2026-11-23T19:33:33+00:00"
         },
         {
             "name": "particle-academy/prism-conformance",
