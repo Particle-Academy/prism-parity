@@ -131,7 +131,7 @@ final class HarnessFailedStepTest extends TestCase
             }
         };
         $provider->fault = $spec['php_stream'];
-        app(PrismManager::class)->extend('anthropic', fn () => $provider);
+        app(PrismManager::class)->extend('anthropic', fn () => $provider, true);
         config()->set('prism-harness.agent.modes.chat.requires_approval', $spec['guarded'] ? ['tick'] : []);
         $tools = 0;
         app(ToolRegistry::class)->register((new Tool)->as('tick')->for('Count')->using(function () use (&$tools): string {
