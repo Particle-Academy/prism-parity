@@ -128,7 +128,7 @@ corpora claim such a hazard, and every one of them backs it:
 `human-plus-tool-admission` (11 of 43 identifier values),
 `opentelemetry-span-attributes` (3 of 284, padded rate-limit bucket names),
 `opentelemetry-media-content` (1 of 13, a Cyrillic `і` in a part kind) and
-`credential-scope` (3 of 45, padded and zero-width provider names).
+`credential-scope` (4 of 49, padded, zero-width and Cyrillic-homoglyph provider names).
 
 **Vacuity is a failure too.** A suite that claims a hazard and yields *no*
 identifier value at all means the case shape moved under the probe, or the field

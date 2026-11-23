@@ -527,9 +527,9 @@
         },
         {
             "id": "cs-0016",
-            "title": "a padded url with edge spaces",
+            "title": "a padded url with edge spaces is refused",
             "since": "0.1.25",
-            "notes": "Padded: leading and trailing spaces around the trusted url. Records whether each language trims before comparing. No language sends the key anywhere but the trusted host. PHP's answer depends on its HTTP stack: under Laravel 13 / Guzzle 8 the padded URL is rejected before dispatch (recorded here, and what the unlocked CI runner resolves); under Laravel 12 / Guzzle 7 it is sent to the trusted host with the inherited key, as TypeScript and Python do.",
+            "notes": "Padded: leading and trailing spaces around the trusted url. A url carrying whitespace or a control character anywhere is refused before any request in all three languages, never trimmed: PHP's verdict on a padded url used to depend on its HTTP stack (refused before dispatch under Guzzle 8, sent to the trusted host with the inherited key under Guzzle 7), while TypeScript and Python trimmed it and sent the key. Refusal is the one answer that does not move with a library.",
             "given": {
                 "kind": "endpoint",
                 "provider": "openai",
@@ -547,17 +547,17 @@
                     "account": "none"
                 },
                 "ts": {
-                    "dispatched": true,
-                    "credential": "inherited",
+                    "dispatched": false,
+                    "credential": "none",
                     "account": "none"
                 },
                 "py": {
-                    "dispatched": true,
-                    "credential": "inherited",
+                    "dispatched": false,
+                    "credential": "none",
                     "account": "none"
                 }
             },
-            "agrees": false
+            "agrees": true
         },
         {
             "id": "cs-0017",
@@ -1170,6 +1170,58 @@
                 "py": {
                     "refused": false,
                     "builtins_intact": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0037",
+            "title": "a Cyrillic homoglyph of a built-in name is refused",
+            "since": "0.1.25",
+            "notes": "Homoglyph: a Cyrillic о (U+043E) for the first o of openai. It reads as the built-in in a config file or a log and is a different key. Refused by the ASCII allow-list ^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$, which needs no Unicode tables. The built-in still resolves.",
+            "given": {
+                "kind": "register",
+                "name": "оpenai",
+                "replace": false
+            },
+            "result": {
+                "php": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "ts": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "py": {
+                    "refused": true,
+                    "builtins_intact": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0038",
+            "title": "a full-width built-in name is refused",
+            "since": "0.1.25",
+            "notes": "Full-width: openai spelled in U+FF41..U+FF5A, which NFKC folds to the built-in. Refused by the ASCII allow-list rather than folded, so no language's normalisation decides what it means. The built-in still resolves.",
+            "given": {
+                "kind": "register",
+                "name": "ｏｐｅｎａｉ",
+                "replace": false
+            },
+            "result": {
+                "php": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "ts": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "py": {
+                    "refused": true,
+                    "builtins_intact": true
                 }
             },
             "agrees": true
