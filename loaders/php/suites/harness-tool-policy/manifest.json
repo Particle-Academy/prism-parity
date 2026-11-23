@@ -1,0 +1,30 @@
+{
+  "id": "harness-tool-policy",
+  "title": "Which approval-gated tool calls a host policy lets run without asking, and which policies are refused",
+  "kind": "security-corpus",
+  "pins": "The host-owned ToolPolicy: an exact, normalised {server?, tool} allow-list that lets an approval-gated call run without asking a person. Drift here does not error: a padded, look-alike or MCP-shadowing name that matched would run a tool a person never cleared, and a policy that silently dropped a confirmation, approval or destructive entry would leave the host believing it had listed something it had not. Every such name must ask, and every such policy must be refused at construction, in every language.",
+  "scope": "Policy construction (malformed documents, reserved confirmation and approval names, padded, homoglyph and wildcard entries, a registered tool declaring destructive), call-time matching (padding with every invisible class in the shared G-36 codepoint set, homoglyphs, fullwidth look-alikes, case, unscoped versus server-scoped entries, a destructive MCP tool), honor:false, a pending call staying pending when a later policy would allow it, and the decision events projected to type, server, tool, args_digest, decided_by and policy_revision. A revoke that lands between two calls of one step is NOT in these rows: it needs a tool with a side effect on the host, and is pinned by each language's own tests.",
+  "findings": "All twenty-seven rows agree in all three languages, and that agreement is a statement about the rule each runner was written against, not proof the rule is right. Every expectation was written before any language ran. The rows were probed by a naive implementation (normalise both sides, ignore server, honor and tier, fold the homoglyph): ten rows fail under it in each language, and five fail when the policy is never consulted. The args_digest row pins RFC 8785 canonical JSON across the three languages, including UTF-16 key order and ECMAScript number formatting.",
+  "pattern_doc": "docs/decisions/0021-parity-is-the-shipping-library-set.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-harness:tests/ToolPolicyCorpusTest.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-harness-ts:test/tool-policy-corpus.test.ts"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-harness-py:tests/test_tool_policy_corpus.py"
+    }
+  }
+}
