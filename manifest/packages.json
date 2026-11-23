@@ -229,7 +229,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism",
       "repository": "https://github.com/Particle-Academy/prism",
-      "version": "0.147.2",
+      "version": "0.151.1",
       "surface": {
         "capabilities": [
           "text",
@@ -297,7 +297,7 @@
       "kind": "runtime",
       "status": "published",
       "published": true,
-      "version": "0.1.1",
+      "version": "0.1.2",
       "catalog": "public"
     },
     "prism-acp-ts": {
@@ -310,8 +310,23 @@
       "kind": "runtime",
       "status": "published",
       "published": true,
-      "version": "0.42.0",
+      "version": "0.47.0",
       "catalog": "public"
+    },
+    "prism-agent-docs": {
+      "language": "php",
+      "registry": "packagist",
+      "name": "particle-academy/prism-agent-docs",
+      "repository": "https://github.com/Particle-Academy/prism-agent-docs",
+      "version": "0.1.2",
+      "carries": "a Word-document subagent for prism-harness and ACP: edits or creates .docx through last-word, states the format limits, checks its own output",
+      "family": "agent-docs",
+      "kind": "runtime",
+      "role": "reference",
+      "status": "published",
+      "published": true,
+      "catalog": "hidden",
+      "catalog_reason": "0.1.0 to 0.1.2 are on Packagist, but no further release ships until the package reaches full parity with Word (owner decision, 2026-11-22). Hidden from the public catalog until then."
     },
     "prism-browser": {
       "language": "php",
@@ -323,7 +338,7 @@
       "kind": "runtime",
       "status": "published",
       "published": true,
-      "version": "0.4.1",
+      "version": "0.4.2",
       "catalog": "public"
     },
     "prism-browser-py": {
@@ -437,7 +452,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism-graph",
       "repository": "https://github.com/Particle-Academy/prism-graph",
-      "version": "0.2.1",
+      "version": "0.4.0",
       "carries": "knowledge graphs with embeddings: verbatim content-addressed chunks, app-owned tables, optional vector stores (PDO, sqlite-vec, pgvector, any), validity-window facts that cite chunks",
       "family": "graph",
       "kind": "runtime",
@@ -451,7 +466,7 @@
       "registry": "npm",
       "name": "@particle-academy/prism-graph",
       "repository": "https://github.com/Particle-Academy/prism-graph-ts",
-      "version": "0.1.0",
+      "version": "0.3.0",
       "carries": "TS port of prism-graph: scoped long-term agent memory (SQLite via node:sqlite) plus mountable MCP tool definitions",
       "family": "graph",
       "kind": "runtime",
@@ -465,7 +480,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism-harness",
       "repository": "https://github.com/Particle-Academy/prism-harness",
-      "version": "0.24.0",
+      "version": "0.26.4",
       "carries": "durable agent sessions - threads, session state, store drivers",
       "family": "harness",
       "kind": "runtime",
@@ -518,7 +533,7 @@
       "registry": "npm",
       "name": "@particle-academy/prism-harness",
       "repository": "https://github.com/Particle-Academy/prism-harness-ts",
-      "version": "0.10.3",
+      "version": "0.11.0",
       "published": true,
       "family": "harness",
       "surface": {
@@ -728,11 +743,10 @@
       "repository": "https://github.com/Particle-Academy/prism-mcp-server-py",
       "family": "mcp-server",
       "kind": "runtime",
-      "status": "planned",
-      "published": false,
-      "version": null,
-      "catalog": "hidden",
-      "catalog_reason": "Python MCP server implementation exists, but prism-ai-mcp-server has no published PyPI release."
+      "status": "published",
+      "published": true,
+      "version": "0.2.1",
+      "catalog": "public"
     },
     "prism-mcp-server-ts": {
       "language": "ts",
@@ -925,7 +939,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism-perplexity",
       "repository": "https://github.com/Particle-Academy/prism-perplexity",
-      "version": "0.4.2",
+      "version": "0.4.3",
       "carries": "the Perplexity surface core does not - embeddings, search",
       "family": "perplexity",
       "kind": "runtime",
@@ -994,7 +1008,7 @@
       "registry": "pypi",
       "name": "prism-ai-core",
       "repository": "https://github.com/Particle-Academy/prism-py",
-      "version": "0.9.1",
+      "version": "0.10.0",
       "published": true,
       "surface": {
         "capabilities": [
@@ -1039,7 +1053,7 @@
       "registry": "npm",
       "name": "@particle-academy/prism",
       "repository": "https://github.com/Particle-Academy/prism-ts",
-      "version": "0.9.1",
+      "version": "0.10.0",
       "published": true,
       "surface": {
         "capabilities": [
@@ -1210,7 +1224,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism-harness",
       "repository": "https://github.com/Particle-Academy/prism-harness",
-      "version": "0.24.0",
+      "version": "0.26.4",
       "carries": "durable agent sessions - threads, session state, store drivers",
       "status": "published",
       "published": true,
@@ -1221,7 +1235,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism-perplexity",
       "repository": "https://github.com/Particle-Academy/prism-perplexity",
-      "version": "0.4.2",
+      "version": "0.4.3",
       "carries": "the Perplexity surface core does not - embeddings, search",
       "status": "published",
       "published": true,
@@ -1307,7 +1321,8 @@
     "workspace": "prism-workspace",
     "acp": "prism-acp-ts",
     "mcp-server": "prism-mcp-server-ts",
-    "graph": "prism-graph"
+    "graph": "prism-graph",
+    "agent-docs": "prism-agent-docs"
   },
   "projects": {
     "prism-consensus": {
@@ -1347,6 +1362,12 @@
       "catalog_reason": "Workspace envelope and repository pins, not an installable package.",
       "repository_inventory": "private-envelope",
       "inventory_reason": "Private workspace envelope is not visible to the ordinary public-repository workflow token. Its identity is declared here, not verified by public CI; only this non-package envelope may use this classification."
+    },
+    "prism-local": {
+      "repository": "https://github.com/Particle-Academy/prism-local",
+      "kind": "tooling",
+      "catalog": "hidden",
+      "catalog_reason": "Rust local inference engine (embeddings, classification, small-model decisions). Its crates are publish = false and it is not distributed through Packagist, npm or PyPI, so it is not an installable Prism package in this catalog."
     }
   },
   "registry_exclusions": [
