@@ -7,11 +7,34 @@
             "since": "0.1.0",
             "notes": "The one misuse the builder actively refuses. A prompt and an explicit message list are mutually exclusive because there is no defensible order to merge them in, and silently picking one would send a conversation the caller did not write. Pins that this is a refusal rather than a silent precedence rule.",
             "builder": [
-                { "call": "using", "args": ["openai", "gpt-4o"] },
-                { "call": "withPrompt", "args": ["Who are you?"] },
-                { "call": "withMessages", "args": [[{ "$": "UserMessage", "content": "hi" }]] }
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "Who are you?"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "hi"
+                            }
+                        ]
+                    ]
+                }
             ],
-            "expect": { "error_code": "prompt_and_messages" }
+            "expect": {
+                "error_code": "prompt_and_messages"
+            }
         },
         {
             "id": "err-0002",
@@ -19,15 +42,41 @@
             "since": "0.1.0",
             "notes": "A stored or streamed tool call whose arguments string cannot be decoded fails at MAPPING time with its own code, rather than reaching the provider as a malformed function call. Pins that the failure is attributed to the tool call rather than surfacing as a generic encoding error.",
             "builder": [
-                { "call": "using", "args": ["openai", "gpt-4o"] },
-                { "call": "withMessages", "args": [[
-                    { "$": "UserMessage", "content": "Weather?" },
-                    { "$": "AssistantMessage", "content": "", "toolCalls": [
-                        { "$": "ToolCall", "id": "fc_1", "name": "weather", "arguments": "{\"city\": ", "resultId": "call_1" }
-                    ] }
-                ]] }
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"city\": ",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
             ],
-            "expect": { "error_code": "malformed_tool_call_arguments" }
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
         },
         {
             "id": "err-0003",
@@ -35,13 +84,2521 @@
             "since": "0.1.0",
             "notes": "The same refusal as err-0001, with a prompt of \"0\". The reference guards it with a truthiness test on both fields, so a prompt that is exactly \"0\" slips past the guard and the request is built with the prompt silently discarded — the caller gets a successful call that answered a different question. Same root cause as trq-0022. The golden records the CORRECT behaviour.",
             "builder": [
-                { "call": "using", "args": ["openai", "gpt-4o"] },
-                { "call": "withPrompt", "args": ["0"] },
-                { "call": "withMessages", "args": [[{ "$": "UserMessage", "content": "hi" }]] }
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withPrompt",
+                    "args": [
+                        "0"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "hi"
+                            }
+                        ]
+                    ]
+                }
             ],
-            "expect": { "error_code": "prompt_and_messages" },
+            "expect": {
+                "error_code": "prompt_and_messages"
+            },
             "skip": {
                 "php": "Known reference defect, the same one as trq-0022: the prompt-versus-messages guard is a truthiness test, so a prompt of \"0\" does not trip it and the prompt is dropped instead of refused. The golden records what the reference SHOULD do. Remove this skip when the reference is fixed."
+            }
+        },
+        {
+            "id": "err-0004",
+            "title": "tool call arguments: a number",
+            "since": "0.1.26",
+            "notes": "Valid JSON that is not an object is not a set of arguments.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "5",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0005",
+            "title": "tool call arguments: zero written as a float",
+            "since": "0.1.26",
+            "notes": "Only the exact text 0 means no arguments.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "0.0",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0006",
+            "title": "tool call arguments: zero with surrounding space",
+            "since": "0.1.26",
+            "notes": "Only the exact text 0 means no arguments.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": " 0",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0007",
+            "title": "tool call arguments: a quoted zero",
+            "since": "0.1.26",
+            "notes": "A JSON string holding 0 is a string, not the empty form.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "\"0\"",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0008",
+            "title": "tool call arguments: a string",
+            "since": "0.1.26",
+            "notes": "Valid JSON that is not an object is not a set of arguments.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "\"x\"",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0009",
+            "title": "tool call arguments: true",
+            "since": "0.1.26",
+            "notes": "Valid JSON that is not an object is not a set of arguments.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "true",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0010",
+            "title": "tool call arguments: false",
+            "since": "0.1.26",
+            "notes": "Valid JSON that is not an object is not a set of arguments.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "false",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0011",
+            "title": "tool call arguments: a non-empty list",
+            "since": "0.1.26",
+            "notes": "Positional values have no parameter names.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "[1,2]",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0012",
+            "title": "tool call arguments: an integer key",
+            "since": "0.1.26",
+            "notes": "The reference stores this key as an integer and would bind it by position.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"0\":\"x\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0013",
+            "title": "tool call arguments: a negative integer key",
+            "since": "0.1.26",
+            "notes": "The reference stores this key as an integer.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"-5\":\"x\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0014",
+            "title": "tool call arguments: the lowest 64-bit integer key",
+            "since": "0.1.26",
+            "notes": "The boundary of what the reference stores as an integer.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"-9223372036854775808\":\"x\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0015",
+            "title": "tool call arguments: invalid JSON",
+            "since": "0.1.26",
+            "notes": "Not JSON at all.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{not json",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0016",
+            "title": "tool call arguments: NaN inside a map",
+            "since": "0.1.26",
+            "notes": "NaN is not JSON, although some decoders accept it.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"a\":NaN}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0017",
+            "title": "tool call arguments: Infinity inside a map",
+            "since": "0.1.26",
+            "notes": "Infinity is not JSON, although some decoders accept it.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"a\":Infinity}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0018",
+            "title": "tool call arguments: a lone surrogate",
+            "since": "0.1.26",
+            "notes": "Cannot be encoded as UTF-8, so it cannot be sent back.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"a\":\"\\ud800\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0019",
+            "title": "tool call arguments: 501 levels of nesting",
+            "since": "0.1.26",
+            "notes": "One past the depth every provider request can carry.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0020",
+            "title": "tool call arguments: an empty string",
+            "since": "0.1.26",
+            "notes": "The model supplied no arguments.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0021",
+            "title": "tool call arguments: the text 0",
+            "since": "0.1.26",
+            "notes": "Falsy in the reference, which reads it as no arguments.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "0",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0022",
+            "title": "tool call arguments: null",
+            "since": "0.1.26",
+            "notes": "The model supplied no arguments.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "null",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0023",
+            "title": "tool call arguments: an empty list",
+            "since": "0.1.26",
+            "notes": "The reference cannot tell this from an empty map once decoded.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "[]",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0024",
+            "title": "tool call arguments: an empty object",
+            "since": "0.1.26",
+            "notes": "The model supplied no arguments.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0025",
+            "title": "tool call arguments: a named argument",
+            "since": "0.1.26",
+            "notes": "The ordinary case.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"city\":\"Paris\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0026",
+            "title": "tool call arguments: a leading-zero key",
+            "since": "0.1.26",
+            "notes": "Stays a string key in the reference.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"01\":\"x\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0027",
+            "title": "tool call arguments: a key past the 64-bit range",
+            "since": "0.1.26",
+            "notes": "Stays a string key in the reference.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"9223372036854775808\":\"x\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0028",
+            "title": "tool call arguments: a surrogate pair",
+            "since": "0.1.26",
+            "notes": "A well-formed pair is an ordinary character.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"a\":\"\\ud83d\\ude00\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0029",
+            "title": "tool call arguments: 500 levels of nesting",
+            "since": "0.1.26",
+            "notes": "The deepest every provider request can carry.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{\"a\":{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0030",
+            "title": "tool call arguments: a number past the float range",
+            "since": "0.1.26",
+            "notes": "Has no finite value, so it cannot be sent back.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"amount\":1e999}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0031",
+            "title": "tool call arguments: a nested negative number past the float range",
+            "since": "0.1.26",
+            "notes": "The rule applies at any depth.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"a\":{\"b\":[-1e999]}}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0032",
+            "title": "tool call arguments: an integer past the float range",
+            "since": "0.1.26",
+            "notes": "Two languages hold this as a double, where it has no finite value.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"amount\":10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0033",
+            "title": "tool call arguments: a key starting with NUL",
+            "since": "0.1.26",
+            "notes": "The reference cannot hold this key on an object.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"amount\":\"5\",\"\\u0000a\":1}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0034",
+            "title": "tool call arguments: a nested key starting with NUL",
+            "since": "0.1.26",
+            "notes": "The rule applies at any depth.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"a\":[{\"\\u0000b\":1}]}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0035",
+            "title": "tool call arguments: a NUL inside a key",
+            "since": "0.1.26",
+            "notes": "Only a leading NUL is unrepresentable.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"a\\u0000b\":1}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0036",
+            "title": "tool call arguments: a 5000-digit key",
+            "since": "0.1.26",
+            "notes": "Past the 64-bit range, so it stays a string key.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"77777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777\":1}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0037",
+            "title": "tool call arguments: a control character inside a string",
+            "since": "0.1.26",
+            "notes": "Repaired to the same character, escaped.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"note\":\"a\u0001b\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0038",
+            "title": "tool call arguments: a line break inside a string",
+            "since": "0.1.26",
+            "notes": "Repaired to the same character, escaped.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"note\":\"a\nb\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0039",
+            "title": "tool call arguments: a control character inside a number",
+            "since": "0.1.26",
+            "notes": "Outside a string there is no value to repair it to.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"amount\":1\u000100}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0040",
+            "title": "tool call arguments: a control character inside a literal",
+            "since": "0.1.26",
+            "notes": "Outside a string there is no value to repair it to.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "nu\u0001ll",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0041",
+            "title": "tool call arguments: a control character between tokens",
+            "since": "0.1.26",
+            "notes": "Outside a string there is no value to repair it to.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"amount\"\u0001:1}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0042",
+            "title": "tool call arguments: a control character after a backslash",
+            "since": "0.1.26",
+            "notes": "Not a valid escape, so there is no value to repair it to.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"a\":\"b\\\u0001\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0043",
+            "title": "tool call arguments: the value 5, not text",
+            "since": "0.1.26",
+            "notes": "A provider value that is neither text nor a map.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": 5,
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0044",
+            "title": "tool call arguments: the value 0, not text",
+            "since": "0.1.26",
+            "notes": "Only the text 0 is the empty form.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": 0,
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0045",
+            "title": "tool call arguments: the value true, not text",
+            "since": "0.1.26",
+            "notes": "A provider value that is neither text nor a map.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": true,
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0046",
+            "title": "tool call arguments: the value false, not text",
+            "since": "0.1.26",
+            "notes": "A provider value that is neither text nor a map.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": false,
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0047",
+            "title": "tool call arguments: a list, not text",
+            "since": "0.1.26",
+            "notes": "Positional values have no parameter names.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": [
+                                            1,
+                                            2
+                                        ],
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0048",
+            "title": "tool call arguments: an integer-keyed map, not text",
+            "since": "0.1.26",
+            "notes": "The reference would bind this key by position.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": {
+                                            "0": "x"
+                                        },
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0049",
+            "title": "tool call arguments: the value null, not text",
+            "since": "0.1.26",
+            "notes": "The model supplied no arguments.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": null,
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0050",
+            "title": "tool call arguments: an empty list, not text",
+            "since": "0.1.26",
+            "notes": "The model supplied no arguments.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": [],
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0051",
+            "title": "tool call arguments: an empty map, not text",
+            "since": "0.1.26",
+            "notes": "The model supplied no arguments.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": {},
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0052",
+            "title": "tool call arguments: a named map, not text",
+            "since": "0.1.26",
+            "notes": "The ordinary decoded case.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": {
+                                            "city": "Paris"
+                                        },
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0053",
+            "title": "tool call arguments: one integer key",
+            "since": "0.1.26",
+            "notes": "The reference would bind this key by position.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"0\":\"prod\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0054",
+            "title": "tool call arguments: a one-item list",
+            "since": "0.1.26",
+            "notes": "Positional values have no parameter names.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "[\"prod\"]",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0055",
+            "title": "tool call arguments: an integer key beside a name",
+            "since": "0.1.26",
+            "notes": "One positional key is enough.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"0\":\"prod\",\"note\":\"x\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0056",
+            "title": "tool call arguments: a name beside an integer key",
+            "since": "0.1.26",
+            "notes": "The order of the keys does not matter.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"note\":\"x\",\"1\":\"prod\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0057",
+            "title": "tool call arguments: the key -1",
+            "since": "0.1.26",
+            "notes": "The reference stores this key as an integer.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"-1\":\"prod\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "malformed_tool_call_arguments"
+            }
+        },
+        {
+            "id": "err-0058",
+            "title": "tool call arguments: the key 00",
+            "since": "0.1.26",
+            "notes": "Stays a string key, so it can only bind by name.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"00\":\"prod\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0059",
+            "title": "tool call arguments: the key 1.0",
+            "since": "0.1.26",
+            "notes": "Stays a string key, so it can only bind by name.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"1.0\":\"prod\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0060",
+            "title": "tool call arguments: the key -0",
+            "since": "0.1.26",
+            "notes": "Stays a string key, so it can only bind by name.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"-0\":\"prod\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0061",
+            "title": "tool call arguments: the key +1",
+            "since": "0.1.26",
+            "notes": "Stays a string key, so it can only bind by name.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\"+1\":\"prod\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
+            }
+        },
+        {
+            "id": "err-0062",
+            "title": "tool call arguments: a key with a leading space",
+            "since": "0.1.26",
+            "notes": "Stays a string key, so it can only bind by name.",
+            "builder": [
+                {
+                    "call": "using",
+                    "args": [
+                        "openai",
+                        "gpt-4o"
+                    ]
+                },
+                {
+                    "call": "withMessages",
+                    "args": [
+                        [
+                            {
+                                "$": "UserMessage",
+                                "content": "Weather?"
+                            },
+                            {
+                                "$": "AssistantMessage",
+                                "content": "",
+                                "toolCalls": [
+                                    {
+                                        "$": "ToolCall",
+                                        "id": "fc_1",
+                                        "name": "weather",
+                                        "arguments": "{\" 1\":\"prod\"}",
+                                        "resultId": "call_1"
+                                    }
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            ],
+            "expect": {
+                "error_code": "no_error"
             }
         }
     ]

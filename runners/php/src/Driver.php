@@ -335,6 +335,7 @@ final class Driver
             return match (true) {
                 str_contains($message, 'You can only use `prompt` or `messages`') => 'prompt_and_messages',
                 str_contains($message, 'are not valid JSON') => 'malformed_tool_call_arguments',
+                str_contains($message, 'are not a JSON object') => 'malformed_tool_call_arguments',
                 str_contains($message, 'Could not map message type') => 'unknown_message_type',
                 str_contains($message, 'is not supported by') => 'unsupported_provider_action',
                 default => 'unmapped:'.$message,
