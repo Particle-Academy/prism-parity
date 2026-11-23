@@ -8768,6 +8768,234 @@
         "cases"
       ]
     },
+    "harnessToolPolicyOutcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "refused",
+        "ran",
+        "asked",
+        "events"
+      ],
+      "properties": {
+        "refused": {
+          "enum": [
+            null,
+            "tool_policy_refused"
+          ]
+        },
+        "ran": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "asked": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "server",
+              "tool",
+              "args_digest",
+              "decided_by",
+              "policy_revision"
+            ],
+            "properties": {
+              "type": {
+                "enum": [
+                  "tool_auto_allowed",
+                  "tool_approval_asked",
+                  "tool_approved",
+                  "tool_denied"
+                ]
+              },
+              "server": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "tool": {
+                "type": "string"
+              },
+              "args_digest": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "decided_by": {
+                "enum": [
+                  "policy",
+                  "person"
+                ]
+              },
+              "policy_revision": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "harnessToolPolicyCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "policy": {},
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "server": {
+                "type": "string"
+              },
+              "provider": {
+                "type": "string"
+              },
+              "tier": {
+                "enum": [
+                  "read_only",
+                  "write",
+                  "destructive"
+                ]
+              }
+            }
+          }
+        },
+        "calls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "args"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "args": {
+                "type": "object"
+              }
+            }
+          },
+          "minItems": 1
+        },
+        "then": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "policy"
+              ],
+              "properties": {
+                "policy": {}
+              }
+            }
+          ]
+        },
+        "expected": {
+          "$ref": "#/$defs/harnessToolPolicyOutcome"
+        },
+        "result": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "$ref": "#/$defs/harnessToolPolicyOutcome"
+            },
+            "ts": {
+              "$ref": "#/$defs/harnessToolPolicyOutcome"
+            },
+            "py": {
+              "$ref": "#/$defs/harnessToolPolicyOutcome"
+            }
+          }
+        }
+      },
+      "required": [
+        "title",
+        "policy",
+        "tools",
+        "calls",
+        "then",
+        "expected",
+        "result",
+        "agrees"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "harnessToolPolicyDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "suite": {
+          "const": "harness-tool-policy"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated_by": {
+          "type": "string"
+        },
+        "pins_note": {
+          "type": "string"
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/harnessToolPolicyCase"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ]
+    },
     "credentialScopeCase": {
       "oneOf": [
         {
@@ -9262,6 +9490,9 @@
     },
     {
       "$ref": "#/$defs/harnessAgentBindingDocument"
+    },
+    {
+      "$ref": "#/$defs/harnessToolPolicyDocument"
     },
     {
       "$ref": "#/$defs/credentialScopeDocument"
