@@ -8871,6 +8871,9 @@
               "server": {
                 "type": "string"
               },
+              "provider": {
+                "type": "string"
+              },
               "tier": {
                 "enum": [
                   "read_only",
