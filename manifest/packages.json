@@ -229,7 +229,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism",
       "repository": "https://github.com/Particle-Academy/prism",
-      "version": "0.150.0",
+      "version": "0.151.0",
       "surface": {
         "capabilities": [
           "text",
@@ -939,7 +939,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism-perplexity",
       "repository": "https://github.com/Particle-Academy/prism-perplexity",
-      "version": "0.4.2",
+      "version": "0.4.3",
       "carries": "the Perplexity surface core does not - embeddings, search",
       "family": "perplexity",
       "kind": "runtime",
@@ -1008,7 +1008,7 @@
       "registry": "pypi",
       "name": "prism-ai-core",
       "repository": "https://github.com/Particle-Academy/prism-py",
-      "version": "0.9.1",
+      "version": "0.10.0",
       "published": true,
       "surface": {
         "capabilities": [
@@ -1053,7 +1053,7 @@
       "registry": "npm",
       "name": "@particle-academy/prism",
       "repository": "https://github.com/Particle-Academy/prism-ts",
-      "version": "0.9.1",
+      "version": "0.10.0",
       "published": true,
       "surface": {
         "capabilities": [
@@ -1235,7 +1235,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism-perplexity",
       "repository": "https://github.com/Particle-Academy/prism-perplexity",
-      "version": "0.4.2",
+      "version": "0.4.3",
       "carries": "the Perplexity surface core does not - embeddings, search",
       "status": "published",
       "published": true,
