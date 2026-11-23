@@ -1,0 +1,35 @@
+{
+    "id": "credential-scope",
+    "title": "Whether a provider credential follows a per-call url, in three languages",
+    "kind": "security-corpus",
+    "pins": "Whether the credential a provider was configured with is SENT when a per-call url points it somewhere else, and whether a provider name can be registered over one already taken. Both cross a language boundary because the configuration is shared: the same OPENAI_API_KEY and the same gateway url are handed to a PHP app and to a TypeScript or Python agent, so a url that receives the key in one language and not the others leaks it in whichever got it wrong, and nothing errors to say so. What a consumer loses when this drifts is the credential itself. Registration is the same story one level down: a factory registered over `openai` receives every caller's openai traffic.",
+    "scope": "OpenAI, Anthropic and Mistral only, the three providers every language ships. The reference's other fifteen providers, its configured-credential keys beyond api_key/organization/project (access_token, credentials_path) and Vertex region validation are covered by the reference's own regression test, not here. Streaming, embeddings and every other entry point share the constructor these rows exercise but are not dispatched here. Observations classify the wire; they do not record which host the request reached.",
+    "construction": "Native PHP manager entered through Prism::text()->using() with Laravel's HTTP fake and stray requests prevented; native TypeScript Prism.text().using() with fetch captured; native Python Prism.text().using() with the default transport's send captured and sockets refused. Every fixture answers 500, because only the outgoing request matters. Environment values are synthetic and isolated per row; PHP reads them through the package's own config file, as an application does. Every observation is a classification of the captured URL, headers and body — inherited, explicit, both or none — and never the value: tools/credential-scope/contract.mjs refuses an observation that carries a fixture credential.",
+    "findings": "33 of 36 rows agree, recorded against the three unreleased fix branches. Every endpoint row agrees, including the hostile ones: a port, scheme, path, query or userinfo change, the trusted host spelled as userinfo, a backslash the parsers read differently, and a Cyrillic homoglyph all drop the inherited key in all three; trailing slash, case and the explicit default port keep it in all three; the environment key is bound to the environment url, not to the provider default. That agreement is a conclusion about behaviour, not about safety: the three were written to one spec at the same time, so a shared misreading of it would agree here too. The three disagreeing rows are REGISTRATION: TypeScript compares a registered key case-sensitively, so `OpenAI`, `ANTHROPIC` and a case variant of an earlier custom name are accepted there and refused in PHP and Python. No credential is exposed by it — TypeScript resolves keys exactly, so the built-ins still resolve and the accepted key is unreachable by a caller naming `openai` — but it is the stated rule not holding in one language. Padded and zero-width names are accepted in all three, and the built-ins still resolve afterwards in all three; that is what has to hold, and it does. The observations are those of the fix branches; released versions are expected not to match them until those ship.",
+    "pattern_doc": "docs/decisions/0006-goldens-from-the-reference.md",
+    "reference": "php",
+    "comparison": {
+        "mode": "canonical-json-string"
+    },
+    "discrimination": {
+        "status": "unprobed",
+        "gap": "No mutation probe is delivered for this suite. Released versions predating the fix branches are expected to fail it, which serves as a coarse negative control."
+    },
+    "implementations": {
+        "php": {
+            "status": "full",
+            "runner": "prism-parity:tools/credential-scope.mjs",
+            "note": "Run the corpus-loading entry point with php --check; it dispatches to the native PHP adapter. PRISM_AUTOLOAD points it at a checkout instead of runners/php."
+        },
+        "ts": {
+            "status": "full",
+            "runner": "prism-parity:tools/credential-scope.mjs",
+            "note": "Run the corpus-loading entry point with ts --check; it reads the built sibling prism-ts/dist, or PRISM_TS_DIST."
+        },
+        "py": {
+            "status": "full",
+            "runner": "prism-parity:tools/credential-scope.mjs",
+            "note": "Run the corpus-loading entry point with py --check; it imports the installed package, or PRISM_PY_SRC."
+        }
+    }
+}

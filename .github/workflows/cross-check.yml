@@ -167,6 +167,16 @@ jobs:
           node tools/provider-configuration.mjs py --check
           python tools/provider-configuration/network-controls.py
 
+      # Credentials scoped to their configured endpoint. Runs against the
+      # default branches of prism-ts and prism-py and the installed reference,
+      # so it goes green only once all three carry the change.
+      - name: Native credential scope observations
+        working-directory: prism-parity
+        run: |
+          node tools/credential-scope.mjs php --check
+          node tools/credential-scope.mjs ts --check
+          node tools/credential-scope.mjs py --check
+
   # Released source trees are gated; native cases execute normal registry artifacts.
   mcp-published:
     name: MCP published artifact boundary
