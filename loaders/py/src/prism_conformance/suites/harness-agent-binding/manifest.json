@@ -1,0 +1,30 @@
+{
+  "id": "harness-agent-binding",
+  "title": "Which provider and model a run and its subagent actually use, and which delegations are refused",
+  "kind": "security-corpus",
+  "pins": "The provider and model each run REQUESTS, and whether a subagent may run as another named agent. Drift here does not error: a child quietly runs on the parent's session override, on another agent's provider, or as an agent its parent never declared, and the spend and the authority both land somewhere nobody chose. A delegation to an undeclared, padded, mixed-case or homoglyph agent name must be refused before any provider request, in every language, because a near-miss that resolved would hand one agent another agent's tools and budget.",
+  "scope": "Provider/model resolution for a root run (session > mode > agent > global) and for a subagent's child (inherited session override only on request > declaration > child mode > parent mode within the same agent > child agent default > global), and the declared-agent check on a subagent. Per-agent spend ceilings and the harness_agent event tag are NOT in these rows: the ports have no pricing, so a ceiling is enforced differently there and is pinned by each language's own tests.",
+  "findings": "All twenty rows agree in all three languages, and that agreement is a statement about the rule each runner was written against, not proof the rule is right. Before G-321 the rows hab-0010 and hab-0011 would have disagreed: the TypeScript and Python runners copied the parent's session override onto the child, while PHP gave it the agent default. Rows hab-0014 to hab-0020 refuse before any request in every language. Before G-321 they were refused only by accident, because the child's mode was looked up in the wrong agent. Each language's behaviour tests pin the exact refusal reason.",
+  "pattern_doc": "docs/decisions/0021-parity-is-the-shipping-library-set.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed"
+  },
+  "implementations": {
+    "php": {
+      "status": "full",
+      "runner": "prism-harness:tests/AgentBindingCorpusTest.php"
+    },
+    "ts": {
+      "status": "full",
+      "runner": "prism-harness-ts:test/agent-binding-corpus.test.ts"
+    },
+    "py": {
+      "status": "full",
+      "runner": "prism-harness-py:tests/test_agent_binding_corpus.py"
+    }
+  }
+}
