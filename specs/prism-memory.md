@@ -53,13 +53,21 @@ once the feature starts working is the worst kind.
 
 ## Decisions already taken
 
-**This package owns the vector-store contract for the whole ecosystem.**
-`prism-graph`, which superseded the planned `prism-rag`, ships a narrower contract of its own today because it must run without Laravel; an adapter onto this one is planned (G-268). Two vector
-abstractions in one ecosystem is the thing that makes an ecosystem a collection.
-The contract lives here because memory is the package that needs it first, not
-because memory is more important. Recorded in
-[0008](../docs/decisions/0008-consensus-among-agents.md) as a cross-cutting
-decision.
+**This package is SHORT-TERM memory: what survives compaction, scoped to a
+single chat.** Long-term memory across chats is `prism-graph`, for agents built
+with the harness and ACP, with tenant, owner, agent and thread scopes. The two
+divide the work by time horizon and scope. Neither extends into the other's
+job, and long-term memory never routes through this package. Decided by Wish
+on 2026-11-14 (option C).
+
+**This package owns the vector-store contract for SHORT-TERM memory.** It was
+first framed as the contract for the whole ecosystem, on the grounds that two
+vector abstractions in one ecosystem make it a collection. That still holds
+within one horizon. `prism-graph` keeps its own contract by the same 2026-11-14
+decision, because it indexes a different horizon under different scopes, and
+it superseded the planned `prism-rag`. This is a recorded exception to
+[0008](../docs/decisions/0008-consensus-among-agents.md), not drift. The
+accepted cost is that a turn can be embedded once by each package.
 
 **Embeddings come from Prism, not from a bundled model.** `Prism::embeddings()`
 already speaks to every provider that offers them. A package that embeds text
