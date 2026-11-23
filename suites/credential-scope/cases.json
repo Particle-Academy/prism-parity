@@ -1,0 +1,1230 @@
+{
+    "suite": "credential-scope",
+    "schema_version": 1,
+    "corpus_version": "0.1.25",
+    "generated_by": "tools/credential-scope.mjs with three native SDK adapters. Every observation is execution output; none is hand-written.",
+    "scope": "Whether a provider's inherited credential is sent when a per-call url changes the endpoint, and whether provider registration can silently replace a registered name. OpenAI, Anthropic and Mistral only: the three providers all languages ship. The reference's other fifteen providers and Vertex region validation are covered by its own regression test, not here.",
+    "encoding": "Observations CLASSIFY the wire and never carry a credential: `credential` is inherited, explicit, both or none; `account` is whether an OpenAI organization or project from the environment was sent. The fixture values in tools/credential-scope/fixture-values.json are fake, and the contract refuses an observation containing one.",
+    "environment_names": [
+        "OPENAI_API_KEY",
+        "OPENAI_URL",
+        "OPENAI_ORGANIZATION",
+        "OPENAI_PROJECT",
+        "ANTHROPIC_API_KEY",
+        "ANTHROPIC_URL",
+        "MISTRAL_API_KEY",
+        "MISTRAL_URL"
+    ],
+    "cases": [
+        {
+            "id": "cs-0001",
+            "title": "no per-call url keeps the environment key",
+            "since": "0.1.25",
+            "notes": "Control: the environment key belongs to the endpoint the environment configures. Nothing overrides it, so it must be sent.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {}
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0002",
+            "title": "the default url passed explicitly keeps the key",
+            "since": "0.1.25",
+            "notes": "Control: naming the endpoint the key already belongs to is not a different endpoint.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://api.openai.com/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0003",
+            "title": "a trailing-slash variant keeps the key",
+            "since": "0.1.25",
+            "notes": "Boundary: a trailing slash is the same endpoint in all three. A rule that dropped the key here would be switched off by the first gateway user.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://api.openai.com/v1/"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0004",
+            "title": "an uppercase scheme and host keep the key",
+            "since": "0.1.25",
+            "notes": "Boundary: scheme and host are case-insensitive, so HTTPS://API.OPENAI.COM is the same endpoint.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "HTTPS://API.OPENAI.COM/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0005",
+            "title": "the explicit default port keeps the key",
+            "since": "0.1.25",
+            "notes": "Boundary: :443 on https is the default port and the same endpoint. WHATWG drops it, PHP and Python fill it in; all three must still agree.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://api.openai.com:443/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0006",
+            "title": "a custom url with no key does not receive the environment key",
+            "since": "0.1.25",
+            "notes": "Hostile: the attacker-chosen url is the whole attack. A per-call url that brings no key must never be handed the configured one.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://other-host.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0007",
+            "title": "a custom url with its own key sends that key only",
+            "since": "0.1.25",
+            "notes": "The supported path: an explicit key alongside the url is used as given, and the environment key must not ride along.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://other-host.example/v1",
+                    "api_key": "sk-test-explicit"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0008",
+            "title": "a port change on the same host drops the key",
+            "since": "0.1.25",
+            "notes": "Hostile: same host, different port is a different listener and must not inherit the key.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://api.openai.com:8443/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0009",
+            "title": "a scheme downgrade drops the key",
+            "since": "0.1.25",
+            "notes": "Hostile: http on the same host would carry the key in clear text; a different scheme is a different endpoint.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "http://api.openai.com/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0010",
+            "title": "a path change drops the key",
+            "since": "0.1.25",
+            "notes": "Hostile: a different path can be a different tenant behind one gateway host.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://api.openai.com/v2"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0011",
+            "title": "a query string drops the key",
+            "since": "0.1.25",
+            "notes": "Hostile: a query can route a request elsewhere behind a gateway; a different query is a different endpoint.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://api.openai.com/v1?route=elsewhere"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0012",
+            "title": "userinfo in the url drops the key",
+            "since": "0.1.25",
+            "notes": "Hostile: userinfo on the trusted host. A different userinfo is a different endpoint, so the key must not be inherited.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://user@api.openai.com/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0013",
+            "title": "a trusted host spelled as userinfo drops the key",
+            "since": "0.1.25",
+            "notes": "Hostile: the trusted host appears before an @, so the real host is the attacker's. Must never inherit.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://api.openai.com@other-host.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0014",
+            "title": "a backslash before the trusted host drops the key",
+            "since": "0.1.25",
+            "notes": "Hostile and malformed: the parsers disagree on what a backslash means here (WHATWG reads a path separator, PHP and Python read userinfo); every reading is a different endpoint, so none may inherit.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://other-host.example\\@api.openai.com/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0015",
+            "title": "a homoglyph host drops the key",
+            "since": "0.1.25",
+            "notes": "Hostile homoglyph: a Cyrillic a in the host looks like the trusted endpoint and is not it.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://api.openаi.com/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0016",
+            "title": "a padded url with edge spaces is refused",
+            "since": "0.1.25",
+            "notes": "Padded: leading and trailing spaces around the trusted url. A url carrying whitespace or a control character anywhere is refused before any request in all three languages, never trimmed: PHP's verdict on a padded url used to depend on its HTTP stack (refused before dispatch under Guzzle 8, sent to the trusted host with the inherited key under Guzzle 7), while TypeScript and Python trimmed it and sent the key. Refusal is the one answer that does not move with a library.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": " https://api.openai.com/v1 "
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": false,
+                    "credential": "none",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0017",
+            "title": "the environment url passed explicitly keeps the key",
+            "since": "0.1.25",
+            "notes": "Control: the environment key is bound to the environment URL, and naming that URL keeps it.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://gateway.example/v1"
+                },
+                "config": {
+                    "url": "https://gateway.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0018",
+            "title": "the environment key does not follow the call to the provider default",
+            "since": "0.1.25",
+            "notes": "Boundary: with OPENAI_URL set, the key belongs to that URL, not to the provider default. Naming the default must not inherit it.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://gateway.example/v1"
+                },
+                "config": {
+                    "url": "https://api.openai.com/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0019",
+            "title": "no per-call url sends the key to the environment url",
+            "since": "0.1.25",
+            "notes": "Control: with OPENAI_URL set and no override, the key goes to the URL it was configured for.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://gateway.example/v1"
+                },
+                "config": {}
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0020",
+            "title": "organization and project do not follow a custom url",
+            "since": "0.1.25",
+            "notes": "Hostile: account identifiers are credentials too, and must be dropped with the key when the url is elsewhere.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "config": {
+                    "url": "https://other-host.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0021",
+            "title": "organization and project are sent to their own endpoint",
+            "since": "0.1.25",
+            "notes": "Control for the row above: with no override, the account identifiers are sent.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "config": {}
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "inherited"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "inherited"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "inherited"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0022",
+            "title": "anthropic: a custom url with no key does not receive the key",
+            "since": "0.1.25",
+            "notes": "Hostile: the same attacker-chosen url against the x-api-key header.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "anthropic",
+                "env": {
+                    "ANTHROPIC_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://other-host.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0023",
+            "title": "anthropic: an uppercase trailing-slash variant keeps the key",
+            "since": "0.1.25",
+            "notes": "Boundary: case and trailing slash are the same endpoint for every provider.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "anthropic",
+                "env": {
+                    "ANTHROPIC_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "HTTPS://API.ANTHROPIC.COM/v1/"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0024",
+            "title": "anthropic: a custom url with its own key sends that key only",
+            "since": "0.1.25",
+            "notes": "The supported path for Anthropic: the explicit key is used as given.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "anthropic",
+                "env": {
+                    "ANTHROPIC_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://other-host.example/v1",
+                    "api_key": "sk-test-explicit"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0025",
+            "title": "mistral: a port change drops the key",
+            "since": "0.1.25",
+            "notes": "Hostile: a different port is a different endpoint for Mistral too.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "mistral",
+                "env": {
+                    "MISTRAL_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://api.mistral.ai:8443/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0026",
+            "title": "mistral: userinfo in the url drops the key",
+            "since": "0.1.25",
+            "notes": "Hostile: userinfo on the trusted Mistral host must not inherit the key.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "mistral",
+                "env": {
+                    "MISTRAL_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://user:pass@api.mistral.ai/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "none",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0027",
+            "title": "mistral: a custom url with its own key sends that key only",
+            "since": "0.1.25",
+            "notes": "The supported path for Mistral: the explicit key is used as given.",
+            "given": {
+                "kind": "endpoint",
+                "provider": "mistral",
+                "env": {
+                    "MISTRAL_API_KEY": "sk-test-fixture"
+                },
+                "config": {
+                    "url": "https://other-host.example/v1",
+                    "api_key": "sk-test-explicit"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "account": "none"
+                },
+                "ts": {
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "account": "none"
+                },
+                "py": {
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "account": "none"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0028",
+            "title": "registering over a built-in is refused",
+            "since": "0.1.25",
+            "notes": "Hostile: a registration under openai would receive every caller's openai traffic. It must be refused without an explicit replace.",
+            "given": {
+                "kind": "register",
+                "name": "openai",
+                "replace": false
+            },
+            "result": {
+                "php": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "ts": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "py": {
+                    "refused": true,
+                    "builtins_intact": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0029",
+            "title": "a mixed-case built-in name is refused",
+            "since": "0.1.25",
+            "notes": "Hostile: collisions are case-insensitive, so OpenAI collides with openai and must be refused.",
+            "given": {
+                "kind": "register",
+                "name": "OpenAI",
+                "replace": false
+            },
+            "result": {
+                "php": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "ts": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "py": {
+                    "refused": true,
+                    "builtins_intact": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0030",
+            "title": "an uppercase built-in name is refused",
+            "since": "0.1.25",
+            "notes": "Hostile: ANTHROPIC collides with anthropic case-insensitively and must be refused.",
+            "given": {
+                "kind": "register",
+                "name": "ANTHROPIC",
+                "replace": false
+            },
+            "result": {
+                "php": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "ts": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "py": {
+                    "refused": true,
+                    "builtins_intact": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0031",
+            "title": "a leading-padded built-in name is refused",
+            "since": "0.1.25",
+            "notes": "Padded: a leading space. A second key that reads as openai in a config file or a log. Refused at registration, never trimmed: the name may not contain whitespace, control, format or G-36 codepoints. The built-in still resolves.",
+            "given": {
+                "kind": "register",
+                "name": " openai",
+                "replace": false
+            },
+            "result": {
+                "php": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "ts": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "py": {
+                    "refused": true,
+                    "builtins_intact": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0032",
+            "title": "a trailing-padded built-in name is refused",
+            "since": "0.1.25",
+            "notes": "Padded: a trailing space, the G-36 shape. All three languages used to accept it and agree, which no comparison could flag. Refused at registration, never trimmed. The built-in still resolves.",
+            "given": {
+                "kind": "register",
+                "name": "openai ",
+                "replace": false
+            },
+            "result": {
+                "php": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "ts": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "py": {
+                    "refused": true,
+                    "builtins_intact": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0033",
+            "title": "a zero-width-padded built-in name is refused",
+            "since": "0.1.25",
+            "notes": "Zero-width: a trailing U+200B is invisible and is not whitespace in any language's built-in, so it is refused by the explicit G-36 codepoint set, not by trim(). The built-in still resolves.",
+            "given": {
+                "kind": "register",
+                "name": "openai​",
+                "replace": false
+            },
+            "result": {
+                "php": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "ts": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "py": {
+                    "refused": true,
+                    "builtins_intact": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0034",
+            "title": "re-registering a custom name is refused",
+            "since": "0.1.25",
+            "notes": "Hostile: a second registration silently replacing the first is the same capture one level down; it must be refused.",
+            "given": {
+                "kind": "register",
+                "name": "fixture-provider-a",
+                "replace": false,
+                "preregistered": "fixture-provider-a"
+            },
+            "result": {
+                "php": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "ts": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "py": {
+                    "refused": true,
+                    "builtins_intact": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0035",
+            "title": "re-registering a custom name in another case is refused",
+            "since": "0.1.25",
+            "notes": "Hostile: case-insensitive collision against an earlier custom registration must be refused too.",
+            "given": {
+                "kind": "register",
+                "name": "Fixture-Provider-B",
+                "replace": false,
+                "preregistered": "fixture-provider-b"
+            },
+            "result": {
+                "php": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "ts": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "py": {
+                    "refused": true,
+                    "builtins_intact": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0036",
+            "title": "an explicit replace of a built-in is honoured",
+            "since": "0.1.25",
+            "notes": "Control: replacement is allowed when it is asked for, and the built-in is then not what resolves.",
+            "given": {
+                "kind": "register",
+                "name": "openai",
+                "replace": true
+            },
+            "result": {
+                "php": {
+                    "refused": false,
+                    "builtins_intact": false
+                },
+                "ts": {
+                    "refused": false,
+                    "builtins_intact": false
+                },
+                "py": {
+                    "refused": false,
+                    "builtins_intact": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0037",
+            "title": "a Cyrillic homoglyph of a built-in name is refused",
+            "since": "0.1.25",
+            "notes": "Homoglyph: a Cyrillic о (U+043E) for the first o of openai. It reads as the built-in in a config file or a log and is a different key. Refused by the ASCII allow-list ^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$, which needs no Unicode tables. The built-in still resolves.",
+            "given": {
+                "kind": "register",
+                "name": "оpenai",
+                "replace": false
+            },
+            "result": {
+                "php": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "ts": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "py": {
+                    "refused": true,
+                    "builtins_intact": true
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0038",
+            "title": "a full-width built-in name is refused",
+            "since": "0.1.25",
+            "notes": "Full-width: openai spelled in U+FF41..U+FF5A, which NFKC folds to the built-in. Refused by the ASCII allow-list rather than folded, so no language's normalisation decides what it means. The built-in still resolves.",
+            "given": {
+                "kind": "register",
+                "name": "ｏｐｅｎａｉ",
+                "replace": false
+            },
+            "result": {
+                "php": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "ts": {
+                    "refused": true,
+                    "builtins_intact": true
+                },
+                "py": {
+                    "refused": true,
+                    "builtins_intact": true
+                }
+            },
+            "agrees": true
+        }
+    ]
+}

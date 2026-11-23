@@ -119,7 +119,7 @@
         {
             "id": "err-0004",
             "title": "tool call arguments: a number",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Valid JSON that is not an object is not a set of arguments.",
             "builder": [
                 {
@@ -161,7 +161,7 @@
         {
             "id": "err-0005",
             "title": "tool call arguments: zero written as a float",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Only the exact text 0 means no arguments.",
             "builder": [
                 {
@@ -203,7 +203,7 @@
         {
             "id": "err-0006",
             "title": "tool call arguments: zero with surrounding space",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Only the exact text 0 means no arguments.",
             "builder": [
                 {
@@ -245,7 +245,7 @@
         {
             "id": "err-0007",
             "title": "tool call arguments: a quoted zero",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "A JSON string holding 0 is a string, not the empty form.",
             "builder": [
                 {
@@ -287,7 +287,7 @@
         {
             "id": "err-0008",
             "title": "tool call arguments: a string",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Valid JSON that is not an object is not a set of arguments.",
             "builder": [
                 {
@@ -329,7 +329,7 @@
         {
             "id": "err-0009",
             "title": "tool call arguments: true",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Valid JSON that is not an object is not a set of arguments.",
             "builder": [
                 {
@@ -371,7 +371,7 @@
         {
             "id": "err-0010",
             "title": "tool call arguments: false",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Valid JSON that is not an object is not a set of arguments.",
             "builder": [
                 {
@@ -413,7 +413,7 @@
         {
             "id": "err-0011",
             "title": "tool call arguments: a non-empty list",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Positional values have no parameter names.",
             "builder": [
                 {
@@ -455,7 +455,7 @@
         {
             "id": "err-0012",
             "title": "tool call arguments: an integer key",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The reference stores this key as an integer and would bind it by position.",
             "builder": [
                 {
@@ -497,7 +497,7 @@
         {
             "id": "err-0013",
             "title": "tool call arguments: a negative integer key",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The reference stores this key as an integer.",
             "builder": [
                 {
@@ -539,7 +539,7 @@
         {
             "id": "err-0014",
             "title": "tool call arguments: the lowest 64-bit integer key",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The boundary of what the reference stores as an integer.",
             "builder": [
                 {
@@ -581,7 +581,7 @@
         {
             "id": "err-0015",
             "title": "tool call arguments: invalid JSON",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Not JSON at all.",
             "builder": [
                 {
@@ -623,7 +623,7 @@
         {
             "id": "err-0016",
             "title": "tool call arguments: NaN inside a map",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "NaN is not JSON, although some decoders accept it.",
             "builder": [
                 {
@@ -665,7 +665,7 @@
         {
             "id": "err-0017",
             "title": "tool call arguments: Infinity inside a map",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Infinity is not JSON, although some decoders accept it.",
             "builder": [
                 {
@@ -707,7 +707,7 @@
         {
             "id": "err-0018",
             "title": "tool call arguments: a lone surrogate",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Cannot be encoded as UTF-8, so it cannot be sent back.",
             "builder": [
                 {
@@ -749,7 +749,7 @@
         {
             "id": "err-0019",
             "title": "tool call arguments: 501 levels of nesting",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "One past the depth every provider request can carry.",
             "builder": [
                 {
@@ -791,7 +791,7 @@
         {
             "id": "err-0020",
             "title": "tool call arguments: an empty string",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The model supplied no arguments.",
             "builder": [
                 {
@@ -833,7 +833,7 @@
         {
             "id": "err-0021",
             "title": "tool call arguments: the text 0",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Falsy in the reference, which reads it as no arguments.",
             "builder": [
                 {
@@ -875,7 +875,7 @@
         {
             "id": "err-0022",
             "title": "tool call arguments: null",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The model supplied no arguments.",
             "builder": [
                 {
@@ -917,7 +917,7 @@
         {
             "id": "err-0023",
             "title": "tool call arguments: an empty list",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The reference cannot tell this from an empty map once decoded.",
             "builder": [
                 {
@@ -959,7 +959,7 @@
         {
             "id": "err-0024",
             "title": "tool call arguments: an empty object",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The model supplied no arguments.",
             "builder": [
                 {
@@ -1001,7 +1001,7 @@
         {
             "id": "err-0025",
             "title": "tool call arguments: a named argument",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The ordinary case.",
             "builder": [
                 {
@@ -1043,7 +1043,7 @@
         {
             "id": "err-0026",
             "title": "tool call arguments: a leading-zero key",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Stays a string key in the reference.",
             "builder": [
                 {
@@ -1085,7 +1085,7 @@
         {
             "id": "err-0027",
             "title": "tool call arguments: a key past the 64-bit range",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Stays a string key in the reference.",
             "builder": [
                 {
@@ -1127,7 +1127,7 @@
         {
             "id": "err-0028",
             "title": "tool call arguments: a surrogate pair",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "A well-formed pair is an ordinary character.",
             "builder": [
                 {
@@ -1169,7 +1169,7 @@
         {
             "id": "err-0029",
             "title": "tool call arguments: 500 levels of nesting",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The deepest every provider request can carry.",
             "builder": [
                 {
@@ -1211,7 +1211,7 @@
         {
             "id": "err-0030",
             "title": "tool call arguments: a number past the float range",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Has no finite value, so it cannot be sent back.",
             "builder": [
                 {
@@ -1253,7 +1253,7 @@
         {
             "id": "err-0031",
             "title": "tool call arguments: a nested negative number past the float range",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The rule applies at any depth.",
             "builder": [
                 {
@@ -1295,7 +1295,7 @@
         {
             "id": "err-0032",
             "title": "tool call arguments: an integer past the float range",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Two languages hold this as a double, where it has no finite value.",
             "builder": [
                 {
@@ -1337,7 +1337,7 @@
         {
             "id": "err-0033",
             "title": "tool call arguments: a key starting with NUL",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The reference cannot hold this key on an object.",
             "builder": [
                 {
@@ -1379,7 +1379,7 @@
         {
             "id": "err-0034",
             "title": "tool call arguments: a nested key starting with NUL",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The rule applies at any depth.",
             "builder": [
                 {
@@ -1421,7 +1421,7 @@
         {
             "id": "err-0035",
             "title": "tool call arguments: a NUL inside a key",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Only a leading NUL is unrepresentable.",
             "builder": [
                 {
@@ -1463,7 +1463,7 @@
         {
             "id": "err-0036",
             "title": "tool call arguments: a 5000-digit key",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Past the 64-bit range, so it stays a string key.",
             "builder": [
                 {
@@ -1505,7 +1505,7 @@
         {
             "id": "err-0037",
             "title": "tool call arguments: a control character inside a string",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Repaired to the same character, escaped.",
             "builder": [
                 {
@@ -1547,7 +1547,7 @@
         {
             "id": "err-0038",
             "title": "tool call arguments: a line break inside a string",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Repaired to the same character, escaped.",
             "builder": [
                 {
@@ -1589,7 +1589,7 @@
         {
             "id": "err-0039",
             "title": "tool call arguments: a control character inside a number",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Outside a string there is no value to repair it to.",
             "builder": [
                 {
@@ -1631,7 +1631,7 @@
         {
             "id": "err-0040",
             "title": "tool call arguments: a control character inside a literal",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Outside a string there is no value to repair it to.",
             "builder": [
                 {
@@ -1673,7 +1673,7 @@
         {
             "id": "err-0041",
             "title": "tool call arguments: a control character between tokens",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Outside a string there is no value to repair it to.",
             "builder": [
                 {
@@ -1715,7 +1715,7 @@
         {
             "id": "err-0042",
             "title": "tool call arguments: a control character after a backslash",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Not a valid escape, so there is no value to repair it to.",
             "builder": [
                 {
@@ -1757,7 +1757,7 @@
         {
             "id": "err-0043",
             "title": "tool call arguments: the value 5, not text",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "A provider value that is neither text nor a map.",
             "builder": [
                 {
@@ -1799,7 +1799,7 @@
         {
             "id": "err-0044",
             "title": "tool call arguments: the value 0, not text",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Only the text 0 is the empty form.",
             "builder": [
                 {
@@ -1841,7 +1841,7 @@
         {
             "id": "err-0045",
             "title": "tool call arguments: the value true, not text",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "A provider value that is neither text nor a map.",
             "builder": [
                 {
@@ -1883,7 +1883,7 @@
         {
             "id": "err-0046",
             "title": "tool call arguments: the value false, not text",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "A provider value that is neither text nor a map.",
             "builder": [
                 {
@@ -1925,7 +1925,7 @@
         {
             "id": "err-0047",
             "title": "tool call arguments: a list, not text",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Positional values have no parameter names.",
             "builder": [
                 {
@@ -1970,7 +1970,7 @@
         {
             "id": "err-0048",
             "title": "tool call arguments: an integer-keyed map, not text",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The reference would bind this key by position.",
             "builder": [
                 {
@@ -2014,7 +2014,7 @@
         {
             "id": "err-0049",
             "title": "tool call arguments: the value null, not text",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The model supplied no arguments.",
             "builder": [
                 {
@@ -2056,7 +2056,7 @@
         {
             "id": "err-0050",
             "title": "tool call arguments: an empty list, not text",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The model supplied no arguments.",
             "builder": [
                 {
@@ -2098,7 +2098,7 @@
         {
             "id": "err-0051",
             "title": "tool call arguments: an empty map, not text",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The model supplied no arguments.",
             "builder": [
                 {
@@ -2140,7 +2140,7 @@
         {
             "id": "err-0052",
             "title": "tool call arguments: a named map, not text",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The ordinary decoded case.",
             "builder": [
                 {
@@ -2184,7 +2184,7 @@
         {
             "id": "err-0053",
             "title": "tool call arguments: one integer key",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The reference would bind this key by position.",
             "builder": [
                 {
@@ -2226,7 +2226,7 @@
         {
             "id": "err-0054",
             "title": "tool call arguments: a one-item list",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Positional values have no parameter names.",
             "builder": [
                 {
@@ -2268,7 +2268,7 @@
         {
             "id": "err-0055",
             "title": "tool call arguments: an integer key beside a name",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "One positional key is enough.",
             "builder": [
                 {
@@ -2310,7 +2310,7 @@
         {
             "id": "err-0056",
             "title": "tool call arguments: a name beside an integer key",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The order of the keys does not matter.",
             "builder": [
                 {
@@ -2352,7 +2352,7 @@
         {
             "id": "err-0057",
             "title": "tool call arguments: the key -1",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "The reference stores this key as an integer.",
             "builder": [
                 {
@@ -2394,7 +2394,7 @@
         {
             "id": "err-0058",
             "title": "tool call arguments: the key 00",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Stays a string key, so it can only bind by name.",
             "builder": [
                 {
@@ -2436,7 +2436,7 @@
         {
             "id": "err-0059",
             "title": "tool call arguments: the key 1.0",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Stays a string key, so it can only bind by name.",
             "builder": [
                 {
@@ -2478,7 +2478,7 @@
         {
             "id": "err-0060",
             "title": "tool call arguments: the key -0",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Stays a string key, so it can only bind by name.",
             "builder": [
                 {
@@ -2520,7 +2520,7 @@
         {
             "id": "err-0061",
             "title": "tool call arguments: the key +1",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Stays a string key, so it can only bind by name.",
             "builder": [
                 {
@@ -2562,7 +2562,7 @@
         {
             "id": "err-0062",
             "title": "tool call arguments: a key with a leading space",
-            "since": "0.1.24",
+            "since": "0.1.26",
             "notes": "Stays a string key, so it can only bind by name.",
             "builder": [
                 {

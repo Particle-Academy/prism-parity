@@ -229,7 +229,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism",
       "repository": "https://github.com/Particle-Academy/prism",
-      "version": "0.151.1",
+      "version": "0.152.0",
       "surface": {
         "capabilities": [
           "text",
@@ -1008,7 +1008,7 @@
       "registry": "pypi",
       "name": "prism-ai-core",
       "repository": "https://github.com/Particle-Academy/prism-py",
-      "version": "0.10.0",
+      "version": "0.11.0",
       "published": true,
       "surface": {
         "capabilities": [
@@ -1053,7 +1053,7 @@
       "registry": "npm",
       "name": "@particle-academy/prism",
       "repository": "https://github.com/Particle-Academy/prism-ts",
-      "version": "0.10.0",
+      "version": "0.11.0",
       "published": true,
       "surface": {
         "capabilities": [

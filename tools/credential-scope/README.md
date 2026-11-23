@@ -1,0 +1,7 @@
+The credential-scope corpus asks whether a provider's inherited credential is sent when a per-call `url` changes the endpoint, and whether a provider name can be registered over one already taken. Every observation is native execution output, entered through each language's `Prism.text().using(...)`. `agrees` is derived from all three columns.
+
+Run `node tools/credential-scope.mjs php --check`, then repeat with `ts` and `py`. `--record` explicitly rewrites one native column. The PHP adapter uses the installed reference in `runners/php/vendor`, the TypeScript adapter reads the built sibling `prism-ts/dist`, and Python imports the installed package. `PRISM_AUTOLOAD`, `PRISM_TS_DIST`, `PRISM_PY_SRC`, `PRISM_PHP_BINARY` and `PRISM_PY_BINARY` point them at other checkouts, for example fix branches that have not been released.
+
+Observations classify the captured URL, headers and body: `credential` is `inherited`, `explicit`, `both` or `none`, and `account` says whether an OpenAI organization or project from the environment was sent. They never record a value. The fixture credentials in `fixture-values.json` are fake, and `contract.mjs` refuses an observation that contains one.
+
+Environment names are fixed in `environment-names.json` and isolated per row. PHP uses Laravel's HTTP fake with stray requests prevented, TypeScript captures `fetch`, and Python captures the default transport and refuses DNS and sockets. Every fixture answers 500.
