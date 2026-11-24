@@ -1,10 +1,10 @@
 {
     "suite": "per-call-url-guard",
     "schema_version": 1,
-    "corpus_version": "0.1.28",
+    "corpus_version": "0.1.29",
     "generated_by": "tools/per-call-url-guard.mjs with three native SDK adapters. Every observation is execution output; none is hand-written.",
     "scope": "Whether a provider url passed for ONE call is refused before any request when it names a loopback, private, link-local, metadata or unspecified address, through Prism.text().using() on the openai provider and on a named openai-compatible entry. Configured urls are not checked and appear here only as controls.",
-    "encoding": "An observation is whether any request was sent and which refusal code stopped the call (private_address_refused, scheme_not_allowed or null). The message is outside the contract and is not recorded.",
+    "encoding": "An observation is whether any request was sent and which refusal code stopped the call (private_address_refused, scheme_not_allowed, non_ascii_host_use_punycode or null). The message is outside the contract and is not recorded.",
     "environment_names": [
         "OPENAI_URL",
         "OPENAI_API_KEY",
@@ -1596,9 +1596,9 @@
         },
         {
             "id": "pcu-0055",
-            "title": "per call: a public international name",
+            "title": "per call: a public international name in unicode",
             "since": "0.1.28",
-            "notes": "Control. A non-ASCII public name is converted to its ASCII form and dispatches: the character rule applies to what is written in ASCII, and again after conversion.",
+            "notes": "A legitimate international name, written in unicode. A per-call host must be ASCII, so it is refused with its own code before any request in every language; its punycode form is sent (pcu-0080). IDNA converters disagree on which name some characters spell, so no language converts one.",
             "given": {
                 "kind": "per-call",
                 "provider": "openai",
@@ -1609,16 +1609,16 @@
             },
             "result": {
                 "php": {
-                    "dispatched": true,
-                    "refusal": null
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
                 },
                 "ts": {
-                    "dispatched": true,
-                    "refusal": null
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
                 },
                 "py": {
-                    "dispatched": true,
-                    "refusal": null
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
                 }
             },
             "agrees": true
@@ -2243,6 +2243,354 @@
                 "env": {},
                 "config": {
                     "url": "https://λογος.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0078",
+            "title": "per call: capital sharp s inside localhost",
+            "since": "0.1.29",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. U+1E9E maps to the deviation character sharp s under UTS46; one IDNA converter keeps it and returns punycode, another spells it \"ss\". Refused anywhere in the authority, like sharp s itself.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://locaẞlhost/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0079",
+            "title": "per call: capital sharp s in a public name",
+            "since": "0.1.29",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. U+1E9E in an otherwise public name is refused under the same rule, because no converter agrees on the name it spells.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "https://gatewayẞ.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0080",
+            "title": "per call: an international name in punycode",
+            "since": "0.1.29",
+            "notes": "Control: a legitimate public host, which must be sent. The punycode form of pcu-0055. Sent unchanged by every client, and judged like any other name.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "https://xn--bcher-kva.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0081",
+            "title": "per call: a sharp s name in punycode",
+            "since": "0.1.29",
+            "notes": "Control: a legitimate public host, which must be sent. The punycode form of a name whose unicode spelling holds a deviation character, which is refused.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "https://xn--strae-oqa.de/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0082",
+            "title": "per call: a non-ASCII name that fails the IDNA2008 bidi rule",
+            "since": "0.1.29",
+            "notes": "A non-ASCII host is refused with its own code in every language. Under IDNA conversion the reference refused this name (bidi rule) while the ports accepted it.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "https://مثال.3com.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0083",
+            "title": "per call: a non-ASCII name with hyphens in positions 3 and 4",
+            "since": "0.1.29",
+            "notes": "A non-ASCII host is refused with its own code in every language. Under IDNA conversion the reference refused this name (hyphen rule) while the ports accepted it.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "https://bücher.ab--cd.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0084",
+            "title": "per call: a loopback literal in full-width digits",
+            "since": "0.1.29",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. IDNA maps full-width digits to 127.0.0.1. The host is not ASCII, so it is refused with that code before any conversion.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://１２７.０.０.１/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0085",
+            "title": "per call: a Persian name with a zero-width non-joiner",
+            "since": "0.1.29",
+            "notes": "A legitimate name that needs U+200C. Each language's clean-url check refuses the joiner before the guard runs, so no refusal code is recorded; its punycode form is accepted (each language's regression rows).",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "https://می‌خواهم.ir/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0086",
+            "title": "per call: a public IPv6 literal with a dotted IPv4 tail",
+            "since": "0.1.29",
+            "notes": "Control: a legitimate public host, which must be sent. The same address as its hex spelling. The reference used to refuse every dotted-tail literal, even a public one, while the ports accepted it.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[2606:4700::8.8.8.8]/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0087",
+            "title": "per call: a public ISATAP literal with a dotted IPv4 tail",
+            "since": "0.1.29",
+            "notes": "Control: a legitimate public host, which must be sent. ISATAP under a public prefix, carrying a public IPv4 written dotted. The carried address is judged and is public.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[2606:4700::5efe:8.8.8.8]/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0088",
+            "title": "per call: an ISATAP literal carrying loopback in a dotted tail",
+            "since": "0.1.29",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. ISATAP under a public prefix, carrying 127.0.0.1 written dotted. Judged by the carried address.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[2606:4700::5efe:127.0.0.1]/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0089",
+            "title": "per call: a NAT64 literal carrying the metadata address in a dotted tail",
+            "since": "0.1.29",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. NAT64 with the metadata address written dotted. Judged by the carried address.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[64:ff9b::169.254.169.254]/latest"
                 }
             },
             "result": {
