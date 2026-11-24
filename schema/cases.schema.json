@@ -10111,6 +10111,8 @@
                   "apply_change",
                   "resume",
                   "cancel",
+                  "mark",
+                  "update_since_mark",
                   "stalled",
                   "policy",
                   "render"
