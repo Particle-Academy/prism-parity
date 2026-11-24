@@ -32,6 +32,10 @@ export const IDENTIFIER_FIELDS = new Set([
   // G-321: a subagent's `agent` and a mode's `agents` allow-list are names a
   // near-miss must not resolve; harness-agent-binding pads and folds them.
   'agent', 'agents',
+  // G-365: a per-call url's host is a name a near-miss must not resolve;
+  // per-call-url-guard puts zero-width joiners and other invisible characters
+  // in it. A url is an address, never prose.
+  'url',
 ]);
 
 const IDENTIFIER = /^[A-Za-z0-9_.:\\/-]+$/;
