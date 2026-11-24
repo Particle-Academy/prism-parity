@@ -42,15 +42,15 @@
   },
   "repos": {
     "prism": {
-      "version": "v0.152.0",
+      "version": "v0.153.0",
       "census": {
         "decision": 1,
         "composer-script": 3,
-        "local-link": 97,
-        "php-class": 689,
-        "composer-package": 9,
-        "artisan-command": 7,
-        "npm-script": 2
+        "local-link": 176,
+        "php-class": 795,
+        "composer-package": 14,
+        "artisan-command": 14,
+        "npm-script": 3
       }
     },
     "prism-browser": {
