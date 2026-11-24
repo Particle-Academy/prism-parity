@@ -1,7 +1,7 @@
 {
     "suite": "per-call-url-guard",
     "schema_version": 1,
-    "corpus_version": "0.1.27",
+    "corpus_version": "0.1.28",
     "generated_by": "tools/per-call-url-guard.mjs with three native SDK adapters. Every observation is execution output; none is hand-written.",
     "scope": "Whether a provider url passed for ONE call is refused before any request when it names a loopback, private, link-local, metadata or unspecified address, through Prism.text().using() on the openai provider and on a named openai-compatible entry. Configured urls are not checked and appear here only as controls.",
     "encoding": "An observation is whether any request was sent and which refusal code stopped the call (private_address_refused, scheme_not_allowed or null). The message is outside the contract and is not recorded.",
@@ -996,6 +996,615 @@
                 },
                 "config": {
                     "url": "http://10.0.0.5/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0035",
+            "title": "per call: an escaped letter in localhost",
+            "since": "0.1.28",
+            "notes": "Hostile: the host is judged as written, never decoded. Some HTTP clients decode an escape in the host and connect to what it spells, so an escape is refused rather than read.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://loc%61lhost:8080/admin"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0036",
+            "title": "per call: an escaped letter in localhost, upper case",
+            "since": "0.1.28",
+            "notes": "Hostile: the host is judged as written, never decoded. Some HTTP clients decode an escape in the host and connect to what it spells, so an escape is refused rather than read.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://LOC%41LHOST/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0037",
+            "title": "per call: localhost with an escaped trailing dot",
+            "since": "0.1.28",
+            "notes": "Hostile: the host is judged as written, never decoded. Some HTTP clients decode an escape in the host and connect to what it spells, so an escape is refused rather than read.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://localhost%2e/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0038",
+            "title": "per call: a loopback literal with an escaped trailing dot",
+            "since": "0.1.28",
+            "notes": "Hostile: the host is judged as written, never decoded. Some HTTP clients decode an escape in the host and connect to what it spells, so an escape is refused rather than read.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://127.0.0.1%2e/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0039",
+            "title": "per call: a loopback literal, an escaped NUL and a public suffix",
+            "since": "0.1.28",
+            "notes": "Hostile: the host is judged as written, never decoded. Some HTTP clients decode an escape in the host and connect to what it spells, so an escape is refused rather than read.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://127.0.0.1%00.evil.com/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0040",
+            "title": "per call: a loopback literal with every digit of one octet escaped",
+            "since": "0.1.28",
+            "notes": "Hostile: the host is judged as written, never decoded. Some HTTP clients decode an escape in the host and connect to what it spells, so an escape is refused rather than read.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://%31%32%37.0.0.1/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0041",
+            "title": "per call: the metadata address with an escaped trailing dot",
+            "since": "0.1.28",
+            "notes": "Hostile: the host is judged as written, never decoded. Some HTTP clients decode an escape in the host and connect to what it spells, so an escape is refused rather than read.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://169.254.169.254%2e/latest/meta-data/"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0042",
+            "title": "per call: the metadata name with an escaped trailing dot",
+            "since": "0.1.28",
+            "notes": "Hostile: the host is judged as written, never decoded. Some HTTP clients decode an escape in the host and connect to what it spells, so an escape is refused rather than read.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://metadata.google.internal%2e/x"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0043",
+            "title": "per call: a public name with an escaped dot",
+            "since": "0.1.28",
+            "notes": "Hostile: the host is judged as written, never decoded. Some HTTP clients decode an escape in the host and connect to what it spells, so an escape is refused rather than read. A public name is refused too: the rule is about the spelling, not the address.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "https://gateway%2eexample/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0044",
+            "title": "per call: an underscore in a public name",
+            "since": "0.1.28",
+            "notes": "Hostile: a character no hostname or address literal may hold is refused as written, so no client can read it as something else.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "https://gate_way.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0045",
+            "title": "per call: a backslash before userinfo, loopback first",
+            "since": "0.1.28",
+            "notes": "Hostile: URL parsers split an authority with a backslash in different places, so one language would judge one host and another a different one. A backslash in the authority is refused.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://127.0.0.1\\@gateway.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0046",
+            "title": "per call: a backslash before userinfo, loopback last",
+            "since": "0.1.28",
+            "notes": "Hostile: URL parsers split an authority with a backslash in different places, so one language would judge one host and another a different one. A backslash in the authority is refused.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://gateway.example\\@127.0.0.1/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0047",
+            "title": "per call: an IPv6 zone id",
+            "since": "0.1.28",
+            "notes": "Hostile: the host is judged as written, never decoded. Some HTTP clients decode an escape in the host and connect to what it spells, so an escape is refused rather than read.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[fe80::1%25eth0]/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0048",
+            "title": "per call: an escaped digit in an IPv6 literal",
+            "since": "0.1.28",
+            "notes": "Hostile: the host is judged as written, never decoded. Some HTTP clients decode an escape in the host and connect to what it spells, so an escape is refused rather than read.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[::%31]/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0049",
+            "title": "per call: a loopback literal with a trailing dot",
+            "since": "0.1.28",
+            "notes": "Hostile: a resolver reads a trailing dot as the same name, so the check removes it before judging the host the client will contact.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://127.0.0.1./v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0050",
+            "title": "per call: a hex loopback with a trailing dot",
+            "since": "0.1.28",
+            "notes": "Hostile: a resolver reads a trailing dot as the same name, so the check removes it before judging the host the client will contact.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://0x7f000001./v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0051",
+            "title": "per call: localhost with two trailing dots",
+            "since": "0.1.28",
+            "notes": "Hostile: a resolver reads a trailing dot as the same name, so the check removes it before judging the host the client will contact.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://localhost../v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0052",
+            "title": "per call: the metadata address with a trailing dot",
+            "since": "0.1.28",
+            "notes": "Hostile: a resolver reads a trailing dot as the same name, so the check removes it before judging the host the client will contact.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://169.254.169.254./latest"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0053",
+            "title": "per call: an empty host before an address",
+            "since": "0.1.28",
+            "notes": "Hostile: one URL parser skips the extra slash and reads the address as the host; the others see no host. An empty written host is a scheme error in every language.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http:///127.0.0.1/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0054",
+            "title": "per call: a public name with a trailing dot",
+            "since": "0.1.28",
+            "notes": "Control. A trailing dot on a public name dispatches: the trailing-dot rule must not refuse what it only canonicalises.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "https://gateway.example./v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0055",
+            "title": "per call: a public international name",
+            "since": "0.1.28",
+            "notes": "Control. A non-ASCII public name is converted to its ASCII form and dispatches: the character rule applies to what is written in ASCII, and again after conversion.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "https://bücher.example/v1"
                 }
             },
             "result": {
