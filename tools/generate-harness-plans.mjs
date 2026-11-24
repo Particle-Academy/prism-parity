@@ -167,6 +167,10 @@ const cases = [
     [{ ...draft(), authorized: false }, ...active(), ...run(),
       { op: 'change', args: { reason: 'x', base_revision: 'current', steps: [{ ref: 0 }, step(7)] }, digest: 'sha256:c', authorized: false },
       { op: 'pause', args: { kind: 'approve', question: 'May I book it?' }, digest: 'sha256:pause', authorized: false }], { since: '0.1.1' }),
+  c('an update patches only when the step list is the same; an inserted step is a snapshot',
+    'A patch carries the changed steps by id and cannot say where a new one goes. A pause inserts the person step BEFORE the current one, so a reader applying a patch would put it last and show the steps out of order. Any change to the list of ids (an insert, a removal, a reorder) is sent as a snapshot (insertion attack on the order).',
+    [...active(), { op: 'mark' }, ...run(), { op: 'update_since_mark' }, { op: 'mark' },
+      { op: 'pause', args: { kind: 'input', question: 'Which notes?' }, digest: null }, { op: 'update_since_mark' }], { since: '0.1.2' }),
 ];
 
 const existing = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : { cases: [] };
@@ -192,7 +196,7 @@ if (process.argv[2] === '--merge') {
 const document = {
   suite: 'harness-plans',
   schema_version: 1,
-  corpus_version: '0.1.1',
+  corpus_version: '0.1.2',
   generated_by: 'tools/generate-harness-plans.mjs writes the inputs. `expected` is the PHP reference\'s recording; every security row was checked by hand against the G-360 design before TypeScript or Python ran. `result` records what each language measured, merged with --merge.',
   pins_note: 'Each case runs `ops` in order against a fresh plan through the language\'s pure PlanMachine and PlanView, with ids minted as prefix + "_" + a 26-digit counter, the clock at `now` (default 1767225600, 2026-01-01T00:00:00Z) and the run id "run_case". Each op records {ok} or {refused: code} or its outcome. `final` is the plan as stored (the fields a consumer or the next turn depends on), its g282.3 update, its counts, its context block and its first-event size, or null when nothing was written.',
   cases: cases.map((item) => {
