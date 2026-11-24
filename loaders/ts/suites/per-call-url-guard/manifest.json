@@ -1,0 +1,35 @@
+{
+    "id": "per-call-url-guard",
+    "title": "Whether a provider url passed for one call may choose a private address, in three languages",
+    "kind": "security-corpus",
+    "pins": "Whether a provider url passed for ONE call (`using(provider, model, {url})`) is refused before any request when it names a loopback, private, link-local, shared, unique-local, unspecified or cloud metadata address, in every spelling an HTTP client or OS resolver accepts. A per-call url is chosen by whoever builds the call, so a url that reaches 169.254.169.254 or a service behind the firewall in one language and is refused in another is an SSRF hole in whichever accepts it, and nothing errors to say so. Configured urls are the operator's and are deliberately not checked; they appear only as controls, together with the one explicit configuration opt-out and the proof that the call itself cannot turn it on.",
+    "scope": "The openai provider and one named openai-compatible entry, entered through Prism.text().using() in each language. Address literals in decimal, octal, hex, shortened, IPv6, IPv4-mapped and NAT64 spellings, userinfo in front of the host, local and metadata names with case and trailing-dot variation, one non-http scheme, and the configuration controls. NOT covered: a public hostname that RESOLVES to a private address (no language resolves names here, by design: the check makes no network call), DNS rebinding, the reference's other providers and custom providers (each language's own regression tests cover those), and the refusal message, which is outside the contract.",
+    "construction": "Native PHP manager entered through Prism::text()->using() with Laravel's HTTP fake and stray requests prevented, reading the package's own config/prism.php against each row's environment; native TypeScript Prism.text().using() with fetch captured; native Python Prism.text().using() with the default transport's send captured and DNS and sockets refused. Every fixture answers 500, because only whether a request went out matters. Each observation is `dispatched` and the refusal code, and nothing else: tools/per-call-url-guard/contract.mjs refuses any other field and any row both dispatched and refused.",
+    "findings": "34 of 34 rows agree, recorded against the three unreleased fix branches (prism, prism-ts and prism-py `fix/refuse-per-call-private-url`). Against the code before the fix, every refusal row is stale in all three languages: each private, loopback, metadata and numeric spelling was SENT, which is the defect this suite exists for. Agreement here is a conclusion about behaviour, not about safety: the three guards were written to one spec at the same time, so a shared misreading of it (a spelling all three fail to decode, for example) would agree here too. Two limits are shared on purpose and stated rather than hidden: a hostname that resolves to a private address is not refused, and a few malformed hosts that a language's URL parser rejects before the address step report scheme_not_allowed where another reports private_address_refused. No row exercises that second case; both outcomes refuse before any request.",
+    "pattern_doc": "docs/decisions/0006-goldens-from-the-reference.md",
+    "reference": "php",
+    "comparison": {
+        "mode": "canonical-json-string"
+    },
+    "discrimination": {
+        "status": "unprobed",
+        "gap": "No mutation probe is delivered for this suite. The code before the fix fails 29 to 30 of its 34 rows in every language, which serves as a coarse negative control."
+    },
+    "implementations": {
+        "php": {
+            "status": "full",
+            "runner": "prism-parity:tools/per-call-url-guard.mjs",
+            "note": "Run the corpus-loading entry point with php --check. PRISM_PHP_SRC points it at a prism checkout (CI uses the default branch); without it, it reads the installed reference in runners/php."
+        },
+        "ts": {
+            "status": "full",
+            "runner": "prism-parity:tools/per-call-url-guard.mjs",
+            "note": "Run the corpus-loading entry point with ts --check; it reads the built sibling prism-ts/dist, or PRISM_TS_DIST."
+        },
+        "py": {
+            "status": "full",
+            "runner": "prism-parity:tools/per-call-url-guard.mjs",
+            "note": "Run the corpus-loading entry point with py --check; it imports the installed package, or PRISM_PY_SRC."
+        }
+    }
+}

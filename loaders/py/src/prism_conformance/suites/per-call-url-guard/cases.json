@@ -1,0 +1,1018 @@
+{
+    "suite": "per-call-url-guard",
+    "schema_version": 1,
+    "corpus_version": "0.1.27",
+    "generated_by": "tools/per-call-url-guard.mjs with three native SDK adapters. Every observation is execution output; none is hand-written.",
+    "scope": "Whether a provider url passed for ONE call is refused before any request when it names a loopback, private, link-local, metadata or unspecified address, through Prism.text().using() on the openai provider and on a named openai-compatible entry. Configured urls are not checked and appear here only as controls.",
+    "encoding": "An observation is whether any request was sent and which refusal code stopped the call (private_address_refused, scheme_not_allowed or null). The message is outside the contract and is not recorded.",
+    "environment_names": [
+        "OPENAI_URL",
+        "OPENAI_API_KEY",
+        "OPENAI_ALLOW_PRIVATE_PER_CALL_URL"
+    ],
+    "cases": [
+        {
+            "id": "pcu-0001",
+            "title": "per call: a loopback literal",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. The plainest form of the refusal.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://127.0.0.1:8000/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0002",
+            "title": "per call: localhost in mixed case",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. Mixed-case scheme and name: a case-sensitive name list would let it through.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "HTTP://LocalHost:8000/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0003",
+            "title": "per call: localhost with a trailing dot",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. A trailing dot is the same name to a resolver and a different string to a naive comparison.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://localhost./v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0004",
+            "title": "per call: loopback as one decimal number",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. Decimal spelling an OS resolver reads as 127.0.0.1; a dotted-quad-only check misses it.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://2130706433/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0005",
+            "title": "per call: loopback in octal",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. Octal first label; a decimal parser would read 177.0.0.1, a public address.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://0177.0.0.1/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0006",
+            "title": "per call: loopback as one hex number",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. Hex spelling of 127.0.0.1.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://0x7f000001/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0007",
+            "title": "per call: loopback as two hex and decimal parts",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. Two-part form: the last label fills the remaining three bytes.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://0x7f.1/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0008",
+            "title": "per call: shortened loopback",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. Shortened form an OS resolver reads as 127.0.0.1.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://127.1/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0009",
+            "title": "per call: IPv6 loopback",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. Bracketed: a port that forgets to strip brackets reads it as a name and lets it through.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[::1]/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0010",
+            "title": "per call: IPv4-mapped IPv6 loopback",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. The IPv4 loopback wearing an IPv6 spelling, the usual bypass of an IPv4-only check.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[::ffff:127.0.0.1]/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0011",
+            "title": "per call: unique-local IPv6",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. fc00::/7, the IPv6 private range.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[fd00::1]/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0012",
+            "title": "per call: link-local IPv6",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. fe80::/10.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[fe80::1]/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0013",
+            "title": "per call: the cloud metadata address",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. The single most valuable target: it hands role credentials to anything inside the network.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://169.254.169.254/latest"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0014",
+            "title": "per call: the GCP metadata name",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. A documented metadata NAME: refused without resolving it.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://metadata.google.internal/computeMetadata/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0015",
+            "title": "per call: the GCP metadata name, upper case with a trailing dot",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. Case and trailing dot together on the metadata name.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://METADATA.GOOGLE.INTERNAL./x"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0016",
+            "title": "per call: the unspecified address",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. Reaches the local machine on most stacks.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://0.0.0.0/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0017",
+            "title": "per call: RFC 1918 10/8",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. Private range.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://10.0.0.5/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0018",
+            "title": "per call: RFC 1918 172.16/12",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. Private range.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://172.16.0.1/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0019",
+            "title": "per call: RFC 1918 192.168/16",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. Private range.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://192.168.1.10/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0020",
+            "title": "per call: Alibaba Cloud metadata in CGNAT",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. Shared address space, where one cloud keeps its metadata endpoint; PHP filter_var flags alone miss it.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://100.100.100.200/x"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0021",
+            "title": "per call: a userinfo trick in front of loopback",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. The host is after the @; a check that reads the first label as the host is spoofed.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://evil@127.0.0.1/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0022",
+            "title": "per call: userinfo with a password in front of a private address",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. Userinfo with a colon must not be read as a host and port.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://user:pass@10.0.0.5/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0023",
+            "title": "per call: NAT64 spelling of the metadata address",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller chose this address for one call, and it must be refused before any request. The embedded IPv4 is 169.254.169.254; the embedded address is what is judged.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[64:ff9b::a9fe:a9fe]/"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0024",
+            "title": "per call: a scheme that is not http or https",
+            "since": "0.1.27",
+            "notes": "Must be refused as scheme_not_allowed, never handed to an HTTP stack.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "ftp://example.com/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0025",
+            "title": "control: a public per-call url is sent",
+            "since": "0.1.27",
+            "notes": "Control. Every refusal row is noise until this one dispatches: a guard that refuses everything passes them all.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "https://gateway.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0026",
+            "title": "control: a configured private url is sent",
+            "since": "0.1.27",
+            "notes": "Control. Configuration is the operator's and may point at a local model server; no per-call url is given.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_URL": "http://127.0.0.1:1234/v1"
+                },
+                "config": {}
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0027",
+            "title": "control: a per-call url naming the configured private endpoint is sent",
+            "since": "0.1.27",
+            "notes": "The call repeats the configured endpoint (trailing slash), so it is not choosing an address.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_URL": "http://127.0.0.1:1234/v1"
+                },
+                "config": {
+                    "url": "http://127.0.0.1:1234/v1/"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0028",
+            "title": "a different private per-call url while a private one is configured",
+            "since": "0.1.27",
+            "notes": "A configured private endpoint must not open every private address to the call; a different port is refused.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_URL": "http://127.0.0.1:1234/v1"
+                },
+                "config": {
+                    "url": "http://127.0.0.1:9/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0029",
+            "title": "the configuration opt-out lets a private per-call url through",
+            "since": "0.1.27",
+            "notes": "The single explicit setting, read from configuration (the environment), allows it.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "http://127.0.0.1:9/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0030",
+            "title": "an opt-out of \"1\" is not true",
+            "since": "0.1.27",
+            "notes": "Only true opts in; a truthy-looking value must not.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "1"
+                },
+                "config": {
+                    "url": "http://127.0.0.1:9/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0031",
+            "title": "the call cannot opt itself in",
+            "since": "0.1.27",
+            "notes": "Hostile: the caller passes the opt-out with the call. It is never read and the url is refused.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://127.0.0.1:9/v1",
+                    "allow_private_per_call_url": true
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0032",
+            "title": "control: a compatible entry configured at loopback is sent",
+            "since": "0.1.27",
+            "notes": "Control. A named openai-compatible entry may point at a local server.",
+            "given": {
+                "kind": "compatible",
+                "provider": "pcu-vllm",
+                "env": {},
+                "entry": {
+                    "url": "http://127.0.0.1:8000/v1"
+                },
+                "config": {}
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0033",
+            "title": "a compatible entry with a private per-call url",
+            "since": "0.1.27",
+            "notes": "Hostile: a per-call url on a compatible entry is held to the same rule as a built-in.",
+            "given": {
+                "kind": "compatible",
+                "provider": "pcu-vllm",
+                "env": {},
+                "entry": {
+                    "url": "http://127.0.0.1:8000/v1"
+                },
+                "config": {
+                    "url": "http://10.0.0.5/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0034",
+            "title": "a compatible entry that opts in",
+            "since": "0.1.27",
+            "notes": "The entry's own opt-out allows a private per-call url.",
+            "given": {
+                "kind": "compatible",
+                "provider": "pcu-vllm",
+                "env": {},
+                "entry": {
+                    "url": "https://gateway.example/v1",
+                    "allow_private_per_call_url": true
+                },
+                "config": {
+                    "url": "http://10.0.0.5/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        }
+    ]
+}
