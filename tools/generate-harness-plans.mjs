@@ -162,6 +162,11 @@ const cases = [
     'A drafted person step is a question: the driver waits on it, and the answer is shown back in the next context.',
     [...active([step(1), human(), step(3)]), ...run(), { op: 'report', summary: 'Read it' }, { op: 'prepare', run_failed: false },
       { op: 'answer', step: 1, text: 'the second one', choice: 'Rome', actor: 'user:ada' }, { op: 'prepare', run_failed: false }]),
+  c('a host call policy that forbids a plan tool records nothing and keeps the plan slot free',
+    'Hostile: the host call policy is asked before a draft, a change or an approval pause is recorded. A forbidden draft writes no plan, so a later allowed draft is not refused as plan.exists; a forbidden change or pause leaves the plan as it was (refuse before recording).',
+    [{ ...draft(), authorized: false }, ...active(), ...run(),
+      { op: 'change', args: { reason: 'x', base_revision: 'current', steps: [{ ref: 0 }, step(7)] }, digest: 'sha256:c', authorized: false },
+      { op: 'pause', args: { kind: 'approve', question: 'May I book it?' }, digest: 'sha256:pause', authorized: false }], { since: '0.1.1' }),
 ];
 
 const existing = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : { cases: [] };
@@ -187,12 +192,12 @@ if (process.argv[2] === '--merge') {
 const document = {
   suite: 'harness-plans',
   schema_version: 1,
-  corpus_version: '0.1.0',
+  corpus_version: '0.1.1',
   generated_by: 'tools/generate-harness-plans.mjs writes the inputs. `expected` is the PHP reference\'s recording; every security row was checked by hand against the G-360 design before TypeScript or Python ran. `result` records what each language measured, merged with --merge.',
   pins_note: 'Each case runs `ops` in order against a fresh plan through the language\'s pure PlanMachine and PlanView, with ids minted as prefix + "_" + a 26-digit counter, the clock at `now` (default 1767225600, 2026-01-01T00:00:00Z) and the run id "run_case". Each op records {ok} or {refused: code} or its outcome. `final` is the plan as stored (the fields a consumer or the next turn depends on), its g282.3 update, its counts, its context block and its first-event size, or null when nothing was written.',
   cases: cases.map((item) => {
     const before = byId[item.id];
-    return { ...item, expected: before?.expected ?? null, result: before?.result ?? {}, agrees: before?.agrees ?? false };
+    return { ...item, since: before?.since ?? item.since, expected: before?.expected ?? null, result: before?.result ?? {}, agrees: before?.agrees ?? false };
   }),
 };
 

@@ -56,7 +56,7 @@ Corpus <!-- metric:corpus.version -->0.1.28<!-- /metric --> contains
 <!-- metric:golden.suites -->13<!-- /metric --> golden-based suites with
 <!-- metric:golden.cases -->248<!-- /metric --> stored cases.
 The rubric scores <!-- metric:security.corpora -->27<!-- /metric --> security corpora
-and identifies <!-- metric:security.adversarialRows -->817<!-- /metric --> adversarial rows.
+and identifies <!-- metric:security.adversarialRows -->818<!-- /metric --> adversarial rows.
 <!-- metric:families.withSuite -->9<!-- /metric --> of
 <!-- metric:families.total -->9<!-- /metric --> declared corpus target families have a suite.
 These are corpus inventory counts, not executed coverage. The cross-check reports
