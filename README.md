@@ -52,9 +52,9 @@ Python. `manifest/packages.json` records that package-family matrix and
 `tools/parity-check.mjs --report` prints its remaining gaps. See
 [decision 0021](docs/decisions/0021-parity-is-the-shipping-library-set.md).
 
-Corpus <!-- metric:corpus.version -->0.1.29<!-- /metric --> contains
+Corpus <!-- metric:corpus.version -->0.1.30<!-- /metric --> contains
 <!-- metric:golden.suites -->13<!-- /metric --> golden-based suites with
-<!-- metric:golden.cases -->248<!-- /metric --> stored cases.
+<!-- metric:golden.cases -->251<!-- /metric --> stored cases.
 The rubric scores <!-- metric:security.corpora -->27<!-- /metric --> security corpora
 and identifies <!-- metric:security.adversarialRows -->851<!-- /metric --> adversarial rows.
 <!-- metric:families.withSuite -->9<!-- /metric --> of
@@ -86,7 +86,7 @@ native observers. See [the native adapter contract](tools/satellite-policy/READM
 | `anthropic-text-stream` | stream-parse | <!-- metric:suite.anthropic-text-stream.cases -->21<!-- /metric --> | Native EOF/error/accounting/tool safety properties; exact trace divergence G-125 |
 | `openrouter-billing-response` | response-parse | <!-- metric:suite.openrouter-billing-response.cases -->10<!-- /metric --> | BYOK totals and completeness; PHP only, ports explicitly unsupported |
 | `provider-replay-request` | request-payload | <!-- metric:suite.provider-replay-request.cases -->8<!-- /metric --> | Ordered opaque OpenAI/Anthropic assistant state into the next request |
-| `value-object-roundtrip` | roundtrip | <!-- metric:suite.value-object-roundtrip.cases -->17<!-- /metric --> | Value objects through storage and back |
+| `value-object-roundtrip` | roundtrip | <!-- metric:suite.value-object-roundtrip.cases -->20<!-- /metric --> | Value objects through storage and back |
 | `media-roundtrip` | roundtrip | <!-- metric:suite.media-roundtrip.cases -->12<!-- /metric --> | Media through storage and back: bytes kept, no host paths, a `kind` |
 | `text-errors` | error-code | <!-- metric:suite.text-errors.cases -->62<!-- /metric --> | Which failure a misuse produces |
 | `json-container-identity` | container-identity | <!-- metric:suite.json-container-identity.cases -->2<!-- /metric --> | What each language's parser can tell apart |
