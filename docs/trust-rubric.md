@@ -123,7 +123,7 @@ refactor is the bytes.
 identifier-named field (`name`, `tool`, `kind`, `worker`, `outcome`, …), and it
 counts as hazardous when it carries edge whitespace, a format/control
 codepoint, a non-ASCII character, or interior whitespace that leaves a
-malformed token. <!-- metric:security.hazardClaimingCorpora -->6<!-- /metric -->
+malformed token. <!-- metric:security.hazardClaimingCorpora -->7<!-- /metric -->
 corpora claim such a hazard, and every one of them backs it:
 `human-plus-tool-admission` (11 of 43 identifier values),
 `opentelemetry-span-attributes` (3 of 284, padded rate-limit bucket names),
