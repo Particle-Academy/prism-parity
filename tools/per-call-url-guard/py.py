@@ -21,7 +21,7 @@ from prism.http import HttpRequest, HttpResponse, UrllibTransport
 
 HERE = Path(__file__).parent
 ENVIRONMENT_NAMES = json.loads((HERE / "environment-names.json").read_text(encoding="utf-8"))
-REFUSALS = ("private_address_refused", "scheme_not_allowed")
+REFUSALS = ("private_address_refused", "scheme_not_allowed", "non_ascii_host_use_punycode")
 
 
 def observe(document: dict[str, Any]) -> list[dict[str, Any]]:

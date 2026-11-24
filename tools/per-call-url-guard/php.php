@@ -70,7 +70,7 @@ $package = dirname((new ReflectionClass(PrismManager::class))->getFileName(), 2)
 if (is_string($source) && $source !== '' && str_replace('\\', '/', $package) !== $source) {
     throw new RuntimeException('PRISM_PHP_SRC was set but the manager loaded from elsewhere.');
 }
-$refusals = ['private_address_refused', 'scheme_not_allowed'];
+$refusals = ['private_address_refused', 'scheme_not_allowed', 'non_ascii_host_use_punycode'];
 
 $environment = [];
 foreach ($input['environment_names'] as $name) {

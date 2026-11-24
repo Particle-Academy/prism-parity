@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 
 const environmentNames = JSON.parse(readFileSync(new URL('./environment-names.json', import.meta.url), 'utf8'));
-const REFUSALS = ['private_address_refused', 'scheme_not_allowed'];
+const REFUSALS = ['private_address_refused', 'scheme_not_allowed', 'non_ascii_host_use_punycode'];
 const camel = { api_key: 'apiKey', allow_private_per_call_url: 'allowPrivatePerCallUrl' };
 const renamed = (object) => Object.fromEntries(Object.entries(object ?? {}).map(([name, value]) => [camel[name] ?? name, value]));
 

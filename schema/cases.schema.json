@@ -9468,6 +9468,7 @@
                           "enum": [
                             "private_address_refused",
                             "scheme_not_allowed",
+                            "non_ascii_host_use_punycode",
                             null
                           ]
                         }
@@ -9495,6 +9496,7 @@
                           "enum": [
                             "private_address_refused",
                             "scheme_not_allowed",
+                            "non_ascii_host_use_punycode",
                             null
                           ]
                         }
@@ -9522,6 +9524,7 @@
                           "enum": [
                             "private_address_refused",
                             "scheme_not_allowed",
+                            "non_ascii_host_use_punycode",
                             null
                           ]
                         }
@@ -9639,6 +9642,7 @@
                           "enum": [
                             "private_address_refused",
                             "scheme_not_allowed",
+                            "non_ascii_host_use_punycode",
                             null
                           ]
                         }
@@ -9666,6 +9670,7 @@
                           "enum": [
                             "private_address_refused",
                             "scheme_not_allowed",
+                            "non_ascii_host_use_punycode",
                             null
                           ]
                         }
@@ -9693,6 +9698,7 @@
                           "enum": [
                             "private_address_refused",
                             "scheme_not_allowed",
+                            "non_ascii_host_use_punycode",
                             null
                           ]
                         }
