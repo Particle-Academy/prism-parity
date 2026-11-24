@@ -39,6 +39,18 @@ jobs:
           repository: Particle-Academy/prism-py
           path: prism-py
 
+      # The PHP reference's default branch, read as SOURCE only: nothing is
+      # installed from it. The per-call url guard step loads the reference's
+      # classes from here ahead of the runner's locked vendor, so all three
+      # columns of that suite are read from default branches, as prism-ts and
+      # prism-py are.
+      - name: Checkout prism
+        uses: actions/checkout@v4
+        with:
+          repository: Particle-Academy/prism
+          path: prism
+          persist-credentials: false
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -176,6 +188,18 @@ jobs:
           node tools/credential-scope.mjs php --check
           node tools/credential-scope.mjs ts --check
           node tools/credential-scope.mjs py --check
+
+      # A provider url passed for ONE call may not choose a private address.
+      # Every column runs against a default branch: prism through
+      # PRISM_PHP_SRC, prism-ts and prism-py through the checkouts above.
+      - name: Native per-call url guard observations
+        working-directory: prism-parity
+        env:
+          PRISM_PHP_SRC: ../prism
+        run: |
+          node tools/per-call-url-guard.mjs php --check
+          node tools/per-call-url-guard.mjs ts --check
+          node tools/per-call-url-guard.mjs py --check
 
   # Released source trees are gated; native cases execute normal registry artifacts.
   mcp-published:
