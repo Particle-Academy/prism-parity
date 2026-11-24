@@ -1,0 +1,8 @@
+[
+    "OPENAI_URL",
+    "OPENAI_API_KEY",
+    "ANTHROPIC_URL",
+    "ANTHROPIC_API_KEY",
+    "MISTRAL_URL",
+    "MISTRAL_API_KEY"
+]

@@ -1,0 +1,2106 @@
+{
+    "suite": "cross-origin-redirect",
+    "schema_version": 1,
+    "corpus_version": "0.1.28",
+    "generated_by": "tools/cross-origin-redirect.mjs with three native SDK adapters against loopback servers. Every observation is read off the servers; none is hand-written.",
+    "scope": "Whether a provider call follows a redirect that leaves its configured origin (scheme, host and effective port), through Prism.text().using() on the openai, anthropic and mistral providers with their url and key from the environment.",
+    "encoding": "An observation is what the loopback servers received: how many requests reached the configured endpoint, whether anything reached another origin (another host, another port, or a TLS attempt after a scheme change), and whether the row's synthetic key appeared in any byte another origin received. The error each SDK raises is not recorded.",
+    "environment_names": [
+        "OPENAI_URL",
+        "OPENAI_API_KEY",
+        "ANTHROPIC_URL",
+        "ANTHROPIC_API_KEY",
+        "MISTRAL_URL",
+        "MISTRAL_API_KEY"
+    ],
+    "cases": [
+        {
+            "id": "cor-0001",
+            "title": "openai: a 301 to another host",
+            "since": "0.1.28",
+            "notes": "Hostile: the endpoint redirects to a different host. Following it hands the request, and every header the client keeps, to a server nobody configured. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 301,
+                "target": "other-host"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0002",
+            "title": "openai: a 302 to another host",
+            "since": "0.1.28",
+            "notes": "Hostile: the endpoint redirects to a different host. Following it hands the request, and every header the client keeps, to a server nobody configured. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 302,
+                "target": "other-host"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0003",
+            "title": "openai: a 303 to another host",
+            "since": "0.1.28",
+            "notes": "Hostile: the endpoint redirects to a different host. Following it hands the request, and every header the client keeps, to a server nobody configured. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 303,
+                "target": "other-host"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0004",
+            "title": "openai: a 307 to another host",
+            "since": "0.1.28",
+            "notes": "Hostile: the endpoint redirects to a different host. Following it hands the request, and every header the client keeps, to a server nobody configured. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 307,
+                "target": "other-host"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0005",
+            "title": "openai: a 308 to another host",
+            "since": "0.1.28",
+            "notes": "Hostile: the endpoint redirects to a different host. Following it hands the request, and every header the client keeps, to a server nobody configured. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 308,
+                "target": "other-host"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0006",
+            "title": "openai: a 301 to the same host on another port",
+            "since": "0.1.28",
+            "notes": "Hostile: same host, different port. A host-only comparison treats this as the same origin, and the service on the other port is a different one. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 301,
+                "target": "other-port"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0007",
+            "title": "openai: a 302 to the same host on another port",
+            "since": "0.1.28",
+            "notes": "Hostile: same host, different port. A host-only comparison treats this as the same origin, and the service on the other port is a different one. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 302,
+                "target": "other-port"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0008",
+            "title": "openai: a 303 to the same host on another port",
+            "since": "0.1.28",
+            "notes": "Hostile: same host, different port. A host-only comparison treats this as the same origin, and the service on the other port is a different one. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 303,
+                "target": "other-port"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0009",
+            "title": "openai: a 307 to the same host on another port",
+            "since": "0.1.28",
+            "notes": "Hostile: same host, different port. A host-only comparison treats this as the same origin, and the service on the other port is a different one. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 307,
+                "target": "other-port"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0010",
+            "title": "openai: a 308 to the same host on another port",
+            "since": "0.1.28",
+            "notes": "Hostile: same host, different port. A host-only comparison treats this as the same origin, and the service on the other port is a different one. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 308,
+                "target": "other-port"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0011",
+            "title": "openai: a 301 to a protocol-relative Location",
+            "since": "0.1.28",
+            "notes": "Hostile: `//host:port/path` carries no scheme, so a check that only reads absolute urls never sees the host change. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 301,
+                "target": "protocol-relative"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0012",
+            "title": "openai: a 302 to a protocol-relative Location",
+            "since": "0.1.28",
+            "notes": "Hostile: `//host:port/path` carries no scheme, so a check that only reads absolute urls never sees the host change. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 302,
+                "target": "protocol-relative"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0013",
+            "title": "openai: a 303 to a protocol-relative Location",
+            "since": "0.1.28",
+            "notes": "Hostile: `//host:port/path` carries no scheme, so a check that only reads absolute urls never sees the host change. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 303,
+                "target": "protocol-relative"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0014",
+            "title": "openai: a 307 to a protocol-relative Location",
+            "since": "0.1.28",
+            "notes": "Hostile: `//host:port/path` carries no scheme, so a check that only reads absolute urls never sees the host change. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 307,
+                "target": "protocol-relative"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0015",
+            "title": "openai: a 308 to a protocol-relative Location",
+            "since": "0.1.28",
+            "notes": "Hostile: `//host:port/path` carries no scheme, so a check that only reads absolute urls never sees the host change. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 308,
+                "target": "protocol-relative"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0016",
+            "title": "openai: a 301 to the same host and port over https",
+            "since": "0.1.28",
+            "notes": "Hostile: a scheme change. A host-and-port comparison passes it; the request must still not be re-sent to the new origin. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 301,
+                "target": "scheme"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0017",
+            "title": "openai: a 302 to the same host and port over https",
+            "since": "0.1.28",
+            "notes": "Hostile: a scheme change. A host-and-port comparison passes it; the request must still not be re-sent to the new origin. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 302,
+                "target": "scheme"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0018",
+            "title": "openai: a 303 to the same host and port over https",
+            "since": "0.1.28",
+            "notes": "Hostile: a scheme change. A host-and-port comparison passes it; the request must still not be re-sent to the new origin. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 303,
+                "target": "scheme"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0019",
+            "title": "openai: a 307 to the same host and port over https",
+            "since": "0.1.28",
+            "notes": "Hostile: a scheme change. A host-and-port comparison passes it; the request must still not be re-sent to the new origin. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 307,
+                "target": "scheme"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0020",
+            "title": "openai: a 308 to the same host and port over https",
+            "since": "0.1.28",
+            "notes": "Hostile: a scheme change. A host-and-port comparison passes it; the request must still not be re-sent to the new origin. The redirect must be refused before a second request is built; the key travels in Authorization, which some clients strip on a cross-host hop and keep on a port or scheme change.",
+            "given": {
+                "provider": "openai",
+                "status": 308,
+                "target": "scheme"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0021",
+            "title": "openai: control, a 301 within the origin (relative path)",
+            "since": "0.1.28",
+            "notes": "Control: a redirect that keeps the scheme, host and port is still followed, so endpoint_requests is 2. Without these rows a client that refused every redirect would pass every hostile row.",
+            "given": {
+                "provider": "openai",
+                "status": 301,
+                "target": "same-origin-path"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0022",
+            "title": "openai: control, a 302 within the origin (relative path)",
+            "since": "0.1.28",
+            "notes": "Control: a redirect that keeps the scheme, host and port is still followed, so endpoint_requests is 2. Without these rows a client that refused every redirect would pass every hostile row.",
+            "given": {
+                "provider": "openai",
+                "status": 302,
+                "target": "same-origin-path"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0023",
+            "title": "openai: control, a 303 within the origin (relative path)",
+            "since": "0.1.28",
+            "notes": "Control: a redirect that keeps the scheme, host and port is still followed, so endpoint_requests is 2. Without these rows a client that refused every redirect would pass every hostile row.",
+            "given": {
+                "provider": "openai",
+                "status": 303,
+                "target": "same-origin-path"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0024",
+            "title": "openai: control, a 302 within the origin (absolute url)",
+            "since": "0.1.28",
+            "notes": "Control: a redirect that keeps the scheme, host and port is still followed, so endpoint_requests is 2. Without these rows a client that refused every redirect would pass every hostile row.",
+            "given": {
+                "provider": "openai",
+                "status": 302,
+                "target": "same-origin-absolute"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0025",
+            "title": "anthropic: a 301 to another host",
+            "since": "0.1.28",
+            "notes": "Hostile: the endpoint redirects to a different host. Following it hands the request, and every header the client keeps, to a server nobody configured. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 301,
+                "target": "other-host"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0026",
+            "title": "anthropic: a 302 to another host",
+            "since": "0.1.28",
+            "notes": "Hostile: the endpoint redirects to a different host. Following it hands the request, and every header the client keeps, to a server nobody configured. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 302,
+                "target": "other-host"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0027",
+            "title": "anthropic: a 303 to another host",
+            "since": "0.1.28",
+            "notes": "Hostile: the endpoint redirects to a different host. Following it hands the request, and every header the client keeps, to a server nobody configured. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 303,
+                "target": "other-host"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0028",
+            "title": "anthropic: a 307 to another host",
+            "since": "0.1.28",
+            "notes": "Hostile: the endpoint redirects to a different host. Following it hands the request, and every header the client keeps, to a server nobody configured. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 307,
+                "target": "other-host"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0029",
+            "title": "anthropic: a 308 to another host",
+            "since": "0.1.28",
+            "notes": "Hostile: the endpoint redirects to a different host. Following it hands the request, and every header the client keeps, to a server nobody configured. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 308,
+                "target": "other-host"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0030",
+            "title": "anthropic: a 301 to the same host on another port",
+            "since": "0.1.28",
+            "notes": "Hostile: same host, different port. A host-only comparison treats this as the same origin, and the service on the other port is a different one. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 301,
+                "target": "other-port"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0031",
+            "title": "anthropic: a 302 to the same host on another port",
+            "since": "0.1.28",
+            "notes": "Hostile: same host, different port. A host-only comparison treats this as the same origin, and the service on the other port is a different one. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 302,
+                "target": "other-port"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0032",
+            "title": "anthropic: a 303 to the same host on another port",
+            "since": "0.1.28",
+            "notes": "Hostile: same host, different port. A host-only comparison treats this as the same origin, and the service on the other port is a different one. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 303,
+                "target": "other-port"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0033",
+            "title": "anthropic: a 307 to the same host on another port",
+            "since": "0.1.28",
+            "notes": "Hostile: same host, different port. A host-only comparison treats this as the same origin, and the service on the other port is a different one. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 307,
+                "target": "other-port"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0034",
+            "title": "anthropic: a 308 to the same host on another port",
+            "since": "0.1.28",
+            "notes": "Hostile: same host, different port. A host-only comparison treats this as the same origin, and the service on the other port is a different one. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 308,
+                "target": "other-port"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0035",
+            "title": "anthropic: a 301 to a protocol-relative Location",
+            "since": "0.1.28",
+            "notes": "Hostile: `//host:port/path` carries no scheme, so a check that only reads absolute urls never sees the host change. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 301,
+                "target": "protocol-relative"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0036",
+            "title": "anthropic: a 302 to a protocol-relative Location",
+            "since": "0.1.28",
+            "notes": "Hostile: `//host:port/path` carries no scheme, so a check that only reads absolute urls never sees the host change. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 302,
+                "target": "protocol-relative"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0037",
+            "title": "anthropic: a 303 to a protocol-relative Location",
+            "since": "0.1.28",
+            "notes": "Hostile: `//host:port/path` carries no scheme, so a check that only reads absolute urls never sees the host change. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 303,
+                "target": "protocol-relative"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0038",
+            "title": "anthropic: a 307 to a protocol-relative Location",
+            "since": "0.1.28",
+            "notes": "Hostile: `//host:port/path` carries no scheme, so a check that only reads absolute urls never sees the host change. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 307,
+                "target": "protocol-relative"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0039",
+            "title": "anthropic: a 308 to a protocol-relative Location",
+            "since": "0.1.28",
+            "notes": "Hostile: `//host:port/path` carries no scheme, so a check that only reads absolute urls never sees the host change. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 308,
+                "target": "protocol-relative"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0040",
+            "title": "anthropic: a 301 to the same host and port over https",
+            "since": "0.1.28",
+            "notes": "Hostile: a scheme change. A host-and-port comparison passes it; the request must still not be re-sent to the new origin. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 301,
+                "target": "scheme"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0041",
+            "title": "anthropic: a 302 to the same host and port over https",
+            "since": "0.1.28",
+            "notes": "Hostile: a scheme change. A host-and-port comparison passes it; the request must still not be re-sent to the new origin. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 302,
+                "target": "scheme"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0042",
+            "title": "anthropic: a 303 to the same host and port over https",
+            "since": "0.1.28",
+            "notes": "Hostile: a scheme change. A host-and-port comparison passes it; the request must still not be re-sent to the new origin. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 303,
+                "target": "scheme"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0043",
+            "title": "anthropic: a 307 to the same host and port over https",
+            "since": "0.1.28",
+            "notes": "Hostile: a scheme change. A host-and-port comparison passes it; the request must still not be re-sent to the new origin. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 307,
+                "target": "scheme"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0044",
+            "title": "anthropic: a 308 to the same host and port over https",
+            "since": "0.1.28",
+            "notes": "Hostile: a scheme change. A host-and-port comparison passes it; the request must still not be re-sent to the new origin. The redirect must be refused before a second request is built; the key travels in x-api-key, which no HTTP client strips on a redirect.",
+            "given": {
+                "provider": "anthropic",
+                "status": 308,
+                "target": "scheme"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0045",
+            "title": "anthropic: control, a 301 within the origin (relative path)",
+            "since": "0.1.28",
+            "notes": "Control: a redirect that keeps the scheme, host and port is still followed, so endpoint_requests is 2. Without these rows a client that refused every redirect would pass every hostile row.",
+            "given": {
+                "provider": "anthropic",
+                "status": 301,
+                "target": "same-origin-path"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0046",
+            "title": "anthropic: control, a 302 within the origin (relative path)",
+            "since": "0.1.28",
+            "notes": "Control: a redirect that keeps the scheme, host and port is still followed, so endpoint_requests is 2. Without these rows a client that refused every redirect would pass every hostile row.",
+            "given": {
+                "provider": "anthropic",
+                "status": 302,
+                "target": "same-origin-path"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0047",
+            "title": "anthropic: control, a 303 within the origin (relative path)",
+            "since": "0.1.28",
+            "notes": "Control: a redirect that keeps the scheme, host and port is still followed, so endpoint_requests is 2. Without these rows a client that refused every redirect would pass every hostile row.",
+            "given": {
+                "provider": "anthropic",
+                "status": 303,
+                "target": "same-origin-path"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0048",
+            "title": "anthropic: control, a 302 within the origin (absolute url)",
+            "since": "0.1.28",
+            "notes": "Control: a redirect that keeps the scheme, host and port is still followed, so endpoint_requests is 2. Without these rows a client that refused every redirect would pass every hostile row.",
+            "given": {
+                "provider": "anthropic",
+                "status": 302,
+                "target": "same-origin-absolute"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0049",
+            "title": "mistral: a 301 to another host",
+            "since": "0.1.28",
+            "notes": "Hostile: the endpoint redirects to a different host. Following it hands the request, and every header the client keeps, to a server nobody configured. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 301,
+                "target": "other-host"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0050",
+            "title": "mistral: a 302 to another host",
+            "since": "0.1.28",
+            "notes": "Hostile: the endpoint redirects to a different host. Following it hands the request, and every header the client keeps, to a server nobody configured. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 302,
+                "target": "other-host"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0051",
+            "title": "mistral: a 303 to another host",
+            "since": "0.1.28",
+            "notes": "Hostile: the endpoint redirects to a different host. Following it hands the request, and every header the client keeps, to a server nobody configured. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 303,
+                "target": "other-host"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0052",
+            "title": "mistral: a 307 to another host",
+            "since": "0.1.28",
+            "notes": "Hostile: the endpoint redirects to a different host. Following it hands the request, and every header the client keeps, to a server nobody configured. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 307,
+                "target": "other-host"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0053",
+            "title": "mistral: a 308 to another host",
+            "since": "0.1.28",
+            "notes": "Hostile: the endpoint redirects to a different host. Following it hands the request, and every header the client keeps, to a server nobody configured. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 308,
+                "target": "other-host"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0054",
+            "title": "mistral: a 301 to the same host on another port",
+            "since": "0.1.28",
+            "notes": "Hostile: same host, different port. A host-only comparison treats this as the same origin, and the service on the other port is a different one. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 301,
+                "target": "other-port"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0055",
+            "title": "mistral: a 302 to the same host on another port",
+            "since": "0.1.28",
+            "notes": "Hostile: same host, different port. A host-only comparison treats this as the same origin, and the service on the other port is a different one. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 302,
+                "target": "other-port"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0056",
+            "title": "mistral: a 303 to the same host on another port",
+            "since": "0.1.28",
+            "notes": "Hostile: same host, different port. A host-only comparison treats this as the same origin, and the service on the other port is a different one. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 303,
+                "target": "other-port"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0057",
+            "title": "mistral: a 307 to the same host on another port",
+            "since": "0.1.28",
+            "notes": "Hostile: same host, different port. A host-only comparison treats this as the same origin, and the service on the other port is a different one. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 307,
+                "target": "other-port"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0058",
+            "title": "mistral: a 308 to the same host on another port",
+            "since": "0.1.28",
+            "notes": "Hostile: same host, different port. A host-only comparison treats this as the same origin, and the service on the other port is a different one. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 308,
+                "target": "other-port"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0059",
+            "title": "mistral: a 301 to a protocol-relative Location",
+            "since": "0.1.28",
+            "notes": "Hostile: `//host:port/path` carries no scheme, so a check that only reads absolute urls never sees the host change. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 301,
+                "target": "protocol-relative"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0060",
+            "title": "mistral: a 302 to a protocol-relative Location",
+            "since": "0.1.28",
+            "notes": "Hostile: `//host:port/path` carries no scheme, so a check that only reads absolute urls never sees the host change. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 302,
+                "target": "protocol-relative"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0061",
+            "title": "mistral: a 303 to a protocol-relative Location",
+            "since": "0.1.28",
+            "notes": "Hostile: `//host:port/path` carries no scheme, so a check that only reads absolute urls never sees the host change. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 303,
+                "target": "protocol-relative"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0062",
+            "title": "mistral: a 307 to a protocol-relative Location",
+            "since": "0.1.28",
+            "notes": "Hostile: `//host:port/path` carries no scheme, so a check that only reads absolute urls never sees the host change. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 307,
+                "target": "protocol-relative"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0063",
+            "title": "mistral: a 308 to a protocol-relative Location",
+            "since": "0.1.28",
+            "notes": "Hostile: `//host:port/path` carries no scheme, so a check that only reads absolute urls never sees the host change. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 308,
+                "target": "protocol-relative"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0064",
+            "title": "mistral: a 301 to the same host and port over https",
+            "since": "0.1.28",
+            "notes": "Hostile: a scheme change. A host-and-port comparison passes it; the request must still not be re-sent to the new origin. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 301,
+                "target": "scheme"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0065",
+            "title": "mistral: a 302 to the same host and port over https",
+            "since": "0.1.28",
+            "notes": "Hostile: a scheme change. A host-and-port comparison passes it; the request must still not be re-sent to the new origin. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 302,
+                "target": "scheme"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0066",
+            "title": "mistral: a 303 to the same host and port over https",
+            "since": "0.1.28",
+            "notes": "Hostile: a scheme change. A host-and-port comparison passes it; the request must still not be re-sent to the new origin. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 303,
+                "target": "scheme"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0067",
+            "title": "mistral: a 307 to the same host and port over https",
+            "since": "0.1.28",
+            "notes": "Hostile: a scheme change. A host-and-port comparison passes it; the request must still not be re-sent to the new origin. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 307,
+                "target": "scheme"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0068",
+            "title": "mistral: a 308 to the same host and port over https",
+            "since": "0.1.28",
+            "notes": "Hostile: a scheme change. A host-and-port comparison passes it; the request must still not be re-sent to the new origin. The redirect must be refused before a second request is built; the key travels in Authorization.",
+            "given": {
+                "provider": "mistral",
+                "status": 308,
+                "target": "scheme"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0069",
+            "title": "mistral: control, a 301 within the origin (relative path)",
+            "since": "0.1.28",
+            "notes": "Control: a redirect that keeps the scheme, host and port is still followed, so endpoint_requests is 2. Without these rows a client that refused every redirect would pass every hostile row.",
+            "given": {
+                "provider": "mistral",
+                "status": 301,
+                "target": "same-origin-path"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0070",
+            "title": "mistral: control, a 302 within the origin (relative path)",
+            "since": "0.1.28",
+            "notes": "Control: a redirect that keeps the scheme, host and port is still followed, so endpoint_requests is 2. Without these rows a client that refused every redirect would pass every hostile row.",
+            "given": {
+                "provider": "mistral",
+                "status": 302,
+                "target": "same-origin-path"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0071",
+            "title": "mistral: control, a 303 within the origin (relative path)",
+            "since": "0.1.28",
+            "notes": "Control: a redirect that keeps the scheme, host and port is still followed, so endpoint_requests is 2. Without these rows a client that refused every redirect would pass every hostile row.",
+            "given": {
+                "provider": "mistral",
+                "status": 303,
+                "target": "same-origin-path"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0072",
+            "title": "mistral: control, a 302 within the origin (absolute url)",
+            "since": "0.1.28",
+            "notes": "Control: a redirect that keeps the scheme, host and port is still followed, so endpoint_requests is 2. Without these rows a client that refused every redirect would pass every hostile row.",
+            "given": {
+                "provider": "mistral",
+                "status": 302,
+                "target": "same-origin-absolute"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        }
+    ]
+}
