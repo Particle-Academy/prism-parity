@@ -493,9 +493,9 @@
         },
         {
             "id": "cs-0015",
-            "title": "a homoglyph host drops the key",
+            "title": "a homoglyph host, in punycode, drops the key",
             "since": "0.1.25",
-            "notes": "Hostile homoglyph: a Cyrillic a in the host looks like the trusted endpoint and is not it.",
+            "notes": "Hostile homoglyph: the punycode form of a host with a Cyrillic a, which displays like the trusted endpoint and is not it. Written in punycode because a per-call host must be ASCII: the unicode spelling is refused before any request (per-call-url-guard).",
             "given": {
                 "kind": "endpoint",
                 "provider": "openai",
@@ -503,7 +503,7 @@
                     "OPENAI_API_KEY": "sk-test-fixture"
                 },
                 "config": {
-                    "url": "https://api.openаi.com/v1"
+                    "url": "https://api.xn--openi-7ve.com/v1"
                 }
             },
             "result": {
