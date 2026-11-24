@@ -31,6 +31,23 @@ for (const [name, mutate] of [
   const document = fixture(); mutate(document); assert.equal(check(document).valid, false);
 });
 
+const compatible = document => document.cases.find(row => row.given.kind === 'compatible' && row.result.php.body !== null);
+
+for (const [name, mutate] of [
+  ['an unknown refusal class', document => { compatible(document).result.ts.refusal = 'maybe'; }],
+  ['a credential value in place of a classification on a compatible row', document => { compatible(document).result.py.credential = 'sk-test-explicit'; }],
+  ['a header value in a compatible observation', document => { compatible(document).result.php.authorization = 'Bearer x'; }],
+  ['a compatible observation on an endpoint row', document => { endpoint(document).result.ts = compatible(document).result.ts; }],
+  ['an entry field outside the configuration shape', document => { compatible(document).given.entry.transport = 'unsafe'; }],
+]) test(`credential-scope schema rejects ${name}`, () => {
+  const document = fixture(); mutate(document); assert.equal(check(document).valid, false);
+});
+
+test('a compatible body can never carry a fixture credential', () => {
+  const document = fixture(); compatible(document).result.php.body.api_key = 'sk-test-fixture';
+  assert.match(credentialScopeFailures(document).join('\n'), /carries a credential value/);
+});
+
 test('an observation can never carry a fixture credential', () => {
   const document = fixture(); register(document).result.ts.note = 'sk-test-explicit';
   assert.match(credentialScopeFailures(document).join('\n'), /carries a credential value/);

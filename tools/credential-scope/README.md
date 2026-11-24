@@ -4,4 +4,6 @@ Run `node tools/credential-scope.mjs php --check`, then repeat with `ts` and `py
 
 Observations classify the captured URL, headers and body: `credential` is `inherited`, `explicit`, `both` or `none`, and `account` says whether an OpenAI organization or project from the environment was sent. They never record a value. The fixture credentials in `fixture-values.json` are fake, and `contract.mjs` refuses an observation that contains one.
 
+Compatible rows (`kind: compatible`) configure a named OpenAI-compatible entry the way each language does — PHP `prism.providers.<name>`, TypeScript `configureProviders()`, Python `configure_providers()` — and add the refusal class, whether an Authorization header was sent, the target, the path, the canonical request body, and whether the error carries a fixture credential. TypeScript observes each compatible row in its own process (`ts-compatible.mjs`), because registration is process-wide.
+
 Environment names are fixed in `environment-names.json` and isolated per row. PHP uses Laravel's HTTP fake with stray requests prevented, TypeScript captures `fetch`, and Python captures the default transport and refuses DNS and sockets. Every fixture answers 500.
