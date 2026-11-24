@@ -1225,6 +1225,2137 @@
                 }
             },
             "agrees": true
+        },
+        {
+            "id": "cs-0039",
+            "title": "a compatible entry sends only its own key, to its own url, as chat completions",
+            "since": "0.1.27",
+            "notes": "Control: the entry key reaches the entry url at /chat/completions, and no OPENAI_* value goes with it even though every one is set. The body is compared byte for byte, which is the chat-completions port (G-321 D) agreeing with the reference.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://vllm.internal.example/v1",
+                    "api_key": "sk-test-explicit",
+                    "api_format": "chat_completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0040",
+            "title": "a compatible entry with no key sends no Authorization header at all",
+            "since": "0.1.27",
+            "notes": "Hostile: a custom url with no key while OPENAI_API_KEY, OPENAI_ORGANIZATION and OPENAI_PROJECT are set. Falling back to them would send the real OpenAI key to a third-party host.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://vllm.internal.example/v1",
+                    "api_key": null,
+                    "api_format": "chat_completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0041",
+            "title": "an empty key is no key",
+            "since": "0.1.27",
+            "notes": "Boundary: an empty api_key (an unset env() in a config file) sends no Authorization header rather than an empty Bearer value or the environment key.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://vllm.internal.example/v1",
+                    "api_key": "",
+                    "api_format": "chat_completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0042",
+            "title": "the entry organization and project are its own",
+            "since": "0.1.27",
+            "notes": "Control: organization and project come from the entry; the environment ones are never added.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://vllm.internal.example/v1",
+                    "api_key": null,
+                    "api_format": "chat_completions",
+                    "organization": "org-test-entry",
+                    "project": "proj-test-entry"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "entry",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "entry",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "entry",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0043",
+            "title": "a private address is allowed and receives only the entry key",
+            "since": "0.1.27",
+            "notes": "Hostile: the url is operator configuration, so a vLLM on 10.x is the common case and is allowed. What is guarded is that no other credential goes there.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "http://10.0.0.5:8000/v1",
+                    "api_key": "sk-test-explicit",
+                    "api_format": "chat_completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0044",
+            "title": "the link-local metadata address with no key receives no key",
+            "since": "0.1.27",
+            "notes": "Hostile: the cloud metadata address as the url, with no entry key and the OpenAI environment fully set. It is dispatched (provider urls carry no address policy) and carries nothing.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "http://169.254.169.254/v1",
+                    "api_key": null,
+                    "api_format": "chat_completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0045",
+            "title": "a compatible entry named openai is refused",
+            "since": "0.1.27",
+            "notes": "Hostile: a name colliding with the built-in. Accepting it would redirect every openai caller, with whatever key the entry holds, to another host.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "openai",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://attacker.example/v1",
+                    "api_key": null,
+                    "api_format": "chat_completions"
+                },
+                "provider": "openai"
+            },
+            "result": {
+                "php": {
+                    "refusal": "collision",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "collision",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "collision",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0046",
+            "title": "a compatible entry named OpenAI is refused",
+            "since": "0.1.27",
+            "notes": "Hostile: the collision is ASCII case-insensitive, as for registration.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "OpenAI",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://attacker.example/v1",
+                    "api_key": null,
+                    "api_format": "chat_completions"
+                },
+                "provider": "openai"
+            },
+            "result": {
+                "php": {
+                    "refusal": "collision",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "collision",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "collision",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0047",
+            "title": "a padded name is refused, never trimmed",
+            "since": "0.1.27",
+            "notes": "Hostile: a leading space reads as my-vllm in a config file or a log.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": " my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://vllm.internal.example/v1",
+                    "api_key": "sk-test-explicit",
+                    "api_format": "chat_completions"
+                },
+                "provider": " my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "name",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "name",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "name",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0048",
+            "title": "a Cyrillic look-alike of openai is refused",
+            "since": "0.1.27",
+            "notes": "Hostile: U+043E for the first o. Refused by the ASCII allow-list, not by a homoglyph table.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "оpenai",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://attacker.example/v1",
+                    "api_key": null,
+                    "api_format": "chat_completions"
+                },
+                "provider": "оpenai"
+            },
+            "result": {
+                "php": {
+                    "refusal": "name",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "name",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "name",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0049",
+            "title": "a mixed-case name that collides with nothing is valid",
+            "since": "0.1.27",
+            "notes": "Boundary: case alone does not make a name hostile. My-VLLM resolves under that exact name with its own key.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "My-VLLM",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://vllm.internal.example/v1",
+                    "api_key": "sk-test-explicit",
+                    "api_format": "chat_completions"
+                },
+                "provider": "My-VLLM"
+            },
+            "result": {
+                "php": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0050",
+            "title": "a file url is refused before any request",
+            "since": "0.1.27",
+            "notes": "Hostile: only absolute http and https urls are accepted.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "file:///etc/passwd",
+                    "api_key": "sk-test-explicit",
+                    "api_format": "chat_completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "url",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "url",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "url",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0051",
+            "title": "a missing url is refused",
+            "since": "0.1.27",
+            "notes": "Boundary: there is no default endpoint for a compatible entry; falling back to api.openai.com would be wrong in every case.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": null,
+                    "api_key": "sk-test-explicit",
+                    "api_format": "chat_completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "url",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "url",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "url",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0052",
+            "title": "a padded url is refused",
+            "since": "0.1.27",
+            "notes": "Hostile: the existing clean-url rule applies to a compatible entry too.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://vllm.internal.example/v1 ",
+                    "api_key": "sk-test-explicit",
+                    "api_format": "chat_completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "url",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "url",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "url",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0053",
+            "title": "an unknown api format is refused",
+            "since": "0.1.27",
+            "notes": "Boundary: chat_completions and responses only.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://vllm.internal.example/v1",
+                    "api_key": "sk-test-explicit",
+                    "api_format": "completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "format",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "format",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "format",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0054",
+            "title": "an unknown driver is not served",
+            "since": "0.1.27",
+            "notes": "Boundary: only openai-compatible is a driver.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "anthropic-compatible",
+                    "url": "https://vllm.internal.example/v1",
+                    "api_key": "sk-test-explicit",
+                    "api_format": "chat_completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "unsupported",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "unsupported",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "unsupported",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0055",
+            "title": "the responses format is honoured for a compatible entry",
+            "since": "0.1.27",
+            "notes": "Control: api_format responses posts /responses with the entry key.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-gateway",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://vllm.internal.example/v1",
+                    "api_key": "sk-test-explicit",
+                    "api_format": "responses"
+                },
+                "provider": "my-gateway"
+            },
+            "result": {
+                "php": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/responses",
+                    "body": {
+                        "model": "fixture-model",
+                        "input": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "input_text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ],
+                        "max_output_tokens": null
+                    },
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/responses",
+                    "body": {
+                        "model": "fixture-model",
+                        "input": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "input_text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ],
+                        "max_output_tokens": null
+                    },
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/responses",
+                    "body": {
+                        "model": "fixture-model",
+                        "input": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "input_text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ],
+                        "max_output_tokens": null
+                    },
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0056",
+            "title": "a per-call url elsewhere drops the entry key",
+            "since": "0.1.27",
+            "notes": "Hostile: the credential-scope rule holds for a compatible entry: a per-call url naming another endpoint does not carry the entry key.",
+            "given": {
+                "kind": "compatible",
+                "config": {
+                    "url": "https://elsewhere.example/v1"
+                },
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://vllm.internal.example/v1",
+                    "api_key": "sk-test-explicit",
+                    "api_format": "chat_completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "other",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "other",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "other",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0057",
+            "title": "a per-call file url is refused",
+            "since": "0.1.27",
+            "notes": "Hostile: the per-call url is held to the same http(s) rule as the entry url.",
+            "given": {
+                "kind": "compatible",
+                "config": {
+                    "url": "file:///etc/passwd"
+                },
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://vllm.internal.example/v1",
+                    "api_key": "sk-test-explicit",
+                    "api_format": "chat_completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "url",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "url",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "url",
+                    "dispatched": false,
+                    "credential": "none",
+                    "authorization": false,
+                    "account": "none",
+                    "target": "none",
+                    "path": null,
+                    "body": null,
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0058",
+            "title": "an unreachable endpoint fails without echoing the key",
+            "since": "0.1.27",
+            "notes": "Hostile: the transport throws a connection error. The error, and every error it wraps, must not carry the key.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "text",
+                "transport": "unreachable",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://vllm.internal.example/v1",
+                    "api_key": "sk-test-explicit",
+                    "api_format": "chat_completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0059",
+            "title": "openai in the chat completions format keeps its own environment key",
+            "since": "0.1.27",
+            "notes": "Control: G-321 D for the built-in. openai with api_format chat_completions posts /chat/completions with the environment key it already owns.",
+            "given": {
+                "kind": "compatible",
+                "config": {
+                    "api_format": "chat_completions"
+                },
+                "call": "text",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "provider": "openai"
+            },
+            "result": {
+                "php": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "authorization": true,
+                    "account": "inherited",
+                    "target": "openai",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "authorization": true,
+                    "account": "inherited",
+                    "target": "openai",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "inherited",
+                    "authorization": true,
+                    "account": "inherited",
+                    "target": "openai",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0060",
+            "title": "a compatible entry streams as chat completions",
+            "since": "0.1.27",
+            "notes": "D: the streamed body is the text body plus the stream keys, compared byte for byte.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "stream",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://vllm.internal.example/v1",
+                    "api_key": "sk-test-explicit",
+                    "api_format": "chat_completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "stream": true,
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ],
+                        "max_tokens": null
+                    },
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "stream": true,
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ],
+                        "max_tokens": null
+                    },
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "stream": true,
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ],
+                        "max_tokens": null
+                    },
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0061",
+            "title": "a compatible entry asks for structured output as chat completions",
+            "since": "0.1.27",
+            "notes": "D: the structured body, including how the schema is sent, compared byte for byte.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "structured",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://vllm.internal.example/v1",
+                    "api_key": "sk-test-explicit",
+                    "api_format": "chat_completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            },
+                            {
+                                "role": "system",
+                                "content": "Respond with JSON that matches the following schema: \n {\n    \"description\": \"a reply\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"answer\": {\n            \"description\": \"the answer\",\n            \"type\": \"string\"\n        }\n    },\n    \"required\": [\n        \"answer\"\n    ],\n    \"additionalProperties\": false\n}"
+                            }
+                        ],
+                        "max_tokens": null,
+                        "response_format": {
+                            "type": "json_object"
+                        }
+                    },
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            },
+                            {
+                                "role": "system",
+                                "content": "Respond with JSON that matches the following schema: \n {\n    \"description\": \"a reply\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"answer\": {\n            \"description\": \"the answer\",\n            \"type\": \"string\"\n        }\n    },\n    \"required\": [\n        \"answer\"\n    ],\n    \"additionalProperties\": false\n}"
+                            }
+                        ],
+                        "max_tokens": null,
+                        "response_format": {
+                            "type": "json_object"
+                        }
+                    },
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            },
+                            {
+                                "role": "system",
+                                "content": "Respond with JSON that matches the following schema: \n {\n    \"description\": \"a reply\",\n    \"type\": \"object\",\n    \"properties\": {\n        \"answer\": {\n            \"description\": \"the answer\",\n            \"type\": \"string\"\n        }\n    },\n    \"required\": [\n        \"answer\"\n    ],\n    \"additionalProperties\": false\n}"
+                            }
+                        ],
+                        "max_tokens": null,
+                        "response_format": {
+                            "type": "json_object"
+                        }
+                    },
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cs-0062",
+            "title": "a compatible entry sends a tool as chat completions",
+            "since": "0.1.27",
+            "notes": "D: one tool with one required string parameter, compared byte for byte.",
+            "given": {
+                "kind": "compatible",
+                "config": {},
+                "call": "tool",
+                "transport": "answer",
+                "env": {
+                    "OPENAI_API_KEY": "sk-test-fixture",
+                    "OPENAI_URL": "https://api.openai.com/v1",
+                    "OPENAI_ORGANIZATION": "org-test-fixture",
+                    "OPENAI_PROJECT": "proj-test-fixture"
+                },
+                "name": "my-vllm",
+                "entry": {
+                    "driver": "openai-compatible",
+                    "url": "https://vllm.internal.example/v1",
+                    "api_key": "sk-test-explicit",
+                    "api_format": "chat_completions"
+                },
+                "provider": "my-vllm"
+            },
+            "result": {
+                "php": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ],
+                        "tools": [
+                            {
+                                "type": "function",
+                                "function": {
+                                    "name": "lookup",
+                                    "description": "Look something up",
+                                    "parameters": {
+                                        "type": "object",
+                                        "properties": {
+                                            "query": {
+                                                "description": "The query",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "query"
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "ts": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ],
+                        "tools": [
+                            {
+                                "type": "function",
+                                "function": {
+                                    "name": "lookup",
+                                    "description": "Look something up",
+                                    "parameters": {
+                                        "type": "object",
+                                        "properties": {
+                                            "query": {
+                                                "description": "The query",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "query"
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                },
+                "py": {
+                    "refusal": "none",
+                    "dispatched": true,
+                    "credential": "explicit",
+                    "authorization": true,
+                    "account": "none",
+                    "target": "entry",
+                    "path": "/v1/chat/completions",
+                    "body": {
+                        "model": "fixture-model",
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "text": "hi"
+                                    }
+                                ]
+                            }
+                        ],
+                        "tools": [
+                            {
+                                "type": "function",
+                                "function": {
+                                    "name": "lookup",
+                                    "description": "Look something up",
+                                    "parameters": {
+                                        "type": "object",
+                                        "properties": {
+                                            "query": {
+                                                "description": "The query",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "query"
+                                        ]
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    "error_carries_credential": false
+                }
+            },
+            "agrees": true
         }
     ]
 }

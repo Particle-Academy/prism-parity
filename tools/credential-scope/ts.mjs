@@ -7,6 +7,8 @@ import { pathToFileURL } from 'node:url';
 import { resolve, join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 const environmentNames = JSON.parse(readFileSync(new URL('./environment-names.json', import.meta.url), 'utf8'));
 const fixture = JSON.parse(readFileSync(new URL('./fixture-values.json', import.meta.url), 'utf8'));
@@ -73,6 +75,14 @@ export async function observe(document, dist) {
             sdk.registerProvider(key, (config) => new Type(config), { replace: true });
           }
         }
+      } else if (row.kind === 'compatible') {
+        // A process per row: configureProviders() has no undo.
+        const child = spawnSync(process.execPath, [fileURLToPath(new URL('./ts-compatible.mjs', import.meta.url)), resolve(dist)], {
+          input: JSON.stringify(row), encoding: 'utf8', timeout: 60_000, windowsHide: true, env: process.env,
+        });
+        if (child.stderr) process.stderr.write(child.stderr);
+        assert.equal(child.status, 0, `Native compatible observer failed on ${entry.id}.`);
+        result = JSON.parse(child.stdout);
       } else {
         throw new Error('Unknown credential-scope fixture kind.');
       }

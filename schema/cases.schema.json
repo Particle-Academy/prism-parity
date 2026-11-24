@@ -9354,6 +9354,453 @@
               ]
             }
           }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "title",
+            "since",
+            "notes",
+            "given",
+            "result",
+            "agrees"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^cs-[0-9]{4}$"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1
+            },
+            "since": {
+              "type": "string",
+              "minLength": 1
+            },
+            "notes": {
+              "type": "string",
+              "minLength": 1
+            },
+            "agrees": {
+              "type": "boolean"
+            },
+            "given": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "compatible"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "entry": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "driver": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "api_key": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "api_format": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "organization": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "project": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "driver"
+                  ]
+                },
+                "provider": {
+                  "type": "string"
+                },
+                "call": {
+                  "enum": [
+                    "text",
+                    "structured",
+                    "stream",
+                    "tool"
+                  ]
+                },
+                "config": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    },
+                    "api_format": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "transport": {
+                  "enum": [
+                    "answer",
+                    "unreachable"
+                  ]
+                },
+                "env": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "OPENAI_API_KEY": {
+                      "type": "string"
+                    },
+                    "OPENAI_URL": {
+                      "type": "string"
+                    },
+                    "OPENAI_ORGANIZATION": {
+                      "type": "string"
+                    },
+                    "OPENAI_PROJECT": {
+                      "type": "string"
+                    },
+                    "ANTHROPIC_API_KEY": {
+                      "type": "string"
+                    },
+                    "ANTHROPIC_URL": {
+                      "type": "string"
+                    },
+                    "MISTRAL_API_KEY": {
+                      "type": "string"
+                    },
+                    "MISTRAL_URL": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "kind",
+                "provider",
+                "call",
+                "config",
+                "transport",
+                "env"
+              ]
+            },
+            "result": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "php": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "refusal": {
+                          "enum": [
+                            "none",
+                            "name",
+                            "collision",
+                            "url",
+                            "format",
+                            "unsupported"
+                          ]
+                        },
+                        "dispatched": {
+                          "type": "boolean"
+                        },
+                        "credential": {
+                          "enum": [
+                            "inherited",
+                            "explicit",
+                            "both",
+                            "none"
+                          ]
+                        },
+                        "authorization": {
+                          "type": "boolean"
+                        },
+                        "account": {
+                          "enum": [
+                            "inherited",
+                            "entry",
+                            "none"
+                          ]
+                        },
+                        "target": {
+                          "enum": [
+                            "entry",
+                            "openai",
+                            "other",
+                            "none"
+                          ]
+                        },
+                        "path": {
+                          "oneOf": [
+                            {
+                              "type": "null"
+                            },
+                            {
+                              "type": "string",
+                              "pattern": "^/[A-Za-z0-9/_.-]*$"
+                            }
+                          ]
+                        },
+                        "body": {
+                          "oneOf": [
+                            {
+                              "type": "null"
+                            },
+                            {
+                              "type": "object"
+                            }
+                          ]
+                        },
+                        "error_carries_credential": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "refusal",
+                        "dispatched",
+                        "credential",
+                        "authorization",
+                        "account",
+                        "target",
+                        "path",
+                        "body",
+                        "error_carries_credential"
+                      ]
+                    }
+                  ]
+                },
+                "ts": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "refusal": {
+                          "enum": [
+                            "none",
+                            "name",
+                            "collision",
+                            "url",
+                            "format",
+                            "unsupported"
+                          ]
+                        },
+                        "dispatched": {
+                          "type": "boolean"
+                        },
+                        "credential": {
+                          "enum": [
+                            "inherited",
+                            "explicit",
+                            "both",
+                            "none"
+                          ]
+                        },
+                        "authorization": {
+                          "type": "boolean"
+                        },
+                        "account": {
+                          "enum": [
+                            "inherited",
+                            "entry",
+                            "none"
+                          ]
+                        },
+                        "target": {
+                          "enum": [
+                            "entry",
+                            "openai",
+                            "other",
+                            "none"
+                          ]
+                        },
+                        "path": {
+                          "oneOf": [
+                            {
+                              "type": "null"
+                            },
+                            {
+                              "type": "string",
+                              "pattern": "^/[A-Za-z0-9/_.-]*$"
+                            }
+                          ]
+                        },
+                        "body": {
+                          "oneOf": [
+                            {
+                              "type": "null"
+                            },
+                            {
+                              "type": "object"
+                            }
+                          ]
+                        },
+                        "error_carries_credential": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "refusal",
+                        "dispatched",
+                        "credential",
+                        "authorization",
+                        "account",
+                        "target",
+                        "path",
+                        "body",
+                        "error_carries_credential"
+                      ]
+                    }
+                  ]
+                },
+                "py": {
+                  "oneOf": [
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "refusal": {
+                          "enum": [
+                            "none",
+                            "name",
+                            "collision",
+                            "url",
+                            "format",
+                            "unsupported"
+                          ]
+                        },
+                        "dispatched": {
+                          "type": "boolean"
+                        },
+                        "credential": {
+                          "enum": [
+                            "inherited",
+                            "explicit",
+                            "both",
+                            "none"
+                          ]
+                        },
+                        "authorization": {
+                          "type": "boolean"
+                        },
+                        "account": {
+                          "enum": [
+                            "inherited",
+                            "entry",
+                            "none"
+                          ]
+                        },
+                        "target": {
+                          "enum": [
+                            "entry",
+                            "openai",
+                            "other",
+                            "none"
+                          ]
+                        },
+                        "path": {
+                          "oneOf": [
+                            {
+                              "type": "null"
+                            },
+                            {
+                              "type": "string",
+                              "pattern": "^/[A-Za-z0-9/_.-]*$"
+                            }
+                          ]
+                        },
+                        "body": {
+                          "oneOf": [
+                            {
+                              "type": "null"
+                            },
+                            {
+                              "type": "object"
+                            }
+                          ]
+                        },
+                        "error_carries_credential": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "refusal",
+                        "dispatched",
+                        "credential",
+                        "authorization",
+                        "account",
+                        "target",
+                        "path",
+                        "body",
+                        "error_carries_credential"
+                      ]
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "php",
+                "ts",
+                "py"
+              ]
+            }
+          }
         }
       ]
     },
