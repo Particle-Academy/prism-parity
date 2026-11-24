@@ -1622,6 +1622,644 @@
                 }
             },
             "agrees": true
+        },
+        {
+            "id": "pcu-0056",
+            "title": "per call: localhost4 (RHEL hosts file)",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. A stock hosts file maps this name to a non-public address, so it resolves without DNS.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://localhost4:8080/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0057",
+            "title": "per call: localhost4.localdomain4",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. A stock hosts file maps this name to a non-public address, so it resolves without DNS.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://localhost4.localdomain4/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0058",
+            "title": "per call: localhost6 (RHEL hosts file)",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. A stock hosts file maps this name to a non-public address, so it resolves without DNS.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://localhost6:8080/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0059",
+            "title": "per call: localhost6.localdomain6, upper case, trailing dot",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. A stock hosts file maps this name to a non-public address, so it resolves without DNS.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://LOCALHOST6.LOCALDOMAIN6./v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0060",
+            "title": "per call: ipv6-localhost (openSUSE hosts file)",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. A stock hosts file maps this name to a non-public address, so it resolves without DNS.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://ipv6-localhost/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0061",
+            "title": "per call: ip6-allnodes (Debian hosts file)",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. A stock hosts file maps this name to a non-public address, so it resolves without DNS.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://ip6-allnodes/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0062",
+            "title": "per call: broadcasthost (macOS hosts file)",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. A stock hosts file maps this name to a non-public address, so it resolves without DNS.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://broadcasthost/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0063",
+            "title": "per call: a name under localhost.localdomain",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. nss-myhostname answers every name under localhost.localdomain with loopback.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://box.localhost.localdomain/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0064",
+            "title": "per call: SIIT IPv4-translated loopback",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. The IPv6 address carries an IPv4 address that a translator or tunnel delivers to.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[::ffff:0:7f00:1]/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0065",
+            "title": "per call: SIIT IPv4-translated metadata address",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. The IPv6 address carries an IPv4 address that a translator or tunnel delivers to.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[::ffff:0:a9fe:a9fe]/latest"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0066",
+            "title": "per call: ISATAP loopback behind a public prefix",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. The IPv6 address carries an IPv4 address that a translator or tunnel delivers to.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[2001:4860::5efe:7f00:1]/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0067",
+            "title": "per call: ISATAP metadata address, u bit set",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. The IPv6 address carries an IPv4 address that a translator or tunnel delivers to.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[2001:4860::200:5efe:a9fe:a9fe]/latest"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0068",
+            "title": "per call: an ISATAP address embedding a public IPv4",
+            "since": "0.1.28",
+            "notes": "Control. The embedded IPv4 and the prefix are both public, so the call dispatches.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[2001:4860::5efe:808:808]/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0069",
+            "title": "per call: a public name that starts with localhost4",
+            "since": "0.1.28",
+            "notes": "Control. Only the exact hosts-file names are refused, not names that contain them.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "https://localhost4.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0070",
+            "title": "per call: zero-width joiner inside localhost",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. A zero-width joiner is refused by each language's clean-url check before the guard runs, so no refusal code is recorded; the guard itself refuses it too, which each language's own unit rows assert.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://loca‍lhost/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0071",
+            "title": "per call: zero-width non-joiner after a loopback literal",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. A zero-width joiner is refused by each language's clean-url check before the guard runs, so no refusal code is recorded; the guard itself refuses it too, which each language's own unit rows assert.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://127.0.0.1‌/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0072",
+            "title": "per call: zero-width joiner in userinfo",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. A zero-width joiner is refused by each language's clean-url check before the guard runs, so no refusal code is recorded; the guard itself refuses it too, which each language's own unit rows assert.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://user‍@gateway.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0073",
+            "title": "per call: soft hyphen inside localhost",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. The host holds a format or invisible character. IDNA converters disagree on it: one HTTP client deletes it and contacts the private host, another conversion reads a public name. The guard refuses it as written.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://loca­lhost/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0074",
+            "title": "per call: word joiner after the metadata address",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. The host holds a format or invisible character. IDNA converters disagree on it: one HTTP client deletes it and contacts the private host, another conversion reads a public name. The guard refuses it as written.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://169.254.169.254⁠/latest"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0075",
+            "title": "per call: variation selector after localhost",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. The host holds a format or invisible character. IDNA converters disagree on it: one HTTP client deletes it and contacts the private host, another conversion reads a public name. The guard refuses it as written.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://localhost️/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0076",
+            "title": "per call: sharp s in a public name",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. A UTS46 deviation character: transitional and nontransitional IDNA convert it to different names, so the guard and the HTTP client could judge different hosts. Refused in every host, public names included.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "https://faß.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0077",
+            "title": "per call: final sigma in a public name",
+            "since": "0.1.28",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. A UTS46 deviation character: transitional and nontransitional IDNA convert it to different names, so the guard and the HTTP client could judge different hosts. Refused in every host, public names included.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "https://λογος.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
         }
     ]
 }
