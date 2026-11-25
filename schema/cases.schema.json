@@ -10075,6 +10075,10 @@
             "object",
             "null"
           ]
+        },
+        "budget": {
+          "type": "object",
+          "description": "G-366: the case ledger after its ops, holds as a list sorted by id. Present only when the case opened a plan budget."
         }
       }
     },
@@ -10121,7 +10125,14 @@
                   "update_since_mark",
                   "stalled",
                   "policy",
-                  "render"
+                  "render",
+                  "budget_settings",
+                  "budget_for_plan",
+                  "budget_open",
+                  "budget_narrow",
+                  "budget_reserve",
+                  "budget_settle",
+                  "budget_exhaustion"
                 ]
               }
             }
