@@ -25,6 +25,15 @@ jobs:
       - name: Cross-check coverage tests
         run: node tools/run-gate.mjs nodeTests -- node --test --test-reporter=tap scripts/cross-check-coverage.test.mjs tools/name-hazards.test.mjs tools/embedding-decoding.test.mjs
 
+      # G-285 run-cancel: the safety contract and its discrimination proof. The
+      # execution step (tools/run-cancel-corpus.mjs) is NOT run here yet, and on
+      # purpose: no published harness release carries G-285, the tool refuses
+      # every mode but --development until one does, and --development must not
+      # be what CI calls green. It joins the goldens job beside failedSteps when
+      # the three releases exist and their goldens are recorded.
+      - name: Run-cancel safety contract rejects unsafe results
+        run: node tools/run-gate.mjs nodeTests -- node --test --test-reporter=tap tools/run-cancel-contract.test.mjs
+
       - name: Corpus guards
         run: node tools/run-gate.mjs guards -- node tools/guard-corpus.mjs
 

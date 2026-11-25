@@ -10210,6 +10210,428 @@
         "corpus_version",
         "cases"
       ]
+    },
+    "harnessRunCancelNative": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Each language's own vocabulary for one row, recorded beside the shared projection: event names, the error class, the per-path decision and resume refusals, the run id shape and the installed package version.",
+      "required": [
+        "event_names",
+        "error",
+        "decisions",
+        "resumes",
+        "run_id_shape",
+        "package_version",
+        "projected_from",
+        "park_stored_status"
+      ],
+      "properties": {
+        "event_names": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "error": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "decisions": {
+          "oneOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resumes": {
+          "oneOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "run_id_shape": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "package_version": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "projected_from": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "How many of event_names precede the first cancel. The shared events projection starts here; earlier events (PHP emits RunFinished at park) are park vocabulary, not cancel."
+        },
+        "park_stored_status": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The parked row only: the run record's STORED status after the cancel. Park vocabulary, out of G-285 scope by decision: PHP stores completed, the ports store running."
+        }
+      }
+    },
+    "harnessRunCancelCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ],
+      "required": [
+        "title",
+        "input",
+        "result",
+        "native"
+      ],
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "agrees": {
+          "description": "ABSENT while any language column is unrecorded: an unrecorded row claims nothing. Present once all three are recorded, as whether the canonical strings are identical (typed boolean by the securityCase spine). tools/run-cancel-contract.mjs enforces both directions."
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "requires_approval",
+            "before",
+            "script",
+            "cancel_at",
+            "cancels",
+            "after",
+            "settle"
+          ],
+          "properties": {
+            "requires_approval": {
+              "type": "array",
+              "items": {
+                "enum": [
+                  "search",
+                  "weather"
+                ]
+              }
+            },
+            "before": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "who",
+                  "text"
+                ],
+                "properties": {
+                  "who": {
+                    "enum": [
+                      "same",
+                      "other"
+                    ]
+                  },
+                  "text": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            "script": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "calls"
+                    ],
+                    "properties": {
+                      "calls": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                          "enum": [
+                            "search",
+                            "weather"
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "text"
+                    ],
+                    "properties": {
+                      "text": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "cancel_at": {
+              "oneOf": [
+                {
+                  "enum": [
+                    "tool:search",
+                    "request:1",
+                    "request:2",
+                    "parked",
+                    "after"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "cancels": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "by",
+                  "id"
+                ],
+                "properties": {
+                  "by": {
+                    "enum": [
+                      "same",
+                      "other",
+                      "empty"
+                    ]
+                  },
+                  "id": {
+                    "enum": [
+                      "current",
+                      "previous",
+                      "forged",
+                      "empty",
+                      "truncated",
+                      "extended",
+                      "traversal",
+                      "upper",
+                      "trailing_newline",
+                      "trailing_space",
+                      "leading_space",
+                      "zero_width",
+                      "nbsp",
+                      "nul",
+                      "homoglyph"
+                    ]
+                  }
+                }
+              }
+            },
+            "after": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "by",
+                  "id"
+                ],
+                "properties": {
+                  "by": {
+                    "enum": [
+                      "same",
+                      "other",
+                      "empty"
+                    ]
+                  },
+                  "id": {
+                    "enum": [
+                      "current",
+                      "previous",
+                      "forged",
+                      "empty",
+                      "truncated",
+                      "extended",
+                      "traversal",
+                      "upper",
+                      "trailing_newline",
+                      "trailing_space",
+                      "leading_space",
+                      "zero_width",
+                      "nbsp",
+                      "nul",
+                      "homoglyph"
+                    ]
+                  }
+                }
+              }
+            },
+            "settle": {
+              "type": "boolean"
+            }
+          }
+        },
+        "result": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "ts": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "py": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "description": "Canonical JSON execution output per language, or null when unrecorded. Written only by tools/run-cancel-corpus.mjs --record from published artifacts."
+        },
+        "native": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/harnessRunCancelNative"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "ts": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/harnessRunCancelNative"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "py": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/harnessRunCancelNative"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "harnessRunCancelDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "generated_by",
+        "cases"
+      ],
+      "properties": {
+        "suite": {
+          "const": "harness-run-cancel"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "pattern": "^[0-9]+[.][0-9]+[.][0-9]+$"
+        },
+        "generated_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/harnessRunCancelCase"
+          }
+        }
+      }
     }
   },
   "oneOf": [
@@ -10302,6 +10724,9 @@
     },
     {
       "$ref": "#/$defs/harnessPlansDocument"
+    },
+    {
+      "$ref": "#/$defs/harnessRunCancelDocument"
     }
   ]
 }

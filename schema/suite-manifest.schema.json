@@ -139,9 +139,10 @@
               "no-runner",
               "reference-limit",
               "language-limit",
-              "decision-pending"
+              "decision-pending",
+              "unpublished"
             ],
-            "description": "WHOSE gap it is. Required alongside a `partial` status, because `partial` alone flattens a port with no runner, a port that is correct while the reference is ambiguous, and a row a language cannot express into one word -- and read as a scoreboard that reports the ports as behind when the reference is behind its own ports. Enforced by tools/parity-gaps.mjs."
+            "description": "WHOSE gap it is. Required alongside a `partial` status, because `partial` alone flattens a port with no runner, a port that is correct while the reference is ambiguous, and a row a language cannot express into one word -- and read as a scoreboard that reports the ports as behind when the reference is behind its own ports. `unpublished`: the runner exists and executes against candidate source in --development, but no published artifact carries the behaviour, so decision 0006 forbids recording a golden from it. Enforced by tools/parity-gaps.mjs."
           },
           "cause_note": {
             "type": "string"

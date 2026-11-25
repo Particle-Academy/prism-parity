@@ -31,6 +31,10 @@ const CAUSES = {
   'reference-limit': 'the REFERENCE cannot express, or gets wrong, what it asks of the ports',
   'language-limit': 'this language genuinely cannot express the row (0002 skip)',
   'decision-pending': 'the implementations disagree and closing it needs a decision across repos',
+  // A runner that exists and runs against candidate source, with no published
+  // artifact to record a golden from (0006). Not a disagreement, not a missing
+  // runner: calling it either would misreport whose move it is.
+  unpublished: 'the runner exists and runs in --development; goldens await a published release (0006)',
 };
 
 const isDir = (p) => existsSync(p) && statSync(p).isDirectory();

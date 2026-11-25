@@ -1,0 +1,208 @@
+{
+  "suite": "harness-run-cancel",
+  "schema_version": 1,
+  "corpus_version": "0.1.34",
+  "generated_by": "Inputs authored before execution. The result, native and agrees columns are written only by tools/run-cancel-corpus.mjs --record from PUBLISHED PHP, TypeScript and Python harness packages that carry G-285. None is published yet, so every column is null and no row carries agrees: unrecorded, never a claim of agreement.",
+  "cases": [
+    {
+      "id": "hrc-0001",
+      "title": "cancel from another process during the first of two tool calls in one step",
+      "since": "0.1.34",
+      "input": {
+        "requires_approval": [],
+        "before": [],
+        "script": [{ "calls": ["search", "weather"] }, { "text": "This step must never be asked for." }],
+        "cancel_at": "tool:search",
+        "cancels": [{ "by": "same", "id": "current" }],
+        "after": [],
+        "settle": false
+      },
+      "notes": "The running tool must finish and the next tool in the SAME step must be refused, never executed: a cancel that only took effect between model steps would still let the weather call run after a person pressed Stop. No further model call may be made, the run must end cancelled with run_cancelled, and the events must be one cancel-requested then one cancelled, never a finished beside it.",
+      "result": { "php": null, "ts": null, "py": null },
+      "native": { "php": null, "ts": null, "py": null }
+    },
+    {
+      "id": "hrc-0002",
+      "title": "cancel while the first model call is in flight",
+      "since": "0.1.34",
+      "input": {
+        "requires_approval": [],
+        "before": [],
+        "script": [{ "calls": ["search", "weather"] }, { "text": "This step must never be asked for." }],
+        "cancel_at": "request:1",
+        "cancels": [{ "by": "same", "id": "current" }],
+        "after": [],
+        "settle": false
+      },
+      "notes": "The cancel lands while the provider is thinking. The tool calls that answer brings back must never execute, and no second model call may be made: the in-flight request is the only one the person pays for.",
+      "result": { "php": null, "ts": null, "py": null },
+      "native": { "php": null, "ts": null, "py": null }
+    },
+    {
+      "id": "hrc-0003",
+      "title": "cancel racing the last model step",
+      "since": "0.1.34",
+      "input": {
+        "requires_approval": [],
+        "before": [],
+        "script": [{ "calls": ["search"] }, { "text": "All done." }],
+        "cancel_at": "request:2",
+        "cancels": [{ "by": "same", "id": "current" }],
+        "after": [],
+        "settle": false
+      },
+      "notes": "Boundary race: the cancel arrives during the call that would have finished the run. A cancel that returned ok must never be followed by a run that reads completed, and the STORED status, not only an overlay on the read, must say cancelled with what the run would have ended as. The answer already asked for is kept in the thread.",
+      "result": { "php": null, "ts": null, "py": null },
+      "native": { "php": null, "ts": null, "py": null }
+    },
+    {
+      "id": "hrc-0004",
+      "title": "cancel a run parked on an approval, then try to decide it and to resume it",
+      "since": "0.1.34",
+      "input": {
+        "requires_approval": ["weather"],
+        "before": [],
+        "script": [{ "calls": ["search", "weather"] }, { "text": "A resumed run must never be asked for." }],
+        "cancel_at": "parked",
+        "cancels": [{ "by": "same", "id": "current" }, { "by": "same", "id": "current" }],
+        "after": [],
+        "settle": true
+      },
+      "notes": "Hostile follow-up after a cancel: every decision path for the parked approval must be refused as not pending, and an empty-prompt resume must be refused with run_cancelled before it begins. The approval must read settled-cancelled, never pending, so no surface can still offer an Approve button that revives the gated tool. The gated tool never runs and no model call is made after the cancel.",
+      "result": { "php": null, "ts": null, "py": null },
+      "native": { "php": null, "ts": null, "py": null }
+    },
+    {
+      "id": "hrc-0005",
+      "title": "another session's run id",
+      "since": "0.1.34",
+      "input": {
+        "requires_approval": [],
+        "before": [{ "who": "other", "text": "Bob is done." }],
+        "script": [{ "calls": ["search", "weather"] }, { "text": "Both done." }],
+        "cancel_at": "tool:search",
+        "cancels": [{ "by": "other", "id": "current" }],
+        "after": [],
+        "settle": false
+      },
+      "notes": "Attacker holds a real, live run id that belongs to someone else, and asks through a session of their own that has a run. It must be refused, and the victim's run must complete untouched: a cancel that only checked the id format would let anyone who saw an id stop another person's agent.",
+      "result": { "php": null, "ts": null, "py": null },
+      "native": { "php": null, "ts": null, "py": null }
+    },
+    {
+      "id": "hrc-0006",
+      "title": "a forged well-formed run id",
+      "since": "0.1.34",
+      "input": {
+        "requires_approval": [],
+        "before": [],
+        "script": [{ "calls": ["search", "weather"] }, { "text": "Both done." }],
+        "cancel_at": "tool:search",
+        "cancels": [{ "by": "same", "id": "forged" }],
+        "after": [],
+        "settle": false
+      },
+      "notes": "Forged id in the port's own valid format, one character away from the live run's id. It must be refused, not treated as the current run or as an earlier one, and the run must complete untouched.",
+      "result": { "php": null, "ts": null, "py": null },
+      "native": { "php": null, "ts": null, "py": null }
+    },
+    {
+      "id": "hrc-0007",
+      "title": "malformed run ids derived from the live one",
+      "since": "0.1.34",
+      "input": {
+        "requires_approval": [],
+        "before": [],
+        "script": [{ "calls": ["search", "weather"] }, { "text": "Both done." }],
+        "cancel_at": "tool:search",
+        "cancels": [
+          { "by": "same", "id": "empty" },
+          { "by": "same", "id": "truncated" },
+          { "by": "same", "id": "extended" },
+          { "by": "same", "id": "traversal" },
+          { "by": "same", "id": "upper" },
+          { "by": "same", "id": "trailing_newline" },
+          { "by": "same", "id": "trailing_space" },
+          { "by": "same", "id": "leading_space" },
+          { "by": "same", "id": "zero_width" },
+          { "by": "same", "id": "nbsp" },
+          { "by": "same", "id": "nul" },
+          { "by": "same", "id": "homoglyph" }
+        ],
+        "after": [],
+        "settle": false
+      },
+      "notes": "Malformed and padded variants of the LIVE run id: empty, one character short, one long, a ../ prefix, upper-cased, a newline, a space after and before, a zero-width space, a no-break space, a NUL, and a Cyrillic lookalike letter. Every one must be refused with no change: a lenient trim, case fold or prefix match would turn each into a cancel of the real run.",
+      "result": { "php": null, "ts": null, "py": null },
+      "native": { "php": null, "ts": null, "py": null }
+    },
+    {
+      "id": "hrc-0008",
+      "title": "a session with no run",
+      "since": "0.1.34",
+      "input": {
+        "requires_approval": [],
+        "before": [],
+        "script": [{ "calls": ["search", "weather"] }, { "text": "Both done." }],
+        "cancel_at": "tool:search",
+        "cancels": [{ "by": "empty", "id": "current" }, { "by": "empty", "id": "forged" }],
+        "after": [],
+        "settle": false
+      },
+      "notes": "A session that has never run is handed the live run id of another participant, then a forged one. Both must answer no-turn and change nothing; the other participant's run completes untouched.",
+      "result": { "php": null, "ts": null, "py": null },
+      "native": { "php": null, "ts": null, "py": null }
+    },
+    {
+      "id": "hrc-0009",
+      "title": "a finished run, and an earlier run of the same session",
+      "since": "0.1.34",
+      "input": {
+        "requires_approval": [],
+        "before": [{ "who": "same", "text": "First." }],
+        "script": [{ "text": "Second." }],
+        "cancel_at": "after",
+        "cancels": [{ "by": "same", "id": "current" }, { "by": "same", "id": "previous" }],
+        "after": [],
+        "settle": false
+      },
+      "notes": "Boundary: a cancel after the run ended must answer not-running for the current run and for an earlier run in the session's history, and must not rewrite either as cancelled after the fact.",
+      "result": { "php": null, "ts": null, "py": null },
+      "native": { "php": null, "ts": null, "py": null }
+    },
+    {
+      "id": "hrc-0010",
+      "title": "cancel twice, then once more after the run stopped",
+      "since": "0.1.34",
+      "input": {
+        "requires_approval": [],
+        "before": [],
+        "script": [{ "calls": ["search", "weather"] }, { "text": "Never." }],
+        "cancel_at": "tool:search",
+        "cancels": [{ "by": "same", "id": "current" }, { "by": "same", "id": "current" }],
+        "after": [{ "by": "same", "id": "current" }],
+        "settle": false
+      },
+      "notes": "A repeated Stop must be harmless: ok then ok, exactly one cancel-requested event and one cancelled event, never a duplicate end, and not-running once the run has stopped.",
+      "result": { "php": null, "ts": null, "py": null },
+      "native": { "php": null, "ts": null, "py": null }
+    },
+    {
+      "id": "hrc-0011",
+      "title": "control: the same script with no cancel",
+      "since": "0.1.34",
+      "input": {
+        "requires_approval": [],
+        "before": [],
+        "script": [{ "calls": ["search", "weather"] }, { "text": "Both done." }],
+        "cancel_at": null,
+        "cancels": [],
+        "after": [],
+        "settle": false
+      },
+      "notes": "Control. With no cancel the guarded tools behave exactly as before: both run, two model calls, the run completes with one finished event. Fails a port whose guard refuses tools when no flag is set.",
+      "result": { "php": null, "ts": null, "py": null },
+      "native": { "php": null, "ts": null, "py": null }
+    }
+  ]
+}

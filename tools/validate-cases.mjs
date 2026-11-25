@@ -11,6 +11,7 @@ import { satellitePolicyFailures } from './satellite-policy/contract.mjs';
 import { credentialScopeFailures } from './credential-scope/contract.mjs';
 import { perCallUrlGuardFailures } from './per-call-url-guard/contract.mjs';
 import { crossOriginRedirectFailures } from './cross-origin-redirect/contract.mjs';
+import { runCancelDocumentFailures } from './run-cancel-contract.mjs';
 
 const repository = dirname(dirname(fileURLToPath(import.meta.url)));
 
@@ -30,7 +31,9 @@ export function validateCases(root = repository) {
             : suite === 'satellite-policy' ? satellitePolicyFailures(document)
               : suite === 'credential-scope' ? credentialScopeFailures(document)
                 : suite === 'per-call-url-guard' ? perCallUrlGuardFailures(document)
-                  : suite === 'cross-origin-redirect' ? crossOriginRedirectFailures(document) : [];
+                  : suite === 'cross-origin-redirect' ? crossOriginRedirectFailures(document)
+                    : suite === 'harness-run-cancel' ? runCancelDocumentFailures(document,
+                      JSON.parse(readFileSync(join(root, 'suites', suite, 'manifest.json'), 'utf8'))) : [];
       const valid = schemaValid && semantic.length === 0;
       if (valid) console.log(`  ok — ${suite}`);
       else {

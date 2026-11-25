@@ -1,0 +1,40 @@
+{
+  "id": "harness-run-cancel",
+  "title": "A durable cross-process cancel stops the run, refuses every id it does not own, and never revives",
+  "kind": "security-corpus",
+  "pins": "A person presses Stop in one process while their agent runs in another (G-285). A consumer moving between PHP, TypeScript and Python must get the same guarantees: the running tool finishes and the next tool in the same step is refused, no further model call is made, the run ends cancelled with run_cancelled and never reads completed after a cancel returned ok, a parked approval reads settled-cancelled and every decision and empty-prompt resume is refused, and an id the session does not own (another session's, forged, malformed or padded) is refused without touching anything. Drift here lets a tool run after Stop, lets an Approve button revive a cancelled run, or lets anyone holding a run id stop somebody else's agent.",
+  "scope": "Eleven scripted runs through each language's real harness runtime, cancelled from a second session object with its own store instances over one shared durable backing (PHP: DatabaseSessionStore over in-memory SQLite; TypeScript and Python: FileSessionStore over a temp directory). The model is a scripted fake client; no request leaves the process. NOT covered here: run trees and subagents, plans, workflow ledgers, streams other than the decision stream and the stepped resume, the unsupported outcome, concurrent or MCP tools (PHP checks those only before the next step), lock contention timing, and who is authorized to cancel, which is the host application's decision. Those are pinned by each port's own DurableCancel tests.",
+  "findings": "No golden is recorded. Goldens come only from published artifacts (decision 0006), and no harness release carrying G-285 is published in any of the three languages, so every result column is null and no row claims agreement. The safety contract in tools/run-cancel-contract.mjs was authored before any run and is applied to every language's execution output independently, so identical unsafe results still fail; tools/run-cancel-contract.test.mjs proves it refuses a tool that ran after the cancel, an extra model call, a completed status, a pending approval, an accepted decision or resume, a second request event and an accepted hostile id. Development-mode agreement against the candidate branches is reported in the PR, not recorded here. DECIDED (2026-11-25, G-285 coordinator ruling): the STORED record of a run cancelled while parked on an approval is out of scope. cancel() on a parked run takes no session lock and rewrites no run record in any language; the durable flag is the authority and the run read is what consumers see, so hrc-0004 compares the read status, and the stored status travels in the native column as park_stored_status. The race row (hrc-0003) keeps its stored-status check, because there the running run writes its own terminal record under the cancel lock. The events projection starts at the first cancel, so a turn's park-time events are native only. Both differences PREDATE G-285 and are park representation, not cancel: PHP stores a parked run as completed and emits RunFinished at park time; TypeScript and Python store it as running and emit nothing at park. That park-time event and stored-status difference is a separate, pre-existing parity gap in how a parked run is represented, owned by the harness family rather than by G-285, and this suite does not close it.",
+  "pattern_doc": "docs/decisions/0006-goldens-from-the-reference.md",
+  "reference": "php",
+  "comparison": {
+    "mode": "canonical-json-string"
+  },
+  "discrimination": {
+    "status": "probed",
+    "note": "tools/run-cancel-contract.test.mjs mutates a passing report one unsafe field at a time (a tool run after the cancel, a model call after it, run_status completed, a pending approval after the cancel, an accepted decision, an accepted resume, two request events, a hostile id answered ok) and requires the contract to refuse each in every language."
+  },
+  "implementations": {
+    "php": {
+      "status": "partial",
+      "runner": "prism-parity:tools/harness-run-cancel/HarnessRunCancelTest.php",
+      "cause": "unpublished",
+      "gap": "G-285: the runner exists and executes in --development against the candidate branch (Particle-Academy/prism-harness#80). No published particle-academy/prism-harness carries G-285, so no golden can be recorded.",
+      "cause_note": "Awaits the prism-harness release carrying G-285. Not a disagreement and not a missing runner."
+    },
+    "ts": {
+      "status": "partial",
+      "runner": "prism-parity:tools/harness-run-cancel/runner.mjs",
+      "cause": "unpublished",
+      "gap": "G-285: the runner exists and executes in --development against the candidate branch of prism-harness-ts. No published @particle-academy/prism-harness carries G-285, so no golden can be recorded.",
+      "cause_note": "Awaits the prism-harness-ts release carrying G-285."
+    },
+    "py": {
+      "status": "partial",
+      "runner": "prism-parity:tools/harness-run-cancel/runner.py",
+      "cause": "unpublished",
+      "gap": "G-285: the runner exists and executes in --development against the candidate branch of prism-harness-py. No published prism-ai-harness carries G-285, so no golden can be recorded.",
+      "cause_note": "Awaits the prism-harness-py release carrying G-285."
+    }
+  }
+}
