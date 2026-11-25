@@ -10138,7 +10138,9 @@
                   "budget_exhaustion",
                   "budget_route",
                   "binding_route",
-                  "binding_context"
+                  "binding_context",
+                  "tree_membership",
+                  "kept_refs"
                 ]
               }
             }

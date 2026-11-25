@@ -36,6 +36,15 @@ const bindingRoute = (context, { supplied = false, linked = false } = {}) => ({
 const bindingContext = (context, { runner = false, rebound = false, supplied = false, linked = false } = {}) => ({
   op: 'binding_context', context, runner_started: runner, rebound, supplied_binding: supplied, linked,
 });
+const tree = (session, run) => ({ session, run });
+const T = tree('chat', 'run_root');
+const membership = (context, { session = 'chat::sub::op', run = 'run_c', parent = null, savedTree = null, savedDepth = 0, contextDepth = 0 } = {}) => ({
+  op: 'tree_membership', context, session, run, parent, saved_tree: savedTree, saved_depth: savedDepth, context_depth: contextDepth,
+});
+const member = (treeOf, spends, depth) => ({ tree: treeOf, spends, depth });
+const keptRefs = (of, { planLedger = null, savedTree = null, savedPlanLedger = null, cancelled = false } = {}) => ({
+  op: 'kept_refs', membership: of, plan_ledger: planLedger, saved_tree: savedTree, saved_plan_ledger: savedPlanLedger, saved_tree_cancelled: cancelled,
+});
 const human = (extra = {}) => ({ title: 'Ask which city', owner: 'human', interaction: 'input', question: 'Which city?', options: ['Paris', 'Rome'], ...extra });
 
 let n = 0;
@@ -301,6 +310,46 @@ const cases = [
     'Only the context the runner itself marked is the runner\'s. A host context carrying a binding is used for that turn and never saved; a context the host derives from the runner\'s by binding it again is a new context and is the host\'s; with nothing saved a plain turn then runs as a root. No context cannot be marked, and an unknown context kind is invalid (a host binding saved as if the runner chose it).',
     [bindingContext('host', { supplied: true }), bindingContext('host', { runner: true, rebound: true, supplied: true }),
       bindingContext('none'), bindingContext('none', { runner: true }), bindingContext('root', { supplied: true })], { since: '0.1.7' }),
+  c('a root run opens a run tree of its own',
+    'Which run tree a run belongs to is decided once, when it begins (tree_membership: RunTrees.membership, the one record every consumer reads). A turn with no context, or a metadata-only one, on a session that saved no tree is a root: it opens the tree named by its own session and run, spends from itself, and runs at the depth the session saved (0 for a session never a child). A root that opened nothing would leave its children nothing to belong to, and a cancel of it nothing to mark.',
+    [membership('none', { session: 'chat', run: 'run_root' }), membership('metadata', { session: 'chat', run: 'run_root' }),
+      membership('none', { session: 'chat', run: 'run_root', savedDepth: 2 })], { since: '0.1.8' }),
+  c('a child the runner starts belongs to the run tree of the live run it was started from, a child of a child included',
+    'The runner passes the ACTUAL parent run, the run whose turn is calling the subagent tool, and the child takes that run\'s recorded membership: the same tree, the same live run it spends from, one level deeper. A grandchild is a child of a child: the root\'s tree, the root\'s spend, depth 2. The depth is the parent\'s plus one, never a depth a context states (a grandchild handed a tree other than its parent\'s, or a depth that lets it delegate past the limit).',
+    [membership('runner', { parent: member(T, 'run_root', 0) }),
+      membership('runner', { session: 'chat::sub::op::sub::dig', run: 'run_g', parent: member(T, 'run_root', 1) }),
+      membership('runner', { parent: member(T, 'run_root', 3), contextDepth: 0 })], { since: '0.1.8' }),
+  c('a host context belongs to the host\'s tree, whatever run ids it states',
+    'A run context the host builds names its own root and parent run ids, and none of them is an input here: a host context on a session that saved no tree is in the HOST\'s tree, spends from nothing this runtime holds, and runs at the depth it states, or the depth the session saved when that is deeper (a host context claiming the run id of another person\'s live run and joining that tree: spending its budget, saving it, cancelling it).',
+    [membership('host', { session: 'chat', run: 'run_h', contextDepth: 0 }), membership('host', { session: 'chat', run: 'run_h', contextDepth: 2 }),
+      membership('host', { run: 'run_h', savedDepth: 3, contextDepth: 1 })], { since: '0.1.8' }),
+  c('a turn the runner did not start continues the run tree its session saved',
+    'An answer to a child\'s approval, a new message to it, or a host context on it: the turn continues the tree the child saved, spending from a hold of its own, at least as deep as the runner started it. A host context can put it deeper, never shallower (a resumed child given a fresh root budget, or delegating from a shallower depth than its tree allows).',
+    [membership('none', { savedTree: T, savedDepth: 2 }), membership('metadata', { savedTree: T, savedDepth: 2 }),
+      membership('host', { savedTree: T, savedDepth: 2, contextDepth: 1 }), membership('host', { savedTree: T, savedDepth: 2, contextDepth: 3 })], { since: '0.1.8' }),
+  c('a grandchild of a child resumed under a host context belongs to the child\'s tree',
+    'The child continued its saved tree under its own run id while its ledger is the host\'s; the grandchild it starts takes the CHILD\'s recorded membership through its parent run, so it saves that tree and spends from the child\'s hold (a grandchild found through the host\'s ledger, which another session may share, and handed that session\'s tree).',
+    [membership('runner', { session: 'chat::sub::op::sub::dig', run: 'run_g', parent: member(T, 'run_c', 1) })], { since: '0.1.8' }),
+  c('a child started under a run tree the host built is in the host\'s tree, and so are its children',
+    'The runner started the child from a run in the host\'s tree, so the child is in it too: no durable tree, nothing it spends from here, one level deeper. Its own children inherit the same. A run whose parent is in no tree is in none (a child under a host-built tree saving, spending or cancelling a durable tree it is not in).',
+    [membership('runner', { parent: member('host', null, 1) }), membership('runner', { session: 'chat::sub::op::sub::dig', run: 'run_g', parent: member('host', null, 2) }),
+      membership('runner', { parent: member('none', null, 1) })], { since: '0.1.8' }),
+  c('a runner context whose parent is not a live run of this runtime belongs to no tree',
+    'The runner marked the context, but the run it names as parent is not live here, or is not the run that handed the runner that context (a direct call with the run id of someone else\'s run). The child is in no tree and runs at the depth the context states; the tree its session saved is not read, because a turn the runner starts never continues a saved tree (a forged parent run id joining another tree).',
+    [membership('runner', { parent: null, savedTree: T, savedDepth: 3, contextDepth: 1 }), membership('runner', { parent: null, contextDepth: 0 })], { since: '0.1.8' }),
+  c('a child the runner starts again takes the runner\'s tree and depth, never the ones its session saved',
+    'A child session started once in tree T1 at depth 3 and started again from a run of tree T2 at depth 0 is in T2 at depth 1: a turn the runner starts reads only its parent, and the saved references are for turns the runner did not start (a child started again held against its old tree, or running deeper than the runner started it).',
+    [membership('runner', { parent: member(tree('chat', 'run_root2'), 'run_root2', 0), savedTree: T, savedDepth: 3 })], { since: '0.1.8' }),
+  c('an unknown context kind has no membership',
+    'Only none, metadata, runner and host are context kinds (a misspelled kind falling through to some default membership).',
+    [membership('root'), membership('Runner', { parent: member(T, 'run_root', 0) })], { since: '0.1.8' }),
+  c('which run tree a child saves: its own, or under a host-built tree the one it saved before unless that tree was cancelled',
+    'When the runner saves a child\'s binding it saves the tree the child is in, with the plan budget of the run it spends from (kept_refs: RunTrees.keptRefs). A child in the host\'s tree, or in none, has no durable tree to name, so the references it saved before are kept, never replaced with nothing; a tree a person cancelled is not kept, because the runner starting the child again is a new delegation, not a run of that tree (a host-tree child whose later turn opens a fresh root budget, or one that keeps running a cancelled tree).',
+    [keptRefs({ tree: T, spends: 'run_root', depth: 1, route: 'none' }, { planLedger: { session: 'chat', plan: 'plan_1' }, savedTree: tree('chat', 'run_old'), savedPlanLedger: { session: 'chat', plan: 'plan_0' } }),
+      keptRefs({ tree: 'host', spends: null, depth: 1, route: 'none' }, { savedTree: T, savedPlanLedger: { session: 'chat', plan: 'plan_1' } }),
+      keptRefs({ tree: 'host', spends: null, depth: 1, route: 'none' }, { savedTree: T, savedPlanLedger: { session: 'chat', plan: 'plan_1' }, cancelled: true }),
+      keptRefs({ tree: 'none', spends: null, depth: 1, route: 'none' }),
+      keptRefs({ tree: 'none', spends: null, depth: 1, route: 'none' }, { savedPlanLedger: { session: 'chat', plan: 'plan_1' } })], { since: '0.1.8' }),
 ];
 
 const existing = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : { cases: [] };
@@ -326,9 +375,9 @@ if (process.argv[2] === '--merge') {
 const document = {
   suite: 'harness-plans',
   schema_version: 1,
-  corpus_version: '0.1.7',
+  corpus_version: '0.1.8',
   generated_by: 'tools/generate-harness-plans.mjs writes the inputs. `expected` is the PHP reference\'s recording; every security row was checked by hand against the G-360 design before TypeScript or Python ran. `result` records what each language measured, merged with --merge.',
-  pins_note: 'Each case runs `ops` in order against a fresh plan through the language\'s pure PlanMachine and PlanView, with ids minted as prefix + "_" + a 26-digit counter, the clock at `now` (default 1767225600, 2026-01-01T00:00:00Z) and the run id "run_case". Each op records {ok} or {refused: code} or its outcome. `final` is the plan as stored (the fields a consumer or the next turn depends on), its g282.3 update, its counts, its context block and its first-event size, or null when nothing was written. Budget ops (G-366) run the pure PlanBudget against one ledger per case, opened with plan id "plan"; `budget` is that ledger with its holds as a list sorted by id, present only when the case opened one. binding_route runs the pure ChildBinding.route; whether a binding is saved starts false and carries from op to op, set when a route saves. binding_context builds a real RunContext (none, or RunContext.root("host_root") with a 10-step budget; bound when supplied_binding; marked through the runtime RunTrees.startingChild when runner_started; bound again by the host after the mark when rebound), records the kind RunTrees.bindingContextKind gives it and the binding_route of that kind, and carries whether a binding is saved like binding_route; marking no context, or a context kind other than none or host, is invalid. A setting or context kind that is invalid records {invalid: true}.',
+  pins_note: 'Each case runs `ops` in order against a fresh plan through the language\'s pure PlanMachine and PlanView, with ids minted as prefix + "_" + a 26-digit counter, the clock at `now` (default 1767225600, 2026-01-01T00:00:00Z) and the run id "run_case". Each op records {ok} or {refused: code} or its outcome. `final` is the plan as stored (the fields a consumer or the next turn depends on), its g282.3 update, its counts, its context block and its first-event size, or null when nothing was written. Budget ops (G-366) run the pure PlanBudget against one ledger per case, opened with plan id "plan"; `budget` is that ledger with its holds as a list sorted by id, present only when the case opened one. binding_route runs the pure ChildBinding.route; whether a binding is saved starts false and carries from op to op, set when a route saves. binding_context builds a real RunContext (none, or RunContext.root("host_root") with a 10-step budget; bound when supplied_binding; marked through the runtime RunTrees.startingChild when runner_started; bound again by the host after the mark when rebound), records the kind RunTrees.bindingContextKind gives it and the binding_route of that kind, and carries whether a binding is saved like binding_route; marking no context, or a context kind other than none or host, is invalid. tree_membership runs the pure RunTrees.membership (G-381): from a context kind, the run and its session, the recorded membership of the live parent run the runner verified (null when there is none), the run tree and depth the session saved and the depth the context states, it records the run\'s one membership: tree (a {session, run} tree, "host" or "none"), spends (the live run whose hold it spends from, or null), depth, and route (open, continue or none). kept_refs runs the pure RunTrees.keptRefs: the run tree and plan ledger the runner saves with a child, from its membership, the plan ledger of the run it spends from, what the session saved and whether that saved tree was cancelled. A setting or context kind that is invalid records {invalid: true}.',
   cases: cases.map((item) => {
     const before = byId[item.id];
     return { ...item, since: before?.since ?? item.since, expected: before?.expected ?? null, result: before?.result ?? {}, agrees: before?.agrees ?? false };
