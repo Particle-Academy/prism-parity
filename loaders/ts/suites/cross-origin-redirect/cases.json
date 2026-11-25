@@ -1,7 +1,7 @@
 {
     "suite": "cross-origin-redirect",
     "schema_version": 1,
-    "corpus_version": "0.1.28",
+    "corpus_version": "0.1.37",
     "generated_by": "tools/cross-origin-redirect.mjs with three native SDK adapters against loopback servers. Every observation is read off the servers; none is hand-written.",
     "scope": "Whether a provider call follows a redirect that leaves its configured origin (scheme, host and effective port), through Prism.text().using() on the openai, anthropic and mistral providers with their url and key from the environment.",
     "encoding": "An observation is what the loopback servers received: how many requests reached the configured endpoint, whether anything reached another origin (another host, another port, or a TLS attempt after a scheme change), and whether the row's synthetic key appeared in any byte another origin received. The error each SDK raises is not recorded.",
@@ -2101,6 +2101,267 @@
                 }
             },
             "agrees": true
+        },
+        {
+            "id": "cor-0073",
+            "title": "openai: a 307 loop within the origin",
+            "since": "0.1.37",
+            "notes": "Hop limit: every request to the endpoint is answered with a 307 back into the same origin. The reference's HTTP client follows five redirects and refuses the sixth, so endpoint_requests is the limit plus one. A port with a higher limit, or none, makes more requests and disagrees.",
+            "given": {
+                "provider": "openai",
+                "status": 307,
+                "target": "same-origin-loop"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0074",
+            "title": "openai: control, five 307s within the origin, then an answer",
+            "since": "0.1.37",
+            "notes": "Control for the hop limit: the endpoint redirects five times, then answers. Five hops are within the reference's limit, so all six requests are made. A port whose limit is below five stops early and disagrees.",
+            "given": {
+                "provider": "openai",
+                "status": 307,
+                "target": "same-origin-chain-5"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0075",
+            "title": "openai: a 307 to its own origin with userinfo in Location",
+            "since": "0.1.37",
+            "notes": "Hostile: the Location names the endpoint's own scheme, host and port with a synthetic user and password in front of them, so the server chooses the identity the next request is sent as. Whether that second request is made is read off the endpoint.",
+            "given": {
+                "provider": "openai",
+                "status": 307,
+                "target": "same-origin-userinfo"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": false
+        },
+        {
+            "id": "cor-0076",
+            "title": "anthropic: a 307 loop within the origin",
+            "since": "0.1.37",
+            "notes": "Hop limit: every request to the endpoint is answered with a 307 back into the same origin. The reference's HTTP client follows five redirects and refuses the sixth, so endpoint_requests is the limit plus one. A port with a higher limit, or none, makes more requests and disagrees.",
+            "given": {
+                "provider": "anthropic",
+                "status": 307,
+                "target": "same-origin-loop"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0077",
+            "title": "anthropic: control, five 307s within the origin, then an answer",
+            "since": "0.1.37",
+            "notes": "Control for the hop limit: the endpoint redirects five times, then answers. Five hops are within the reference's limit, so all six requests are made. A port whose limit is below five stops early and disagrees.",
+            "given": {
+                "provider": "anthropic",
+                "status": 307,
+                "target": "same-origin-chain-5"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0078",
+            "title": "anthropic: a 307 to its own origin with userinfo in Location",
+            "since": "0.1.37",
+            "notes": "Hostile: the Location names the endpoint's own scheme, host and port with a synthetic user and password in front of them, so the server chooses the identity the next request is sent as. Whether that second request is made is read off the endpoint.",
+            "given": {
+                "provider": "anthropic",
+                "status": 307,
+                "target": "same-origin-userinfo"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": false
+        },
+        {
+            "id": "cor-0079",
+            "title": "mistral: a 307 loop within the origin",
+            "since": "0.1.37",
+            "notes": "Hop limit: every request to the endpoint is answered with a 307 back into the same origin. The reference's HTTP client follows five redirects and refuses the sixth, so endpoint_requests is the limit plus one. A port with a higher limit, or none, makes more requests and disagrees.",
+            "given": {
+                "provider": "mistral",
+                "status": 307,
+                "target": "same-origin-loop"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0080",
+            "title": "mistral: control, five 307s within the origin, then an answer",
+            "since": "0.1.37",
+            "notes": "Control for the hop limit: the endpoint redirects five times, then answers. Five hops are within the reference's limit, so all six requests are made. A port whose limit is below five stops early and disagrees.",
+            "given": {
+                "provider": "mistral",
+                "status": 307,
+                "target": "same-origin-chain-5"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 6,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "cor-0081",
+            "title": "mistral: a 307 to its own origin with userinfo in Location",
+            "since": "0.1.37",
+            "notes": "Hostile: the Location names the endpoint's own scheme, host and port with a synthetic user and password in front of them, so the server chooses the identity the next request is sent as. Whether that second request is made is read off the endpoint.",
+            "given": {
+                "provider": "mistral",
+                "status": 307,
+                "target": "same-origin-userinfo"
+            },
+            "result": {
+                "php": {
+                    "endpoint_requests": 2,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "ts": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                },
+                "py": {
+                    "endpoint_requests": 1,
+                    "reached_elsewhere": false,
+                    "credential_elsewhere": false
+                }
+            },
+            "agrees": false
         }
     ]
 }

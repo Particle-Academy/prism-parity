@@ -28,6 +28,19 @@ test('the corpus keeps hostile rows for every target and following controls', ()
   assert.ok(rows.filter(row => row.result.php.endpoint_requests === 2).length >= 3);
 });
 
+test('the corpus pins the same-origin hop limit and the userinfo Location for every provider', () => {
+  const rows = fixture().cases;
+  for (const provider of ['openai', 'anthropic', 'mistral']) {
+    for (const target of ['same-origin-loop', 'same-origin-chain-5', 'same-origin-userinfo']) {
+      assert.ok(rows.some(row => row.given.target === target && row.given.provider === provider), `${provider} ${target}`);
+    }
+  }
+  // Five hops followed, the sixth refused: six requests, in the loop and the chain alike.
+  for (const row of rows.filter(row => row.given.target === 'same-origin-loop' || row.given.target === 'same-origin-chain-5')) {
+    assert.equal(row.result.php.endpoint_requests, 6, row.id);
+  }
+});
+
 for (const [name, mutate] of [
   ['an unknown provider', document => { hostile(document).given.provider = 'groq'; }],
   ['an unknown redirect status', document => { hostile(document).given.status = 300; }],
