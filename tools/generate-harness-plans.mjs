@@ -30,6 +30,9 @@ const decide = (id, approved) => ({ op: 'reconcile', pending: [], decided: { [id
 const route = (context, prompt, { advancing = false, stepApproval = false, tree = false, plan = false } = {}) => ({
   op: 'budget_route', context, prompt, advancing, step_approval: stepApproval, saved_tree: tree, saved_plan_ledger: plan,
 });
+const bindingRoute = (context, { supplied = false, linked = false } = {}) => ({
+  op: 'binding_route', context, supplied_binding: supplied, linked,
+});
 const human = (extra = {}) => ({ title: 'Ask which city', owner: 'human', interaction: 'input', question: 'Which city?', options: ['Paris', 'Rome'], ...extra });
 
 let n = 0;
@@ -275,6 +278,18 @@ const cases = [
     'The turn advance() runs and the empty-prompt resume of the held step\'s own approval are the plan\'s; a new message while the step is held is not. The plan\'s own turn handed a host or runner context is refused with plan.budget_context rather than let around the plan budget; an unknown context kind is invalid (a chat turn charged to a plan; a context around a plan budget).',
     [route('none', '', { advancing: true }), route('none', '', { stepApproval: true }), route('none', 'Unrelated', { stepApproval: true }),
       route('host', '', { advancing: true }), route('runner', '', { stepApproval: true }), route('root', '')], { since: '0.1.5' }),
+  c('a binding a host context brings to a session that was never a child is used for that turn and never saved',
+    'Which binding a turn runs on (binding_route, whether a binding is saved carried from op to op as on a session). A host context with a binding on a session that was never a child runs that turn on it, and nothing is saved, so the next turn with no context runs as a root on the default binding; a host context with none is a root too (a host binding outliving the turn it was given for).',
+    [bindingRoute('host', { supplied: true }), bindingRoute('none'), bindingRoute('metadata'), bindingRoute('host')], { since: '0.1.6' }),
+  c('a linked child with no saved binding is refused before any request, whatever context it is handed',
+    'A session the runner started as a child (linked: its thread is linked beneath a parent, or it has saved run tree references) whose binding is gone is refused with child_binding_missing, under no context, a metadata-only one, and a host context with or without a binding of its own; only the runner\'s own context, which starts the child again, binds it, and that binding is saved (a host binding standing in for a lost one; a child run on a provider nobody chose).',
+    [bindingRoute('none', { linked: true }), bindingRoute('metadata', { linked: true }), bindingRoute('host', { linked: true }),
+      bindingRoute('host', { supplied: true, linked: true }), bindingRoute('runner', { linked: true }),
+      bindingRoute('runner', { supplied: true, linked: true }), bindingRoute('none', { linked: true })], { since: '0.1.6' }),
+  c('only the runner\'s own context saves a binding, and a saved binding wins over any other',
+    'The runner\'s context with a binding saves it; every later turn the runner did not start runs on the saved binding, including a host context carrying another; a runner context with no binding of its own does not replace one; an unknown context kind is invalid (a host binding replacing the saved one and the run tree with it).',
+    [bindingRoute('runner', { supplied: true }), bindingRoute('host', { supplied: true }), bindingRoute('none'),
+      bindingRoute('metadata', { supplied: true }), bindingRoute('runner'), bindingRoute('root', { supplied: true })], { since: '0.1.6' }),
 ];
 
 const existing = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : { cases: [] };
@@ -300,9 +315,9 @@ if (process.argv[2] === '--merge') {
 const document = {
   suite: 'harness-plans',
   schema_version: 1,
-  corpus_version: '0.1.5',
+  corpus_version: '0.1.6',
   generated_by: 'tools/generate-harness-plans.mjs writes the inputs. `expected` is the PHP reference\'s recording; every security row was checked by hand against the G-360 design before TypeScript or Python ran. `result` records what each language measured, merged with --merge.',
-  pins_note: 'Each case runs `ops` in order against a fresh plan through the language\'s pure PlanMachine and PlanView, with ids minted as prefix + "_" + a 26-digit counter, the clock at `now` (default 1767225600, 2026-01-01T00:00:00Z) and the run id "run_case". Each op records {ok} or {refused: code} or its outcome. `final` is the plan as stored (the fields a consumer or the next turn depends on), its g282.3 update, its counts, its context block and its first-event size, or null when nothing was written. Budget ops (G-366) run the pure PlanBudget against one ledger per case, opened with plan id "plan"; `budget` is that ledger with its holds as a list sorted by id, present only when the case opened one. A setting that is invalid records {invalid: true}.',
+  pins_note: 'Each case runs `ops` in order against a fresh plan through the language\'s pure PlanMachine and PlanView, with ids minted as prefix + "_" + a 26-digit counter, the clock at `now` (default 1767225600, 2026-01-01T00:00:00Z) and the run id "run_case". Each op records {ok} or {refused: code} or its outcome. `final` is the plan as stored (the fields a consumer or the next turn depends on), its g282.3 update, its counts, its context block and its first-event size, or null when nothing was written. Budget ops (G-366) run the pure PlanBudget against one ledger per case, opened with plan id "plan"; `budget` is that ledger with its holds as a list sorted by id, present only when the case opened one. binding_route runs the pure ChildBinding.route; whether a binding is saved starts false and carries from op to op, set when a route saves. A setting or context kind that is invalid records {invalid: true}.',
   cases: cases.map((item) => {
     const before = byId[item.id];
     return { ...item, since: before?.since ?? item.since, expected: before?.expected ?? null, result: before?.result ?? {}, agrees: before?.agrees ?? false };
