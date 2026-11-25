@@ -2608,6 +2608,122 @@
                 }
             },
             "agrees": true
+        },
+        {
+            "id": "pcu-0090",
+            "title": "per call: an ISATAP literal carrying loopback behind a public 6to4 prefix",
+            "since": "0.1.29",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. The 6to4 rule judged the public IPv4 after 2002: and returned before the ISATAP rule ran, in all three languages.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[2002:808:808::5efe:7f00:1]/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0091",
+            "title": "per call: an ISATAP literal carrying the metadata address, dotted, behind a 6to4 prefix",
+            "since": "0.1.29",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. The same shape with a dotted IPv4 tail.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[2002:808:808::5efe:169.254.169.254]/latest"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0092",
+            "title": "per call: an IPv6 literal with a trailing dot inside the brackets",
+            "since": "0.1.29",
+            "notes": "Hostile: the caller chose this host for one call, and it must be refused before any request. An address literal has no trailing dot. One parser trims it and judges the address, another refuses the url; it is refused here before either.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[2606:4700::127.0.0.1.]/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0093",
+            "title": "per call: an ISATAP literal carrying a public IPv4 behind a 6to4 prefix",
+            "since": "0.1.29",
+            "notes": "Control: both the 6to4 prefix and the ISATAP address are public, so it is sent.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {},
+                "config": {
+                    "url": "http://[2002:808:808::5efe:808:808]/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
         }
     ]
 }
