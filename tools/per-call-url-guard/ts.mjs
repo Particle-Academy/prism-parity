@@ -2,6 +2,10 @@
 // Prism.text().using(...) and is captured at fetch, which answers 500; nothing
 // reaches the network. A row records WHETHER a request was sent and WHICH
 // refusal code stopped it, never the message.
+//
+// A `per-call-wire` row instead goes to the real fetch, which may contact only
+// a 127.x literal: the loopback server the entry point started for that row,
+// which is where whether anything arrived is read.
 import { pathToFileURL } from 'node:url';
 import { resolve, join } from 'node:path';
 import { readFileSync } from 'node:fs';
@@ -9,6 +13,8 @@ import assert from 'node:assert/strict';
 
 const environmentNames = JSON.parse(readFileSync(new URL('./environment-names.json', import.meta.url), 'utf8'));
 const REFUSALS = ['private_address_refused', 'scheme_not_allowed', 'non_ascii_host_use_punycode'];
+const KINDS = ['per-call', 'compatible', 'per-call-wire'];
+const LOOPBACK = /^127\.\d+\.\d+\.\d+$/;
 const camel = { api_key: 'apiKey', allow_private_per_call_url: 'allowPrivatePerCallUrl' };
 const renamed = (object) => Object.fromEntries(Object.entries(object ?? {}).map(([name, value]) => [camel[name] ?? name, value]));
 
@@ -18,7 +24,14 @@ export async function observe(document, dist) {
   const realFetch = globalThis.fetch;
   const environment = Object.fromEntries(document.environment_names.map(name => [name, process.env[name]]));
   let sent = 0;
-  globalThis.fetch = async () => {
+  let wire = false;
+  globalThis.fetch = async (url, init) => {
+    if (wire) {
+      let host = null;
+      try { host = new URL(String(url)).hostname; } catch { /* the real fetch refuses it */ }
+      if (host !== null && !LOOPBACK.test(host)) throw new Error('Only loopback hosts may be contacted in this corpus.');
+      return realFetch(url, init);
+    }
     sent += 1;
     return new Response(JSON.stringify({ error: { message: 'fixture' } }), { status: 500, headers: { 'content-type': 'application/json' } });
   };
@@ -31,7 +44,8 @@ export async function observe(document, dist) {
         if (!environmentNames.includes(name)) throw new Error('Unapproved synthetic environment name.');
         process.env[name] = value;
       }
-      if (row.kind !== 'per-call' && row.kind !== 'compatible') throw new Error('Unknown per-call-url-guard fixture kind.');
+      if (!KINDS.includes(row.kind)) throw new Error('Unknown per-call-url-guard fixture kind.');
+      wire = row.kind === 'per-call-wire';
       sent = 0;
       let refusal = null;
       try {

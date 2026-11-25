@@ -1,9 +1,9 @@
 {
     "suite": "per-call-url-guard",
     "schema_version": 1,
-    "corpus_version": "0.1.29",
+    "corpus_version": "0.1.38",
     "generated_by": "tools/per-call-url-guard.mjs with three native SDK adapters. Every observation is execution output; none is hand-written.",
-    "scope": "Whether a provider url passed for ONE call is refused before any request when it names a loopback, private, link-local, metadata or unspecified address, through Prism.text().using() on the openai provider and on a named openai-compatible entry. Configured urls are not checked and appear here only as controls.",
+    "scope": "Whether a provider url passed for ONE call is refused before any request when it names a loopback, private, link-local, metadata or unspecified address, through Prism.text().using() on the openai provider and on a named openai-compatible entry. Configured urls are not checked and appear here only as controls. Rows of kind per-call-wire run over each language's REAL default transport against a loopback server and record whether that server received a connection: a url the SDK builds but its platform client cannot send is visible only there.",
     "encoding": "An observation is whether any request was sent and which refusal code stopped the call (private_address_refused, scheme_not_allowed, non_ascii_host_use_punycode or null). The message is outside the contract and is not recorded.",
     "environment_names": [
         "OPENAI_URL",
@@ -2724,6 +2724,192 @@
                 }
             },
             "agrees": true
+        },
+        {
+            "id": "pcu-0094",
+            "title": "per call, real transport: a url without userinfo reaches the endpoint (wire control)",
+            "since": "0.1.38",
+            "notes": "Control: with nothing unusual in the authority, every language sends the call to the endpoint over its real client. Without it, a transport that refused everything would pass the userinfo rows. The per-call address check is opted out in config so the loopback endpoint is reachable; the row is about what the default transport does with the url, observed at the server.",
+            "given": {
+                "kind": "per-call-wire",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "http://{endpoint}/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0095",
+            "title": "per call, real transport: a user name before the host",
+            "since": "0.1.38",
+            "notes": "Hostile: userinfo in a per-call url. A client that reads the authority as the host name looks the user name up as part of a name; one that cannot send it must refuse before anything leaves. The per-call address check is opted out in config so the loopback endpoint is reachable; the row is about what the default transport does with the url, observed at the server.",
+            "given": {
+                "kind": "per-call-wire",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "http://parity-user@{endpoint}/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                }
+            },
+            "agrees": false
+        },
+        {
+            "id": "pcu-0096",
+            "title": "per call, real transport: a user name and password before the host",
+            "since": "0.1.38",
+            "notes": "Hostile: a password in a per-call url, which a client that misreads the authority hands to the name resolver and repeats in its error. The per-call address check is opted out in config so the loopback endpoint is reachable; the row is about what the default transport does with the url, observed at the server.",
+            "given": {
+                "kind": "per-call-wire",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "http://parity-user:parity-pass@{endpoint}/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                }
+            },
+            "agrees": false
+        },
+        {
+            "id": "pcu-0097",
+            "title": "per call, real transport: a password with an empty user name",
+            "since": "0.1.38",
+            "notes": "Hostile: the password alone, so a check that looks only for a user name misses it. The per-call address check is opted out in config so the loopback endpoint is reachable; the row is about what the default transport does with the url, observed at the server.",
+            "given": {
+                "kind": "per-call-wire",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "http://:parity-pass@{endpoint}/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                }
+            },
+            "agrees": false
+        },
+        {
+            "id": "pcu-0098",
+            "title": "per call, real transport: a percent-encoded at sign inside the user name",
+            "since": "0.1.38",
+            "notes": "Hostile: an escaped @ inside the userinfo, which a client that decodes the authority reads as a second @. The per-call address check is opted out in config so the loopback endpoint is reachable; the row is about what the default transport does with the url, observed at the server.",
+            "given": {
+                "kind": "per-call-wire",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "http://parity-user%40other@{endpoint}/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                }
+            },
+            "agrees": false
+        },
+        {
+            "id": "pcu-0099",
+            "title": "per call, real transport: an empty userinfo",
+            "since": "0.1.38",
+            "notes": "Edge: an @ with nothing before it. WHATWG parsers drop it; a client that reads the authority as the host name cannot send it. The per-call address check is opted out in config so the loopback endpoint is reachable; the row is about what the default transport does with the url, observed at the server.",
+            "given": {
+                "kind": "per-call-wire",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "http://@{endpoint}/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                }
+            },
+            "agrees": false
         }
     ]
 }

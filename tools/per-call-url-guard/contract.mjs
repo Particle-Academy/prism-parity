@@ -13,6 +13,11 @@ export function perCallUrlGuardFailures(document, { allowIncomplete = false } = 
   for (const row of document.cases ?? []) {
     if (seen.has(row.id)) failures.push(`duplicate per-call-url-guard case ${row.id}`);
     seen.add(row.id);
+    // A wire row is observed at a loopback server the entry point starts for it,
+    // so its url must name that server and nothing else.
+    if (row.given?.kind === 'per-call-wire' && !/^http:\/\/[^/?#]*\{endpoint\}\//.test(row.given?.config?.url ?? '')) {
+      failures.push(`${row.id}: a per-call-wire url must be http and name {endpoint} as its host`);
+    }
     for (const language of ['php', 'ts', 'py']) {
       const observed = row.result?.[language];
       if (observed === null || observed === undefined) continue;
