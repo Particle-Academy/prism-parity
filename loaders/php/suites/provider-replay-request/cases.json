@@ -180,7 +180,7 @@
                     "call": "using",
                     "args": [
                         "anthropic",
-                        "claude-sonnet-4-5"
+                        "claude-sonnet-5-5"
                     ]
                 },
                 {
@@ -229,7 +229,7 @@
                 }
             ],
             "expect": {
-                "body_json": "{\"model\":\"claude-sonnet-4-5\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Owned replay fixture\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Owned thought\",\"signature\":\"synthetic-owned-opaque-α+/=\"},{\"type\":\"text\",\"text\":\"First text\"},{\"type\":\"redacted_thinking\",\"data\":\"synthetic-owned-redacted-+/=\"},{\"type\":\"text\",\"text\":\"Second text\"}]}],\"max_tokens\":64}"
+                "body_json": "{\"model\":\"claude-sonnet-5-5\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Owned replay fixture\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Owned thought\",\"signature\":\"synthetic-owned-opaque-α+/=\"},{\"type\":\"text\",\"text\":\"First text\"},{\"type\":\"redacted_thinking\",\"data\":\"synthetic-owned-redacted-+/=\"},{\"type\":\"text\",\"text\":\"Second text\"}]}],\"max_tokens\":64}"
             }
         },
         {
@@ -242,7 +242,7 @@
                     "call": "using",
                     "args": [
                         "anthropic",
-                        "claude-sonnet-4-5"
+                        "claude-sonnet-5-5"
                     ]
                 },
                 {
@@ -283,7 +283,7 @@
                 }
             ],
             "expect": {
-                "body_json": "{\"model\":\"claude-sonnet-4-5\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Owned replay fixture\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Owned thought\",\"signature\":\"synthetic-owned-opaque-α+/=\"},{\"type\":\"redacted_thinking\",\"data\":\"synthetic-owned-redacted-+/=\"},{\"type\":\"text\",\"text\":\"Legacy fallback must not duplicate replay\"}]}],\"max_tokens\":64}"
+                "body_json": "{\"model\":\"claude-sonnet-5-5\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Owned replay fixture\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Owned thought\",\"signature\":\"synthetic-owned-opaque-α+/=\"},{\"type\":\"redacted_thinking\",\"data\":\"synthetic-owned-redacted-+/=\"},{\"type\":\"text\",\"text\":\"Legacy fallback must not duplicate replay\"}]}],\"max_tokens\":64}"
             }
         },
         {
@@ -296,7 +296,7 @@
                     "call": "using",
                     "args": [
                         "anthropic",
-                        "claude-sonnet-4-5"
+                        "claude-sonnet-5-5"
                     ]
                 },
                 {
@@ -325,7 +325,7 @@
                 }
             ],
             "expect": {
-                "body_json": "{\"model\":\"claude-sonnet-4-5\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Owned replay fixture\"}]}],\"max_tokens\":64}"
+                "body_json": "{\"model\":\"claude-sonnet-5-5\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Owned replay fixture\"}]}],\"max_tokens\":64}"
             }
         },
         {
@@ -338,7 +338,7 @@
                     "call": "using",
                     "args": [
                         "anthropic",
-                        "claude-sonnet-4-5"
+                        "claude-sonnet-5-5"
                     ]
                 },
                 {
@@ -398,7 +398,7 @@
                 }
             ],
             "expect": {
-                "body_json": "{\"model\":\"claude-sonnet-4-5\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Owned replay fixture\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"Kept prior text\"},{\"type\":\"fallback\",\"from\":{\"model\":\"owned-a\"},\"to\":{\"model\":\"owned-b\"}},{\"type\":\"redacted_thinking\",\"data\":\"synthetic-owned-redacted-+/=\"},{\"type\":\"text\",\"text\":\"Serving answer\"}]}],\"max_tokens\":64}"
+                "body_json": "{\"model\":\"claude-sonnet-5-5\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Owned replay fixture\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"Kept prior text\"},{\"type\":\"fallback\",\"from\":{\"model\":\"owned-a\"},\"to\":{\"model\":\"owned-b\"}},{\"type\":\"redacted_thinking\",\"data\":\"synthetic-owned-redacted-+/=\"},{\"type\":\"text\",\"text\":\"Serving answer\"}]}],\"max_tokens\":64}"
             }
         },
         {
@@ -411,7 +411,7 @@
                     "call": "using",
                     "args": [
                         "anthropic",
-                        "claude-sonnet-4-5"
+                        "claude-sonnet-5-5"
                     ]
                 },
                 {
@@ -464,7 +464,7 @@
                 }
             ],
             "expect": {
-                "body_json": "{\"model\":\"claude-sonnet-4-5\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Owned replay fixture\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Owned thought\",\"signature\":\"synthetic-owned-opaque-α+/=\"},{\"type\":\"tool_use\",\"id\":\"call_owned_replay\",\"name\":\"lookup\",\"input\":{}}]},{\"role\":\"user\",\"content\":[{\"type\":\"tool_result\",\"tool_use_id\":\"call_owned_replay\",\"content\":\"owned result\"}]}],\"max_tokens\":64}"
+                "body_json": "{\"model\":\"claude-sonnet-5-5\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Owned replay fixture\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Owned thought\",\"signature\":\"synthetic-owned-opaque-α+/=\"},{\"type\":\"tool_use\",\"id\":\"call_owned_replay\",\"name\":\"lookup\",\"input\":{}}]},{\"role\":\"user\",\"content\":[{\"type\":\"tool_result\",\"tool_use_id\":\"call_owned_replay\",\"content\":\"owned result\"}]}],\"max_tokens\":64}"
             }
         }
     ]
