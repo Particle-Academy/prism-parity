@@ -85,7 +85,7 @@ test('interior whitespace is NOT a hazard when every token is well formed', () =
   // alone, when its three real rows are padded rate-limit bucket names.
   for (const value of [
     'chat gpt-4o',
-    'text claude-sonnet-4-5',
+    'text claude-sonnet-5-5',
     'embeddings text-embedding-3-small',
     'image_generation dall-e-3',
   ]) {
