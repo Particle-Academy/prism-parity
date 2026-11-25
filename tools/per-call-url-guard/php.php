@@ -7,6 +7,11 @@ declare(strict_types=1);
 // fake with stray requests prevented. A row records WHETHER a request was sent
 // and WHICH refusal code stopped it, never the message.
 //
+// A `per-call-wire` row instead runs over Laravel's real HTTP client, against the
+// loopback server the entry point started for that row; a global middleware
+// refuses any host that is not a 127.x literal. Whether anything arrived is
+// read off that server.
+//
 // PRISM_PHP_SRC points at a prism checkout (its default branch in CI, so the
 // three columns are read from the same kind of tree): `Prism\Prism\` classes
 // load from that checkout ahead of the runner's installed reference, and the
@@ -52,6 +57,7 @@ use Illuminate\Http\Client\Factory;
 use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Http;
+use Psr\Http\Message\RequestInterface;
 use Prism\Prism\Prism;
 use Prism\Prism\PrismManager;
 
@@ -96,7 +102,7 @@ try {
         $config = require $package.'/config/prism.php';
         if ($case['kind'] === 'compatible') {
             $config['providers'][$case['provider']] = ['driver' => 'openai-compatible'] + $case['entry'];
-        } elseif ($case['kind'] !== 'per-call') {
+        } elseif ($case['kind'] !== 'per-call' && $case['kind'] !== 'per-call-wire') {
             throw new RuntimeException('Unknown per-call-url-guard fixture kind.');
         }
         $app->instance('config', new Repository(['prism' => $config]));
@@ -105,12 +111,22 @@ try {
 
         $sent = 0;
         $factory = new Factory;
-        $factory->preventStrayRequests();
-        $factory->fake(function (HttpRequest $request) use (&$sent) {
-            $sent++;
+        if ($case['kind'] === 'per-call-wire') {
+            $factory->globalMiddleware(static fn (callable $handler): callable => static function (RequestInterface $request, array $options) use ($handler) {
+                if (preg_match('/\A127\.\d+\.\d+\.\d+\z/', $request->getUri()->getHost()) !== 1) {
+                    throw new RuntimeException('Only loopback hosts may be contacted in this corpus.');
+                }
 
-            return Factory::response(['error' => ['message' => 'fixture']], 500);
-        });
+                return $handler($request, $options);
+            });
+        } else {
+            $factory->preventStrayRequests();
+            $factory->fake(function (HttpRequest $request) use (&$sent) {
+                $sent++;
+
+                return Factory::response(['error' => ['message' => 'fixture']], 500);
+            });
+        }
         Http::swap($factory);
         $refusal = null;
         try {

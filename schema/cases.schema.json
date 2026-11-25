@@ -9548,7 +9548,10 @@
               "additionalProperties": false,
               "properties": {
                 "kind": {
-                  "const": "per-call"
+                  "enum": [
+                    "per-call",
+                    "per-call-wire"
+                  ]
                 },
                 "provider": {
                   "const": "openai"

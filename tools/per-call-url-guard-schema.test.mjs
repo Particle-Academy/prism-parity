@@ -59,3 +59,21 @@ test('a fixture cannot authorize NODE_OPTIONS before the SDK is loaded', async (
   const document = fixture(); document.environment_names.push('NODE_OPTIONS');
   await assert.rejects(observe(document, 'must-not-be-loaded'), /Unapproved environment isolation/);
 });
+
+test('the wire rows keep a control that reaches the endpoint in every language', () => {
+  const wire = fixture().cases.filter(row => row.given.kind === 'per-call-wire');
+  assert.ok(wire.length >= 2);
+  // A transport that refused every url would pass every userinfo row; the
+  // control is what makes those rows mean anything.
+  assert.ok(wire.some(row => ['php', 'ts', 'py'].every(language => row.result[language].dispatched)));
+});
+
+for (const [name, url] of [
+  ['a real host', 'http://parity-user@gateway.example/v1'],
+  ['https, which the loopback server does not speak', 'https://parity-user@{endpoint}/v1'],
+  ['the placeholder outside the authority', 'http://gateway.example/{endpoint}/v1'],
+]) test(`a per-call-wire row cannot name ${name}`, () => {
+  const document = fixture();
+  document.cases.find(row => row.given.kind === 'per-call-wire').given.config.url = url;
+  assert.match(perCallUrlGuardFailures(document).join('\n'), /per-call-wire url must be http and name \{endpoint\}/);
+});
