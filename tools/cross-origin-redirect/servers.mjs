@@ -51,7 +51,7 @@ export async function startServer(host) {
       answered = true;
       const [method, path] = requestLine.split(' ');
       state.requests.push({ method, path });
-      if (state.redirect !== null && state.requests.length === 1) {
+      if (state.redirect !== null && state.requests.length <= state.redirect.times) {
         socket.end(`HTTP/1.1 ${state.redirect.status} Redirect\r\nLocation: ${state.redirect.location}\r\nContent-Length: 0\r\nConnection: close\r\n\r\n`);
         return;
       }
@@ -72,7 +72,11 @@ export async function startServer(host) {
 
 // The servers for one row: the configured endpoint, another host, and the
 // endpoint's host on another port. Location is resolved here from the row's
-// target, so a corpus row never carries a port.
+// target, so a corpus row never carries a port. The endpoint redirects its
+// first request only, except for the hop-limit targets: `same-origin-loop`
+// redirects every request back into the origin, and `same-origin-chain-5`
+// redirects the first five, then answers. `same-origin-userinfo` names the
+// endpoint's own origin with a synthetic user and password in front of it.
 export async function rowServers(target, status) {
   const endpoint = await startServer('127.0.0.1');
   const otherHost = await startServer('127.0.0.2');
@@ -84,9 +88,13 @@ export async function rowServers(target, status) {
     'scheme': `https://127.0.0.1:${endpoint.port}/landed`,
     'same-origin-path': '/landed',
     'same-origin-absolute': `${endpoint.origin}/landed`,
+    'same-origin-loop': '/landed',
+    'same-origin-chain-5': '/landed',
+    'same-origin-userinfo': `http://parity-user:parity-pass@127.0.0.1:${endpoint.port}/landed`,
   }[target];
   if (location === undefined) throw new Error('Unknown cross-origin-redirect target.');
-  endpoint.redirect = { status, location };
+  const times = { 'same-origin-loop': Infinity, 'same-origin-chain-5': 5 }[target] ?? 1;
+  endpoint.redirect = { status, location, times };
   return { endpoint, otherHost, otherPort };
 }
 

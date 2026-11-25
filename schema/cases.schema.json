@@ -9891,7 +9891,10 @@
                 "protocol-relative",
                 "scheme",
                 "same-origin-path",
-                "same-origin-absolute"
+                "same-origin-absolute",
+                "same-origin-loop",
+                "same-origin-chain-5",
+                "same-origin-userinfo"
               ]
             }
           },
