@@ -27,6 +27,9 @@ const active = (s = steps(2)) => [draft(s), bind(), { op: 'activate', digest: D 
 const run = () => [{ op: 'prepare', run_failed: false }, { op: 'claim', until: 1767226200 }];
 const held = (id = 'apr_w') => ({ op: 'reconcile', pending: [{ id, name: 'weather', digest: 'sha256:w' }], decided: {} });
 const decide = (id, approved) => ({ op: 'reconcile', pending: [], decided: { [id]: approved } });
+const route = (context, prompt, { advancing = false, stepApproval = false, tree = false, plan = false } = {}) => ({
+  op: 'budget_route', context, prompt, advancing, step_approval: stepApproval, saved_tree: tree, saved_plan_ledger: plan,
+});
 const human = (extra = {}) => ({ title: 'Ask which city', owner: 'human', interaction: 'input', question: 'Which city?', options: ['Paris', 'Rome'], ...extra });
 
 let n = 0;
@@ -255,6 +258,23 @@ const cases = [
     [{ op: 'budget_open', config: { mode: 'shared', max_steps: 5 } },
       { op: 'budget_reserve', hold: 'run_root', steps: 5, cost_micros: null },
       { op: 'budget_reserve', hold: 'run_resume', steps: 3, cost_micros: null, now: 1767225900, ttl: 300 }], { since: '0.1.4' }),
+  c('a turn on a subagent child continues its run tree and plan budget whatever its prompt',
+    'Which budgets a turn on a child session the runner did not start spends from (budget_route). An answer to its approval and a new message instead of one both continue the saved run tree and charge the saved plan budget; a metadata-only context changes nothing; only a session saved with no tree opens a fresh one (a new message escaping the tree and plan budgets).',
+    [route('none', '', { tree: true, plan: true }), route('none', 'New question', { tree: true, plan: true }),
+      route('metadata', 'New question', { tree: true, plan: true }), route('none', 'New question', { tree: true }),
+      route('none', 'New question')], { since: '0.1.5' }),
+  c('a run context the host hands a child session is narrowed to its run tree and plan budget, never a fresh root',
+    'A host-built context on a child saved with a run tree and a plan budget continues both, whatever its prompt, and the ledger then grants it only what is left, however large the host budget; the runner\'s own context already spends from the tree and is not charged twice (a host context widening a resumed child; double charge).',
+    [route('host', '', { tree: true, plan: true }), route('host', 'New question', { tree: true, plan: true }),
+      route('host', ''), route('runner', '', { tree: true, plan: true }),
+      { op: 'budget_open', config: { mode: 'shared', max_steps: 5 } },
+      { op: 'budget_reserve', hold: 'run_root', steps: 5, cost_micros: null }, { op: 'budget_settle', hold: 'run_root', steps: 4, cost_micros: 0 },
+      { op: 'budget_reserve', hold: 'run_host', steps: 100, cost_micros: null }, { op: 'budget_settle', hold: 'run_host', steps: 1, cost_micros: 0 },
+      { op: 'budget_reserve', hold: 'run_host_again', steps: 100, cost_micros: null }], { since: '0.1.5' }),
+  c('only the plan\'s own turns spend from its budget, and a run tree handed to one is refused',
+    'The turn advance() runs and the empty-prompt resume of the held step\'s own approval are the plan\'s; a new message while the step is held is not. The plan\'s own turn handed a host or runner context is refused with plan.budget_context rather than let around the plan budget; an unknown context kind is invalid (a chat turn charged to a plan; a context around a plan budget).',
+    [route('none', '', { advancing: true }), route('none', '', { stepApproval: true }), route('none', 'Unrelated', { stepApproval: true }),
+      route('host', '', { advancing: true }), route('runner', '', { stepApproval: true }), route('root', '')], { since: '0.1.5' }),
 ];
 
 const existing = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : { cases: [] };
@@ -280,7 +300,7 @@ if (process.argv[2] === '--merge') {
 const document = {
   suite: 'harness-plans',
   schema_version: 1,
-  corpus_version: '0.1.4',
+  corpus_version: '0.1.5',
   generated_by: 'tools/generate-harness-plans.mjs writes the inputs. `expected` is the PHP reference\'s recording; every security row was checked by hand against the G-360 design before TypeScript or Python ran. `result` records what each language measured, merged with --merge.',
   pins_note: 'Each case runs `ops` in order against a fresh plan through the language\'s pure PlanMachine and PlanView, with ids minted as prefix + "_" + a 26-digit counter, the clock at `now` (default 1767225600, 2026-01-01T00:00:00Z) and the run id "run_case". Each op records {ok} or {refused: code} or its outcome. `final` is the plan as stored (the fields a consumer or the next turn depends on), its g282.3 update, its counts, its context block and its first-event size, or null when nothing was written. Budget ops (G-366) run the pure PlanBudget against one ledger per case, opened with plan id "plan"; `budget` is that ledger with its holds as a list sorted by id, present only when the case opened one. A setting that is invalid records {invalid: true}.',
   cases: cases.map((item) => {
