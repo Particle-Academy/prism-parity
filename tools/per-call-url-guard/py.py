@@ -3,11 +3,17 @@
 Every request enters through ``Prism.text().using(...)`` and is captured at the
 default transport's ``send``, which answers 500; DNS and sockets are refused. A
 row records WHETHER a request was sent and WHICH refusal code stopped it.
+
+A ``per-call-wire`` row instead runs the real default transport against the
+loopback server the entry point started for it. Only a 127.x literal may be
+resolved or contacted; whether anything arrived is read off that server.
 """
 from __future__ import annotations
 
 import json
 import os
+import re
+import socket
 import sys
 from pathlib import Path
 from typing import Any
@@ -22,23 +28,42 @@ from prism.http import HttpRequest, HttpResponse, UrllibTransport
 HERE = Path(__file__).parent
 ENVIRONMENT_NAMES = json.loads((HERE / "environment-names.json").read_text(encoding="utf-8"))
 REFUSALS = ("private_address_refused", "scheme_not_allowed", "non_ascii_host_use_punycode")
+KINDS = ("per-call", "compatible", "per-call-wire")
+LOOPBACK = re.compile(r"\A127\.\d+\.\d+\.\d+\Z")
+
+_real_send = UrllibTransport.send
+_real_getaddrinfo = socket.getaddrinfo
+_real_connect = socket.socket.connect
 
 
 def observe(document: dict[str, Any]) -> list[dict[str, Any]]:
     if sorted(document["environment_names"]) != sorted(ENVIRONMENT_NAMES):
         raise ValueError("Unapproved environment isolation names.")
     sent: list[str] = []
+    wire = [False]
 
     def send(self: UrllibTransport, request: HttpRequest) -> HttpResponse:
+        if wire[0]:
+            return _real_send(self, request)
         sent.append(request.url)
         return HttpResponse(status=500, body=b'{"error":{"message":"fixture"}}', headers={})
+
+    def getaddrinfo(host: Any, *args: Any, **kwargs: Any) -> Any:
+        if wire[0] and LOOPBACK.match(str(host)):
+            return _real_getaddrinfo(host, *args, **kwargs)
+        raise AssertionError("Unowned DNS in per-call fixture.")
+
+    def connect(self: socket.socket, address: Any) -> Any:
+        if wire[0] and isinstance(address, tuple) and LOOPBACK.match(str(address[0])):
+            return _real_connect(self, address)
+        raise AssertionError("Unowned socket in per-call fixture.")
 
     rows = []
     with (
         patch.dict(os.environ),
         patch.object(UrllibTransport, "send", send),
-        patch("socket.getaddrinfo", side_effect=AssertionError("Unowned DNS in per-call fixture.")),
-        patch("socket.socket.connect", side_effect=AssertionError("Unowned socket in per-call fixture.")),
+        patch("socket.getaddrinfo", getaddrinfo),
+        patch.object(socket.socket, "connect", connect),
     ):
         for entry in document["cases"]:
             row = entry["given"]
@@ -48,8 +73,9 @@ def observe(document: dict[str, Any]) -> list[dict[str, Any]]:
                 if name not in ENVIRONMENT_NAMES:
                     raise ValueError("Unapproved synthetic environment name.")
                 os.environ[name] = value
-            if row["kind"] not in ("per-call", "compatible"):
+            if row["kind"] not in KINDS:
                 raise ValueError("Unknown per-call-url-guard fixture kind.")
+            wire[0] = row["kind"] == "per-call-wire"
             sent.clear()
             refusal = None
             try:
