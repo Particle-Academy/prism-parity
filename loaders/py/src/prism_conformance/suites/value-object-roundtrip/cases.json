@@ -416,6 +416,73 @@
                 "serialized_json": "{\"prompt_tokens\":11,\"completion_tokens\":23,\"cache_write_input_tokens\":10,\"cache_read_input_tokens\":null,\"thought_tokens\":null,\"cost\":null,\"cache_write_5m_input_tokens\":10,\"cache_write_1h_input_tokens\":null}",
                 "rehydrates": false
             }
+        },
+        {
+            "id": "rtp-0018",
+            "title": "tool call whose arguments are not valid JSON",
+            "since": "0.1.30",
+            "notes": "A stored call must not keep arguments the model did not validly send. The reference stores a fixed text, `]`, that can never decode, and says so with `arguments_malformed: true` placed straight after `arguments`. A port that keeps the raw text writes a record whose content nothing validated, and one that drops the flag leaves a reader unable to tell an unusable call from a usable one. The rehydrate half asserts the record reads back as a call that is still unusable and re-serialises to the same bytes.",
+            "subject": {
+                "$": "ToolCall",
+                "id": "fc_3",
+                "name": "weather",
+                "arguments": "{\"kept-out\": 5",
+                "resultId": "call_3"
+            },
+            "expect": {
+                "serialized_json": "{\"id\":\"fc_3\",\"name\":\"weather\",\"arguments\":\"]\",\"arguments_malformed\":true,\"result_id\":\"call_3\",\"reasoning_id\":null,\"reasoning_summary\":null}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "rtp-0019",
+            "title": "tool call whose arguments are JSON but not named values",
+            "since": "0.1.30",
+            "notes": "Valid JSON that is not a map of named values is unusable too: a list would bind to a handler by position. The reference stores it exactly as it stores text that does not decode, so the record carries neither the list nor anything a reader could mistake for arguments.",
+            "subject": {
+                "$": "ToolCall",
+                "id": "fc_4",
+                "name": "deploy",
+                "arguments": "[\"prod\"]",
+                "resultId": "call_4"
+            },
+            "expect": {
+                "serialized_json": "{\"id\":\"fc_4\",\"name\":\"deploy\",\"arguments\":\"]\",\"arguments_malformed\":true,\"result_id\":\"call_4\",\"reasoning_id\":null,\"reasoning_summary\":null}",
+                "rehydrates": true
+            }
+        },
+        {
+            "id": "rtp-0020",
+            "title": "assistant message carrying a usable and an unusable tool call",
+            "since": "0.1.30",
+            "notes": "The flag belongs to the call, not the message. The usable call is stored as given, with no flag, and the unusable one beside it is stored as the fixed record. A port that flags the whole message, or that normalises the usable call while replacing the other, fails here.",
+            "subject": {
+                "$": "AssistantMessage",
+                "content": "",
+                "toolCalls": [
+                    {
+                        "$": "ToolCall",
+                        "id": "fc_5",
+                        "name": "weather",
+                        "arguments": "{\"city\":\"Paris\"}",
+                        "resultId": "call_5"
+                    },
+                    {
+                        "$": "ToolCall",
+                        "id": "fc_6",
+                        "name": "weather",
+                        "arguments": "{\"city\": ",
+                        "resultId": "call_6"
+                    }
+                ],
+                "additionalContent": {
+                    "reasoningSummaries": []
+                }
+            },
+            "expect": {
+                "serialized_json": "{\"type\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":\"fc_5\",\"name\":\"weather\",\"arguments\":\"{\\\"city\\\":\\\"Paris\\\"}\",\"result_id\":\"call_5\",\"reasoning_id\":null,\"reasoning_summary\":null},{\"id\":\"fc_6\",\"name\":\"weather\",\"arguments\":\"]\",\"arguments_malformed\":true,\"result_id\":\"call_6\",\"reasoning_id\":null,\"reasoning_summary\":null}],\"additional_content\":{\"reasoningSummaries\":[]},\"tool_approval_requests\":[]}",
+                "rehydrates": true
+            }
         }
     ]
 }
