@@ -2949,7 +2949,15 @@
                   "exception.stacktrace": {
                     "enum": [
                       "present",
-                      "present, carries the content marker"
+                      "present, carries the content marker",
+                      "type line only"
+                    ],
+                    "description": "A label, never the text: frames differ between machines."
+                  },
+                  "exception.escaped": {
+                    "enum": [
+                      "False",
+                      "True"
                     ]
                   }
                 }
@@ -3163,6 +3171,43 @@
       "allOf": [
         {
           "$ref": "#/$defs/securityCase"
+        },
+        {
+          "if": {
+            "properties": {
+              "generation": {
+                "required": [
+                  "failure"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spans": {
+                "properties": {
+                  "php": {
+                    "required": [
+                      "status_description",
+                      "events"
+                    ]
+                  },
+                  "ts": {
+                    "required": [
+                      "status_description",
+                      "events"
+                    ]
+                  },
+                  "py": {
+                    "required": [
+                      "status_description",
+                      "events"
+                    ]
+                  }
+                }
+              }
+            }
+          }
         }
       ]
     },
