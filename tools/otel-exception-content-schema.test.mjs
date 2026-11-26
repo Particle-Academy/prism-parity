@@ -17,6 +17,24 @@ const corpus = JSON.parse(readFileSync(join(root, 'suites', 'opentelemetry-span-
 const failures = corpus.cases.filter((entry) => entry.generation.failure !== undefined);
 const FIXED = 'The generation failed.';
 const EVENT_KEYS = new Set(['exception.type', 'exception.message', 'exception.stacktrace', 'exception.escaped']);
+const WINDOW = 16;
+
+/** Every string a recorded span holds, keys included, unescaped. */
+function strings(value) {
+  if (typeof value === 'string') return [value];
+  if (Array.isArray(value)) return value.flatMap(strings);
+  if (value !== null && typeof value === 'object') {
+    return Object.entries(value).flatMap(([key, item]) => [key, ...strings(item)]);
+  }
+  return [];
+}
+
+test('the piece check is not vacuous: it finds a cut message', () => {
+  const message = failures[0].generation.failure.message;
+  const cut = { attributes: { 'error.message': message.slice(0, 40) } };
+  const values = strings(cut).join('\n');
+  assert.ok(values.includes(message.slice(0, WINDOW)));
+});
 
 test('the failure rows exist, with a capture-on control', () => {
   assert.ok(failures.length >= 4, `expected the failure rows, found ${failures.length}`);
@@ -45,6 +63,13 @@ for (const entry of failures) {
       }
 
       assert.ok(!exported.includes(marker), 'capture off: marker exported');
+      // Not only the marker: no 16-character piece of the message either, so a
+      // message cut before the marker, or quoted in part, is still caught.
+      const values = strings(span).join('\n');
+      for (let start = 0; start + WINDOW <= message.length; start++) {
+        const piece = message.slice(start, start + WINDOW);
+        assert.ok(!values.includes(piece), `capture off: part of the message exported: ${JSON.stringify(piece)}`);
+      }
       assert.ok(!exported.includes('carries the content marker'), 'capture off: stack trace carries the marker');
       assert.equal(span.status_description, FIXED);
       const attributes = span.events[0].attributes;

@@ -138,7 +138,9 @@ function record(entry) {
 
   if (g.failure !== undefined) {
     recorded.status_description = span.description ?? null;
-    recorded.events = span.exceptions.map((error) => exceptionEvent(error, g.failure.content_marker));
+    recorded.events = span.exceptions
+      .map((error) => exceptionEvent(error, g.failure.content_marker))
+      .filter((event) => event !== null);
   }
 
   return recorded;
@@ -171,6 +173,9 @@ function exceptionEvent(error, marker) {
         : 'present';
     }
   }
+
+  // The SDK records nothing, and warns, when it can name neither.
+  if (!attributes['exception.type'] && !attributes['exception.message']) return null;
 
   return { name: 'exception', attributes: sorted(attributes) };
 }

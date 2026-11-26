@@ -2963,7 +2963,8 @@
                 }
               }
             }
-          }
+          },
+          "minItems": 1
         }
       }
     },
@@ -3203,6 +3204,62 @@
                       "status_description",
                       "events"
                     ]
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "spans": {
+                "properties": {
+                  "php": {
+                    "not": {
+                      "anyOf": [
+                        {
+                          "required": [
+                            "status_description"
+                          ]
+                        },
+                        {
+                          "required": [
+                            "events"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "ts": {
+                    "not": {
+                      "anyOf": [
+                        {
+                          "required": [
+                            "status_description"
+                          ]
+                        },
+                        {
+                          "required": [
+                            "events"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "py": {
+                    "not": {
+                      "anyOf": [
+                        {
+                          "required": [
+                            "status_description"
+                          ]
+                        },
+                        {
+                          "required": [
+                            "events"
+                          ]
+                        }
+                      ]
+                    }
                   }
                 }
               }
