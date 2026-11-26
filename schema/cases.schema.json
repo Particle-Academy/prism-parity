@@ -10143,7 +10143,8 @@
                   "binding_route",
                   "binding_context",
                   "tree_membership",
-                  "kept_refs"
+                  "kept_refs",
+                  "step_allowance"
                 ]
               }
             }
