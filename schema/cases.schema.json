@@ -10400,7 +10400,8 @@
                   "binding_context",
                   "tree_membership",
                   "kept_refs",
-                  "step_allowance"
+                  "step_allowance",
+                  "start_gate"
                 ]
               }
             }
