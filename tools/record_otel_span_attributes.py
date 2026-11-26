@@ -37,6 +37,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import traceback
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -79,15 +80,18 @@ class RecordedSpan:
     name: str
     status: str = "unset"
     attributes: dict[str, Any] = field(default_factory=dict)
+    description: str | None = None
+    exceptions: list[BaseException | None] = field(default_factory=list)
 
     def set_attribute(self, key: str, value: Any) -> None:
         self.attributes[key] = value
 
     def set_status(self, code: str, message: str | None = None) -> None:
         self.status = code
+        self.description = message
 
-    def record_exception(self, error: BaseException) -> None:
-        pass
+    def record_exception(self, error: BaseException | None) -> None:
+        self.exceptions.append(error)
 
     def end(self, end_time_nanos: int | None = None) -> None:
         pass
@@ -202,24 +206,74 @@ def record(entry: dict[str, Any]) -> dict[str, Any]:
         None if tools is None else [advertised(tool) for tool in tools],
     )
 
-    subscriber.on_generation_completed(
-        entry["id"],
-        finish_reason=g["finish_reason"],
-        usage=None if g["usage"] is None else usage_of(g["usage"]),
-        output=g["output"],
-        rate_limits=(
-            None if g["rate_limits"] is None else [rate_limit_of(r) for r in g["rate_limits"]]
-        ),
-    )
+    failure = g.get("failure")
+
+    if failure is None:
+        subscriber.on_generation_completed(
+            entry["id"],
+            finish_reason=g["finish_reason"],
+            usage=None if g["usage"] is None else usage_of(g["usage"]),
+            output=g["output"],
+            rate_limits=(
+                None if g["rate_limits"] is None else [rate_limit_of(r) for r in g["rate_limits"]]
+            ),
+        )
+    else:
+        subscriber.on_generation_failed(entry["id"], raised(failure["message"]))
 
     assert len(tracer.spans) == 1, f"{entry['id']}: expected exactly one root span"
     span = tracer.spans[0]
 
-    return {
+    recorded: dict[str, Any] = {
         "name": span.name,
         "status": span.status,
         "attributes": dict(sorted(span.attributes.items())),
     }
+
+    if failure is not None:
+        recorded["status_description"] = span.description
+        recorded["events"] = [
+            exception_event(error, failure["content_marker"]) for error in span.exceptions
+        ]
+
+    return recorded
+
+
+def raised(message: str) -> RuntimeError:
+    """A RuntimeError that has been raised, so it carries a traceback."""
+    try:
+        raise RuntimeError(message)
+    except RuntimeError as error:
+        return error
+
+
+def exception_event(error: BaseException | None, marker: str) -> dict[str, Any]:
+    """The ``exception`` event an OpenTelemetry Python SDK derives from ``error``.
+
+    ``exception.type`` is the qualified class name, prefixed by its module unless
+    that is ``builtins``; ``exception.message`` is ``str(error)``, kept only when
+    it is not empty. ``exception.stacktrace`` is kept when the exception has a
+    traceback or its formatted text carries the marker, and its TEXT, which
+    differs between machines, is recorded as ``present`` or ``present, carries
+    the content marker``.
+    """
+    attributes: dict[str, Any] = {}
+
+    if error is not None:
+        cls = type(error)
+        module = cls.__module__
+        attributes["exception.type"] = (
+            f"{module}.{cls.__qualname__}" if module and module != "builtins" else cls.__qualname__
+        )
+        if str(error):
+            attributes["exception.message"] = str(error)
+        text = "".join(traceback.format_exception(cls, error, error.__traceback__))
+        if error.__traceback__ is not None or marker in text:
+            attributes["exception.stacktrace"] = (
+                "present, carries the content marker" if marker in text else "present"
+            )
+
+    return {"name": "exception", "attributes": dict(sorted(attributes.items()))}
 
 
 def differences(reference: dict[str, Any], other: dict[str, Any]) -> list[str]:
@@ -237,6 +291,12 @@ def differences(reference: dict[str, Any], other: dict[str, Any]) -> list[str]:
 
     if reference["status"] != other["status"]:
         fields.append("span status")
+
+    if reference.get("status_description") != other.get("status_description"):
+        fields.append("status_description")
+
+    if reference.get("events") != other.get("events"):
+        fields.append("events")
 
     keys = set(reference["attributes"]) | set(other["attributes"])
 

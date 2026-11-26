@@ -2906,6 +2906,56 @@
         },
         "attributes": {
           "$ref": "#/$defs/telemetrySpanAttributes"
+        },
+        "status_description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Recorded on a failed generation only."
+        },
+        "events": {
+          "type": "array",
+          "description": "Recorded on a failed generation only: the span's exception events.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "attributes"
+            ],
+            "properties": {
+              "name": {
+                "const": "exception"
+              },
+              "attributes": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "exception.type"
+                ],
+                "properties": {
+                  "exception.type": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "exception.message": {
+                    "type": "string"
+                  },
+                  "exception.stacktrace": {
+                    "enum": [
+                      "present",
+                      "present, carries the content marker"
+                    ]
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -3054,6 +3104,25 @@
                   }
                 }
               }
+            },
+            "failure": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "message",
+                "content_marker"
+              ],
+              "description": "Present only on a FAILED generation: the exception's message, and a string inside it that must not reach the span unless content capture is on.",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "content_marker": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
             }
           }
         },
@@ -3155,6 +3224,10 @@
               "minLength": 1
             },
             "rate_limits": {
+              "type": "string",
+              "minLength": 1
+            },
+            "failure": {
               "type": "string",
               "minLength": 1
             }
