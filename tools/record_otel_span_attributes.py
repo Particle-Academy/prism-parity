@@ -37,6 +37,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import traceback
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -79,15 +80,18 @@ class RecordedSpan:
     name: str
     status: str = "unset"
     attributes: dict[str, Any] = field(default_factory=dict)
+    description: str | None = None
+    exceptions: list[BaseException | None] = field(default_factory=list)
 
     def set_attribute(self, key: str, value: Any) -> None:
         self.attributes[key] = value
 
     def set_status(self, code: str, message: str | None = None) -> None:
         self.status = code
+        self.description = message
 
-    def record_exception(self, error: BaseException) -> None:
-        pass
+    def record_exception(self, error: BaseException | None) -> None:
+        self.exceptions.append(error)
 
     def end(self, end_time_nanos: int | None = None) -> None:
         pass
@@ -202,24 +206,80 @@ def record(entry: dict[str, Any]) -> dict[str, Any]:
         None if tools is None else [advertised(tool) for tool in tools],
     )
 
-    subscriber.on_generation_completed(
-        entry["id"],
-        finish_reason=g["finish_reason"],
-        usage=None if g["usage"] is None else usage_of(g["usage"]),
-        output=g["output"],
-        rate_limits=(
-            None if g["rate_limits"] is None else [rate_limit_of(r) for r in g["rate_limits"]]
-        ),
-    )
+    failure = g.get("failure")
+
+    if failure is None:
+        subscriber.on_generation_completed(
+            entry["id"],
+            finish_reason=g["finish_reason"],
+            usage=None if g["usage"] is None else usage_of(g["usage"]),
+            output=g["output"],
+            rate_limits=(
+                None if g["rate_limits"] is None else [rate_limit_of(r) for r in g["rate_limits"]]
+            ),
+        )
+    else:
+        subscriber.on_generation_failed(entry["id"], raised(failure["message"]))
 
     assert len(tracer.spans) == 1, f"{entry['id']}: expected exactly one root span"
     span = tracer.spans[0]
 
-    return {
+    recorded: dict[str, Any] = {
         "name": span.name,
         "status": span.status,
         "attributes": dict(sorted(span.attributes.items())),
     }
+
+    if failure is not None:
+        recorded["status_description"] = span.description
+        recorded["events"] = [
+            exception_event(error, failure["content_marker"]) for error in span.exceptions
+        ]
+
+    return recorded
+
+
+def raised(message: str) -> RuntimeError:
+    """A RuntimeError that has been raised, so it carries a traceback."""
+    try:
+        raise RuntimeError(message)
+    except RuntimeError as error:
+        return error
+
+
+def exception_event(error: BaseException | None, marker: str) -> dict[str, Any]:
+    """The ``exception`` event opentelemetry-sdk's ``Span.record_exception`` writes.
+
+    Mirrored attribute for attribute, because this port has no SDK to read back:
+    ``exception.type`` is the qualified class name, prefixed by its module unless
+    that is ``builtins``; ``exception.message`` is ``str(error)``, even when
+    empty; ``exception.stacktrace`` is ``traceback.format_exception`` of it; and
+    ``exception.escaped`` is ``"False"``. The stack trace's TEXT differs between
+    machines, so it is recorded as one of three labels: ``type line only`` when
+    it is nothing but the class name, ``present, carries the content marker``
+    when the marker is in it, and ``present`` otherwise. ``None`` is not
+    mirrored: only a tool span can pass it, and these rows record root spans.
+    """
+    attributes: dict[str, Any] = {}
+
+    if error is not None:
+        cls = type(error)
+        module = cls.__module__
+        attributes["exception.type"] = (
+            f"{module}.{cls.__qualname__}" if module and module != "builtins" else cls.__qualname__
+        )
+        attributes["exception.message"] = str(error)
+        text = "".join(traceback.format_exception(cls, error, error.__traceback__))
+        if marker in text:
+            label = "present, carries the content marker"
+        elif text.strip() in {cls.__qualname__, attributes["exception.type"]}:
+            label = "type line only"
+        else:
+            label = "present"
+        attributes["exception.stacktrace"] = label
+        attributes["exception.escaped"] = "False"
+
+    return {"name": "exception", "attributes": dict(sorted(attributes.items()))}
 
 
 def differences(reference: dict[str, Any], other: dict[str, Any]) -> list[str]:
@@ -237,6 +297,12 @@ def differences(reference: dict[str, Any], other: dict[str, Any]) -> list[str]:
 
     if reference["status"] != other["status"]:
         fields.append("span status")
+
+    if reference.get("status_description") != other.get("status_description"):
+        fields.append("status_description")
+
+    if reference.get("events") != other.get("events"):
+        fields.append("events")
 
     keys = set(reference["attributes"]) | set(other["attributes"])
 

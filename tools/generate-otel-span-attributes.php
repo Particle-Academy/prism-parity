@@ -44,6 +44,7 @@ use Prism\OpenTelemetry\TelemetrySubscriber;
 use Prism\Prism\Enums\FinishReason;
 use Prism\Prism\Enums\TelemetryOperation;
 use Prism\Prism\Events\Telemetry\GenerationCompleted;
+use Prism\Prism\Events\Telemetry\GenerationFailed;
 use Prism\Prism\Events\Telemetry\GenerationStarted;
 use Prism\Prism\Schema\RawSchema;
 use Prism\Prism\Telemetry\TelemetryContext;
@@ -200,6 +201,11 @@ function emit(array $case, callable $operationOf, callable $finishReasonOf): arr
         new SpanStore,
         recordExceptions: true,
         maxContentLength: $case['max_content_length'],
+        // The bridge's own switch, handed the case's setting exactly as the
+        // service provider hands it `prism.telemetry.capture_content`. It
+        // decides only how much of a FAILURE reaches the span; the request and
+        // response are gated by core before the bridge sees them (otel-0013).
+        captureContent: $case['capture_content'],
     );
 
     $context = new TelemetryContext(
@@ -240,14 +246,23 @@ function emit(array $case, callable $operationOf, callable $finishReasonOf): arr
     $subscriber->onGenerationStarted(
         new GenerationStarted($context, $input, advertisedToolsOf($generation['tools'] ?? null)),
     );
-    $subscriber->onGenerationCompleted(new GenerationCompleted(
-        $context,
-        0.0,
-        $finishReasonOf($generation['finish_reason']),
-        $usage,
-        $output,
-        rateLimitsOf($generation['rate_limits']),
-    ));
+    $failure = $generation['failure'] ?? null;
+
+    if ($failure === null) {
+        $subscriber->onGenerationCompleted(new GenerationCompleted(
+            $context,
+            0.0,
+            $finishReasonOf($generation['finish_reason']),
+            $usage,
+            $output,
+            rateLimitsOf($generation['rate_limits']),
+        ));
+    } else {
+        // A FAILED generation. Core passes the exception to the bridge whatever
+        // `capture_content` says, so the bridge's own switch is what decides
+        // how much of it reaches the span.
+        $subscriber->onGenerationFailed(new GenerationFailed($context, 0.0, new \RuntimeException($failure['message'])));
+    }
 
     $spans = $exporter->getSpans();
 
@@ -259,11 +274,48 @@ function emit(array $case, callable $operationOf, callable $finishReasonOf): arr
     $attributes = $spans[0]->getAttributes()->toArray();
     ksort($attributes);
 
-    return [
+    $recorded = [
         'name' => $spans[0]->getName(),
         'status' => strtolower($spans[0]->getStatus()->getCode()),
         'attributes' => $attributes,
     ];
+
+    if ($failure !== null) {
+        $recorded['status_description'] = $spans[0]->getStatus()->getDescription();
+        $recorded['events'] = exceptionEventsOf($spans[0]->getEvents(), $failure['content_marker']);
+    }
+
+    return $recorded;
+}
+
+/**
+ * The span's events as the corpus records them.
+ *
+ * Every attribute is kept except the stack trace's TEXT, whose frames differ
+ * between machines: it is recorded as `present`, or as `present, carries the
+ * content marker` when the case's marker is inside it.
+ *
+ * @param  iterable<\OpenTelemetry\SDK\Trace\EventInterface>  $events
+ * @return list<array{name: string, attributes: array<string, mixed>}>
+ */
+function exceptionEventsOf(iterable $events, string $marker): array
+{
+    $recorded = [];
+
+    foreach ($events as $event) {
+        $attributes = $event->getAttributes()->toArray();
+
+        if (array_key_exists('exception.stacktrace', $attributes)) {
+            $attributes['exception.stacktrace'] = str_contains((string) $attributes['exception.stacktrace'], $marker)
+                ? 'present, carries the content marker'
+                : 'present';
+        }
+
+        ksort($attributes);
+        $recorded[] = ['name' => $event->getName(), 'attributes' => $attributes];
+    }
+
+    return $recorded;
 }
 
 $stale = [];
