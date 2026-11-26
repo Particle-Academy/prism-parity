@@ -1,7 +1,7 @@
 {
     "suite": "per-call-url-guard",
     "schema_version": 1,
-    "corpus_version": "0.1.38",
+    "corpus_version": "0.1.40",
     "generated_by": "tools/per-call-url-guard.mjs with three native SDK adapters. Every observation is execution output; none is hand-written.",
     "scope": "Whether a provider url passed for ONE call is refused before any request when it names a loopback, private, link-local, metadata or unspecified address, through Prism.text().using() on the openai provider and on a named openai-compatible entry. Configured urls are not checked and appear here only as controls. Rows of kind per-call-wire run over each language's REAL default transport against a loopback server and record whether that server received a connection: a url the SDK builds but its platform client cannot send is visible only there.",
     "encoding": "An observation is whether any request was sent and which refusal code stopped the call (private_address_refused, scheme_not_allowed, non_ascii_host_use_punycode or null). The message is outside the contract and is not recorded.",
@@ -2910,6 +2910,380 @@
                 }
             },
             "agrees": false
+        },
+        {
+            "id": "pcu-0100",
+            "title": "opt-out on: a file url is still not a provider url",
+            "since": "0.1.40",
+            "notes": "Hostile: a non-http scheme with the private-address opt-out on. A client or custom transport that reads file urls would hand back a local file. The per-call address check is opted out in config, which allows a private address and nothing else: the scheme and host rules still hold.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "file:///etc/passwd"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0101",
+            "title": "opt-out on: an upper-case FILE scheme",
+            "since": "0.1.40",
+            "notes": "Hostile: the same, with a scheme case a case-sensitive check misses. The per-call address check is opted out in config, which allows a private address and nothing else: the scheme and host rules still hold.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "FILE:///etc/passwd"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0102",
+            "title": "opt-out on: a data url",
+            "since": "0.1.40",
+            "notes": "Hostile: a scheme some clients answer locally, with no request at all. The per-call address check is opted out in config, which allows a private address and nothing else: the scheme and host rules still hold.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "data:text/plain,hello"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0103",
+            "title": "opt-out on: a url wrapped in <URL:...>",
+            "since": "0.1.40",
+            "notes": "Hostile: a wrapper one parser unwraps and another rejects, here around userinfo. The per-call address check is opted out in config, which allows a private address and nothing else: the scheme and host rules still hold.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "<URL:http://parity-user:parity-pass@10.0.0.5/v1>"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0104",
+            "title": "opt-out on: backslashes for slashes",
+            "since": "0.1.40",
+            "notes": "Hostile: a WHATWG parser reads backslashes as slashes; the others do not. The per-call address check is opted out in config, which allows a private address and nothing else: the scheme and host rules still hold.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "http:\\\\10.0.0.5\\v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "scheme_not_allowed"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0105",
+            "title": "opt-out on: a backslash before the at sign",
+            "since": "0.1.40",
+            "notes": "Hostile: parsers split the authority at a backslash in different places, so they disagree on the host. The per-call address check is opted out in config, which allows a private address and nothing else: the scheme and host rules still hold.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "http://10.0.0.5\\@public.example/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0106",
+            "title": "opt-out on: a percent-escaped address",
+            "since": "0.1.40",
+            "notes": "Hostile: a client that decodes the host contacts a different host from the one written. The per-call address check is opted out in config, which allows a private address and nothing else: the scheme and host rules still hold.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "http://%31%30.0.0.5/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0107",
+            "title": "opt-out on: a percent-escaped name",
+            "since": "0.1.40",
+            "notes": "Hostile: the same, spelling a local name. The per-call address check is opted out in config, which allows a private address and nothing else: the scheme and host rules still hold.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "http://loc%61lhost/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0108",
+            "title": "opt-out on: a non-ASCII host",
+            "since": "0.1.40",
+            "notes": "Hostile: IDNA converters disagree, so the ASCII rule holds with the opt-out on. The per-call address check is opted out in config, which allows a private address and nothing else: the scheme and host rules still hold.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "http://exämple.test/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0109",
+            "title": "opt-out on: full-width digits",
+            "since": "0.1.40",
+            "notes": "Hostile: digits a WHATWG parser folds to ASCII and the others do not. The per-call address check is opted out in config, which allows a private address and nothing else: the scheme and host rules still hold.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "http://１０.0.0.5/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "non_ascii_host_use_punycode"
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0110",
+            "title": "opt-out on: a private address with a port and a path (control)",
+            "since": "0.1.40",
+            "notes": "Control: the opt-out still lets a per-call url name a private address. Without it, a guard that refused every opted-out url would pass the rows above. The per-call address check is opted out in config, which allows a private address and nothing else: the scheme and host rules still hold.",
+            "given": {
+                "kind": "per-call",
+                "provider": "openai",
+                "env": {
+                    "OPENAI_ALLOW_PRIVATE_PER_CALL_URL": "true"
+                },
+                "config": {
+                    "url": "http://10.0.0.5:8000/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "ts": {
+                    "dispatched": true,
+                    "refusal": null
+                },
+                "py": {
+                    "dispatched": true,
+                    "refusal": null
+                }
+            },
+            "agrees": true
+        },
+        {
+            "id": "pcu-0111",
+            "title": "opt-out on a compatible entry: a percent-escaped address",
+            "since": "0.1.40",
+            "notes": "Hostile: the entry's own opt-out, with a host a decoding client reads differently. The per-call address check is opted out in config, which allows a private address and nothing else: the scheme and host rules still hold.",
+            "given": {
+                "kind": "compatible",
+                "provider": "pcu-vllm",
+                "env": {},
+                "entry": {
+                    "url": "https://gateway.example/v1",
+                    "allow_private_per_call_url": true
+                },
+                "config": {
+                    "url": "http://%31%30.0.0.5/v1"
+                }
+            },
+            "result": {
+                "php": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "ts": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                },
+                "py": {
+                    "dispatched": false,
+                    "refusal": "private_address_refused"
+                }
+            },
+            "agrees": true
         }
     ]
 }
