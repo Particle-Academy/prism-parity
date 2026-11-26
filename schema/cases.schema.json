@@ -2906,6 +2906,65 @@
         },
         "attributes": {
           "$ref": "#/$defs/telemetrySpanAttributes"
+        },
+        "status_description": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Recorded on a failed generation only."
+        },
+        "events": {
+          "type": "array",
+          "description": "Recorded on a failed generation only: the span's exception events.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "attributes"
+            ],
+            "properties": {
+              "name": {
+                "const": "exception"
+              },
+              "attributes": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "exception.type"
+                ],
+                "properties": {
+                  "exception.type": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "exception.message": {
+                    "type": "string"
+                  },
+                  "exception.stacktrace": {
+                    "enum": [
+                      "present",
+                      "present, carries the content marker",
+                      "type line only"
+                    ],
+                    "description": "A label, never the text: frames differ between machines."
+                  },
+                  "exception.escaped": {
+                    "enum": [
+                      "False",
+                      "True"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "minItems": 1
         }
       }
     },
@@ -3054,6 +3113,25 @@
                   }
                 }
               }
+            },
+            "failure": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "message",
+                "content_marker"
+              ],
+              "description": "Present only on a FAILED generation: the exception's message, and a string inside it that must not reach the span unless content capture is on.",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "content_marker": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
             }
           }
         },
@@ -3094,6 +3172,99 @@
       "allOf": [
         {
           "$ref": "#/$defs/securityCase"
+        },
+        {
+          "if": {
+            "properties": {
+              "generation": {
+                "required": [
+                  "failure"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spans": {
+                "properties": {
+                  "php": {
+                    "required": [
+                      "status_description",
+                      "events"
+                    ]
+                  },
+                  "ts": {
+                    "required": [
+                      "status_description",
+                      "events"
+                    ]
+                  },
+                  "py": {
+                    "required": [
+                      "status_description",
+                      "events"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "spans": {
+                "properties": {
+                  "php": {
+                    "not": {
+                      "anyOf": [
+                        {
+                          "required": [
+                            "status_description"
+                          ]
+                        },
+                        {
+                          "required": [
+                            "events"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "ts": {
+                    "not": {
+                      "anyOf": [
+                        {
+                          "required": [
+                            "status_description"
+                          ]
+                        },
+                        {
+                          "required": [
+                            "events"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "py": {
+                    "not": {
+                      "anyOf": [
+                        {
+                          "required": [
+                            "status_description"
+                          ]
+                        },
+                        {
+                          "required": [
+                            "events"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       ]
     },
@@ -3155,6 +3326,10 @@
               "minLength": 1
             },
             "rate_limits": {
+              "type": "string",
+              "minLength": 1
+            },
+            "failure": {
               "type": "string",
               "minLength": 1
             }
