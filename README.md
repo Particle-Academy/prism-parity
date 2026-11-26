@@ -52,7 +52,7 @@ Python. `manifest/packages.json` records that package-family matrix and
 `tools/parity-check.mjs --report` prints its remaining gaps. See
 [decision 0021](docs/decisions/0021-parity-is-the-shipping-library-set.md).
 
-Corpus <!-- metric:corpus.version -->0.1.41<!-- /metric --> contains
+Corpus <!-- metric:corpus.version -->0.1.42<!-- /metric --> contains
 <!-- metric:golden.suites -->13<!-- /metric --> golden-based suites with
 <!-- metric:golden.cases -->251<!-- /metric --> stored cases.
 The rubric scores <!-- metric:security.corpora -->27<!-- /metric --> security corpora
