@@ -869,7 +869,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism-opentelemetry",
       "repository": "https://github.com/Particle-Academy/prism-opentelemetry",
-      "version": "0.6.0",
+      "version": "0.7.0",
       "carries": "the telemetry bridge",
       "family": "opentelemetry",
       "kind": "runtime",
@@ -884,7 +884,7 @@
       "registry": "pypi",
       "name": "prism-ai-opentelemetry",
       "repository": "https://github.com/Particle-Academy/prism-opentelemetry-py",
-      "version": "0.3.1",
+      "version": "0.4.0",
       "published": true,
       "family": "opentelemetry",
       "surface": {
@@ -912,7 +912,7 @@
       "registry": "npm",
       "name": "@particle-academy/prism-opentelemetry",
       "repository": "https://github.com/Particle-Academy/prism-opentelemetry-ts",
-      "version": "0.6.0",
+      "version": "0.7.0",
       "published": true,
       "family": "opentelemetry",
       "surface": {
@@ -1008,7 +1008,7 @@
       "registry": "pypi",
       "name": "prism-ai-core",
       "repository": "https://github.com/Particle-Academy/prism-py",
-      "version": "0.11.0",
+      "version": "0.12.0",
       "published": true,
       "surface": {
         "capabilities": [
@@ -1053,7 +1053,7 @@
       "registry": "npm",
       "name": "@particle-academy/prism",
       "repository": "https://github.com/Particle-Academy/prism-ts",
-      "version": "0.11.0",
+      "version": "0.12.0",
       "published": true,
       "surface": {
         "capabilities": [
@@ -1257,7 +1257,7 @@
       "registry": "packagist",
       "name": "particle-academy/prism-opentelemetry",
       "repository": "https://github.com/Particle-Academy/prism-opentelemetry",
-      "version": "0.6.0",
+      "version": "0.7.0",
       "carries": "the telemetry bridge",
       "status": "published",
       "published": true,
