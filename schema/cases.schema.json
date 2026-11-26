@@ -300,7 +300,40 @@
             }
           }
         },
-        "agrees": {}
+        "agrees": {},
+        "transport": {
+          "const": "default",
+          "description": "A WIRE row, run by tools/media-fetch-guard.mjs: `{port}` in url names a loopback server, and the fetch runs over each language's real default HTTP client. Absent: a row the language repositories run with a stubbed client."
+        },
+        "answers_any": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          },
+          "description": "What the resolver answers for every name not in resolves -- an attacker's own DNS zone. Wire rows only."
+        },
+        "dispatched": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "type": "boolean"
+            },
+            "ts": {
+              "type": "boolean"
+            },
+            "py": {
+              "type": "boolean"
+            }
+          },
+          "description": "Whether the loopback server received a connection, read off the server. Wire rows only."
+        }
       },
       "allOf": [
         {
@@ -325,6 +358,54 @@
               "guarded": {
                 "const": true
               }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "transport"
+            ]
+          },
+          "then": {
+            "required": [
+              "answers_any",
+              "dispatched"
+            ],
+            "properties": {
+              "url": {
+                "pattern": "\\{port\\}"
+              }
+            },
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "redirects_to"
+                  ]
+                },
+                {
+                  "required": [
+                    "redirects_always"
+                  ]
+                }
+              ]
+            }
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "answers_any"
+                  ]
+                },
+                {
+                  "required": [
+                    "dispatched"
+                  ]
+                }
+              ]
             }
           }
         }

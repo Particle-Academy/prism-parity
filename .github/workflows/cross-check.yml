@@ -201,6 +201,21 @@ jobs:
           node tools/per-call-url-guard.mjs ts --check
           node tools/per-call-url-guard.mjs py --check
 
+      # The media-fetch-guard rows a stubbed client cannot measure: a host
+      # spelled so that a guard and its HTTP client could read it differently
+      # (percent escapes, a backslash, numeric IPv4 forms, non-ASCII). Each
+      # language's REAL default transport against a loopback server, and what
+      # arrived is read off the server. Every column runs against a default
+      # branch, as above.
+      - name: Native media fetch guard wire observations
+        working-directory: prism-parity
+        env:
+          PRISM_PHP_SRC: ../prism
+        run: |
+          node tools/media-fetch-guard.mjs php --check
+          node tools/media-fetch-guard.mjs ts --check
+          node tools/media-fetch-guard.mjs py --check
+
       # A redirect off the configured origin is not followed, so the key in
       # the request's headers reaches no other server. Real loopback servers;
       # every column runs against a default branch, as above.
