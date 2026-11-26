@@ -70,7 +70,7 @@ function record(entry) {
 
   const tracer = {
     startSpan(name) {
-      const recorded = { name, status: 'unset', attributes: {} };
+      const recorded = { name, status: 'unset', attributes: {}, description: undefined, exceptions: [] };
       spans.push(recorded);
 
       return {
@@ -79,8 +79,11 @@ function record(entry) {
         },
         setStatus(status) {
           recorded.status = status.code;
+          recorded.description = status.message;
         },
-        recordException() {},
+        recordException(error) {
+          recorded.exceptions.push(error);
+        },
         end() {},
       };
     },
@@ -109,12 +112,16 @@ function record(entry) {
     g.tools === undefined || g.tools === null ? undefined : g.tools.map(advertisedTool),
   );
 
-  subscriber.onGenerationCompleted(entry.id, {
-    finishReason: g.finish_reason,
-    rateLimits: g.rate_limits === null ? undefined : g.rate_limits.map(rateLimit),
-    usage: g.usage === null ? undefined : usage(g.usage),
-    output: g.output ?? undefined,
-  });
+  if (g.failure === undefined) {
+    subscriber.onGenerationCompleted(entry.id, {
+      finishReason: g.finish_reason,
+      rateLimits: g.rate_limits === null ? undefined : g.rate_limits.map(rateLimit),
+      usage: g.usage === null ? undefined : usage(g.usage),
+      output: g.output ?? undefined,
+    });
+  } else {
+    subscriber.onGenerationFailed(entry.id, new Error(g.failure.message));
+  }
 
   if (spans.length !== 1) {
     console.error(`${entry.id}: expected exactly one root span, got ${spans.length}.`);
@@ -123,13 +130,54 @@ function record(entry) {
 
   const span = spans[0];
 
-  return {
+  const recorded = {
     name: span.name,
     status: span.status,
-    attributes: Object.fromEntries(
-      Object.entries(span.attributes).sort(([a], [b]) => (a < b ? -1 : 1)),
-    ),
+    attributes: sorted(span.attributes),
   };
+
+  if (g.failure !== undefined) {
+    recorded.status_description = span.description ?? null;
+    recorded.events = span.exceptions
+      .map((error) => exceptionEvent(error, g.failure.content_marker))
+      .filter((event) => event !== null);
+  }
+
+  return recorded;
+}
+
+function sorted(map) {
+  return Object.fromEntries(Object.entries(map).sort(([a], [b]) => (a < b ? -1 : 1)));
+}
+
+/**
+ * The `exception` event an OpenTelemetry JS SDK derives from what the port
+ * handed `recordException`: `exception.type` from `code`, else `name`;
+ * `exception.message` from `message` (or the value itself, if a string);
+ * `exception.stacktrace` from `stack`. The stack's TEXT differs between
+ * machines, so it is recorded as `present`, or as `present, carries the
+ * content marker`.
+ */
+function exceptionEvent(error, marker) {
+  const attributes = {};
+
+  if (typeof error === 'string') {
+    attributes['exception.message'] = error;
+  } else if (typeof error === 'object' && error !== null) {
+    if (error.code) attributes['exception.type'] = String(error.code);
+    else if (error.name) attributes['exception.type'] = error.name;
+    if (error.message) attributes['exception.message'] = error.message;
+    if (error.stack) {
+      attributes['exception.stacktrace'] = String(error.stack).includes(marker)
+        ? 'present, carries the content marker'
+        : 'present';
+    }
+  }
+
+  // The SDK records nothing, and warns, when it can name neither.
+  if (!attributes['exception.type'] && !attributes['exception.message']) return null;
+
+  return { name: 'exception', attributes: sorted(attributes) };
 }
 
 /**
@@ -207,6 +255,10 @@ function differences(reference, other) {
 
   if (reference.name !== other.name) fields.push('span name');
   if (reference.status !== other.status) fields.push('span status');
+  if (JSON.stringify(reference.status_description ?? null) !== JSON.stringify(other.status_description ?? null)) {
+    fields.push('status_description');
+  }
+  if (JSON.stringify(reference.events ?? null) !== JSON.stringify(other.events ?? null)) fields.push('events');
 
   const keys = new Set([...Object.keys(reference.attributes), ...Object.keys(other.attributes)]);
 
