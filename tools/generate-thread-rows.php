@@ -11,7 +11,9 @@ declare(strict_types=1);
  * through AgentRuntime::endedCallsOf() and Thread::rowPayload(), and (G-387 round 13) the
  * `read` cases through Thread::endedByStartIn(), and (G-387 round 15) the `place` cases through
  * Thread::placedRows() then the fold, the `started` row through Thread::startedPayload() and a
- * bound step through StepRows::withBoundRequests(). A generator that re-implemented the
+ * bound step through StepRows::withBoundRequests(), and (G-387 round 16) the `answer` row through
+ * Thread::answerPayload() and the `call_outcomes` / `approval_reads` reads through
+ * Thread::callOutcomesIn() / Thread::approvalReadsIn(). A generator that re-implemented the
  * shape would pin what the generator believes rather than what the harness
  * stores.
  *
@@ -102,6 +104,18 @@ function endedRow(array $input): array
     return ['type' => MessageMapper::typeOf($ended['message']), ...Thread::rowPayload($ended['message'], endedApprovals: $ended['approvals'])];
 }
 
+/**
+ * @param  array<string, mixed>  $input
+ * @return list<array<string, mixed>>
+ */
+function answerRow(array $input): array
+{
+    $payload = Thread::answerPayload(storedRows($input['stored']), $input['position'],
+        written(['write' => 'tool_result', 'results' => $input['results'], 'decisions' => $input['decisions']]));
+
+    return $payload === null ? [] : [['type' => MessageMapper::TYPE_TOOL_RESULT, ...$payload]];
+}
+
 /** @param array<string, mixed> $input */
 function written(array $input): Message
 {
@@ -145,8 +159,35 @@ function readings(array $case): array
             fn (string $id): array => ['approval_id' => $id, 'ended_by_start' => Thread::endedByStartIn($case['stored'], $id)],
             $case['approvals'],
         ),
+        // 0.6.0 (G-387 round 16): whether each call of the step at `step`
+        // has an outcome (Thread::callOutcomesIn()), and what each approval
+        // reads: pending, and the decision that stands (Thread::approvalReadsIn()).
+        'call_outcomes' => Thread::callOutcomesIn(storedRows($case['stored']), $case['step']),
+        'approval_reads' => Thread::approvalReadsIn(storedRows($case['stored']), $case['approvals']),
         default => throw new RuntimeException('Unknown read: '.$case['read']),
     };
+}
+
+/**
+ * Rows AS STORED (0.5.1): each with its `type`, `harness: true` on a row the
+ * harness wrote; a `run_id` is carried and is never a trust signal (0.6.0).
+ * Positions are 1-based.
+ *
+ * @param  list<array<string, mixed>>  $stored
+ * @return list<array<string, mixed>>
+ */
+function storedRows(array $stored): array
+{
+    $rows = [];
+    foreach ($stored as $index => $row) {
+        $type = $row['type'];
+        $harness = ($row['harness'] ?? false) === true;
+        $runId = is_string($row['run_id'] ?? null) ? $row['run_id'] : null;
+        unset($row['type'], $row['harness'], $row['run_id']);
+        $rows[] = ['position' => $index + 1, 'type' => $type, 'run_id' => $runId, 'harness' => $harness, 'payload' => $row];
+    }
+
+    return $rows;
 }
 
 /**
@@ -162,20 +203,17 @@ function rows(array $case): array
         // Rows as stored, each with its `type` and, for a row the harness
         // wrote, `harness: true`; positions are 1-based (0.5.1, G-387 round
         // 15): placed as the replay places them, then folded.
-        $rows = [];
-        foreach ($case['place'] as $index => $stored) {
-            $type = $stored['type'];
-            $harness = ($stored['harness'] ?? false) === true;
-            unset($stored['type'], $stored['harness']);
-            $rows[] = ['position' => $index + 1, 'type' => $type, 'harness' => $harness, 'payload' => $stored];
-        }
-        $messages = array_map(static fn (array $row): Message => MessageMapper::fromArray($row['type'], $row['payload']), Thread::placedRows($rows));
+        $messages = array_map(static fn (array $row): Message => MessageMapper::fromArray($row['type'], $row['payload']),
+            Thread::placedRows(storedRows($case['place'])));
 
         return array_map(row(...), iterator_to_array(ToolResultRuns::fold($messages), false));
     }
     if (isset($case['input'])) {
         return match (true) {
             $case['input']['write'] === 'ended_by_start' => [endedRow($case['input'])],
+            // The row the runtime stores when it answers the step at
+            // `position` (0.6.0, G-387 round 16): Thread::answerPayload().
+            $case['input']['write'] === 'answer' => answerRow($case['input']),
             // The write-ahead started row (0.5.1, G-387 round 15): Thread::startedPayload().
             $case['input']['write'] === 'started' => [['type' => MessageMapper::TYPE_TOOL_RESULT, ...Thread::startedPayload(
                 $case['input']['tool_call_id'], $case['input']['tool_name'], $case['input']['approval_id'], $case['input']['position'])]],

@@ -31,17 +31,25 @@ from prism_harness import (  # noqa: E402
     thread_view,
     tool_result_row,
 )
+from prism_harness.plans.thread_facts import approval_decisions  # noqa: E402
 from prism_harness.thread_rows import (  # noqa: E402
+    answering_step,
     bound_step,
+    call_results,
     ended_approval_ids,
+    new_results,
+    owned_rows,
     paired_requests,
+    pending_approval_ids,
     placed_view,
     started_row,
+    step_calls,
 )
 
 
-def rows_for(case: dict[str, Any]) -> list[dict[str, Any]]:
-    """The same conversion prism-harness-py/tests/test_thread_rows_corpus.py makes."""
+def rows_for(case: dict[str, Any]) -> list[Any]:
+    """The same conversion prism-harness-py/tests/test_thread_rows_corpus.py makes
+    (a verbatim copy of that test's rows_for; update both together)."""
     if case.get("read") == "approval_states":
         # Which approvals read ended by a runner start (G-387 round 13), read
         # from the stored rows by the harness's own reader, one entry per id
@@ -52,15 +60,50 @@ def rows_for(case: dict[str, Any]) -> list[dict[str, Any]]:
             for approval in case["approvals"]
         ]
 
+    if case.get("read") == "call_outcomes":
+        # 0.6.0 (G-387 round 16): whether each call of the step at 1-based
+        # ``step`` has an outcome among the rows it owns, paired as every
+        # reader pairs results.
+        at = case["step"] - 1
+        answered = call_results(step_calls(case["stored"][at]), owned_rows(case["stored"], at))
+        return [index in answered for index in range(len(step_calls(case["stored"][at])))]
+
+    if case.get("read") == "approval_reads":
+        # 0.6.0: what each approval reads: pending, and the decision that
+        # stands (true, false, or none).
+        stored = case["stored"]
+        pending = pending_approval_ids(stored)
+        decided = approval_decisions(stored)
+        return [
+            {
+                "approval_id": approval,
+                "pending": approval in pending,
+                "decision": decided.get(approval),
+            }
+            for approval in case["approvals"]
+        ]
+
     if "fold" in case:
         return thread_view(case["fold"])
 
     if "place" in case:
-        # 0.5.1 (G-387 round 15): the rows as stored, placed then folded as the
-        # replay sends them.
+        # 0.5.1 (G-387 round 15): the rows AS STORED, ``harness: true`` on a
+        # row the harness wrote, positions 1-based by index; what a provider
+        # is sent (the harness's own placement, then the fold).
         return placed_view(case["place"])
 
     spec = case["input"]
+
+    if spec["write"] == "answer":
+        # 0.6.0: the answer row the resolver writes for the step at
+        # ``position``: only the results the step does not hold yet, the
+        # decisions, and the step's mark when a result is kept.
+        stored = spec["stored"]
+        at = spec["position"] - 1
+        row = tool_result_row(new_results(stored, at, spec["results"]), spec["decisions"])
+        if not row["tool_results"] and not row["tool_approval_responses"]:
+            return []
+        return [answering_step(row, spec["position"]) if row["tool_results"] else row]
 
     if spec["write"] == "started":
         # The write-ahead row the resolver records before it runs a call.
@@ -101,26 +144,28 @@ def rows_for(case: dict[str, Any]) -> list[dict[str, Any]]:
         ]
 
     if spec["write"] == "assistant":
-        # ``bind`` (0.5.1): the step as the thread stores it, each request bound
-        # to its own call.
+        # ``bind`` (0.5.1): the step as the thread stores it, each request
+        # bound to its call (``harness_call``).
         bind = bound_step if spec.get("bind") else (lambda row: row)
         return [
-            bind(assistant_row(
-                spec["content"],
-                [
-                    ToolCallInput(
-                        id=call["id"],
-                        name=call["name"],
-                        arguments=call["arguments"],
-                        result_id=call.get("result_id"),
-                        reasoning_id=call.get("reasoning_id"),
-                        reasoning_summary=call.get("reasoning_summary"),
-                    )
-                    for call in spec["tool_calls"]
-                ],
-                spec["additional_content"],
-                spec["approval_requests"],
-            ))
+            bind(
+                assistant_row(
+                    spec["content"],
+                    [
+                        ToolCallInput(
+                            id=call["id"],
+                            name=call["name"],
+                            arguments=call["arguments"],
+                            result_id=call.get("result_id"),
+                            reasoning_id=call.get("reasoning_id"),
+                            reasoning_summary=call.get("reasoning_summary"),
+                        )
+                        for call in spec["tool_calls"]
+                    ],
+                    spec["additional_content"],
+                    spec["approval_requests"],
+                )
+            )
         ]
 
     return [

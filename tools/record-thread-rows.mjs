@@ -18,50 +18,75 @@ const harnessRoot = process.env.PRISM_HARNESS_TS ?? join(root, '..', 'prism-harn
 const harness = await import(pathToFileURL(join(harnessRoot, 'dist', 'index.js')).href);
 // endedByStartRow and pairStepApprovals live in the thread-rows module, not the package index.
 const rowsModule = await import(pathToFileURL(join(harnessRoot, 'dist', 'thread-rows.js')).href);
+const threadModule = await import(pathToFileURL(join(harnessRoot, 'dist', 'thread.js')).href);
+const m = { ...harness, ...rowsModule, readerRows: threadModule.readerRows };
 
 const check = process.argv.includes('--check');
 const path = join(root, 'suites', 'harness-thread-rows', 'cases.json');
 let raw = readFileSync(path, 'utf8');
 const document = JSON.parse(raw);
 
-// The same conversion prism-harness-ts/test/thread-rows-corpus.test.ts makes.
-export function rowsFor(testCase, { assistantRow, toolResultRow, threadView, endedByStartRow, pairStepApprovals, endedByStart, replayView, startedRow, withBoundRequests }) {
-  if (testCase.fold !== undefined) return threadView(testCase.fold);
+// The same conversion prism-harness-ts/test/thread-rows-corpus.test.ts makes
+// (kept a plain-JS copy of that test's rowsFor; update both together).
+function asStored(m, rows) {
+  return m.readerRows(rows.map((row) => {
+    const { harness, run_id: _runId, ...message } = row;
+    return { message, harness: harness === true };
+  }));
+}
 
-  // 0.5.1 (G-387 round 15): the rows as stored, placed then folded as the replay sends them.
-  if (testCase.place !== undefined) return replayView(testCase.place);
+export function rowsFor(testCase, m) {
+  if (testCase.fold !== undefined) return m.threadView(testCase.fold);
+
+  // Round 15: the rows as stored, placed and then folded: what the runtime sends.
+  if (testCase.place !== undefined) return m.replayView(asStored(m, testCase.place));
 
   if (testCase.read === 'approval_states') {
-    // Which approvals a runner start ended (G-387 round 13), by the harness's own
-    // reader over the rows as stored: one entry per id, in order.
-    const ended = endedByStart(testCase.stored ?? []);
+    const ended = m.endedByStart(asStored(m, testCase.stored ?? []));
     return (testCase.approvals ?? []).map((id) => ({ approval_id: id, ended_by_start: ended.has(id) }));
+  }
+
+  if (testCase.read === 'call_outcomes') {
+    // 0.6.0: which calls of the step at `step` have an outcome (a result, or a started row).
+    return m.stepAnswers(asStored(m, testCase.stored ?? []), (testCase.step ?? 0) - 1).map((answer) => answer !== null);
+  }
+
+  if (testCase.read === 'approval_reads') {
+    // 0.6.0: per approval, whether it is pending and the decision that stands (null: none).
+    const stored = asStored(m, testCase.stored ?? []);
+    const pending = new Set(m.pendingApprovalIds(stored));
+    const standing = m.standingDecisions(stored);
+    return (testCase.approvals ?? []).map((id) => ({ approval_id: id, pending: pending.has(id), decision: standing.get(id)?.approved ?? null }));
   }
 
   const input = testCase.input;
 
+  if (input.write === 'answer') {
+    // 0.6.0: the answer row a resolution writes: only the results its step does not hold yet.
+    const stored = asStored(m, input.stored);
+    const own = m.newResults(stored, input.position - 1, input.results);
+    if (own.length === 0 && input.decisions.length === 0) return [];
+    const row = m.toolResultRow(own, input.decisions);
+    return [own.length === 0 ? row : m.answeringStep(row, input.position)];
+  }
+
   if (input.write === 'ended_by_start') {
-    // The row a runner start writes when it ends the calls its child was parked on
-    // (G-387): the harness's own builder, each call paired with its own approval
-    // request by position (G-392), as the runtime pairs them.
     return [
-      endedByStartRow(
+      m.endedByStartRow(
         input.tool_calls.map((call) => ({ id: call.id, name: call.name, arguments: call.arguments, resultId: call.result_id ?? null })),
-        pairStepApprovals(input.tool_calls, input.approval_requests).approvalIds,
+        m.pairStepApprovals(input.tool_calls, input.approval_requests).approvalIds,
       ),
     ];
   }
 
   if (input.write === 'started') {
-    // The write-ahead started row the resolver records before it runs a call (round 15).
-    return [startedRow({ id: input.tool_call_id, name: input.tool_name }, input.approval_id, input.position)];
+    return [m.startedRow({ id: input.tool_call_id, name: input.tool_name }, input.approval_id, input.position)];
   }
 
   if (input.write === 'assistant') {
-    // `bind`: the requests as Thread.record() stores them, each bound to its own call (round 15).
-    const bind = (row) => (input.bind === true ? withBoundRequests(row) : row);
+    const bind = (row) => (input.bind === true ? m.withBoundRequests(row) : row);
     return [
-      bind(assistantRow(
+      bind(m.assistantRow(
         input.content,
         input.tool_calls.map((call) => ({
           id: call.id,
@@ -78,7 +103,7 @@ export function rowsFor(testCase, { assistantRow, toolResultRow, threadView, end
   }
 
   return [
-    toolResultRow(
+    m.toolResultRow(
       input.results.map((result) => ({
         tool_call_id: result.tool_call_id,
         tool_name: result.tool_name,
@@ -105,7 +130,7 @@ function stringEnd(text, quote) {
 const stale = [];
 
 for (const testCase of document.cases) {
-  const produced = JSON.stringify(rowsFor(testCase, { ...harness, endedByStartRow: rowsModule.endedByStartRow, pairStepApprovals: rowsModule.pairStepApprovals, endedByStart: rowsModule.endedByStart, replayView: rowsModule.replayView, startedRow: rowsModule.startedRow, withBoundRequests: rowsModule.withBoundRequests }));
+  const produced = JSON.stringify(rowsFor(testCase, m));
 
   if (testCase.rows.ts !== produced) stale.push(testCase.id);
 

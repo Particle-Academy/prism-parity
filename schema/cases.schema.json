@@ -1597,9 +1597,16 @@
         },
         "read": {
           "enum": [
-            "approval_states"
+            "approval_states",
+            "call_outcomes",
+            "approval_reads"
           ],
-          "description": "A READ over `stored` (0.4.0): for each id in `approvals`, in order, `{approval_id, ended_by_start}`."
+          "description": "A READ over `stored`. `approval_states` (0.4.0): for each id in `approvals`, in order, `{approval_id, ended_by_start}`. `call_outcomes` (0.6.0): for the step at the 1-based position `step`, one boolean per call, in call order: whether it has an outcome (a result of its own or a started row). `approval_reads` (0.6.0): for each id in `approvals`, `{approval_id, pending, decision}`, decision the one that STANDS (true, false, or null)."
+        },
+        "step": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "0.6.0: the 1-based position of the step a `call_outcomes` read reads."
         },
         "stored": {
           "type": "array",
@@ -1684,8 +1691,7 @@
         {
           "required": [
             "read",
-            "stored",
-            "approvals"
+            "stored"
           ],
           "not": {
             "anyOf": [
@@ -2450,6 +2456,46 @@
             "position"
           ],
           "description": "0.5.1 (G-387 round 15): the write-ahead started row."
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "write": {
+              "const": "answer"
+            },
+            "stored": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/harnessReadRow"
+              }
+            },
+            "position": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "results": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessToolResult"
+              }
+            },
+            "decisions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessApprovalResponse"
+              }
+            }
+          },
+          "required": [
+            "write",
+            "stored",
+            "position",
+            "results",
+            "decisions"
+          ],
+          "description": "0.6.0 (G-387 round 16): the row the runtime stores when it answers the step at `position` of `stored` with `results` and `decisions`: only the results the step does not already hold (call id, tool name, canonical arguments, occurrence by occurrence), the step mark last; no row when nothing is left."
         }
       ]
     },
@@ -10845,9 +10891,11 @@
             "user_owning_run_id",
             "new_message_failed",
             "altered_copy",
-            "altered_copy_after_approval"
+            "altered_copy_after_approval",
+            "host_result",
+            "denial_after_run"
           ],
-          "description": "DECISION B (0.2.0): the row written after the park that supersedes the parked step, before the rounds. `new_message_failed` (0.3.0, G-404): a new message whose turn's provider request then fails. `altered_copy` / `altered_copy_after_approval` (0.4.0, G-387 round 15): a host copy of the parked step that keeps its approval requests and alters each call's `n` by +100, before the rounds, or after every pending approval was recorded approved (then one resume)."
+          "description": "DECISION B (0.2.0): the row written after the park that supersedes the parked step, before the rounds. `new_message_failed` (0.3.0, G-404): a new message whose turn's provider request then fails. `altered_copy` / `altered_copy_after_approval` (0.4.0, G-387 round 15): a host copy of the parked step that keeps its approval requests and alters each call's `n` by +100, before the rounds, or after every pending approval was recorded approved (then one resume). `host_result` (0.5.0, G-387 round 16): a host records a result row (`host`) for the first gated call, before the rounds. `denial_after_run` (0.5.0): every pending approval recorded approved, one resume, then a host records a decision row denying each (reason `Too late.`)."
         },
         "later": {
           "type": "object",
