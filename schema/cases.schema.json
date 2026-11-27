@@ -2434,6 +2434,23 @@
             "tool_results",
             "tool_approval_responses"
           ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "A system row (0.5.0, G-387 round 14): it leaves a parked step parked, so a step's result rows on either side of it are one segment (thr-0017).",
+          "properties": {
+            "type": {
+              "const": "system"
+            },
+            "content": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "content"
+          ]
         }
       ]
     },
@@ -10744,9 +10761,10 @@
             "assistant_text",
             "user",
             "new_message",
-            "user_owning_run_id"
+            "user_owning_run_id",
+            "new_message_failed"
           ],
-          "description": "DECISION B (0.2.0): the row written after the park that supersedes the parked step, before the rounds."
+          "description": "DECISION B (0.2.0): the row written after the park that supersedes the parked step, before the rounds. `new_message_failed` (0.3.0, G-404): a new message whose turn's provider request then fails."
         },
         "later": {
           "type": "object",
