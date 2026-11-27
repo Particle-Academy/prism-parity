@@ -27,6 +27,27 @@ export function approvalPairingFailures(document) {
         decided.add(index);
       }
     });
+    // SEGMENT OWNERSHIP rows (0.2.0): a later round or an approved index
+    // names an approval the later step issued (one per `echo` call).
+    if (row.later) {
+      const laterIssued = (row.later.calls ?? []).filter((call) => call.name === 'echo').length;
+      (row.later.rounds ?? []).forEach((round, r) => {
+        const decided = new Set();
+        for (const decision of round) {
+          const [index, approved] = Array.isArray(decision) ? decision : [];
+          if (!Array.isArray(decision) || decision.length !== 2 || !Number.isInteger(index) || typeof approved !== 'boolean') {
+            failures.push(`${row.id}: later round ${r} decision ${JSON.stringify(decision)} is not an [index, approved] pair`);
+            continue;
+          }
+          if (index < 0 || index >= laterIssued) failures.push(`${row.id}: later round ${r} decides approval ${index}, and the later step issued ${laterIssued}`);
+          if (decided.has(index)) failures.push(`${row.id}: later round ${r} decides approval ${index} twice`);
+          decided.add(index);
+        }
+      });
+      for (const index of row.later.result?.approved ?? []) {
+        if (!Number.isInteger(index) || index < 0 || index >= laterIssued) failures.push(`${row.id}: later.result approves ${index}, and the later step issued ${laterIssued}`);
+      }
+    }
     for (const [label, outcome] of [['expected', row.expected], ...Object.entries(row.result ?? {})]) {
       const ran = outcome?.ran;
       if (Array.isArray(ran) && !isDeepStrictEqual(ran, [...ran].sort((a, b) => a - b))) failures.push(`${row.id}: ${label}.ran is not sorted`);
