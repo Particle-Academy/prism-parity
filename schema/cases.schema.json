@@ -1461,6 +1461,33 @@
               }
             }
           }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "The row a runner start writes when it ends the calls a child was parked on: the calls with no result in the last tool-calling step, and their approval requests (G-387).",
+          "properties": {
+            "write": {
+              "const": "ended_by_start"
+            },
+            "tool_calls": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessToolCall"
+              }
+            },
+            "approval_requests": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessApprovalRequest"
+              }
+            }
+          },
+          "required": [
+            "write",
+            "tool_calls",
+            "approval_requests"
+          ]
         }
       ]
     },
@@ -2255,6 +2282,33 @@
             "write",
             "results",
             "decisions"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "The row a runner start writes when it ends the calls a child was parked on: the calls with no result in the last tool-calling step, and their approval requests (G-387).",
+          "properties": {
+            "write": {
+              "const": "ended_by_start"
+            },
+            "tool_calls": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessToolCall"
+              }
+            },
+            "approval_requests": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/harnessApprovalRequest"
+              }
+            }
+          },
+          "required": [
+            "write",
+            "tool_calls",
+            "approval_requests"
           ]
         }
       ]

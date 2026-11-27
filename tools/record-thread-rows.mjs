@@ -16,6 +16,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const harnessRoot = process.env.PRISM_HARNESS_TS ?? join(root, '..', 'prism-harness-ts');
 const harness = await import(pathToFileURL(join(harnessRoot, 'dist', 'index.js')).href);
+// endedByStartRow and pairStepApprovals live in the thread-rows module, not the package index.
+const rowsModule = await import(pathToFileURL(join(harnessRoot, 'dist', 'thread-rows.js')).href);
 
 const check = process.argv.includes('--check');
 const path = join(root, 'suites', 'harness-thread-rows', 'cases.json');
@@ -23,10 +25,22 @@ let raw = readFileSync(path, 'utf8');
 const document = JSON.parse(raw);
 
 // The same conversion prism-harness-ts/test/thread-rows-corpus.test.ts makes.
-export function rowsFor(testCase, { assistantRow, toolResultRow, threadView }) {
+export function rowsFor(testCase, { assistantRow, toolResultRow, threadView, endedByStartRow, pairStepApprovals }) {
   if (testCase.fold !== undefined) return threadView(testCase.fold);
 
   const input = testCase.input;
+
+  if (input.write === 'ended_by_start') {
+    // The row a runner start writes when it ends the calls its child was parked on
+    // (G-387): the harness's own builder, each call paired with its own approval
+    // request by position (G-392), as the runtime pairs them.
+    return [
+      endedByStartRow(
+        input.tool_calls.map((call) => ({ id: call.id, name: call.name, arguments: call.arguments, resultId: call.result_id ?? null })),
+        pairStepApprovals(input.tool_calls, input.approval_requests).approvalIds,
+      ),
+    ];
+  }
 
   if (input.write === 'assistant') {
     return [
@@ -74,7 +88,7 @@ function stringEnd(text, quote) {
 const stale = [];
 
 for (const testCase of document.cases) {
-  const produced = JSON.stringify(rowsFor(testCase, harness));
+  const produced = JSON.stringify(rowsFor(testCase, { ...harness, endedByStartRow: rowsModule.endedByStartRow, pairStepApprovals: rowsModule.pairStepApprovals }));
 
   if (testCase.rows.ts !== produced) stale.push(testCase.id);
 
