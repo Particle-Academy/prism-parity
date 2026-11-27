@@ -1594,6 +1594,26 @@
             "ts",
             "py"
           ]
+        },
+        "read": {
+          "enum": [
+            "approval_states"
+          ],
+          "description": "A READ over `stored` (0.4.0): for each id in `approvals`, in order, `{approval_id, ended_by_start}`."
+        },
+        "stored": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/harnessReadRow"
+          }
+        },
+        "approvals": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": [
@@ -1610,8 +1630,17 @@
             "input"
           ],
           "not": {
-            "required": [
-              "fold"
+            "anyOf": [
+              {
+                "required": [
+                  "fold"
+                ]
+              },
+              {
+                "required": [
+                  "read"
+                ]
+              }
             ]
           }
         },
@@ -1620,8 +1649,38 @@
             "fold"
           ],
           "not": {
-            "required": [
-              "input"
+            "anyOf": [
+              {
+                "required": [
+                  "input"
+                ]
+              },
+              {
+                "required": [
+                  "read"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "read",
+            "stored",
+            "approvals"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "input"
+                ]
+              },
+              {
+                "required": [
+                  "fold"
+                ]
+              }
             ]
           }
         }
@@ -10539,7 +10598,8 @@
       "required": [
         "approvals",
         "free",
-        "ran"
+        "ran",
+        "decided"
       ],
       "properties": {
         "approvals": {
@@ -10555,6 +10615,36 @@
           "items": {
             "type": "integer"
           }
+        },
+        "decided": {
+          "type": "array",
+          "items": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "description": "The decision the thread recorded for each approval the first step issued, in issue order: the first answer, or null when none was recorded (0.2.0)."
+        },
+        "outcomes": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": "Rows with `supersede` only (0.2.0): the first result each call of the first step ended with, in call order, or null."
+        },
+        "refusals": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": "Rows with `supersede` only (0.2.0): the code each round of decisions was refused with, or null when it was recorded."
         }
       }
     },
@@ -10637,6 +10727,16 @@
               "$ref": "#/$defs/harnessApprovalPairingOutcome"
             }
           }
+        },
+        "supersede": {
+          "enum": [
+            "assistant_tool_step",
+            "assistant_text",
+            "user",
+            "new_message",
+            "user_owning_run_id"
+          ],
+          "description": "DECISION B (0.2.0): the row written after the park that supersedes the parked step, before the rounds."
         }
       },
       "required": [
@@ -10687,6 +10787,22 @@
         "corpus_version",
         "cases"
       ]
+    },
+    "harnessReadRow": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "user",
+            "assistant",
+            "tool_result"
+          ]
+        }
+      },
+      "description": "A row as a harness stores it, its `type` beside its payload, harness metadata (such as `harness_ended_by_start`) included. Open on purpose: a reader must read only the keys it knows, so a row may carry any other."
     }
   },
   "oneOf": [
