@@ -7,7 +7,8 @@ declare(strict_types=1);
  *
  * Driven through prism-harness's own MessageMapper, the mapper Thread::record()
  * stores with, and ToolResultRuns::fold(), the fold Thread::messages() replays
- * with, over Prism's own value objects. A generator that re-implemented the
+ * with, over Prism's own value objects, and (G-387) the `ended_by_start` rows
+ * through AgentRuntime::endedCallsOf() and Thread::rowPayload(). A generator that re-implemented the
  * shape would pin what the generator believes rather than what the harness
  * stores.
  *
@@ -28,6 +29,8 @@ if (! is_file($autoload)) {
 
 require $autoload;
 
+use Prism\Harness\AgentRuntime;
+use Prism\Harness\Models\Thread;
 use Prism\Harness\Support\MessageMapper;
 use Prism\Harness\Support\ToolResultRuns;
 use Prism\Prism\Contracts\Message;
@@ -49,25 +52,61 @@ function row(Message $message): array
     return ['type' => MessageMapper::typeOf($message), ...MessageMapper::toArray($message)];
 }
 
+/**
+ * @param  list<array<string, mixed>>  $calls
+ * @return list<ToolCall>
+ */
+function toolCalls(array $calls): array
+{
+    return array_map(fn (array $call): ToolCall => new ToolCall(
+        id: $call['id'],
+        name: $call['name'],
+        arguments: $call['arguments'],
+        resultId: $call['result_id'] ?? null,
+        reasoningId: $call['reasoning_id'] ?? null,
+        reasoningSummary: $call['reasoning_summary'] ?? null,
+    ), $calls);
+}
+
+/**
+ * @param  list<array<string, mixed>>  $requests
+ * @return list<ToolApprovalRequest>
+ */
+function approvalRequests(array $requests): array
+{
+    return array_map(
+        fn (array $request): ToolApprovalRequest => new ToolApprovalRequest($request['approval_id'], $request['tool_call_id']),
+        $requests,
+    );
+}
+
+/**
+ * The row a runner start records when it ends the calls a child was parked
+ * on (G-387). The input is the parked step (its calls and approval requests);
+ * the HARNESS decides which calls it ends, with what result, and how the row
+ * is marked: AgentRuntime::endedCallsOf() builds the row, Thread::rowPayload()
+ * is the payload Thread::record() stores, harness metadata included.
+ *
+ * @param  array<string, mixed>  $input
+ * @return array<string, mixed>
+ */
+function endedRow(array $input): array
+{
+    $step = new AssistantMessage('', toolCalls($input['tool_calls']), [], approvalRequests($input['approval_requests']));
+    $ended = AgentRuntime::endedCallsOf([$step]) ?? throw new RuntimeException('The harness ended no call.');
+
+    return ['type' => MessageMapper::typeOf($ended['message']), ...Thread::rowPayload($ended['message'], endedApprovals: $ended['approvals'])];
+}
+
 /** @param array<string, mixed> $input */
 function written(array $input): Message
 {
     return match ($input['write']) {
         'assistant' => new AssistantMessage(
             content: $input['content'],
-            toolCalls: array_map(fn (array $call): ToolCall => new ToolCall(
-                id: $call['id'],
-                name: $call['name'],
-                arguments: $call['arguments'],
-                resultId: $call['result_id'] ?? null,
-                reasoningId: $call['reasoning_id'] ?? null,
-                reasoningSummary: $call['reasoning_summary'] ?? null,
-            ), $input['tool_calls']),
+            toolCalls: toolCalls($input['tool_calls']),
             additionalContent: $input['additional_content'],
-            toolApprovalRequests: array_map(
-                fn (array $request): ToolApprovalRequest => new ToolApprovalRequest($request['approval_id'], $request['tool_call_id']),
-                $input['approval_requests'],
-            ),
+            toolApprovalRequests: approvalRequests($input['approval_requests']),
         ),
         'tool_result' => new ToolResultMessage(
             array_map(fn (array $result): ToolResult => new ToolResult(
@@ -93,7 +132,7 @@ function written(array $input): Message
 function rows(array $case): array
 {
     if (isset($case['input'])) {
-        return [row(written($case['input']))];
+        return [$case['input']['write'] === 'ended_by_start' ? endedRow($case['input']) : row(written($case['input']))];
     }
 
     $messages = array_map(function (array $stored): Message {
