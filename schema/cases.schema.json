@@ -10478,6 +10478,161 @@
         "corpus_version",
         "cases"
       ]
+    },
+    "harnessApprovalPairingOutcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "approvals",
+        "free",
+        "ran"
+      ],
+      "properties": {
+        "approvals": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "free": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ran": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "harnessApprovalPairingCase": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {},
+        "title": {},
+        "since": {},
+        "notes": {},
+        "skip": {},
+        "agrees": {},
+        "calls": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "name",
+              "args"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "enum": [
+                  "echo",
+                  "free"
+                ]
+              },
+              "args": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "rounds": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": [
+                  "integer",
+                  "boolean"
+                ]
+              },
+              "description": "An [index, approved] pair: the index of an approval the first step issued, in issue order, and the decision. The pair order is checked by tools/approval-pairing/contract.mjs; the validator has no tuple keyword."
+            }
+          }
+        },
+        "expected": {
+          "$ref": "#/$defs/harnessApprovalPairingOutcome"
+        },
+        "result": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "php",
+            "ts",
+            "py"
+          ],
+          "properties": {
+            "php": {
+              "$ref": "#/$defs/harnessApprovalPairingOutcome"
+            },
+            "ts": {
+              "$ref": "#/$defs/harnessApprovalPairingOutcome"
+            },
+            "py": {
+              "$ref": "#/$defs/harnessApprovalPairingOutcome"
+            }
+          }
+        }
+      },
+      "required": [
+        "title",
+        "calls",
+        "rounds",
+        "expected",
+        "result",
+        "agrees"
+      ],
+      "allOf": [
+        {
+          "$ref": "#/$defs/securityCase"
+        }
+      ]
+    },
+    "harnessApprovalPairingDocument": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "suite": {
+          "const": "harness-approval-pairing"
+        },
+        "schema_version": {
+          "const": 1
+        },
+        "corpus_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generated_by": {
+          "type": "string"
+        },
+        "pins_note": {
+          "type": "string"
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/harnessApprovalPairingCase"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "suite",
+        "schema_version",
+        "corpus_version",
+        "cases"
+      ]
     }
   },
   "oneOf": [
@@ -10570,6 +10725,9 @@
     },
     {
       "$ref": "#/$defs/harnessPlansDocument"
+    },
+    {
+      "$ref": "#/$defs/harnessApprovalPairingDocument"
     }
   ]
 }
