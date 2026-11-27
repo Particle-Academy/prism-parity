@@ -56,6 +56,7 @@ function checkUsage(m, at) {
 export function checkExchange(lines) {
   need(lines.length >= 2, 'exchange', 'needs at least hello and end');
   let pending = null;
+  let awaitingTurn = false;
   let tools = null;
   let modelCalls = 0;
   let toolCalls = 0;
@@ -87,7 +88,13 @@ export function checkExchange(lines) {
       pending = null;
       return;
     }
-    need(dir === 'driver', at, 'the adapter only writes start, tool_result and abort');
+    if (awaitingTurn) {
+      need(dir === 'adapter' && (msg.type === 'user' || msg.type === 'close'), at, 'a reply is answered by user or close');
+      need(msg.type === 'close' || (typeof msg.text === 'string' && msg.text !== ''), at, 'user.text must be non-empty');
+      awaitingTurn = false;
+      return;
+    }
+    need(dir === 'driver', at, 'the adapter only writes start, tool_result, abort, user and close');
     switch (msg.type) {
       case 'tool_call':
         need(tools !== null && tools.has(msg.name), at, 'tool_call names an offered tool');
@@ -100,6 +107,10 @@ export function checkExchange(lines) {
         checkUsage(msg, at);
         modelCalls++;
         charged += msg.charged_usd;
+        return;
+      case 'reply':
+        need(typeof msg.text === 'string', at, 'reply.text');
+        awaitingTurn = true;
         return;
       case 'approval':
         need(typeof msg.approval_id === 'string' && msg.decision === 'granted' && msg.policy === 'auto_grant_all', at, 'approval is a reported automatic grant');

@@ -12,7 +12,7 @@ const fixture = () => readFixture(join(here, '..', 'specs', 'bench-driver', 'con
 const at = (lines, type, n = 0) => lines.filter((l) => l.msg.type === type)[n];
 
 test('the shipped fixture is a valid exchange', () => {
-  assert.deepEqual(checkExchange(fixture()), { toolCalls: 1, modelCalls: 2, status: 'completed' });
+  assert.deepEqual(checkExchange(fixture()), { toolCalls: 1, modelCalls: 3, status: 'completed' });
 });
 
 const broken = {
@@ -30,6 +30,8 @@ const broken = {
   'a line after end': (l) => { l.push(structuredClone(at(l, 'usage'))); },
   'a wrong protocol version': (l) => { l[0].msg.v = 2; },
   'the adapter speaking first': (l) => { l.shift(); },
+  'an empty user turn': (l) => { at(l, 'user').msg.text = ''; },
+  'a driver line where the adapter owed a turn': (l) => { const i = l.indexOf(at(l, 'user')); l.splice(i, 1); },
   'an unknown driver message': (l) => { l.splice(l.length - 1, 0, { dir: 'driver', msg: { v: 1, type: 'log', text: 'x' } }); },
 };
 

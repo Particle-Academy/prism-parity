@@ -50,10 +50,13 @@ comparable with a neutral agent's result on the same model, tasks and seed.
 ```
 driver  -> hello
 adapter -> start
-           ( ( driver -> tool_call                 zero or more, each answered
-               adapter -> tool_result | abort )*   before the driver writes again
-             driver -> usage                       one per model call
-           )*
+  ( ( ( driver -> tool_call                   zero or more, each answered
+        adapter -> tool_result | abort )*     before the driver writes again
+      driver -> usage                         one per model call
+    )*
+    driver -> reply                           the turn's final assistant text
+    adapter -> user | close                   another user turn, or done
+  )*
 driver  -> end
 ```
 
@@ -64,6 +67,14 @@ asked for**: the harness settles a call after its tool calls have run, so the
 tool calls between two `usage` lines belong to the later one. (Measured on the
 PHP reference, not assumed; an adapter building per-step trajectories depends on
 it.) `end` is the last line; the driver exits after writing it.
+
+**A run may have several user turns** (τ²-bench's simulated user answers the
+agent). When a turn finishes normally the driver writes `reply`; the adapter
+answers `user` to continue the SAME session — same thread, same ledger, so the
+cost cap and step budget are per run, never per turn — or `close` to finish. A
+turn that stops (cap, step limit, abort, error) writes `end` directly, with no
+`reply`. A single-turn benchmark (Terminal-Bench) answers the first `reply`
+with `close`.
 
 ### `hello` (driver → adapter)
 
@@ -113,6 +124,18 @@ to the model), `is_error` (boolean). A mismatched `call_id` is a protocol error.
 `reason` (string). Sent instead of a `tool_result` when the adapter stops the run
 (its arm cap, a timeout). The driver returns no further output to the model,
 makes no further model call, and ends with `status: "aborted"`.
+
+### `reply` (driver → adapter)
+
+`text` (string): the turn's final assistant text.
+
+### `user` (adapter → driver)
+
+`text` (non-empty string): the next user turn. An empty one is a protocol error.
+
+### `close` (adapter → driver)
+
+No fields. The run is finished; the driver writes `end` with `status: "completed"`.
 
 ### `approval` (driver → adapter)
 
