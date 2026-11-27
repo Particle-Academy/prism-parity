@@ -25,8 +25,15 @@ let raw = readFileSync(path, 'utf8');
 const document = JSON.parse(raw);
 
 // The same conversion prism-harness-ts/test/thread-rows-corpus.test.ts makes.
-export function rowsFor(testCase, { assistantRow, toolResultRow, threadView, endedByStartRow, pairStepApprovals }) {
+export function rowsFor(testCase, { assistantRow, toolResultRow, threadView, endedByStartRow, pairStepApprovals, endedByStart }) {
   if (testCase.fold !== undefined) return threadView(testCase.fold);
+
+  if (testCase.read === 'approval_states') {
+    // Which approvals a runner start ended (G-387 round 13), by the harness's own
+    // reader over the rows as stored: one entry per id, in order.
+    const ended = endedByStart(testCase.stored ?? []);
+    return (testCase.approvals ?? []).map((id) => ({ approval_id: id, ended_by_start: ended.has(id) }));
+  }
 
   const input = testCase.input;
 
@@ -88,7 +95,7 @@ function stringEnd(text, quote) {
 const stale = [];
 
 for (const testCase of document.cases) {
-  const produced = JSON.stringify(rowsFor(testCase, { ...harness, endedByStartRow: rowsModule.endedByStartRow, pairStepApprovals: rowsModule.pairStepApprovals }));
+  const produced = JSON.stringify(rowsFor(testCase, { ...harness, endedByStartRow: rowsModule.endedByStartRow, pairStepApprovals: rowsModule.pairStepApprovals, endedByStart: rowsModule.endedByStart }));
 
   if (testCase.rows.ts !== produced) stale.push(testCase.id);
 

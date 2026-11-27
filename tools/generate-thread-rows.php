@@ -8,7 +8,8 @@ declare(strict_types=1);
  * Driven through prism-harness's own MessageMapper, the mapper Thread::record()
  * stores with, and ToolResultRuns::fold(), the fold Thread::messages() replays
  * with, over Prism's own value objects, and (G-387) the `ended_by_start` rows
- * through AgentRuntime::endedCallsOf() and Thread::rowPayload(). A generator that re-implemented the
+ * through AgentRuntime::endedCallsOf() and Thread::rowPayload(), and (G-387 round 13) the
+ * `read` cases through Thread::endedByStartIn(). A generator that re-implemented the
  * shape would pin what the generator believes rather than what the harness
  * stores.
  *
@@ -126,11 +127,34 @@ function written(array $input): Message
 }
 
 /**
+ * How each approval READS over rows as stored (0.4.0, G-387 round 13):
+ * whether a runner start ended its call, decided by the harness's own
+ * reader, Thread::endedByStartIn(), the rule Thread::endedByStart() applies
+ * to a stored thread.
+ *
+ * @param  array<string, mixed>  $case
+ * @return list<array{approval_id: string, ended_by_start: bool}>
+ */
+function readings(array $case): array
+{
+    return match ($case['read']) {
+        'approval_states' => array_map(
+            fn (string $id): array => ['approval_id' => $id, 'ended_by_start' => Thread::endedByStartIn($case['stored'], $id)],
+            $case['approvals'],
+        ),
+        default => throw new RuntimeException('Unknown read: '.$case['read']),
+    };
+}
+
+/**
  * @param  array<string, mixed>  $case
  * @return list<array<string, mixed>>
  */
 function rows(array $case): array
 {
+    if (isset($case['read'])) {
+        return readings($case);
+    }
     if (isset($case['input'])) {
         return [$case['input']['write'] === 'ended_by_start' ? endedRow($case['input']) : row(written($case['input']))];
     }

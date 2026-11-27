@@ -1,9 +1,9 @@
 {
   "suite": "harness-approval-pairing",
   "schema_version": 1,
-  "corpus_version": "0.1.0",
+  "corpus_version": "0.2.0",
   "generated_by": "Hand-written expectations (G-392), written before any language ran. Each language's runner drives its real runtime offline with a fake model and asserts the outcome equals `expected`; `result` records those measured outcomes.",
-  "pins_note": "Whether each approval decision reaches exactly the call it was issued for. Tools: `echo` (gated by mode, integer arg `n`) and `free` (ungated). The fake model's first reply is the row's `calls` in order; every later reply is the text `done`. Each round decides the listed approvals, by index into the parked step's pending approvals in issue order, as one batch where the language has one, then resumes once with an empty prompt; a decision the harness refuses is swallowed and the row continues. Recorded: `approvals` (how many approvals the first step issued), `free` (times the ungated tool ran) and `ran` (the sorted `n` of every echo that ran).",
+  "pins_note": "Whether each approval decision reaches exactly the call it was issued for. Tools: `echo` (gated by mode, integer arg `n`) and `free` (ungated). The fake model's first reply is the row's `calls` in order; every later reply is the text `done`. Each round decides the listed approvals, by index into the parked step's pending approvals in issue order, as one batch where the language has one, then resumes once with an empty prompt; a decision the harness refuses is swallowed and the row continues. Recorded: `approvals` (how many approvals the first step issued), `free` (times the ungated tool ran), `ran` (the sorted `n` of every echo that ran) and (0.2.0) `decided`: the decision the thread RECORDED for each approval the first step issued, in issue order, the first answer or null when none was recorded. On a step whose call ids repeat, every recorded decision is a denial whatever was decided. Rows with `supersede` (0.2.0, DECISION B) first write a row that supersedes the parked step (`assistant_tool_step`, `assistant_text`, `user`, recorded by a host, or `new_message` sent through the harness), then run the rounds, and also record `outcomes`: the first result each call of the first step ended with, in call order, or null. Rows with `later` (0.2.0, SEGMENT OWNERSHIP) record, after the park, a later step with the calls `later.calls` (each `echo` call asking an approval `apr_later_<k>`, k counting that step's echo calls, naming its call id), then ONE result row `later.result` (`id`, `name`, `args`, `result`, plus the approvals of `apr_later_<k>` for each k in `approved`); then `later.rounds` (indexes into the later step's approvals), then the rounds, then `later.resumes` empty-prompt resumes. Every outcome column is read BY SEGMENT: a result counts only for the step whose segment it sits in (the rows after that step and before the next assistant row with tool calls), matched by exact arguments, then id and tool name, then id. Such rows record `outcomes` (the first step's calls), `later_outcomes` (the later step's calls) and `refusals` (each of `later.rounds` then `rounds`).",
   "cases": [
     {
       "id": "apr-0001",
@@ -43,6 +43,10 @@
         "free": 0,
         "ran": [
           2
+        ],
+        "decided": [
+          false,
+          true
         ]
       },
       "result": {
@@ -51,6 +55,10 @@
           "free": 0,
           "ran": [
             2
+          ],
+          "decided": [
+            false,
+            true
           ]
         },
         "ts": {
@@ -58,6 +66,10 @@
           "free": 0,
           "ran": [
             2
+          ],
+          "decided": [
+            false,
+            true
           ]
         },
         "py": {
@@ -65,6 +77,10 @@
           "free": 0,
           "ran": [
             2
+          ],
+          "decided": [
+            false,
+            true
           ]
         }
       },
@@ -108,6 +124,10 @@
         "free": 0,
         "ran": [
           1
+        ],
+        "decided": [
+          true,
+          false
         ]
       },
       "result": {
@@ -116,6 +136,10 @@
           "free": 0,
           "ran": [
             1
+          ],
+          "decided": [
+            true,
+            false
           ]
         },
         "ts": {
@@ -123,6 +147,10 @@
           "free": 0,
           "ran": [
             1
+          ],
+          "decided": [
+            true,
+            false
           ]
         },
         "py": {
@@ -130,6 +158,10 @@
           "free": 0,
           "ran": [
             1
+          ],
+          "decided": [
+            true,
+            false
           ]
         }
       },
@@ -174,6 +206,10 @@
         "ran": [
           1,
           2
+        ],
+        "decided": [
+          true,
+          true
         ]
       },
       "result": {
@@ -183,6 +219,10 @@
           "ran": [
             1,
             2
+          ],
+          "decided": [
+            true,
+            true
           ]
         },
         "ts": {
@@ -191,6 +231,10 @@
           "ran": [
             1,
             2
+          ],
+          "decided": [
+            true,
+            true
           ]
         },
         "py": {
@@ -199,6 +243,10 @@
           "ran": [
             1,
             2
+          ],
+          "decided": [
+            true,
+            true
           ]
         }
       },
@@ -240,23 +288,39 @@
       "expected": {
         "approvals": 2,
         "free": 0,
-        "ran": []
+        "ran": [],
+        "decided": [
+          false,
+          false
+        ]
       },
       "result": {
         "php": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false
+          ]
         },
         "ts": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false
+          ]
         },
         "py": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false
+          ]
         }
       },
       "agrees": true
@@ -297,23 +361,39 @@
       "expected": {
         "approvals": 2,
         "free": 0,
-        "ran": []
+        "ran": [],
+        "decided": [
+          false,
+          false
+        ]
       },
       "result": {
         "php": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false
+          ]
         },
         "ts": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false
+          ]
         },
         "py": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false
+          ]
         }
       },
       "agrees": true
@@ -354,23 +434,39 @@
       "expected": {
         "approvals": 2,
         "free": 0,
-        "ran": []
+        "ran": [],
+        "decided": [
+          false,
+          false
+        ]
       },
       "result": {
         "php": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false
+          ]
         },
         "ts": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false
+          ]
         },
         "py": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false
+          ]
         }
       },
       "agrees": true
@@ -411,23 +507,39 @@
       "expected": {
         "approvals": 2,
         "free": 0,
-        "ran": []
+        "ran": [],
+        "decided": [
+          false,
+          false
+        ]
       },
       "result": {
         "php": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false
+          ]
         },
         "ts": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false
+          ]
         },
         "py": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false
+          ]
         }
       },
       "agrees": true
@@ -479,23 +591,43 @@
       "expected": {
         "approvals": 3,
         "free": 0,
-        "ran": []
+        "ran": [],
+        "decided": [
+          false,
+          false,
+          false
+        ]
       },
       "result": {
         "php": {
           "approvals": 3,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false,
+            false
+          ]
         },
         "ts": {
           "approvals": 3,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false,
+            false
+          ]
         },
         "py": {
           "approvals": 3,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false,
+            false
+          ]
         }
       },
       "agrees": true
@@ -541,23 +673,39 @@
       "expected": {
         "approvals": 2,
         "free": 1,
-        "ran": []
+        "ran": [],
+        "decided": [
+          false,
+          false
+        ]
       },
       "result": {
         "php": {
           "approvals": 2,
           "free": 1,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false
+          ]
         },
         "ts": {
           "approvals": 2,
           "free": 1,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false
+          ]
         },
         "py": {
           "approvals": 2,
           "free": 1,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            false
+          ]
         }
       },
       "agrees": true
@@ -600,23 +748,39 @@
       "expected": {
         "approvals": 2,
         "free": 0,
-        "ran": []
+        "ran": [],
+        "decided": [
+          false,
+          null
+        ]
       },
       "result": {
         "php": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            null
+          ]
         },
         "ts": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            null
+          ]
         },
         "py": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            null
+          ]
         }
       },
       "agrees": true
@@ -659,23 +823,1046 @@
       "expected": {
         "approvals": 2,
         "free": 0,
-        "ran": []
+        "ran": [],
+        "decided": [
+          false,
+          null
+        ]
       },
       "result": {
         "php": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            null
+          ]
         },
         "ts": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            null
+          ]
         },
         "py": {
           "approvals": 2,
           "free": 0,
-          "ran": []
+          "ran": [],
+          "decided": [
+            false,
+            null
+          ]
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "apr-0012",
+      "title": "an ungated call shares the gated call's id, the gated call first: approve it",
+      "since": "0.2.0",
+      "notes": "G-387 round 13. The ungated call runs at step time and its result carries the shared id. Matched by id, that result read as the gated call's: the step did not park, or a later start never ended the gated call and a person's approval of it stood as approved work that never ran. Matched by position, the step parks on the gated call's one approval, the decision is recorded as a denial (the step repeats an id), and nothing gated runs.",
+      "calls": [
+        {
+          "id": "dup",
+          "name": "echo",
+          "args": {
+            "n": 1
+          }
+        },
+        {
+          "id": "dup",
+          "name": "free",
+          "args": {}
+        }
+      ],
+      "rounds": [
+        [
+          [
+            0,
+            true
+          ]
+        ]
+      ],
+      "expected": {
+        "approvals": 1,
+        "free": 1,
+        "ran": [],
+        "decided": [
+          false
+        ]
+      },
+      "result": {
+        "php": {
+          "approvals": 1,
+          "free": 1,
+          "ran": [],
+          "decided": [
+            false
+          ]
+        },
+        "ts": {
+          "approvals": 1,
+          "free": 1,
+          "ran": [],
+          "decided": [
+            false
+          ]
+        },
+        "py": {
+          "approvals": 1,
+          "free": 1,
+          "ran": [],
+          "decided": [
+            false
+          ]
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "apr-0013",
+      "title": "an ungated call shares the gated call's id, the ungated call first: approve it",
+      "since": "0.2.0",
+      "notes": "G-387 round 13. The ungated call runs at step time and its result carries the shared id. Matched by id, that result read as the gated call's: the step did not park, or a later start never ended the gated call and a person's approval of it stood as approved work that never ran. Matched by position, the step parks on the gated call's one approval, the decision is recorded as a denial (the step repeats an id), and nothing gated runs.",
+      "calls": [
+        {
+          "id": "dup",
+          "name": "free",
+          "args": {}
+        },
+        {
+          "id": "dup",
+          "name": "echo",
+          "args": {
+            "n": 1
+          }
+        }
+      ],
+      "rounds": [
+        [
+          [
+            0,
+            true
+          ]
+        ]
+      ],
+      "expected": {
+        "approvals": 1,
+        "free": 1,
+        "ran": [],
+        "decided": [
+          false
+        ]
+      },
+      "result": {
+        "php": {
+          "approvals": 1,
+          "free": 1,
+          "ran": [],
+          "decided": [
+            false
+          ]
+        },
+        "ts": {
+          "approvals": 1,
+          "free": 1,
+          "ran": [],
+          "decided": [
+            false
+          ]
+        },
+        "py": {
+          "approvals": 1,
+          "free": 1,
+          "ran": [],
+          "decided": [
+            false
+          ]
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "apr-0014",
+      "title": "an ungated call and a gated call with empty ids, the gated call first: approve it",
+      "since": "0.2.0",
+      "notes": "G-387 round 13. The ungated call runs at step time and its result carries the shared id. Matched by id, that result read as the gated call's: the step did not park, or a later start never ended the gated call and a person's approval of it stood as approved work that never ran. Matched by position, the step parks on the gated call's one approval, the decision is recorded as a denial (the step repeats an id), and nothing gated runs.",
+      "calls": [
+        {
+          "id": "",
+          "name": "echo",
+          "args": {
+            "n": 1
+          }
+        },
+        {
+          "id": "",
+          "name": "free",
+          "args": {}
+        }
+      ],
+      "rounds": [
+        [
+          [
+            0,
+            true
+          ]
+        ]
+      ],
+      "expected": {
+        "approvals": 1,
+        "free": 1,
+        "ran": [],
+        "decided": [
+          false
+        ]
+      },
+      "result": {
+        "php": {
+          "approvals": 1,
+          "free": 1,
+          "ran": [],
+          "decided": [
+            false
+          ]
+        },
+        "ts": {
+          "approvals": 1,
+          "free": 1,
+          "ran": [],
+          "decided": [
+            false
+          ]
+        },
+        "py": {
+          "approvals": 1,
+          "free": 1,
+          "ran": [],
+          "decided": [
+            false
+          ]
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "apr-0015",
+      "title": "an ungated call and a gated call with empty ids, the ungated call first: approve it",
+      "since": "0.2.0",
+      "notes": "G-387 round 13. The ungated call runs at step time and its result carries the shared id. Matched by id, that result read as the gated call's: the step did not park, or a later start never ended the gated call and a person's approval of it stood as approved work that never ran. Matched by position, the step parks on the gated call's one approval, the decision is recorded as a denial (the step repeats an id), and nothing gated runs.",
+      "calls": [
+        {
+          "id": "",
+          "name": "free",
+          "args": {}
+        },
+        {
+          "id": "",
+          "name": "echo",
+          "args": {
+            "n": 1
+          }
+        }
+      ],
+      "rounds": [
+        [
+          [
+            0,
+            true
+          ]
+        ]
+      ],
+      "expected": {
+        "approvals": 1,
+        "free": 1,
+        "ran": [],
+        "decided": [
+          false
+        ]
+      },
+      "result": {
+        "php": {
+          "approvals": 1,
+          "free": 1,
+          "ran": [],
+          "decided": [
+            false
+          ]
+        },
+        "ts": {
+          "approvals": 1,
+          "free": 1,
+          "ran": [],
+          "decided": [
+            false
+          ]
+        },
+        "py": {
+          "approvals": 1,
+          "free": 1,
+          "ran": [],
+          "decided": [
+            false
+          ]
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "apr-0016",
+      "title": "a later assistant step with tool calls supersedes the parked step",
+      "since": "0.2.0",
+      "notes": "DECISION B (G-387 round 13). A host records an assistant row with a tool call (`later`, `free`, no arguments) after the park. Each gated call of the parked step with no result gets exactly ONE result, `Tool call was not run because a later step replaced it`, in a row the harness marks `harness_superseded: {approval_ids: [...]}` (call order) after `tool_approval_responses`; nothing from the step runs. The round then approves both calls, AFTER the superseding row: refused with `approval_not_pending`, all or nothing (no decision recorded; `refusals` pins the code), and the run is resumed once anyway.",
+      "supersede": "assistant_tool_step",
+      "calls": [
+        {
+          "id": "c1",
+          "name": "echo",
+          "args": {
+            "n": 1
+          }
+        },
+        {
+          "id": "c2",
+          "name": "echo",
+          "args": {
+            "n": 2
+          }
+        }
+      ],
+      "rounds": [
+        [
+          [
+            0,
+            true
+          ],
+          [
+            1,
+            true
+          ]
+        ]
+      ],
+      "expected": {
+        "approvals": 2,
+        "free": 0,
+        "ran": [],
+        "decided": [
+          null,
+          null
+        ],
+        "outcomes": [
+          "Tool call was not run because a later step replaced it",
+          "Tool call was not run because a later step replaced it"
+        ],
+        "refusals": [
+          "approval_not_pending"
+        ]
+      },
+      "result": {
+        "php": {
+          "approvals": 2,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null,
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it",
+            "Tool call was not run because a later step replaced it"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        },
+        "ts": {
+          "approvals": 2,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null,
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it",
+            "Tool call was not run because a later step replaced it"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        },
+        "py": {
+          "approvals": 2,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null,
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it",
+            "Tool call was not run because a later step replaced it"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "apr-0017",
+      "title": "a later assistant text row recorded outside the run supersedes the parked step",
+      "since": "0.2.0",
+      "notes": "DECISION B (G-387 round 13). A host records an assistant text row `A later answer.` after the park (outside the run that owns the step). Each gated call of the parked step with no result gets exactly ONE result, `Tool call was not run because a later step replaced it`, in a row the harness marks `harness_superseded: {approval_ids: [...]}` (call order) after `tool_approval_responses`; nothing from the step runs. The round then approves both calls, AFTER the superseding row: refused with `approval_not_pending`, all or nothing (no decision recorded; `refusals` pins the code), and the run is resumed once anyway.",
+      "supersede": "assistant_text",
+      "calls": [
+        {
+          "id": "c1",
+          "name": "echo",
+          "args": {
+            "n": 1
+          }
+        },
+        {
+          "id": "c2",
+          "name": "echo",
+          "args": {
+            "n": 2
+          }
+        }
+      ],
+      "rounds": [
+        [
+          [
+            0,
+            true
+          ],
+          [
+            1,
+            true
+          ]
+        ]
+      ],
+      "expected": {
+        "approvals": 2,
+        "free": 0,
+        "ran": [],
+        "decided": [
+          null,
+          null
+        ],
+        "outcomes": [
+          "Tool call was not run because a later step replaced it",
+          "Tool call was not run because a later step replaced it"
+        ],
+        "refusals": [
+          "approval_not_pending"
+        ]
+      },
+      "result": {
+        "php": {
+          "approvals": 2,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null,
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it",
+            "Tool call was not run because a later step replaced it"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        },
+        "ts": {
+          "approvals": 2,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null,
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it",
+            "Tool call was not run because a later step replaced it"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        },
+        "py": {
+          "approvals": 2,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null,
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it",
+            "Tool call was not run because a later step replaced it"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "apr-0018",
+      "title": "a later user row recorded outside the run supersedes the parked step",
+      "since": "0.2.0",
+      "notes": "DECISION B (G-387 round 13). A host records a user row `A later message.` after the park (outside the run that owns the step). Each gated call of the parked step with no result gets exactly ONE result, `Tool call was not run because a later step replaced it`, in a row the harness marks `harness_superseded: {approval_ids: [...]}` (call order) after `tool_approval_responses`; nothing from the step runs. The round then approves both calls, AFTER the superseding row: refused with `approval_not_pending`, all or nothing (no decision recorded; `refusals` pins the code), and the run is resumed once anyway.",
+      "supersede": "user",
+      "calls": [
+        {
+          "id": "c1",
+          "name": "echo",
+          "args": {
+            "n": 1
+          }
+        },
+        {
+          "id": "c2",
+          "name": "echo",
+          "args": {
+            "n": 2
+          }
+        }
+      ],
+      "rounds": [
+        [
+          [
+            0,
+            true
+          ],
+          [
+            1,
+            true
+          ]
+        ]
+      ],
+      "expected": {
+        "approvals": 2,
+        "free": 0,
+        "ran": [],
+        "decided": [
+          null,
+          null
+        ],
+        "outcomes": [
+          "Tool call was not run because a later step replaced it",
+          "Tool call was not run because a later step replaced it"
+        ],
+        "refusals": [
+          "approval_not_pending"
+        ]
+      },
+      "result": {
+        "php": {
+          "approvals": 2,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null,
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it",
+            "Tool call was not run because a later step replaced it"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        },
+        "ts": {
+          "approvals": 2,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null,
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it",
+            "Tool call was not run because a later step replaced it"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        },
+        "py": {
+          "approvals": 2,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null,
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it",
+            "Tool call was not run because a later step replaced it"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "apr-0019",
+      "title": "a new message supersedes the parked step",
+      "since": "0.2.0",
+      "notes": "DECISION B (G-387 round 13). The session is sent the new message `Something else.` after the park, through the harness. Each gated call of the parked step with no result gets exactly ONE result, `Tool call was not run because a later step replaced it`, in a row the harness marks `harness_superseded: {approval_ids: [...]}` (call order) after `tool_approval_responses`; nothing from the step runs. The round then approves both calls, AFTER the superseding row: refused with `approval_not_pending`, all or nothing (no decision recorded; `refusals` pins the code), and the run is resumed once anyway.",
+      "supersede": "new_message",
+      "calls": [
+        {
+          "id": "c1",
+          "name": "echo",
+          "args": {
+            "n": 1
+          }
+        },
+        {
+          "id": "c2",
+          "name": "echo",
+          "args": {
+            "n": 2
+          }
+        }
+      ],
+      "rounds": [
+        [
+          [
+            0,
+            true
+          ],
+          [
+            1,
+            true
+          ]
+        ]
+      ],
+      "expected": {
+        "approvals": 2,
+        "free": 0,
+        "ran": [],
+        "decided": [
+          null,
+          null
+        ],
+        "outcomes": [
+          "Tool call was not run because a later step replaced it",
+          "Tool call was not run because a later step replaced it"
+        ],
+        "refusals": [
+          "approval_not_pending"
+        ]
+      },
+      "result": {
+        "php": {
+          "approvals": 2,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null,
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it",
+            "Tool call was not run because a later step replaced it"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        },
+        "ts": {
+          "approvals": 2,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null,
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it",
+            "Tool call was not run because a later step replaced it"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        },
+        "py": {
+          "approvals": 2,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null,
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it",
+            "Tool call was not run because a later step replaced it"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "apr-0020",
+      "title": "a later user row recorded by a caller under the step's own run id supersedes the parked step",
+      "since": "0.2.0",
+      "notes": "DECISION B (G-387 round 13). A host records the user row `A later message.` after the park and passes the parked step's OWN run id when it records it. A run id a caller passes is always outside the runs that own the step: only the runtime's own in-run recording is inside. So the step is superseded exactly as in apr-0018: each gated call gets ONE `Tool call was not run because a later step replaced it`, nothing runs, and the round approving both afterwards is refused with `approval_not_pending`.",
+      "supersede": "user_owning_run_id",
+      "calls": [
+        {
+          "id": "c1",
+          "name": "echo",
+          "args": {
+            "n": 1
+          }
+        },
+        {
+          "id": "c2",
+          "name": "echo",
+          "args": {
+            "n": 2
+          }
+        }
+      ],
+      "rounds": [
+        [
+          [
+            0,
+            true
+          ],
+          [
+            1,
+            true
+          ]
+        ]
+      ],
+      "expected": {
+        "approvals": 2,
+        "free": 0,
+        "ran": [],
+        "decided": [
+          null,
+          null
+        ],
+        "outcomes": [
+          "Tool call was not run because a later step replaced it",
+          "Tool call was not run because a later step replaced it"
+        ],
+        "refusals": [
+          "approval_not_pending"
+        ]
+      },
+      "result": {
+        "php": {
+          "approvals": 2,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null,
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it",
+            "Tool call was not run because a later step replaced it"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        },
+        "ts": {
+          "approvals": 2,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null,
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it",
+            "Tool call was not run because a later step replaced it"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        },
+        "py": {
+          "approvals": 2,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null,
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it",
+            "Tool call was not run because a later step replaced it"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "apr-0021",
+      "title": "a result recorded after a later step, with an earlier same-id call's arguments, answers the later call",
+      "since": "0.2.0",
+      "notes": "SEGMENT OWNERSHIP (G-387 round 13b). A result counts only for the calls of the step whose segment it sits in: the rows after that step's assistant row and before the next assistant row with tool calls. Within a segment it is matched to a call by exact arguments, then id and tool name, then id. After the park on `c1` (`echo` {n: 1}) a host records a later step whose one call has the SAME id and tool, `c1` (`echo` {n: 2}), with an approval request `apr_later_0` naming `c1`; the earlier step's open call gets ONE `Tool call was not run because a later step replaced it`, recorded before the later step. Then a host records one result row right after the later step: `c1` / `echo` with the arguments {n: 1}, which are the EARLIER call's and not the later call's. The row carries no decision. It sits in the later step's segment, so it answers the later call (by id and tool name), never the earlier one: the earlier call keeps its one replaced denial, and the later call is done without running. The later round approves `apr_later_0` (recorded: the approval is still pending; the resume runs nothing, because its call already has a result); then the row's round approves the earlier approval (refused, `approval_not_pending`: its step was replaced); two more resumes follow. Nothing runs.",
+      "calls": [
+        {
+          "id": "c1",
+          "name": "echo",
+          "args": {
+            "n": 1
+          }
+        }
+      ],
+      "later": {
+        "calls": [
+          {
+            "id": "c1",
+            "name": "echo",
+            "args": {
+              "n": 2
+            }
+          }
+        ],
+        "result": {
+          "id": "c1",
+          "name": "echo",
+          "args": {
+            "n": 1
+          },
+          "result": "forged",
+          "approved": []
+        },
+        "rounds": [
+          [
+            [
+              0,
+              true
+            ]
+          ]
+        ],
+        "resumes": 2
+      },
+      "rounds": [
+        [
+          [
+            0,
+            true
+          ]
+        ]
+      ],
+      "expected": {
+        "approvals": 1,
+        "free": 0,
+        "ran": [],
+        "decided": [
+          null
+        ],
+        "outcomes": [
+          "Tool call was not run because a later step replaced it"
+        ],
+        "later_outcomes": [
+          "forged"
+        ],
+        "refusals": [
+          null,
+          "approval_not_pending"
+        ]
+      },
+      "result": {
+        "php": {
+          "approvals": 1,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it"
+          ],
+          "later_outcomes": [
+            "forged"
+          ],
+          "refusals": [
+            null,
+            "approval_not_pending"
+          ]
+        },
+        "ts": {
+          "approvals": 1,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it"
+          ],
+          "later_outcomes": [
+            "forged"
+          ],
+          "refusals": [
+            null,
+            "approval_not_pending"
+          ]
+        },
+        "py": {
+          "approvals": 1,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it"
+          ],
+          "later_outcomes": [
+            "forged"
+          ],
+          "refusals": [
+            null,
+            "approval_not_pending"
+          ]
+        }
+      },
+      "agrees": true
+    },
+    {
+      "id": "apr-0022",
+      "title": "a newest call whose recorded result carries arguments other than its own stays done over three resumes",
+      "since": "0.2.0",
+      "notes": "SEGMENT OWNERSHIP (G-387 round 13b). A result counts only for the calls of the step whose segment it sits in: the rows after that step's assistant row and before the next assistant row with tool calls. Within a segment it is matched to a call by exact arguments, then id and tool name, then id. After the park on `c1` (`echo` {n: 1}) a host records a later step whose one call has the SAME id and tool, `c1` (`echo` {n: 2}), with an approval request `apr_later_0` naming `c1`; the earlier step's open call gets ONE `Tool call was not run because a later step replaced it`, recorded before the later step. Then a host records one result row right after the later step: `c1` / `echo` with the arguments {n: 1}, which are the EARLIER call's and not the later call's. The row is the shape a run writes once the newest call has run: its result (`ok`) and the approval of `apr_later_0`, in one row, except that the result's arguments are not the newest call's own. It sits in the later step's segment, so it is the newest call's result: that call stays done, and the three empty-prompt resumes after the first round (approving the earlier approval: refused, `approval_not_pending`) run nothing. The earlier call keeps its one replaced denial.",
+      "calls": [
+        {
+          "id": "c1",
+          "name": "echo",
+          "args": {
+            "n": 1
+          }
+        }
+      ],
+      "later": {
+        "calls": [
+          {
+            "id": "c1",
+            "name": "echo",
+            "args": {
+              "n": 2
+            }
+          }
+        ],
+        "result": {
+          "id": "c1",
+          "name": "echo",
+          "args": {
+            "n": 1
+          },
+          "result": "ok",
+          "approved": [
+            0
+          ]
+        },
+        "rounds": [],
+        "resumes": 3
+      },
+      "rounds": [
+        [
+          [
+            0,
+            true
+          ]
+        ]
+      ],
+      "expected": {
+        "approvals": 1,
+        "free": 0,
+        "ran": [],
+        "decided": [
+          null
+        ],
+        "outcomes": [
+          "Tool call was not run because a later step replaced it"
+        ],
+        "later_outcomes": [
+          "ok"
+        ],
+        "refusals": [
+          "approval_not_pending"
+        ]
+      },
+      "result": {
+        "php": {
+          "approvals": 1,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it"
+          ],
+          "later_outcomes": [
+            "ok"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        },
+        "ts": {
+          "approvals": 1,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it"
+          ],
+          "later_outcomes": [
+            "ok"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
+        },
+        "py": {
+          "approvals": 1,
+          "free": 0,
+          "ran": [],
+          "decided": [
+            null
+          ],
+          "outcomes": [
+            "Tool call was not run because a later step replaced it"
+          ],
+          "later_outcomes": [
+            "ok"
+          ],
+          "refusals": [
+            "approval_not_pending"
+          ]
         }
       },
       "agrees": true

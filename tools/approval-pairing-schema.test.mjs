@@ -7,6 +7,7 @@ import { approvalPairingFailures } from './approval-pairing/contract.mjs';
 const check = compile(JSON.parse(readFileSync(new URL('../schema/cases.schema.json', import.meta.url), 'utf8')));
 const fixture = () => JSON.parse(readFileSync(new URL('../suites/harness-approval-pairing/cases.json', import.meta.url), 'utf8'));
 const first = (document) => document.cases[0];
+const laterRow = (document) => document.cases.find((row) => row.later);
 
 test('the harness-approval-pairing corpus fits the schema and its contract', () => {
   const document = fixture();
@@ -23,6 +24,9 @@ for (const [name, mutate] of [
   ['extra data in an outcome', (document) => { first(document).result.php.asked = []; }],
   ['a decision that is not a pair', (document) => { first(document).rounds[0][0] = [0]; }],
   ['an empty round', (document) => { first(document).rounds.push([]); }],
+  ['a later step without calls', (document) => { laterRow(document).later.calls = []; }],
+  ['extra data in a later result', (document) => { laterRow(document).later.result.run_id = 'run_x'; }],
+  ['a negative resume count', (document) => { laterRow(document).later.resumes = -1; }],
 ]) test(`harness-approval-pairing schema rejects ${name}`, () => {
   const document = fixture(); mutate(document); assert.equal(check(document).valid, false);
 });
@@ -33,6 +37,8 @@ for (const [name, mutate, pattern] of [
   ['one approval decided twice in a round', (document) => { first(document).rounds[0][1] = [0, true]; }, /twice/],
   ['an unsorted ran list', (document) => { first(document).result.ts.ran = [2, 1]; }, /ts\.ran is not sorted/],
   ['agreement that hides a changed outcome', (document) => { first(document).result.ts = { approvals: 2, free: 0, ran: [1, 2] }; }, /agreement does not match/],
+  ['a later round past the later approvals', (document) => { laterRow(document).later.rounds = [[[1, true]]]; }, /later step issued 1/],
+  ['a later result approving an approval never issued', (document) => { laterRow(document).later.result.approved = [3]; }, /later\.result approves 3/],
 ]) test(`harness-approval-pairing contract rejects ${name}`, () => {
   const document = fixture(); mutate(document); assert.match(approvalPairingFailures(document).join('\n'), pattern);
 });

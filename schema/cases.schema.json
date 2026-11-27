@@ -1594,6 +1594,26 @@
             "ts",
             "py"
           ]
+        },
+        "read": {
+          "enum": [
+            "approval_states"
+          ],
+          "description": "A READ over `stored` (0.4.0): for each id in `approvals`, in order, `{approval_id, ended_by_start}`."
+        },
+        "stored": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/harnessReadRow"
+          }
+        },
+        "approvals": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
         }
       },
       "required": [
@@ -1610,8 +1630,17 @@
             "input"
           ],
           "not": {
-            "required": [
-              "fold"
+            "anyOf": [
+              {
+                "required": [
+                  "fold"
+                ]
+              },
+              {
+                "required": [
+                  "read"
+                ]
+              }
             ]
           }
         },
@@ -1620,8 +1649,38 @@
             "fold"
           ],
           "not": {
-            "required": [
-              "input"
+            "anyOf": [
+              {
+                "required": [
+                  "input"
+                ]
+              },
+              {
+                "required": [
+                  "read"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "read",
+            "stored",
+            "approvals"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "input"
+                ]
+              },
+              {
+                "required": [
+                  "fold"
+                ]
+              }
             ]
           }
         }
@@ -10539,7 +10598,8 @@
       "required": [
         "approvals",
         "free",
-        "ran"
+        "ran",
+        "decided"
       ],
       "properties": {
         "approvals": {
@@ -10555,6 +10615,46 @@
           "items": {
             "type": "integer"
           }
+        },
+        "decided": {
+          "type": "array",
+          "items": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "description": "The decision the thread recorded for each approval the first step issued, in issue order: the first answer, or null when none was recorded (0.2.0)."
+        },
+        "outcomes": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": "Rows with `supersede` or `later` only (0.2.0): the first result each call of the first step ended with IN THAT STEP'S SEGMENT (the rows after it and before the next assistant row with tool calls; matched by exact arguments, then id and tool name, then id), in call order, or null."
+        },
+        "later_outcomes": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": "Rows with `later` only (0.2.0, SEGMENT OWNERSHIP): the first result each call of the later step ended with in its segment, matched as `outcomes` is, in call order, or null."
+        },
+        "refusals": {
+          "type": "array",
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "description": "Rows with `supersede` or `later` only (0.2.0): the code each round of decisions (`later.rounds`, then `rounds`) was refused with, or null when it was recorded."
         }
       }
     },
@@ -10637,6 +10737,115 @@
               "$ref": "#/$defs/harnessApprovalPairingOutcome"
             }
           }
+        },
+        "supersede": {
+          "enum": [
+            "assistant_tool_step",
+            "assistant_text",
+            "user",
+            "new_message",
+            "user_owning_run_id"
+          ],
+          "description": "DECISION B (0.2.0): the row written after the park that supersedes the parked step, before the rounds."
+        },
+        "later": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "calls",
+            "result",
+            "rounds",
+            "resumes"
+          ],
+          "description": "SEGMENT OWNERSHIP (0.2.0): a later step a host records after the park (each `echo` call asks an approval `apr_later_<k>`, k counting that step's echo calls, naming its call id), then ONE result row a host records right after it; `rounds` decide the later step's approvals (before the row's own rounds), and `resumes` empty-prompt resumes follow.",
+          "properties": {
+            "calls": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "name",
+                  "args"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "enum": [
+                      "echo",
+                      "free"
+                    ]
+                  },
+                  "args": {
+                    "type": "object"
+                  }
+                }
+              }
+            },
+            "result": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "name",
+                "args",
+                "result",
+                "approved"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "enum": [
+                    "echo",
+                    "free"
+                  ]
+                },
+                "args": {
+                  "type": "object"
+                },
+                "result": {
+                  "type": "string"
+                },
+                "approved": {
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "description": "The later approvals (k of `apr_later_<k>`) the same row records as approved."
+                }
+              }
+            },
+            "rounds": {
+              "type": "array",
+              "items": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "items": {
+                    "type": [
+                      "integer",
+                      "boolean"
+                    ]
+                  },
+                  "description": "An [index, approved] pair: the index of an approval the first step issued, in issue order, and the decision. The pair order is checked by tools/approval-pairing/contract.mjs; the validator has no tuple keyword."
+                }
+              }
+            },
+            "resumes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
         }
       },
       "required": [
@@ -10687,6 +10896,22 @@
         "corpus_version",
         "cases"
       ]
+    },
+    "harnessReadRow": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "user",
+            "assistant",
+            "tool_result"
+          ]
+        }
+      },
+      "description": "A row as a harness stores it, its `type` beside its payload, harness metadata (such as `harness_ended_by_start`) included. Open on purpose: a reader must read only the keys it knows, so a row may carry any other."
     }
   },
   "oneOf": [
