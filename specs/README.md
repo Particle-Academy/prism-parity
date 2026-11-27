@@ -24,6 +24,7 @@ of them.
 | [prism-mcp.md](prism-mcp.md) | `prism-mcp` | Model Context Protocol, server and client |
 | [prism-agent-team.md](prism-agent-team.md) | *(the Lab + one agent per language)* | ecosystem-wide testing team, coordinated by Prism.php |
 | [agent-task-lists.md](agent-task-lists.md) | *(a capability in `prism-harness` + both ports)* | durable task lists, claim-and-lease, running until a goal is met |
+| [bench-driver.md](bench-driver.md) | *(a `bin/` driver in each harness)* | `prism-bench-driver/1`: how a benchmark adapter drives a harness over stdio (G-10, first slice) |
 
 ## What is deliberately NOT being built
 
