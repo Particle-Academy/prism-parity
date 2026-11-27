@@ -31,7 +31,13 @@ from prism_harness import (  # noqa: E402
     thread_view,
     tool_result_row,
 )
-from prism_harness.thread_rows import ended_approval_ids, paired_requests  # noqa: E402
+from prism_harness.thread_rows import (  # noqa: E402
+    bound_step,
+    ended_approval_ids,
+    paired_requests,
+    placed_view,
+    started_row,
+)
 
 
 def rows_for(case: dict[str, Any]) -> list[dict[str, Any]]:
@@ -49,7 +55,22 @@ def rows_for(case: dict[str, Any]) -> list[dict[str, Any]]:
     if "fold" in case:
         return thread_view(case["fold"])
 
+    if "place" in case:
+        # 0.5.1 (G-387 round 15): the rows as stored, placed then folded as the
+        # replay sends them.
+        return placed_view(case["place"])
+
     spec = case["input"]
+
+    if spec["write"] == "started":
+        # The write-ahead row the resolver records before it runs a call.
+        return [
+            started_row(
+                {"id": spec["tool_call_id"], "name": spec["tool_name"]},
+                spec["approval_id"],
+                spec["position"],
+            )
+        ]
 
     if spec["write"] == "ended_by_start":
         # The row a runner start's task row closes a child's pending calls
@@ -80,8 +101,11 @@ def rows_for(case: dict[str, Any]) -> list[dict[str, Any]]:
         ]
 
     if spec["write"] == "assistant":
+        # ``bind`` (0.5.1): the step as the thread stores it, each request bound
+        # to its own call.
+        bind = bound_step if spec.get("bind") else (lambda row: row)
         return [
-            assistant_row(
+            bind(assistant_row(
                 spec["content"],
                 [
                     ToolCallInput(
@@ -96,7 +120,7 @@ def rows_for(case: dict[str, Any]) -> list[dict[str, Any]]:
                 ],
                 spec["additional_content"],
                 spec["approval_requests"],
-            )
+            ))
         ]
 
     return [

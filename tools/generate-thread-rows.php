@@ -9,7 +9,9 @@ declare(strict_types=1);
  * stores with, and ToolResultRuns::fold(), the fold Thread::messages() replays
  * with, over Prism's own value objects, and (G-387) the `ended_by_start` rows
  * through AgentRuntime::endedCallsOf() and Thread::rowPayload(), and (G-387 round 13) the
- * `read` cases through Thread::endedByStartIn(). A generator that re-implemented the
+ * `read` cases through Thread::endedByStartIn(), and (G-387 round 15) the `place` cases through
+ * Thread::placedRows() then the fold, the `started` row through Thread::startedPayload() and a
+ * bound step through StepRows::withBoundRequests(). A generator that re-implemented the
  * shape would pin what the generator believes rather than what the harness
  * stores.
  *
@@ -33,6 +35,7 @@ require $autoload;
 use Prism\Harness\AgentRuntime;
 use Prism\Harness\Models\Thread;
 use Prism\Harness\Support\MessageMapper;
+use Prism\Harness\Support\StepRows;
 use Prism\Harness\Support\ToolResultRuns;
 use Prism\Prism\Contracts\Message;
 use Prism\Prism\ValueObjects\Messages\AssistantMessage;
@@ -155,8 +158,32 @@ function rows(array $case): array
     if (isset($case['read'])) {
         return readings($case);
     }
+    if (isset($case['place'])) {
+        // Rows as stored, each with its `type` and, for a row the harness
+        // wrote, `harness: true`; positions are 1-based (0.5.1, G-387 round
+        // 15): placed as the replay places them, then folded.
+        $rows = [];
+        foreach ($case['place'] as $index => $stored) {
+            $type = $stored['type'];
+            $harness = ($stored['harness'] ?? false) === true;
+            unset($stored['type'], $stored['harness']);
+            $rows[] = ['position' => $index + 1, 'type' => $type, 'harness' => $harness, 'payload' => $stored];
+        }
+        $messages = array_map(static fn (array $row): Message => MessageMapper::fromArray($row['type'], $row['payload']), Thread::placedRows($rows));
+
+        return array_map(row(...), iterator_to_array(ToolResultRuns::fold($messages), false));
+    }
     if (isset($case['input'])) {
-        return [$case['input']['write'] === 'ended_by_start' ? endedRow($case['input']) : row(written($case['input']))];
+        return match (true) {
+            $case['input']['write'] === 'ended_by_start' => [endedRow($case['input'])],
+            // The write-ahead started row (0.5.1, G-387 round 15): Thread::startedPayload().
+            $case['input']['write'] === 'started' => [['type' => MessageMapper::TYPE_TOOL_RESULT, ...Thread::startedPayload(
+                $case['input']['tool_call_id'], $case['input']['tool_name'], $case['input']['approval_id'], $case['input']['position'])]],
+            // A step as stored, each request bound to its call (0.5.1): StepRows::withBoundRequests().
+            ($case['input']['bind'] ?? false) === true => [['type' => MessageMapper::TYPE_ASSISTANT,
+                ...StepRows::withBoundRequests(MessageMapper::toArray(written($case['input'])))]],
+            default => [row(written($case['input']))],
+        };
     }
 
     $messages = array_map(function (array $stored): Message {

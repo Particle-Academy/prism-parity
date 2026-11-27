@@ -9,6 +9,13 @@ const fixture = () => JSON.parse(readFileSync(new URL('../suites/harness-approva
 const first = (document) => document.cases[0];
 const laterRow = (document) => document.cases.find((row) => row.later);
 
+test('harness-approval-pairing contract rejects a row with no rounds unless it is altered_copy_after_approval', () => {
+  const document = fixture();
+  first(document).rounds = [];
+  assert.equal(check(document).valid, true);
+  assert.ok(approvalPairingFailures(document).some((failure) => failure.includes('at least one round')));
+});
+
 test('the harness-approval-pairing corpus fits the schema and its contract', () => {
   const document = fixture();
   assert.equal(check(document).valid, true);

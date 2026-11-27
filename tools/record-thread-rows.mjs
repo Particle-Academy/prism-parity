@@ -25,8 +25,11 @@ let raw = readFileSync(path, 'utf8');
 const document = JSON.parse(raw);
 
 // The same conversion prism-harness-ts/test/thread-rows-corpus.test.ts makes.
-export function rowsFor(testCase, { assistantRow, toolResultRow, threadView, endedByStartRow, pairStepApprovals, endedByStart }) {
+export function rowsFor(testCase, { assistantRow, toolResultRow, threadView, endedByStartRow, pairStepApprovals, endedByStart, replayView, startedRow, withBoundRequests }) {
   if (testCase.fold !== undefined) return threadView(testCase.fold);
+
+  // 0.5.1 (G-387 round 15): the rows as stored, placed then folded as the replay sends them.
+  if (testCase.place !== undefined) return replayView(testCase.place);
 
   if (testCase.read === 'approval_states') {
     // Which approvals a runner start ended (G-387 round 13), by the harness's own
@@ -49,9 +52,16 @@ export function rowsFor(testCase, { assistantRow, toolResultRow, threadView, end
     ];
   }
 
+  if (input.write === 'started') {
+    // The write-ahead started row the resolver records before it runs a call (round 15).
+    return [startedRow({ id: input.tool_call_id, name: input.tool_name }, input.approval_id, input.position)];
+  }
+
   if (input.write === 'assistant') {
+    // `bind`: the requests as Thread.record() stores them, each bound to its own call (round 15).
+    const bind = (row) => (input.bind === true ? withBoundRequests(row) : row);
     return [
-      assistantRow(
+      bind(assistantRow(
         input.content,
         input.tool_calls.map((call) => ({
           id: call.id,
@@ -63,7 +73,7 @@ export function rowsFor(testCase, { assistantRow, toolResultRow, threadView, end
         })),
         input.additional_content,
         input.approval_requests,
-      ),
+      )),
     ];
   }
 
@@ -95,7 +105,7 @@ function stringEnd(text, quote) {
 const stale = [];
 
 for (const testCase of document.cases) {
-  const produced = JSON.stringify(rowsFor(testCase, { ...harness, endedByStartRow: rowsModule.endedByStartRow, pairStepApprovals: rowsModule.pairStepApprovals, endedByStart: rowsModule.endedByStart }));
+  const produced = JSON.stringify(rowsFor(testCase, { ...harness, endedByStartRow: rowsModule.endedByStartRow, pairStepApprovals: rowsModule.pairStepApprovals, endedByStart: rowsModule.endedByStart, replayView: rowsModule.replayView, startedRow: rowsModule.startedRow, withBoundRequests: rowsModule.withBoundRequests }));
 
   if (testCase.rows.ts !== produced) stale.push(testCase.id);
 
