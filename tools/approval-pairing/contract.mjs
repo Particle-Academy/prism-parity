@@ -12,6 +12,12 @@ export function approvalPairingFailures(document) {
     if (seen.has(row.id)) failures.push(`duplicate approval-pairing case ${row.id}`);
     seen.add(row.id);
     const issued = row.expected?.approvals;
+    // A row decides its approvals in rounds, except `altered_copy_after_approval`
+    // (0.4.0), which records every pending approval approved before the copy and
+    // then only resumes: the schema allows an empty `rounds` list for it alone.
+    if (!Array.isArray(row.rounds) || (row.rounds.length === 0 && row.supersede !== 'altered_copy_after_approval')) {
+      failures.push(`${row.id}: a row decides its approvals in at least one round (only altered_copy_after_approval has none)`);
+    }
     (row.rounds ?? []).forEach((round, r) => {
       const decided = new Set();
       for (const decision of round) {

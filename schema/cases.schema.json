@@ -1614,6 +1614,14 @@
           "items": {
             "type": "string"
           }
+        },
+        "place": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/harnessReadRow"
+          },
+          "description": "Rows AS STORED (0.5.1): each with its `type`, a row the harness wrote with `harness: true`; positions are 1-based. Placed as the replay places them (harness marks honoured, started rows out, interrupted and replaced outcomes in, the standing decision), then folded."
         }
       },
       "required": [
@@ -1640,6 +1648,11 @@
                 "required": [
                   "read"
                 ]
+              },
+              {
+                "required": [
+                  "place"
+                ]
               }
             ]
           }
@@ -1658,6 +1671,11 @@
               {
                 "required": [
                   "read"
+                ]
+              },
+              {
+                "required": [
+                  "place"
                 ]
               }
             ]
@@ -1679,6 +1697,35 @@
               {
                 "required": [
                   "fold"
+                ]
+              },
+              {
+                "required": [
+                  "place"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "required": [
+            "place"
+          ],
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "input"
+                ]
+              },
+              {
+                "required": [
+                  "fold"
+                ]
+              },
+              {
+                "required": [
+                  "read"
                 ]
               }
             ]
@@ -2307,6 +2354,10 @@
               "items": {
                 "$ref": "#/$defs/harnessApprovalRequest"
               }
+            },
+            "bind": {
+              "type": "boolean",
+              "description": "0.5.1: the step as stored, each request bound to its call (`harness_call`)."
             }
           },
           "required": [
@@ -2369,6 +2420,36 @@
             "tool_calls",
             "approval_requests"
           ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "write": {
+              "const": "started"
+            },
+            "tool_call_id": {
+              "type": "string"
+            },
+            "tool_name": {
+              "type": "string"
+            },
+            "approval_id": {
+              "type": "string"
+            },
+            "position": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "write",
+            "tool_call_id",
+            "tool_name",
+            "approval_id",
+            "position"
+          ],
+          "description": "0.5.1 (G-387 round 15): the write-ahead started row."
         }
       ]
     },
@@ -10714,7 +10795,7 @@
         },
         "rounds": {
           "type": "array",
-          "minItems": 1,
+          "minItems": 0,
           "items": {
             "type": "array",
             "minItems": 1,
@@ -10762,9 +10843,11 @@
             "user",
             "new_message",
             "user_owning_run_id",
-            "new_message_failed"
+            "new_message_failed",
+            "altered_copy",
+            "altered_copy_after_approval"
           ],
-          "description": "DECISION B (0.2.0): the row written after the park that supersedes the parked step, before the rounds. `new_message_failed` (0.3.0, G-404): a new message whose turn's provider request then fails."
+          "description": "DECISION B (0.2.0): the row written after the park that supersedes the parked step, before the rounds. `new_message_failed` (0.3.0, G-404): a new message whose turn's provider request then fails. `altered_copy` / `altered_copy_after_approval` (0.4.0, G-387 round 15): a host copy of the parked step that keeps its approval requests and alters each call's `n` by +100, before the rounds, or after every pending approval was recorded approved (then one resume)."
         },
         "later": {
           "type": "object",
@@ -10923,10 +11006,14 @@
       "properties": {
         "type": {
           "enum": [
-            "user",
             "assistant",
-            "tool_result"
+            "system",
+            "tool_result",
+            "user"
           ]
+        },
+        "harness": {
+          "type": "boolean"
         }
       },
       "description": "A row as a harness stores it, its `type` beside its payload, harness metadata (such as `harness_ended_by_start`) included. Open on purpose: a reader must read only the keys it knows, so a row may carry any other."
